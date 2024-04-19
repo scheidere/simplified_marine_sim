@@ -1,8 +1,9 @@
 #include <cstdio>
 #include <cmath>
-#include "simulator/distance.hpp"
+#include "distance.hpp"
 
-Distance::Distance() {
+Distance::Distance() : D ("Test passed!") {
+
 }
 
 void Distance::test() {

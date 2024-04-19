@@ -8,6 +8,7 @@
 
 class Distance {
 private:
+    std::string D;
 
 public:
     Distance();
@@ -15,6 +16,9 @@ public:
     void test();
 
     double euclidean(cv::Point vertex_1, cv::Point vertex_2);
+
+    std::string getD() const { return D; }
+
 };
 
 #endif

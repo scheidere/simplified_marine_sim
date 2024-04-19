@@ -16,7 +16,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 find_package(rclcpp REQUIRED)
 
-add_executable(sim src/sim.cpp src/distance.cpp src/sensor_model.cpp src/world.cpp src/robot.cpp)
+add_executable(sim src/sim.cpp src/distance.cpp src/sensor_model.cpp src/world.cpp src/planners.cpp src/scorer.cpp src/robot.cpp)
 target_include_directories(sim PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)

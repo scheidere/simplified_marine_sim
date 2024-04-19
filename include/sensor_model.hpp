@@ -3,11 +3,12 @@
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include "simulator/distance.hpp"
+#include "distance.hpp"
 
 class SensorModel {
 private:
     Distance* distance;
+
 
 public:
     SensorModel(Distance* distance);

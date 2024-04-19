@@ -1,5 +1,5 @@
 #include <cstdio>
-#include "simulator/sensor_model.hpp"
+#include "sensor_model.hpp"
 
 SensorModel::SensorModel(Distance* d) : distance(d) {
 }
