@@ -44,10 +44,10 @@ std::vector<std::pair<int,int>> RandomWalkPlanner::randomStep(int prev_x, int pr
     int new_x = prev_x + x_step; int new_y = prev_y + y_step;
 
     // Might want to add some animation smoothing here (if the step size is over 1, e.g., 10)
-    if (x_step > 1 || y_step > 1) {
+    /*if (x_step > 1 || y_step > 1) {
       std::vector<std::pair<int,int>> path = Planner::smoothBigStep(prev_x, prev_y, x_step,y_step,max_step_size);
       return path;
-    }
+    }*/ // Commenting out smoothing while testing doIteration
     
     std::cout << "New X: " << new_x << ", New Y: " << new_y << std::endl;
     std::vector<std::pair<int,int>> path = {{new_x, new_y}};

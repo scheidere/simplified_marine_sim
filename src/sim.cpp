@@ -5,7 +5,24 @@
 #include "planners.hpp"
 #include "scorer.hpp"
 #include "robot.hpp"
+#include "behavior_tree.hpp"
+#include "../../BehaviorTree.CPP/include/behaviortree_cpp/bt_factory.h"
+#include <iostream>
 
+using namespace BT;
+
+static const char* xml_text = R"(
+
+ <root BTCPP_format="4" >
+
+     <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <RandomWalk   name="random_walk"/>
+        </Sequence>
+     </BehaviorTree>
+
+ </root>
+ )";
 
 int main(int argc, char ** argv)
 {
@@ -20,7 +37,7 @@ int main(int argc, char ** argv)
   Robot robot(&planner, &random_walk_planner, &scorer, &world); RobotController controller(&robot);
 
   // Test hierarchy
-  std::cout << "Testing basic class hierarchy..." << std::endl;
+  /*std::cout << "Testing basic class hierarchy..." << std::endl;
   planner.test();
   scorer.test();
   distance.test();
@@ -31,27 +48,36 @@ int main(int argc, char ** argv)
   robot.test();
   robot.world_test();
   robot.other_tests();
-  std::cout << "Finished testing basic class hierarchy." << std::endl;
+  std::cout << "Finished testing basic class hierarchy." << std::endl;*/
 
   // Initialize world and robot
-  cv::Mat background = world.init();
+  /*cv::Mat background = world.init();
   robot.init(200, 200, background);
   world.plot(background); // Must be after robot init to show robot, do we remove this if it is in controller below?
-
+  */
+  
   // Max number of iterations
   // int max_iters = 50;
   // controller.run(max_iters, background); // This does not work yet
 
   // Testing randomwalk
-  int steps = 10;
-  random_walk_planner.performRandomWalk(background, steps, world, robot); // This works!
-  // I think there are issues with having a smoothed step occur in one iteration as it is currently written
-  // Probably other issues too, I think I had just started with the controller when the alienware broke
-  // With the above random walk executing, you cant terminate by pressing any key, you instead close the world window
-  // Next step will be to trigger random walk but from the robot controller, make sure iterations are working
-  // Don't dwell on random walk appearance, move on after iterations working and robot moving
-  // Behavior tree triggering of this is next step after that
+  // int steps = 10;
+  // random_walk_planner.performRandomWalk(background, steps, world, robot); // This works!
 
+  // Test BT pipeline
+  //RandomWalk rw_node("RW",BT::NodeConfiguration());
+  //rw_node.tick();
+
+  // Register RandomWalk node
+  BT::BehaviorTreeFactory factory;
+  factory.registerNodeType<RandomWalk>("RandomWalk");
+
+  // Create the behavior tree from the XML text
+  auto tree = factory.createTreeFromText(xml_text);
+
+  // Execute the behavior tree
+  tree.tickWhileRunning();
+  
   std::cout << "Terminate by pressing any key..." << std::endl;
   cv::waitKey(0);
 
