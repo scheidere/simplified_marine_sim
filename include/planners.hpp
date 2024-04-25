@@ -33,7 +33,7 @@ public:
 
     std::vector<std::pair<int,int>> randomStep(int prev_x, int prev_y);
 
-    void performRandomWalk(cv::Mat& background, int steps, World& world, Robot& robot);
+    void performRandomWalk(World& world, cv::Mat& background, Robot& robot, int steps);
 
 
 };

@@ -1,21 +1,30 @@
 #include "behavior_tree.hpp"
 #include <iostream> // For std::cout
 #include <string>   // For std::string
+#include "world.hpp"
+#include "robot.hpp"
+#include "planners.hpp"
 
 using namespace BT;
 
-RandomWalk::RandomWalk(const std::string& name, const BT::NodeConfig& config) :
-    BT::SyncActionNode(name, config)
-{}
+/*RandomWalk::RandomWalk(const std::string& name, const BT::NodeConfig& config, RandomWalkPlanner* rwp) :
+    BT::SyncActionNode(name, config, rwp)
+{}*/
 
-BT::NodeStatus RandomWalk::tick()
+RandomWalk::RandomWalk(const std::string& name, const NodeConfig& config, RandomWalkPlanner& rwp, World& w, Robot& r, cv::Mat background)
+    : SyncActionNode(name, config), _rwp(rwp), _world(w), _robot(r), _background(background)
+  {}
+
+NodeStatus RandomWalk::tick()
 {
-    std::cout << "hi from BT" << std::endl;
-    return BT::NodeStatus::SUCCESS;
+    std::cout << "Running RandomWalk..." << std::endl;
+    int steps = 10;
+    _rwp.performRandomWalk(_world, _background, _robot, steps);
+    return NodeStatus::SUCCESS;
 }
 
 // A node having ports MUST implement this STATIC method
-BT::PortsList RandomWalk::providedPorts()
+PortsList RandomWalk::providedPorts()
 {
-    return { BT::OutputPort<std::string>("text") };
+    return { OutputPort<std::string>("text") };
 }

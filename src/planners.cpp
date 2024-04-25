@@ -54,7 +54,7 @@ std::vector<std::pair<int,int>> RandomWalkPlanner::randomStep(int prev_x, int pr
     return path;
 }
 
-void RandomWalkPlanner::performRandomWalk(cv::Mat& background, int steps, World& world, Robot& robot) {
+void RandomWalkPlanner::performRandomWalk(World& world, cv::Mat& background, Robot& robot, int steps) {
 for (int i = 0; i < steps; ++i) {
     int prev_x = robot.getX();
     int prev_y = robot.getY();

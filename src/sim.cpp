@@ -6,7 +6,7 @@
 #include "scorer.hpp"
 #include "robot.hpp"
 #include "behavior_tree.hpp"
-#include "../../BehaviorTree.CPP/include/behaviortree_cpp/bt_factory.h"
+#include "behaviortree_cpp/bt_factory.h"
 #include <iostream>
 
 using namespace BT;
@@ -51,26 +51,27 @@ int main(int argc, char ** argv)
   std::cout << "Finished testing basic class hierarchy." << std::endl;*/
 
   // Initialize world and robot
-  /*cv::Mat background = world.init();
+  cv::Mat background = world.init();
   robot.init(200, 200, background);
   world.plot(background); // Must be after robot init to show robot, do we remove this if it is in controller below?
-  */
+  
   
   // Max number of iterations
   // int max_iters = 50;
   // controller.run(max_iters, background); // This does not work yet
 
   // Testing randomwalk
-  // int steps = 10;
-  // random_walk_planner.performRandomWalk(background, steps, world, robot); // This works!
+  //int steps = 10;
+  //random_walk_planner.performRandomWalk(world, background, robot, steps); // This works!
 
   // Test BT pipeline
   //RandomWalk rw_node("RW",BT::NodeConfiguration());
   //rw_node.tick();
 
   // Register RandomWalk node
-  BT::BehaviorTreeFactory factory;
-  factory.registerNodeType<RandomWalk>("RandomWalk");
+  BehaviorTreeFactory factory;
+  factory.registerNodeType<RandomWalk>("RandomWalk", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
+  //factory.registerNodeType<RandomWalk>("RandomWalk");
 
   // Create the behavior tree from the XML text
   auto tree = factory.createTreeFromText(xml_text);
