@@ -67,3 +67,17 @@ for (int i = 0; i < steps; ++i) {
     world.plot(background);
 };
 }
+
+
+cv::Point RandomWalkPlanner::generateWaypoint(World& world, cv::Mat& background, Robot& robot) {
+
+    int max_step_size = 5;
+    std::uniform_int_distribution<int> dist(-max_step_size, max_step_size);
+    int x_step = dist(rng); int y_step = dist(rng);
+    std::cout << "X step: " << x_step << ", Y step: " << y_step << std::endl;
+    int prev_x = robot.getX(); int prev_y = robot.getY();
+    int new_x = prev_x + x_step; int new_y = prev_y + y_step;
+
+    return cv::Point(new_x,new_y);
+
+}

@@ -7,9 +7,37 @@
 #include "robot.hpp"
 #include "behavior_tree.hpp"
 #include "behaviortree_cpp/bt_factory.h"
+#include "behaviortree_cpp/loggers/bt_cout_logger.h"
+#include "behaviortree_cpp/decorators/loop_node.h"
+#include "behaviortree_cpp/actions/pop_from_queue.hpp"
+
+
 #include <iostream>
 
 using namespace BT;
+
+struct Pose2D
+{
+  double x, y, theta;
+};
+
+/*static const char* xml_text = R"(
+
+ <root BTCPP_format="4" >
+
+     <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <GenerateWaypoints   name="generate_waypoints"/>
+            <PopFromQueue  queue="{waypoints}" popped_item="{wp}" />
+            <LoopPose queue="{waypoints}"  value="{wp}">
+              <UseWaypoint waypoint="{wp}" />
+            </LoopPose>
+
+        </Sequence>
+     </BehaviorTree>
+
+ </root>
+ )";*/
 
 static const char* xml_text = R"(
 
@@ -17,12 +45,20 @@ static const char* xml_text = R"(
 
      <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
-            <RandomWalk   name="random_walk"/>
+            <GenerateWaypoints waypoints="{waypoints}" />
+            <QueueSize queue="{waypoints}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}" >
+            <Sequence>
+                <PopFromQueue  queue="{waypoints}" popped_item="{wp}" />
+                <UseWaypoint waypoint="{wp}" />
+            </Sequence>
+            </Repeat>
         </Sequence>
      </BehaviorTree>
 
  </root>
  )";
+
 
 int main(int argc, char ** argv)
 {
@@ -70,11 +106,20 @@ int main(int argc, char ** argv)
 
   // Register RandomWalk node
   BehaviorTreeFactory factory;
-  factory.registerNodeType<RandomWalk>("RandomWalk", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
-  //factory.registerNodeType<RandomWalk>("RandomWalk");
+  //factory.registerNodeType<RandomWalk>("RandomWalk", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
+  factory.registerNodeType<GenerateWaypoints>("GenerateWaypoints", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
+  //factory.registerNodeType<LoopNode<Pose2D>>("LoopPose"); // This results in type errors, changes to deque from  ProtectedQueue
+  factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
+  factory.registerNodeType<RepeatNode>("RepeatNode");
+  factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
+  factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world),std::ref(robot),background);
 
   // Create the behavior tree from the XML text
   auto tree = factory.createTreeFromText(xml_text);
+
+  // Log node statuses (command line)
+  StdCoutLogger logger(tree);
+  logger.enableTransitionToIdle(false);
 
   // Execute the behavior tree
   tree.tickWhileRunning();

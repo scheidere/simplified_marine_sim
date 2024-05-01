@@ -35,7 +35,7 @@ public:
 
     void performRandomWalk(World& world, cv::Mat& background, Robot& robot, int steps);
 
-
+    cv::Point generateWaypoint(World& world, cv::Mat& background, Robot& robot);
 };
 
 #endif

@@ -25,5 +25,34 @@ public:
 
 };
 
+class GenerateWaypoints : public SyncActionNode {
+private:
+	RandomWalkPlanner& _rwp; // Try pointer * next
+	World& _world;
+	Robot& _robot;
+	cv::Mat _background;
+
+public:
+	GenerateWaypoints(const std::string& name, const BT::NodeConfig& config, RandomWalkPlanner& rwp, World& w, Robot& r, cv::Mat background);
+
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+
+};
+
+class UseWaypoint : public ThreadedAction {
+private:
+	World& _world;
+	Robot& _robot;
+	cv::Mat _background;
+
+public:
+    UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background);
+
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
 
 #endif
