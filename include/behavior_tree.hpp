@@ -8,32 +8,45 @@
 
 using namespace BT;
 
-class RandomWalk : public SyncActionNode {
+class GenerateWaypoints : public SyncActionNode {
 private:
-	RandomWalkPlanner& _rwp; // Try pointer * next
 	World& _world;
 	Robot& _robot;
 	cv::Mat _background;
 
 public:
-	RandomWalk(const std::string& name, const BT::NodeConfig& config, RandomWalkPlanner& rwp, World& w, Robot& r, cv::Mat background);
+	GenerateWaypoints(const std::string& name, const BT::NodeConfig& config, World& w, Robot& r, cv::Mat background);
 
     NodeStatus tick() override;
 
-    // A node having ports MUST implement this STATIC method
     static PortsList providedPorts();
 
 };
 
-class GenerateWaypoints : public SyncActionNode {
+class GenerateNextWaypoint : public SyncActionNode {
 private:
-	RandomWalkPlanner& _rwp; // Try pointer * next
 	World& _world;
 	Robot& _robot;
 	cv::Mat _background;
 
 public:
-	GenerateWaypoints(const std::string& name, const BT::NodeConfig& config, RandomWalkPlanner& rwp, World& w, Robot& r, cv::Mat background);
+	GenerateNextWaypoint(const std::string& name, const BT::NodeConfig& config, World& w, Robot& r, cv::Mat background);
+
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+
+};
+
+class PlanShortestPath : public SyncActionNode {
+private:
+	World& _world;
+	Robot& _robot;
+	ShortestPath& _shortest_path;
+	cv::Mat _background;
+
+public:
+	PlanShortestPath(const std::string& name, const BT::NodeConfig& config, World& w, Robot& r, ShortestPath& sp, cv::Mat background);
 
     NodeStatus tick() override;
 

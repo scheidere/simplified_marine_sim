@@ -11,35 +11,8 @@
 
 using namespace BT;
 
-struct Pose2D
-{
-  double x, y, theta;
-};
-
-RandomWalk::RandomWalk(const std::string& name, const NodeConfig& config, RandomWalkPlanner& rwp, World& w, Robot& r, cv::Mat background)
-    : SyncActionNode(name, config), _rwp(rwp), _world(w), _robot(r), _background(background)
-  {}
-
-NodeStatus RandomWalk::tick()
-{
-    // This is not how this should be implemented longterm
-    // The movement should not slow down ticking
-    std::cout << "Running RandomWalk..." << std::endl;
-    int steps = 10;
-    _rwp.performRandomWalk(_world, _background, _robot, steps);
-    return NodeStatus::SUCCESS;
-}
-
-// A node having ports MUST implement this STATIC method
-PortsList RandomWalk::providedPorts()
-{
-    return { OutputPort<std::string>("text") };
-}
-
-
-
-GenerateWaypoints::GenerateWaypoints(const std::string& name, const NodeConfig& config, RandomWalkPlanner& rwp, World& w, Robot& r, cv::Mat background)
-    : SyncActionNode(name, config), _rwp(rwp), _world(w), _robot(r), _background(background)
+GenerateWaypoints::GenerateWaypoints(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background)
+    : SyncActionNode(name, config), _world(w), _robot(r), _background(background)
   {}
 
 NodeStatus GenerateWaypoints::tick()
@@ -59,9 +32,59 @@ NodeStatus GenerateWaypoints::tick()
 PortsList GenerateWaypoints::providedPorts()
 {
     std::cout << "SharedQueue is outputted..." << std::endl;
-    //return { OutputPort<SharedQueue<cv::Point>>("waypoints") };
-    //return { OutputPort<SharedQueue<Pose2D>>("waypoints") };
     return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("waypoints") };
+}
+
+GenerateNextWaypoint::GenerateNextWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background)
+    : SyncActionNode(name, config), _world(w), _robot(r), _background(background)
+  {}
+
+NodeStatus GenerateNextWaypoint::tick()
+{
+
+    // Get robot location
+    double x  = _robot.getX(); double y = _robot.getY();
+    Pose2D current_waypoint{x, y, 0}; // do we even need theta for this sim?
+    std::cout << current_waypoint.x << " and " << current_waypoint.y << std::endl;
+    auto shared_queue = std::make_shared<ProtectedQueue<Pose2D>>();
+    // Generate waypoint randomly one pixel (step) away from current robot location
+    // Get random +/- combo and add or subtract from x/y location accordingly
+    double dx = 10; double dy = -10; // Hardcoded, not random
+    Pose2D next_waypoint{ current_waypoint.x + dx, current_waypoint.y + dy, 0 };
+    shared_queue->items.push_back(next_waypoint);
+    std::cout << "Generated waypoint: (" << next_waypoint.x << ", " << next_waypoint.y << ", " << next_waypoint.theta << ")" << std::endl;
+
+    setOutput("next_waypoint", shared_queue);
+    return NodeStatus::SUCCESS;
+}
+
+PortsList GenerateNextWaypoint::providedPorts()
+{
+    std::cout << "SharedQueue is outputted..." << std::endl;
+    return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("next_waypoint") };
+}
+
+PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp, cv::Mat background)
+    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp), _background(background)
+  {}
+
+NodeStatus PlanShortestPath::tick()
+{
+    Pose2D current_pose = _robot.getPose();
+    Pose2D waypoint{210,210,0}; // Currently not directly used
+    std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, waypoint);
+
+    cv::Point p1(5,5);
+    _shortest_path.initializeDistances(_background, p1);
+
+    setOutput("path", plan);
+    return NodeStatus::SUCCESS;
+}
+
+PortsList PlanShortestPath::providedPorts()
+{
+    std::cout << "Shortest path is outputted..." << std::endl;
+    return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path") };
 }
 
 UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background)
@@ -70,21 +93,15 @@ UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, Worl
 
 NodeStatus UseWaypoint::tick()
 {
-    /*cv::Point wp;
-    if(getInput("waypoint", wp)) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        std::cout << "Using waypoint: " << wp.x << "/" << wp.y << std::endl;
-        return NodeStatus::SUCCESS;
-    }
-    else {
-        std::cout << "no input in use_wp" << std::endl;
-        return NodeStatus::FAILURE;
-    }*/
+
     Pose2D wp;
     if(getInput("waypoint", wp))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       std::cout << "Using waypoint: " << wp.x << "/" << wp.y << std::endl;
+      std::cout << "Robot prev loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
+      _robot.move(wp, _background); // Publish new waypoint to image, i.e. move robot
+      std::cout << "Robot new loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
       return NodeStatus::SUCCESS;
     }
     else

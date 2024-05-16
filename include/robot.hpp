@@ -9,35 +9,25 @@
 
 class Robot {
 private:
-    int x, y;
+    Pose2D pose;
     Planner* planner;
-    RandomWalkPlanner* random_walk_planner;
+    ShortestPath* shortest_path; // Is this needed? Replaced randomwalk
     Scorer* scorer;
     World* world; // Point to single,shared world instance
 
 public:
-    Robot(Planner* planner, RandomWalkPlanner* random_walk_planner, Scorer* scorer, World* world);
+    Robot(Planner* planner, ShortestPath* shortest_path, Scorer* scorer, World* world); // Is this right with planners?
 
+    double getX() const { return pose.x; }
+    double getY() const { return pose.y; }
+    Pose2D getPose() const { return pose; }
     void test();
     void world_test();
     void other_tests();
-    void init(int init_x, int init_y, cv::Mat& image);
-    int getX() const { return x; }
-    int getY() const { return y; }
-    void doIteration(cv::Mat& image);
-    void move(int new_x, int new_y, cv::Mat& image);
-    void followPath(const std::vector<std::pair<int,int>>& path, cv::Mat& image);
-};
-
-
-class RobotController {
-private:
-    Robot* robot;
-
-public:
-    RobotController(Robot* r);
-
-    void run(int max_iters, cv::Mat& background);
+    void init(Pose2D initial_pose, cv::Mat& image);
+    //void doIteration(cv::Mat& image);
+    void move(Pose2D waypoint, cv::Mat& image);
+    void followPath(std::shared_ptr<BT::ProtectedQueue<Pose2D>> path, cv::Mat& image);
 };
 
 #endif

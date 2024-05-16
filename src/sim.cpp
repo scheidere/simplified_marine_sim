@@ -16,30 +16,7 @@
 
 using namespace BT;
 
-struct Pose2D
-{
-  double x, y, theta;
-};
-
 /*static const char* xml_text = R"(
-
- <root BTCPP_format="4" >
-
-     <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <GenerateWaypoints   name="generate_waypoints"/>
-            <PopFromQueue  queue="{waypoints}" popped_item="{wp}" />
-            <LoopPose queue="{waypoints}"  value="{wp}">
-              <UseWaypoint waypoint="{wp}" />
-            </LoopPose>
-
-        </Sequence>
-     </BehaviorTree>
-
- </root>
- )";*/
-
-static const char* xml_text = R"(
 
  <root BTCPP_format="4" >
 
@@ -57,6 +34,46 @@ static const char* xml_text = R"(
      </BehaviorTree>
 
  </root>
+ )";*/
+/*
+static const char* xml_text = R"(
+
+ <root BTCPP_format="4" >
+
+     <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <GenerateNextWaypoint next_waypoint="{next_waypoint}" />
+            <QueueSize queue="{next_waypoint}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}" >
+            <Sequence>
+                <PopFromQueue  queue="{next_waypoint}" popped_item="{wp}" />
+                <UseWaypoint waypoint="{wp}" />
+            </Sequence>
+            </Repeat>
+        </Sequence>
+     </BehaviorTree>
+
+ </root>
+ )";*/
+
+ static const char* xml_text = R"(
+
+ <root BTCPP_format="4" >
+
+     <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <PlanShortestPath path="{path}" />
+            <QueueSize queue="{path}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}" >
+            <Sequence>
+                <PopFromQueue  queue="{path}" popped_item="{wp}" />
+                <UseWaypoint waypoint="{wp}" />
+            </Sequence>
+            </Repeat>
+        </Sequence>
+     </BehaviorTree>
+
+ </root>
  )";
 
 
@@ -67,47 +84,28 @@ int main(int argc, char ** argv)
 
   std::cout << "Running simulation..." << std::endl;
 
-  // Create instances 
-  Distance distance; SensorModel sensor_model(&distance); World world (&distance, &sensor_model);
-  Planner planner; RandomWalkPlanner random_walk_planner; Scorer scorer; 
-  Robot robot(&planner, &random_walk_planner, &scorer, &world); RobotController controller(&robot);
+  // How big will the world be (in pixels)?
+  const int X = 400; const int Y = 400;
 
-  // Test hierarchy
-  /*std::cout << "Testing basic class hierarchy..." << std::endl;
-  planner.test();
-  scorer.test();
-  distance.test();
-  sensor_model.test();
-  sensor_model.distance_test();
-  world.test();
-  world.distance_test();
-  robot.test();
-  robot.world_test();
-  robot.other_tests();
-  std::cout << "Finished testing basic class hierarchy." << std::endl;*/
+  // Create instances 
+  Distance distance; SensorModel sensor_model(&distance); World world (X, Y, &distance, &sensor_model);
+  Planner planner; ShortestPath shortest_path; Scorer scorer; 
+  Robot robot(&planner, &shortest_path, &scorer, &world);
+
+  std::cout << "World size: " << world.getX() << "x" << world.getY() << std::endl;
 
   // Initialize world and robot
   cv::Mat background = world.init();
-  robot.init(200, 200, background);
+  Pose2D initial_pose{200,200,0}; // Do they have to defined explicitly as doubles?
+  robot.init(initial_pose, background);
   world.plot(background); // Must be after robot init to show robot, do we remove this if it is in controller below?
-  
-  
-  // Max number of iterations
-  // int max_iters = 50;
-  // controller.run(max_iters, background); // This does not work yet
-
-  // Testing randomwalk
-  //int steps = 10;
-  //random_walk_planner.performRandomWalk(world, background, robot, steps); // This works!
-
-  // Test BT pipeline
-  //RandomWalk rw_node("RW",BT::NodeConfiguration());
-  //rw_node.tick();
 
   // Register RandomWalk node
   BehaviorTreeFactory factory;
   //factory.registerNodeType<RandomWalk>("RandomWalk", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
-  factory.registerNodeType<GenerateWaypoints>("GenerateWaypoints", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
+  //factory.registerNodeType<GenerateWaypoints>("GenerateWaypoints", std::ref(random_walk_planner),std::ref(world),std::ref(robot),background);
+  //factory.registerNodeType<GenerateNextWaypoint>("GenerateNextWaypoint",std::ref(world),std::ref(robot),background);
+  factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world),std::ref(robot), std::ref(shortest_path), background);
   //factory.registerNodeType<LoopNode<Pose2D>>("LoopPose"); // This results in type errors, changes to deque from  ProtectedQueue
   factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
   factory.registerNodeType<RepeatNode>("RepeatNode");

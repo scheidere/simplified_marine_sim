@@ -3,10 +3,9 @@
 #include "sensor_model.hpp"
 #include "world.hpp"
 
-
-World::World(Distance* d, SensorModel* s) 
-    : X(400),
-    Y(400), 
+World::World(int X, int Y, Distance* d, SensorModel* s) 
+    : X(X),
+    Y(Y), 
     distance(d), 
     sensor_model(s)
 {

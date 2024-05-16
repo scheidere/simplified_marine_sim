@@ -6,15 +6,14 @@
 #include "distance.hpp"
 #include "sensor_model.hpp"
 
-
 class World {
 private:
-    int X, Y;
+    int X; int Y;
     Distance* distance;
     SensorModel* sensor_model;
 
 public:
-    World(Distance* distance, SensorModel* sensor_model);
+    World(int X, int Y, Distance* distance, SensorModel* sensor_model);
 
     int getX() const { return X; }
     int getY() const { return Y; }
