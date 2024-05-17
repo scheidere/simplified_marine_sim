@@ -85,18 +85,25 @@ int main(int argc, char ** argv)
   std::cout << "Running simulation..." << std::endl;
 
   // How big will the world be (in pixels)?
-  const int X = 400; const int Y = 400;
+  //const int X = 400; const int Y = 400;
+  const int X = 20; const int Y = 20;
+  // How far can the robot go in one step?
+  const int step_size = 1; // In pixels
 
   // Create instances 
   Distance distance; SensorModel sensor_model(&distance); World world (X, Y, &distance, &sensor_model);
-  Planner planner; ShortestPath shortest_path; Scorer scorer; 
+  Planner planner (step_size); ShortestPath shortest_path (step_size); Scorer scorer; // (step_size) for shortest path removed for test EMILY
   Robot robot(&planner, &shortest_path, &scorer, &world);
 
+  std::cout << "Step size in main from shortest_path: " << shortest_path.getStepSize() << std::endl;
   std::cout << "World size: " << world.getX() << "x" << world.getY() << std::endl;
 
   // Initialize world and robot
-  cv::Mat background = world.init();
-  Pose2D initial_pose{200,200,0}; // Do they have to defined explicitly as doubles?
+  // cv::Mat background = world.init(); Moved this to world constructor
+  cv::Mat background = world.getImage();
+  //Move following to robot constructor, get background directly from world class in robot class
+  //Pose2D initial_pose{200,200,0};
+  Pose2D initial_pose{3,3,0};
   robot.init(initial_pose, background);
   world.plot(background); // Must be after robot init to show robot, do we remove this if it is in controller below?
 

@@ -7,8 +7,10 @@ World::World(int X, int Y, Distance* d, SensorModel* s)
     : X(X),
     Y(Y), 
     distance(d), 
-    sensor_model(s)
+    sensor_model(s),
+    image(init())
 {
+    cv::Mat image = init(); // Create world background image of dimensions X and Y
 }
 
 void World::test() {

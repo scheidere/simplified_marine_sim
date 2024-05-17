@@ -5,16 +5,15 @@
 #include "robot.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
-
-Planner::Planner() : current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>()) {
-
+Planner::Planner(int step_size) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>())
+{
 }
 
 void Planner::test() {
     std::cout << "Hello world from the planner class!" << std::endl;
 }
 
-ShortestPath::ShortestPath() : Planner() {
+ShortestPath::ShortestPath(int step_size) : Planner(step_size) {
 
 }
 
@@ -26,42 +25,22 @@ double Planner::euclideanDistance(cv::Point p1, cv::Point p2) {
     return distance;
 }
 
-template <int N, int M>
-void Planner::printDistancesArray(std::array<std::array<double, N>, M>& arr) {
+void Planner::printDistances(std::vector<std::vector<double>> distance_array) {
 
-    // Only use this for smaller N and M, otherwise you will be sad
-
-    std::cout << "Printing std::array 2d style!" << std::endl;
-
-    for (int i=0; i < N; i++) {
-        for (int j=0; j < M; j++) {
-            std::cout << arr[i][j] << " ";
+    for (const auto& row : distance_array) {
+        for (double element : row) {
+            std::cout << element << " ";
         }
         std::cout << std::endl;
     }
 }
 
-void Planner::initializeDistances(cv::Mat image, cv::Point p1) {
+std::vector<std::vector<double>> Planner::initializeDistances(int X, int Y, Pose2D robot_start_loc) {
 
-    //const int N = image.rows; const int M = image.cols; // Are these correct?
-    std::cout << "Type of image.cols: " << typeid(image.cols).name() << image.cols << std::endl;
-    const int N = 400; const int M = 400;
-    std::array<std::array<double, N>, M> distance_array;
-    std::cout << p1.x << " " << p1.y << std::endl;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < M; ++j) {
-            if (i == p1.x && j == p1.y) {
-                distance_array[i][j] = 0;
-            } else {
-                distance_array[i][j] = std::numeric_limits<double>::infinity();
-            }
-        }
-    }
+    std::vector<std::vector<double>> distance_array(X, std::vector<double>(Y, std::numeric_limits<double>::infinity()));
+    distance_array[robot_start_loc.x][robot_start_loc.y] = 0; // Set distance from start to start to 0
 
-    //printDistancesArray<N,M>(distance_array);
-
-    //return distance_array;
-
+    return distance_array;
 }
 
 std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D current_pose, Pose2D waypoint) {
@@ -87,3 +66,20 @@ std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D current_po
     return plan;
 
 }
+
+/*double ShortestPath::updateDistanceFromStart(Pose2D current, Pose2D neighbor) {
+
+    // Get neighbor node distance from array
+
+
+    // Get current node distance from array
+
+
+    // Distance between nodes is always the step size in this case, so add step size to get new current node distance from start
+
+
+    // If new dist < old dist at current node, update dist array
+
+    //return // updated dist array
+    return 0;
+}*/

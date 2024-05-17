@@ -11,12 +11,15 @@ private:
     int X; int Y;
     Distance* distance;
     SensorModel* sensor_model;
+    cv::Mat image;
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model);
 
     int getX() const { return X; }
     int getY() const { return Y; }
+
+    cv::Mat getImage() { return image; }
 
     void test();
 

@@ -70,12 +70,16 @@ PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& co
 
 NodeStatus PlanShortestPath::tick()
 {
+    // How long is a tick? What happens if the planning takes longer than a tick *should*?
     Pose2D current_pose = _robot.getPose();
-    Pose2D waypoint{210,210,0}; // Currently not directly used
+    //Pose2D waypoint{210,210,0};
+    Pose2D waypoint{7,7,0};
+    std::vector<std::vector<double>> distance_array = _shortest_path.initializeDistances(_world.getX(), _world.getY(), current_pose);
+    _shortest_path.printDistances(distance_array);
     std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, waypoint);
 
-    cv::Point p1(5,5);
-    _shortest_path.initializeDistances(_background, p1);
+    //cv::Point p1(5,5);
+    //_shortest_path.initializeDistances(_background, p1); // Commenting out to test calling from constructor in planners.cpp
 
     setOutput("path", plan);
     return NodeStatus::SUCCESS;
