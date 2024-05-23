@@ -86,9 +86,16 @@ int main(int argc, char ** argv)
 
   // How big will the world be (in pixels)?
   //const int X = 400; const int Y = 400;
-  const int X = 20; const int Y = 20;
+  const int X = 20; // Down
+   const int Y = 20; // Right
+
   // How far can the robot go in one step?
+  // NOTE: If you want a step size other than 1, need to add fix for final step of diff size to reach goal 
   const int step_size = 1; // In pixels
+  if (step_size != 1) {
+    std::cout << "Your step size is larger than 1! Have made changes in planners for smaller final step/neighbors etc.?" << std::endl;
+    std::cin.get();
+  }
 
   // Create instances 
   Distance distance; SensorModel sensor_model(&distance); World world (X, Y, &distance, &sensor_model);
@@ -103,7 +110,7 @@ int main(int argc, char ** argv)
   cv::Mat background = world.getImage();
   //Move following to robot constructor, get background directly from world class in robot class
   //Pose2D initial_pose{200,200,0};
-  Pose2D initial_pose{3,3,0};
+  Pose2D initial_pose{4,0,0};
   robot.init(initial_pose, background);
   world.plot(background); // Must be after robot init to show robot, do we remove this if it is in controller below?
 

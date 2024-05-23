@@ -74,9 +74,9 @@ NodeStatus PlanShortestPath::tick()
     Pose2D current_pose = _robot.getPose();
     //Pose2D waypoint{210,210,0};
     Pose2D waypoint{7,7,0};
-    std::vector<std::vector<double>> distance_array = _shortest_path.initializeDistances(_world.getX(), _world.getY(), current_pose);
-    _shortest_path.printDistances(distance_array);
-    std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, waypoint);
+    std::vector<std::vector<double>> distance_tracker = _shortest_path.initializeDistances(_world.getX(), _world.getY(), current_pose);
+    std::vector<std::vector<double>> visit_tracker = _shortest_path.initializeVisits(_world.getX(), _world.getY());
+    std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, waypoint, distance_tracker, visit_tracker);
 
     //cv::Point p1(5,5);
     //_shortest_path.initializeDistances(_background, p1); // Commenting out to test calling from constructor in planners.cpp
