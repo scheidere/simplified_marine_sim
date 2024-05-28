@@ -13,98 +13,59 @@ void Planner::test() {
     std::cout << "Hello world from the planner class!" << std::endl;
 }
 
-ShortestPath::ShortestPath(int step_size) : Planner(step_size) {
+adjacency_vector Planner::convertImageToAdjacencyVector(int X, int Y) {
 
-}
+    adjacency_vector adj_vec;
 
-double Planner::euclideanDistance(cv::Point p1, cv::Point p2) {
-
-    int dx = p2.x - p1.x; int dy = p2.y - p1.y;
-    double distance = std::sqrt(dx*dx + dy*dy);
-
-    return distance;
-}
-
-void Planner::printMatrix(matrix m) {
-
-    for (const auto& row : m) {
-        for (double element : row) {
-            std::cout << element << " ";
+    // Loop through every pixel i,j on world of dims X,Y
+    for (int x=0; x<X; x++) {
+        for (int y=0; y<Y; y++){
+            std::vector<P> neighbors = getNeighbors(x,y,X,Y); // Vector of (dist,idx) pairs (double,int)
+            adj_vec.push_back(neighbors); // idx of graph element represents what the neighbors are of
         }
-        std::cout << std::endl;
+    }
+
+    return adj_vec;
+}
+
+/*void Planner::printAdjacencyVector(adjacency_vector &adj_vec, int Y) { //added &
+    for (size_t i = 0; i < adj_vec.size(); ++i) {
+        std::pair coords_current = getCoords(i, Y);
+        std::cout << "Vertex " << i << ": " << coords_current.first << ", " << coords_current.second << " neighbors:" << std::endl;
+        for (const auto& neighbor : adj_vec[i]) {
+            std::pair coords = getCoords(neighbor.first, Y);
+            std::cout << "  Neighbor: " << neighbor.first << ", (x,y): " << coords.first << ", " << coords.second << ", Distance: " << neighbor.second << std::endl;
+        }
+    }
+}*/
+
+void Planner::printAdjacencyVector(const adjacency_vector &adj_vec, int Y) {
+    for (const auto& v : adj_vec) { // v is vector of P pairs (double, int), vec is main adjacency vector
+        for (const auto& p : v) {
+            std::pair<int,int> coords = getCoords(p.second, Y);
+            std::cout << "Distance: " << p.first << ", neighbor idx:" << p.second << ", neighbor coords: " << coords.first << ", " << coords.second << std::endl;
+        }
     }
 }
 
-matrix Planner::initializeDistances(int X, int Y, Pose2D robot_start_loc) {
+int Planner::getIndex(int x, int y, int Y) {
 
-    // Deprecated (we are mapping x,y from world image indices to 1D vector for efficiency next)
+    // Y is number of columns in world image
 
-    // infinity everywhere, 0 where the robot is now (at start)
+    // double/int might be an issue
 
-    matrix distance_tracker(X, std::vector<double>(Y, std::numeric_limits<double>::infinity()));
-    distance_tracker[robot_start_loc.x][robot_start_loc.y] = 0; // Set distance from start to start to 0
+    int idx = x*Y + y;
 
-    return distance_tracker;
+    return idx;
 }
 
-matrix Planner::initializeVisits(int X, int Y) {
+std::pair<int,int> Planner::getCoords(int idx, int Y) {
 
-    // This will also not be used (same reason as above, want to use 1D vector for memory efficiency, fewer nested loops needed)
-
-    // 0 everywhere for unvisited, will set to 1 when visited (done elsewhere)
-
-    matrix visit_tracker(X, std::vector<double>(Y, 0));
-
-    return visit_tracker;
+    int x = idx/Y; int y = idx%Y;
+    return std::make_pair(x,y);
 }
 
-std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D current_pose, Pose2D waypoint, 
-    matrix distance_tracker, matrix visit_tracker) {
-
-    std::cout << "IN PLAN ######################" << std::endl;
-
-    // Inits
-    auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue
-
-    printMatrix(distance_tracker); printMatrix(visit_tracker);
-
-    // Update neighbor distances to start using distance from current
-    std::pair<matrix,matrix> trackers = updateDistanceFromStart(current_pose, distance_tracker, visit_tracker);
-
-    distance_tracker = trackers.first; visit_tracker = trackers.second;
-
-    printMatrix(distance_tracker); printMatrix(visit_tracker);
-
-    /*
-
-    // First hardcode direct path to point 4 pixels up from the robot (200,200) initial location
-    std::cout << "Current robot location x, y: " << current_pose.x << ", " << current_pose.y << std::endl;
-    auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue
-    double step_size = getStepSize();
-    std::cout << "step_size: " << step_size << std::endl;
-    std::cout << "HELLO" << std::endl;
-    double x_prev = current_pose.x; double y_prev = current_pose.y;
-    cv::Point old(current_pose.x,current_pose.y);
-    for (int i = 0; i < 4; ++i) {
-        Pose2D next_waypoint{ x_prev, y_prev + step_size, 0 };
-        plan->items.push_back(next_waypoint);
-        std::cout << "Generated waypoint: (" << next_waypoint.x << ", " << next_waypoint.y << ", " << next_waypoint.theta << ")" << std::endl;
-        x_prev = next_waypoint.x; y_prev = next_waypoint.y;
-        cv::Point newPoint(next_waypoint.x,next_waypoint.y);
-        double dist = this->euclideanDistance(old, newPoint);
-        std::cout << "Distance: " << dist << std::endl;
-    }    
-    */
-
-    std::cout << "END PLAN ######################" << std::endl;
-
-    return plan;
-
-}
-
-bool inBounds(double x, double y, matrix m) {
-    int X = m.size(); // Rows
-    int Y = m[0].size(); // Columns in first row
+bool Planner::inBounds(int x, int y, int X, int Y) {
     if (x >= 0 && x < X && y >= 0 && y < Y) {
         return true; // In bounds
 
@@ -113,10 +74,9 @@ bool inBounds(double x, double y, matrix m) {
     }
 }
 
+std::vector<std::pair<double,int>> Planner::getNeighbors(int x, int y, int X, int Y) {
 
-
-std::pair<matrix,matrix> ShortestPath::updateDistanceFromStart(Pose2D current, 
-    matrix distance_tracker, matrix visit_tracker) {
+    // Once again double/int might be an issue
 
     // Double check/change this function (wrt neighbors) before using with a step_size of 2+
     if (step_size != 1) {
@@ -124,27 +84,24 @@ std::pair<matrix,matrix> ShortestPath::updateDistanceFromStart(Pose2D current,
     std::cin.get();
     }
 
-    // Get current node distance to start from tracker
-    double current_dist = distance_tracker[current.x][current.y];
-    std::cout << current_dist << std::endl;
+    //std::cout << "Current: " << x << ", " << y << std::endl;
 
-    // Loop through neighbor nodes (use step size)
+    std::vector<P> neighbors;
+
     for (int i=-step_size; i<=step_size; i++) {
         for (int j=-step_size; j<=step_size; j++){
             if (!(i==0 && j==0)) { // Exclude current position as a neighbor
-                double new_x = current.x + i; 
-                double new_y = current.y + j;
-                std::cout << new_x << ", " << new_y << std::endl;
+                double new_x = x + i; 
+                double new_y = y + j;
+                //std::cout << new_x << ", " << new_y << std::endl;
                 // Check that neighbor is valid, i.e. on map (and eventually not in an obstacle)
-                if (inBounds(new_x,new_y, distance_tracker)) {
-                    //std::cout << "Neighbor is valid" << std::endl;
-
-                    double new_dist_to_start = current_dist + step_size;
-
-                    // Get neighbor node distance from tracker
-                    if (new_dist_to_start < distance_tracker[new_x][new_y]) {
-                        distance_tracker[new_x][new_y] = new_dist_to_start;
-                    }
+                if (inBounds(new_x,new_y,X,Y)) {
+                    //std::cout << "Neighbor " << new_x << ", " << new_y << " is valid" << std::endl;
+                    int neighbor_idx = getIndex(new_x,new_y,Y);
+                    //std::cout << "neigh idx: " << neighbor_idx << std::endl;
+                    double distance = getEuclideanDistance(x,y,new_x,new_y);
+                    neighbors.push_back(std::make_pair(distance, neighbor_idx)); // pair = (dist, index)
+                    
 
                 }
             }
@@ -152,8 +109,161 @@ std::pair<matrix,matrix> ShortestPath::updateDistanceFromStart(Pose2D current,
         }
     }
 
-    // Having calculated all neighbor distances, mark current node as visited
-    visit_tracker[current.x][current.y] = 1;
-
-    return std::make_pair(distance_tracker,visit_tracker);
+    return neighbors; // WITH DISTANCE BEFORE INDEX
 }
+
+double Planner::getEuclideanDistance(int x1, int y1, int x2, int y2) {
+
+    int dx = x2 - x1; int dy = y2 - y1;
+    double distance = std::sqrt(dx*dx + dy*dy);
+
+    return distance;
+}
+
+/*void Planner::printVector(const std::vector<int> &vector) {
+
+    for (int i=0;i<vector.size();i++) {
+        std::cout << "Vertex: " << i << ", value: " << vector[i] << std::endl;
+
+    }
+}*/
+
+template <typename T>
+void Planner::printVector(const std::vector<T> &vec) const {
+    for (size_t i = 0; i < vec.size(); ++i) {
+        std::cout << "Vertex: " << i << ", value: " << vec[i] << std::endl;
+    }
+}
+
+std::vector<double> Planner::initializeDistances(int V, int robot_start_loc_idx, int Y) {
+
+    // N is the number of nodes in the graph (X * Y)
+
+    std::vector<double> distance_tracker(V,std::numeric_limits<double>::infinity());
+
+    distance_tracker[robot_start_loc_idx] = 0;
+
+    return distance_tracker;
+}
+
+std::vector<bool> Planner::initializeVisits(int V) {
+
+    std::vector<bool> visit_tracker(V,false);
+    return visit_tracker;
+}
+
+void Planner::printPlan(const std::shared_ptr<BT::ProtectedQueue<Pose2D>>& plan) {
+    std::cout << "Plan contents:" << std::endl;
+    for (const auto& pose : plan->items) {
+        std::cout << "Pose2D(x: " << pose.x << ", y: " << pose.y << ", theta: " << pose.theta << ")" << std::endl;
+    }
+}
+
+ShortestPath::ShortestPath(int step_size) : Planner(step_size) {
+
+}
+
+std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
+
+    std::cout << "IN PLAN ######################" << std::endl;
+
+    // Inits
+    int start_idx = getIndex(start_pose.x,start_pose.y,Y); // Idx of robot current location
+    int goal_idx = getIndex(waypoint.x, waypoint.y, Y); // Goal idx
+    std::cout << "Goal idx: " << goal_idx << std::endl;
+    auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue that will hold the shortest path
+    adjacency_vector graph = convertImageToAdjacencyVector(X, Y);
+    //printAdjacencyVector(graph, Y);
+    int V = X*Y; // Number of vertices
+    std::vector<double> distance_tracker = initializeDistances(V, start_idx, Y);
+    std::vector<bool> visit_tracker = initializeVisits(V);
+    //printVector(distance_tracker);
+    //printVector(visit_tracker);
+    // Priority queue, top being vertex with minimum distance to start
+    std::priority_queue<P, std::vector<P>, std::greater<P>> priority_queue; //min heap (distance to start, vertex idx) (double,int)
+    priority_queue.push({0, start_idx});
+
+    // Track previous points in shortest path
+    std::vector<int> predecessor(V, -1);
+    
+    int count = 0;
+    while (!priority_queue.empty()) {
+        //count += 1;
+        //std::cout << "Iteration count: " << count << std::endl;
+        int min_idx = priority_queue.top().second; // Get unvisited vertex with minimum distance to start (do we have to explicitly check that its unvisted?)
+        priority_queue.pop(); // Remove that distance, vertex pair from priority_queue (maybe this is all the visit tracking needed?)
+        // Check if the node has already been visited
+        if (visit_tracker[min_idx]) {
+            continue; // Skip if you have already visited the node you just chose (why not removed from the priority queue then?)
+        }
+
+        // Mark the current node as visited
+        visit_tracker[min_idx] = true;
+
+        // Update path with current point (THIS IS WRONG)
+        /*std::pair<int,int> c = getCoords(min_idx,Y); // Current
+        Pose2D next_point{c.first,c.second,0}; //x,y,theta
+        plan->items.push_back(next_point); // Add to path*/
+
+        // Check if current is goal waypoint
+        if (min_idx == goal_idx) {
+            std::cout << "Goal reached at node " << min_idx << "!" << std::endl;
+            break;
+        }
+
+        // Get distances to neighbors, where neighbors have not yet been visited
+        //std::vector<std::pair<int,int>> neighbors = getNeighbors(c.first, c.second, X, Y);
+        std::vector<P> neighbors = graph[min_idx]; // pair (double,int)
+        for (const P &np : neighbors) { // For each dist,idx_neighbor pair, i.e. std::pair<double,int>
+            double nc_dist = np.first; // Get distance to neighbor from current
+            int n_idx = np.second;
+            //std::pair<int,int> n = getCoords(idx,Y); // Don't need this?
+            if (!visit_tracker[n_idx]) { // Neighbor has not been visited (??)
+                
+                // Update distance vector
+                double new_dist =  nc_dist + distance_tracker[min_idx]; // Neighbor distance to start, neighbor-current dist + start-current dist
+                if (new_dist < distance_tracker[n_idx]) {
+                    distance_tracker[n_idx] = new_dist;
+                    predecessor[n_idx] = min_idx;
+
+                    // Update priority queue (i.e., add neighbor)
+                    P new_p(new_dist,n_idx);
+                    priority_queue.push(new_p);
+                }
+
+
+                // Do I need to check if visited? Where?
+            }
+
+            // Need goal check handling
+
+        }
+
+        if (priority_queue.empty()) {
+            std::cout << "ALERT: PQ is empty!" << std::endl;
+        }
+
+    }
+
+    // Reconstruct the path from start to goal using the predecessor map
+    std::vector<int> path;
+    for (int at = goal_idx; at != -1; at = predecessor[at]) { // **Path reconstruction using predecessor**
+        path.push_back(at);
+    }
+    std::reverse(path.begin(), path.end());
+
+    for (int idx : path) {
+        std::pair<int, int> c = getCoords(idx, Y); // Current coordinates
+        Pose2D next_waypoint{c.first, c.second, 0}; // x, y, theta
+        plan->items.push_back(next_waypoint); // **Add reconstructed path to plan**
+    }
+
+    printPlan(plan);
+    std::cout << "END PLAN ######################" << std::endl;
+    //std::cin.get();
+    return plan;
+
+}
+
+
+

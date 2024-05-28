@@ -16,46 +16,6 @@
 
 using namespace BT;
 
-/*static const char* xml_text = R"(
-
- <root BTCPP_format="4" >
-
-     <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <GenerateWaypoints waypoints="{waypoints}" />
-            <QueueSize queue="{waypoints}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}" >
-            <Sequence>
-                <PopFromQueue  queue="{waypoints}" popped_item="{wp}" />
-                <UseWaypoint waypoint="{wp}" />
-            </Sequence>
-            </Repeat>
-        </Sequence>
-     </BehaviorTree>
-
- </root>
- )";*/
-/*
-static const char* xml_text = R"(
-
- <root BTCPP_format="4" >
-
-     <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <GenerateNextWaypoint next_waypoint="{next_waypoint}" />
-            <QueueSize queue="{next_waypoint}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}" >
-            <Sequence>
-                <PopFromQueue  queue="{next_waypoint}" popped_item="{wp}" />
-                <UseWaypoint waypoint="{wp}" />
-            </Sequence>
-            </Repeat>
-        </Sequence>
-     </BehaviorTree>
-
- </root>
- )";*/
-
  static const char* xml_text = R"(
 
  <root BTCPP_format="4" >
@@ -86,8 +46,8 @@ int main(int argc, char ** argv)
 
   // How big will the world be (in pixels)?
   //const int X = 400; const int Y = 400;
-  const int X = 20; // Down
-   const int Y = 20; // Right
+  const int X = 400; // Down
+   const int Y = 400; // Right
 
   // How far can the robot go in one step?
   // NOTE: If you want a step size other than 1, need to add fix for final step of diff size to reach goal 
@@ -110,7 +70,7 @@ int main(int argc, char ** argv)
   cv::Mat background = world.getImage();
   //Move following to robot constructor, get background directly from world class in robot class
   //Pose2D initial_pose{200,200,0};
-  Pose2D initial_pose{4,0,0};
+  Pose2D initial_pose{0,0,0};
   robot.init(initial_pose, background);
   world.plot(background); // Must be after robot init to show robot, do we remove this if it is in controller below?
 

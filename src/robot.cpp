@@ -35,7 +35,7 @@ void Robot::move(Pose2D waypoint, cv::Mat& image) {
     // Clear old robot location
     cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
     // Update sim image to reflect robot movement
-    cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(0, 0, 255), -1);
+    cv::circle(image, cv::Point(waypoint.x, waypoint.y), 5, cv::Scalar(0, 0, 255), -1);
     world->plot(image); // Added to work with BT
     // Update x and y within robot class
     pose = waypoint;
