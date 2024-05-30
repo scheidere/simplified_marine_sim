@@ -27,7 +27,7 @@ void Robot::other_tests() {
 // Add mutex handling for image
 void Robot::init (Pose2D initial_pose, cv::Mat& image, std::mutex& image_mutex) {
     // Multirobot support
-    std::lock_guard<std::mutex> lock(image_mutex); // Lock the mutex to protect access to the shared image
+    //std::lock_guard<std::mutex> lock(image_mutex); // Lock the mutex to protect access to the shared image
 
     // Red dot at x,y location
     pose = initial_pose;
@@ -39,7 +39,7 @@ void Robot::init (Pose2D initial_pose, cv::Mat& image, std::mutex& image_mutex) 
 void Robot::move(Pose2D waypoint, cv::Mat& image, std::mutex& image_mutex) {
     // Multirobot support
     std::lock_guard<std::mutex> lock(image_mutex); // Lock the mutex to protect access to the shared image
-    
+
     // Clear old robot location
     cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
     // Update sim image to reflect robot movement

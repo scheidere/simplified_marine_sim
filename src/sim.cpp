@@ -65,8 +65,8 @@ void run_robot(int id, Pose2D initial_pose, int step_size, Planner& planner, Sho
     auto tree = factory.createTreeFromText(xml_text); // See MainTree XML above
 
     // Log node statuses (command line)
-    StdCoutLogger logger(tree);
-    logger.enableTransitionToIdle(false);
+    //StdCoutLogger logger(tree); // THIS IS AN ISSUE, might need mutex for this too?
+    //logger.enableTransitionToIdle(false);
 
     // Execute the behavior tree
     tree.tickWhileRunning();
@@ -101,7 +101,7 @@ int main(int argc, char ** argv)
   // Initialize world
   cv::Mat image = world.getImage(); // shared resource
   std::mutex image_mutex; // mutex object
-  Pose2D initial_pose1{0, 0, 0};
+  Pose2D initial_pose1{20, 10, 0};
   Pose2D initial_pose2{10, 10, 0};
 
   std::cout << "Inits are done..." << std::endl;
