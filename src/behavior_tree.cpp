@@ -11,8 +11,8 @@
 
 using namespace BT;
 
-GenerateWaypoints::GenerateWaypoints(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background)
-    : SyncActionNode(name, config), _world(w), _robot(r), _background(background)
+GenerateWaypoints::GenerateWaypoints(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat image)
+    : SyncActionNode(name, config), _world(w), _robot(r), _image(image)
   {}
 
 NodeStatus GenerateWaypoints::tick()
@@ -35,8 +35,8 @@ PortsList GenerateWaypoints::providedPorts()
     return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("waypoints") };
 }
 
-GenerateNextWaypoint::GenerateNextWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background)
-    : SyncActionNode(name, config), _world(w), _robot(r), _background(background)
+GenerateNextWaypoint::GenerateNextWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat image)
+    : SyncActionNode(name, config), _world(w), _robot(r), _image(image)
   {}
 
 NodeStatus GenerateNextWaypoint::tick()
@@ -64,8 +64,9 @@ PortsList GenerateNextWaypoint::providedPorts()
     return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("next_waypoint") };
 }
 
-PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp, cv::Mat background)
-    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp), _background(background)
+// Add mutex handling for image
+PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp, cv::Mat& image)
+    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp), _image(image)
   {}
 
 NodeStatus PlanShortestPath::tick()
@@ -85,7 +86,7 @@ NodeStatus PlanShortestPath::tick()
     plan->items.push_back(Pose2D{5, 5, 0});   // End point*/
 
     //cv::Point p1(5,5);
-    //_shortest_path.initializeDistances(_background, p1); // Commenting out to test calling from constructor in planners.cpp
+    //_shortest_path.initializeDistances(_image, p1); // Commenting out to test calling from constructor in planners.cpp
 
     setOutput("path", plan);
     return NodeStatus::SUCCESS;
@@ -97,8 +98,9 @@ PortsList PlanShortestPath::providedPorts()
     return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path") };
 }
 
-UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat background)
-    : ThreadedAction(name, config), _world(w), _robot(r), _background(background)
+// Add mutex handling for image
+UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat& image, std::mutex& image_mutex)
+    : ThreadedAction(name, config), _world(w), _robot(r), _image(image),  _image_mutex(image_mutex)
   {}
 
 NodeStatus UseWaypoint::tick()
@@ -110,7 +112,7 @@ NodeStatus UseWaypoint::tick()
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       std::cout << "Using waypoint: " << wp.x << "/" << wp.y << std::endl;
       std::cout << "Robot prev loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
-      _robot.move(wp, _background); // Publish new waypoint to image, i.e. move robot
+      _robot.move(wp, _image, _image_mutex); // Publish new waypoint to image, i.e. move robot
       std::cout << "Robot new loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
       return NodeStatus::SUCCESS;
     }

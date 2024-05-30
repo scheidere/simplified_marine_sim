@@ -24,10 +24,8 @@ public:
     void test();
     void world_test();
     void other_tests();
-    void init(Pose2D initial_pose, cv::Mat& image);
-    //void doIteration(cv::Mat& image);
-    void move(Pose2D waypoint, cv::Mat& image);
-    void followPath(std::shared_ptr<BT::ProtectedQueue<Pose2D>> path, cv::Mat& image);
+    void init(Pose2D initial_pose, cv::Mat& image, std::mutex& image_mutex);
+    void move(Pose2D waypoint, cv::Mat& image, std::mutex& image_mutex);
 };
 
 #endif
