@@ -73,8 +73,9 @@ NodeStatus PlanShortestPath::tick()
 {
     // How long is a tick? What happens if the planning takes longer than a tick *should*?
     Pose2D current_pose = _robot.getPose();
-    Pose2D waypoint{0,30,0};
-    std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, waypoint,_world.getX(), _world.getY());
+    //Pose2D waypoint{0,30,0}; Passing this in as "goal" now
+    Pose2D goal_pose = _robot.getGoalPose();
+    std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, goal_pose,_world.getX(), _world.getY());
 
     // Testing path follow without shortest path
     /*auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>();

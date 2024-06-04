@@ -15,7 +15,8 @@ public:
 
     void test();
 
-    double euclidean(cv::Point vertex_1, cv::Point vertex_2);
+    //double euclidean(cv::Point vertex_1, cv::Point vertex_2);
+    static double getEuclideanDistance(int x1, int y1, int x2, int y2); // E.g. weight between vertices (pixels) for dijkstra
 
     std::string getD() const { return D; }
 

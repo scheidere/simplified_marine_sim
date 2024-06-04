@@ -39,14 +39,14 @@ using namespace BT;
  </root>
  )";
 
-void run_robot(int id, Pose2D initial_pose, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world, cv::Mat& image, std::mutex& image_mutex) {
+void run_robot(int id, Pose2D initial_pose, Pose2D goal_pose, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world, cv::Mat& image, std::mutex& image_mutex) {
 
     // Should we also change colors of each robot or add id number to visual?
 
     std::cout << "Creating robot " << id << " with step size " << step_size << "..." << std::endl;
 
     // Initialize robot
-    Robot robot(&planner, &shortest_path, &scorer, &world);
+    Robot robot(&planner, &shortest_path, &scorer, &world, goal_pose);
     { // Protect shared image with mutex
         std::lock_guard<std::mutex> lock(image_mutex);
         robot.init(initial_pose, image, image_mutex);
@@ -106,13 +106,14 @@ int main(int argc, char ** argv)
 
   std::cout << "Inits are done..." << std::endl;
 
-  // Why pass both image and image mutex? Why not just use image mutex for all?
-  // Will want to pass different goals to shortest path in each robot
-  // 
+  // Example way to pass different goals to shortest path in each robot
+  Pose2D goal_pose1{30, 5, 0}; // Robot 1 goal
+  Pose2D goal_pose2{5, 30, 0}; // Robot 2 goal
+
 
   // Create and start threads for each robot
-  std::thread robot1(run_robot, 1, initial_pose1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(image), std::ref(image_mutex));
-  std::thread robot2(run_robot, 2, initial_pose2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(image), std::ref(image_mutex));
+  std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(image), std::ref(image_mutex));
+  std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(image), std::ref(image_mutex));
 
   std::cout << "Threads started..." << std::endl;
 

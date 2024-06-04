@@ -10,17 +10,19 @@
 class Robot {
 private:
     Pose2D pose;
+    Pose2D goal;
     Planner* planner;
     ShortestPath* shortest_path; // Is this needed? Replaced randomwalk
     Scorer* scorer;
     World* world; // Point to single,shared world instance
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, Scorer* scorer, World* world); // Is this right with planners?
+    Robot(Planner* planner, ShortestPath* shortest_path, Scorer* scorer, World* world, const Pose2D& goal_pose); // Is this right with planners?
 
     double getX() const { return pose.x; }
     double getY() const { return pose.y; }
     Pose2D getPose() const { return pose; }
+    Pose2D getGoalPose() const { return goal; }
     void test();
     void world_test();
     void other_tests();

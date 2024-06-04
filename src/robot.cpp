@@ -6,8 +6,10 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
-Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w) : planner(p), shortest_path(sp), scorer(s), world(w) {
-    pose = {0, 0, 0};
+Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& goal_pose) 
+: planner(p), shortest_path(sp), scorer(s), world(w), goal(goal_pose) {
+    pose = {0, 0, 0}; // Is this used? 
+    goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
 }
 
 void Robot::test() {

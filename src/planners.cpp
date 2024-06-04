@@ -3,6 +3,7 @@
 #include "planners.hpp"
 #include "world.hpp"
 #include "robot.hpp"
+#include "distance.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
 Planner::Planner(int step_size) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>())
@@ -99,7 +100,7 @@ std::vector<std::pair<double,int>> Planner::getNeighbors(int x, int y, int X, in
                     //std::cout << "Neighbor " << new_x << ", " << new_y << " is valid" << std::endl;
                     int neighbor_idx = getIndex(new_x,new_y,Y);
                     //std::cout << "neigh idx: " << neighbor_idx << std::endl;
-                    double distance = getEuclideanDistance(x,y,new_x,new_y);
+                    double distance = Distance::getEuclideanDistance(x,y,new_x,new_y);
                     neighbors.push_back(std::make_pair(distance, neighbor_idx)); // pair = (dist, index)
                     
 
@@ -112,13 +113,13 @@ std::vector<std::pair<double,int>> Planner::getNeighbors(int x, int y, int X, in
     return neighbors; // WITH DISTANCE BEFORE INDEX
 }
 
-double Planner::getEuclideanDistance(int x1, int y1, int x2, int y2) {
+/*double Planner::getEuclideanDistance(int x1, int y1, int x2, int y2) {
 
     int dx = x2 - x1; int dy = y2 - y1;
     double distance = std::sqrt(dx*dx + dy*dy);
 
     return distance;
-}
+}*/
 
 /*void Planner::printVector(const std::vector<int> &vector) {
 

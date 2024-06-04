@@ -53,7 +53,7 @@ public:
     bool inBounds(int x, int y, int X, int Y);
     std::vector<P> getNeighbors(int x, int y, int X, int Y);
 
-    double getEuclideanDistance(int x1, int y1, int x2, int y2); // E.g. weight between vertices (pixels) for dijkstra
+    //double getEuclideanDistance(int x1, int y1, int x2, int y2); // E.g. weight between vertices (pixels) for dijkstra (MOVED TO Distance)
     
     // Don't need any of the below functions anymore?
 

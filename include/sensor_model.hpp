@@ -15,7 +15,7 @@ public:
 
     void test();
 
-    void distance_test();
+    // void distance_test();
 
 };
 
