@@ -11,7 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
 
 # Add executable
-add_executable(sim src/sim.cpp src/distance.cpp src/sensor_model.cpp src/world.cpp src/planners.cpp src/scorer.cpp src/robot.cpp src/behavior_tree.cpp)
+add_executable(sim src/sim.cpp src/distance.cpp src/message.cpp src/sensor_model.cpp src/world.cpp src/planners.cpp src/scorer.cpp src/robot.cpp src/behavior_tree.cpp)
 
 ament_target_dependencies(sim behaviortree_cpp)
 

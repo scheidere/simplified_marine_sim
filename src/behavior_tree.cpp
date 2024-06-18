@@ -8,65 +8,11 @@
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "behaviortree_cpp/blackboard.h"
 
-
 using namespace BT;
 
-GenerateWaypoints::GenerateWaypoints(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat image)
-    : SyncActionNode(name, config), _world(w), _robot(r), _image(image)
-  {}
 
-NodeStatus GenerateWaypoints::tick()
-{
-    auto shared_queue = std::make_shared<ProtectedQueue<Pose2D>>();
-    // Generate waypoints and push them into the shared queue
-    for (int i = 0; i < 5; ++i) {
-        //cv::Point waypoint(i, i);
-        Pose2D waypoint{ i, i, 0 };
-        shared_queue->items.push_back(waypoint);
-        std::cout << "Generated waypoint: (" << waypoint.x << ", " << waypoint.y << ", " << waypoint.theta << ")" << std::endl;
-    }
-    setOutput("waypoints", shared_queue);
-    return NodeStatus::SUCCESS;
-}
-
-PortsList GenerateWaypoints::providedPorts()
-{
-    std::cout << "SharedQueue is outputted..." << std::endl;
-    return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("waypoints") };
-}
-
-GenerateNextWaypoint::GenerateNextWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat image)
-    : SyncActionNode(name, config), _world(w), _robot(r), _image(image)
-  {}
-
-NodeStatus GenerateNextWaypoint::tick()
-{
-
-    // Get robot location
-    int x  = _robot.getX(); int y = _robot.getY();
-    Pose2D current_waypoint{x, y, 0}; // do we even need theta for this sim?
-    std::cout << current_waypoint.x << " and " << current_waypoint.y << std::endl;
-    auto shared_queue = std::make_shared<ProtectedQueue<Pose2D>>();
-    // Generate waypoint randomly one pixel (step) away from current robot location
-    // Get random +/- combo and add or subtract from x/y location accordingly
-    int dx = 10; int dy = -10; // Hardcoded, not random
-    Pose2D next_waypoint{ current_waypoint.x + dx, current_waypoint.y + dy, 0 };
-    shared_queue->items.push_back(next_waypoint);
-    std::cout << "Generated waypoint: (" << next_waypoint.x << ", " << next_waypoint.y << ", " << next_waypoint.theta << ")" << std::endl;
-
-    setOutput("next_waypoint", shared_queue);
-    return NodeStatus::SUCCESS;
-}
-
-PortsList GenerateNextWaypoint::providedPorts()
-{
-    std::cout << "SharedQueue is outputted..." << std::endl;
-    return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("next_waypoint") };
-}
-
-// Add mutex handling for image
-PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp, cv::Mat& image)
-    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp), _image(image)
+PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
+    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp)
   {}
 
 NodeStatus PlanShortestPath::tick()
@@ -76,18 +22,6 @@ NodeStatus PlanShortestPath::tick()
     //Pose2D waypoint{0,30,0}; Passing this in as "goal" now
     Pose2D goal_pose = _robot.getGoalPose();
     std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, goal_pose,_world.getX(), _world.getY());
-
-    // Testing path follow without shortest path
-    /*auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>();
-    plan->items.push_back(Pose2D{0, 0, 0});   // Start point
-    plan->items.push_back(Pose2D{1, 1, 0});   // Next point
-    plan->items.push_back(Pose2D{2, 2, 0});   // Next point
-    plan->items.push_back(Pose2D{3, 3, 0});   // Next point
-    plan->items.push_back(Pose2D{4, 4, 0});   // Next point
-    plan->items.push_back(Pose2D{5, 5, 0});   // End point*/
-
-    //cv::Point p1(5,5);
-    //_shortest_path.initializeDistances(_image, p1); // Commenting out to test calling from constructor in planners.cpp
 
     setOutput("path", plan);
     return NodeStatus::SUCCESS;
@@ -99,9 +33,10 @@ PortsList PlanShortestPath::providedPorts()
     return { OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path") };
 }
 
-// Add mutex handling for image
-UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r, cv::Mat& image, std::mutex& image_mutex)
-    : ThreadedAction(name, config), _world(w), _robot(r), _image(image),  _image_mutex(image_mutex)
+// Note that threaded actions need extra logic to ensure they halt: https://www.behaviortree.dev/docs/3.8/tutorial-advanced/asynchronous_nodes/
+// We have not yet checked that or added it to this threaded action
+UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r)
+    : ThreadedAction(name, config), _world(w), _robot(r)
   {}
 
 NodeStatus UseWaypoint::tick()
@@ -113,7 +48,7 @@ NodeStatus UseWaypoint::tick()
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       std::cout << "Using waypoint: " << wp.x << "/" << wp.y << std::endl;
       std::cout << "Robot prev loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
-      _robot.move(wp, _image, _image_mutex); // Publish new waypoint to image, i.e. move robot
+      _robot.move(wp); // Publish new waypoint to image, i.e. move robot
       std::cout << "Robot new loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
       return NodeStatus::SUCCESS;
     }
@@ -127,7 +62,74 @@ NodeStatus UseWaypoint::tick()
 
 PortsList UseWaypoint::providedPorts()
 {
-    //return { InputPort<cv::Point>("waypoint") };
     return { InputPort<Pose2D>("waypoint") };
     //return {};
 }
+
+SendMessage::SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender)
+    : SyncActionNode(name, config), _world(world), _sender(sender) {}
+
+NodeStatus SendMessage::tick()
+{
+    std::cout << "SendMessage: Broadcasting message" << std::endl;
+    Message msg(_sender);
+    msg.broadcastMessage(_world);
+    std::cout << "SendMessage: Completed" << std::endl;
+    return NodeStatus::SUCCESS;
+}
+
+PortsList SendMessage::providedPorts()
+{
+    // Added this because it was complaining when there were no ports
+    // This input is not actually needed by this node 
+    // So this is just for testing
+    return { InputPort<Pose2D>("waypoint") };
+    //return {};
+}
+
+ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
+    : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
+
+NodeStatus ReceiveMessage::tick()
+{
+    std::cout << "ReceiveMessage: Receiving message" << std::endl;
+    _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
+    std::cout << "ReceiveMessage: Completed" << std::endl;
+    return NodeStatus::SUCCESS;
+}
+
+PortsList ReceiveMessage::providedPorts()
+{
+    // Added this because it was complaining when there were no ports
+    // This input is not actually needed by this node 
+    // So this is just for testing
+    return { InputPort<Pose2D>("waypoint") };
+    //return {};
+}
+
+start here, make this a condition and init the condition in sim with the rest of the nodes 
+then add another sequence to the tree and pass the goal waypoint from this node to _shortest_path
+probably just create another action node that has the center waypoint and calls shortestpath and returns the path 
+then the same node logic as elsewhere in the tree can be used for the robot(s) to traverse to converge to same spot
+Regroup::Regroup(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
+    : SyncActionNode(name, config), _world(world), _receiver(receiver) {} // Make this a condition
+
+NodeStatus Regroup::tick()
+{
+    if (_receiver.regroup();) {
+        return return NodeStatus::SUCCESS;
+    }
+    return NodeStatus::FAILURE;
+}
+
+PortsList Regroup::providedPorts()
+{
+    // Added this because it was complaining when there were no ports
+    // This input is not actually needed by this node 
+    // So this is just for testing
+    return { InputPort<Pose2D>("waypoint") };
+    //return {};
+}
+
+
+
