@@ -64,4 +64,15 @@ public:
     static PortsList providedPorts();
 };
 
+class Regroup : public ConditionNode {
+private:
+    Robot& _receiver;
+
+public:
+    Regroup(const std::string& name, const NodeConfig& config, Robot& receiver);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

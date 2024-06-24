@@ -31,6 +31,10 @@ public:
 
     cv::Mat init();
 
+    std::unordered_map<int, Robot*>& getRobotTracker(); //{ return robot_tracker; }
+
+    std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
+
     void plot();
 
     void trackRobot(Robot* robot);
@@ -39,11 +43,9 @@ public:
 
     bool inComms(int id1, int id2);
 
-    std::unordered_map<int, Robot*>& getRobotTracker() { return robot_tracker; }
-
     std::mutex& getWorldMutex() { return world_mutex; }
 
-    std::unordered_map<int,std::vector<Msg>>& getMessageTracker() {return message_tracker; }
+    void printMessageTracker();
 
 };
 

@@ -17,36 +17,12 @@
 
 #include <iostream>
 
-/*using namespace BT;
-
- static const char* xml_text = R"(
-
- <root BTCPP_format="4" >
-
-     <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <PlanShortestPath path="{path}" />
-            <QueueSize queue="{path}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}" >
-            <Sequence>
-                <PopFromQueue  queue="{path}" popped_item="{wp}" />
-                <UseWaypoint waypoint="{wp}" />
-            </Sequence>
-            </Repeat>
-            <SendMessage sender="{sender_robot}" />
-            <ReceiveMessage receiver="{receiver_robot}" />
-        </Sequence>
-     </BehaviorTree>
-
- </root>
- )";*/
-
 static const char* xml_text = R"(
 
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
-            <PlanShortestPath path="{path}" />
+            <PlanShortestPath path="{path}" goal="{goal}" />
             <QueueSize queue="{path}" size="{wp_size}" />
             <Repeat num_cycles="{wp_size}">
                 <Sequence>
@@ -56,6 +32,17 @@ static const char* xml_text = R"(
             </Repeat>
             <SendMessage waypoint="{wp}"/>
             <ReceiveMessage waypoint="{wp}"/>
+            <Sequence>
+              <Regroup rendezvous="{rv}"/>
+              <PlanShortestPath path="{path2}" goal="{rv}" />
+              <QueueSize queue="{path2}" size="{wp_size}" />
+              <Repeat num_cycles="{wp_size}">
+                  <Sequence>
+                      <PopFromQueue queue="{path2}" popped_item="{wp2}" />
+                      <UseWaypoint waypoint="{wp2}" />
+                  </Sequence>
+              </Repeat>
+              </Sequence>
         </Sequence>
      </BehaviorTree>
 </root>
@@ -84,6 +71,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, int step_siz
     factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
     factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
     factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
+    factory.registerNodeType<Regroup>("Regroup", std::ref(robot));
 
     // Create behavior tree
     auto tree = factory.createTreeFromText(xml_text); // See MainTree XML above

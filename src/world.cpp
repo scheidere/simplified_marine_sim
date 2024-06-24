@@ -29,6 +29,19 @@ cv::Mat World::init() {
     return image;
 }
 
+// Like other functions with mutex, should only be used outside this class
+std::unordered_map<int, Robot*>& World::getRobotTracker() { 
+    std::lock_guard<std::mutex> lock(world_mutex);
+    //std::cout << "IN GETROBOTTRACKER" << std::endl;
+    return robot_tracker;
+}
+
+// Like other functions with mutex, should only be used outside this class
+std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    return message_tracker;
+}
+
 void World::plot() {
     // No mutex because only used in world functions that are already locked
     std::cout << "Plotting world..." << std::endl;
@@ -38,7 +51,7 @@ void World::plot() {
 
 void World::trackRobot(Robot* robot) { // Save robot instances by ID int
     std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "IN TRACKROBOT; Tracking Robot ID: " << robot->getID() << std::endl;
+    //std::cout << "IN TRACKROBOT; Tracking Robot ID: " << robot->getID() << std::endl;
     robot_tracker[robot->getID()] = robot;
 }
 
@@ -55,11 +68,27 @@ void World::printTrackedRobots() {
     }
 }
 
+void World::printMessageTracker() {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    std::cout << "World message tracker:" << std::endl;
+    //std::cout << message_tracker.size() << std::endl;
+    for (auto& pair : message_tracker) {
+        int receiverID = pair.first;
+        std::vector<Msg>& messages = pair.second;
+
+        std::cout << "Receiver ID: " << receiverID << std::endl;
+        for (auto& msg : messages) {
+            std::cout << "  From ID: " << msg.id << std::endl;
+        }
+    }
+    std::cout << "in print msg tracker END" << std::endl;
+}
+
 bool World::inComms(int id1, int id2) {
     std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "in inComms func after mutex" << std::endl;
+    //std::cout << "in inComms func after mutex" << std::endl;
     if (robot_tracker.find(id1) == robot_tracker.end() || robot_tracker.find(id2) == robot_tracker.end()) {
-        std::cout << "One or both robots does not exist! Cannot check if they are close enough for comms." << std::endl;
+        //std::cout << "One or both robots does not exist! Cannot check if they are close enough for comms." << std::endl;
         return false;
     }
     Robot* robot1 = robot_tracker[id1];

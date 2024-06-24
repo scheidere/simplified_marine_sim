@@ -34,10 +34,10 @@ public:
     void other_tests();
     void init(Pose2D initial_pose);
     void move(Pose2D waypoint);
-    std::vector<Msg> getMessageQueue() { return message_queue; }
+    std::vector<Msg>& getMessageQueue() { return message_queue; }
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
-    void regroup();
+    bool regroup();
 };
 
 #endif

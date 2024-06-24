@@ -58,17 +58,27 @@ void Robot::move(Pose2D waypoint) {
 }
 
 void Robot::updateRobotMessageQueue(Msg msg) {
-    std::vector<Msg> message_queue = getMessageQueue();
+    std::cout << "IN updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
+    std::vector<Msg>& message_queue = getMessageQueue();
     message_queue.push_back(msg);
+    std::cout << "END updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
+
 }
 
 void Robot::receiveMessages() { // do we need world as arg or is that redundant?
     std::cout << "in receiveMessages........" << std::endl;
-    std::unordered_map<int,std::vector<Msg>> world_msg_tracker = world->getMessageTracker();
+    std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world->getMessageTracker();
     // Get message from world message tracker by checking receiver index
     int receiverID = getID();
-    if (world_msg_tracker.find(receiverID) != world_msg_tracker.end()) {
+    std::cout << "receiverID: " << receiverID << std::endl;
+    std::cout << "Printed msg tracker from world: " << std::endl;
+    world->printMessageTracker();
+    std::cout << "world msg tracker printed above, size = " << world_msg_tracker.size() << std::endl;
+    if (world_msg_tracker.find(receiverID) != world_msg_tracker.end()) { //problem is that we don't ever enter this if statement (start with message tracker print above (nothing prints))
+        std::cout << "in if" << std::endl;
         std::vector<Msg>& messages = world_msg_tracker[receiverID]; // Vector of messages queued for current robot
+        std::cout << "length of messages from world (should be 1?): " << messages.size() << std::endl;
+        std::cout << "!messages.empty(): " << !messages.empty() << std::endl;
         if (!messages.empty()) {
             Msg msg = messages.front();  // Assuming we take the oldest message in queue
             // Add message to receiver robot message queue
@@ -80,12 +90,17 @@ void Robot::receiveMessages() { // do we need world as arg or is that redundant?
 
 }
 
-void Robot::regroup() {
+bool Robot::regroup() {
     // Pull oldest message from robot message queue
+    std::cout << " IN REGROUP" << std::endl;
+    std::cout << "message_queue length" << message_queue.size() << std::endl;
     if (!message_queue.empty()){
         Msg least_recent_msg = message_queue[0]; // For sake of this test, get message (which rn just has ID)
         std::cout << "MESSAGE EXISTS from robot ID " << least_recent_msg.id << std::endl; 
-        Pose2D goal_pose1{30, 30, 0}; // and if it exists, then trigger robot to go to center (200,200)
+        //Pose2D goal_pose1{30, 30, 0}; // and if it exists, then trigger robot to go to center (200,200)
+        std::cout << "in regroup before true" << std::endl;
+        return true;
     }
-
+    std::cout << "in regroup before false" << std::endl;
+    return false;
 }
