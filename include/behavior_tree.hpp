@@ -75,4 +75,23 @@ public:
     static PortsList providedPorts();
 };
 
+class TestCond : public ConditionNode {
+private:
+    Robot& _receiver;
+
+public:
+    TestCond(const std::string& name, const NodeConfig& config, Robot& receiver);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class RunTest : public ThreadedAction {
+public:
+    RunTest(const std::string& name, const NodeConfig& config);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

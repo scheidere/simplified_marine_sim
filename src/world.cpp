@@ -12,7 +12,7 @@ World::World(int X, int Y, Distance* d, SensorModel* s, double comms_range)
     comms_range(comms_range),
     image(init())
 {
-    //cv::Mat image = init(); // Create world background image of dimensions X and Y
+
 }
 
 cv::Mat& World::getImage() { 
@@ -42,9 +42,27 @@ std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
     return message_tracker;
 }
 
+void World::clear(Pose2D pose) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    std::cout << "Clearing world..." << std::endl;
+    cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
+    // Loop robot tracker
+    /*for (auto& pair : robot_tracker) {
+        Robot* robot = pair.second;
+        cv::circle(image, cv::Point(robot->getPose().x, robot->getPose().y), 5, cv::Scalar(255, 255, 255), -1);
+    }*/
+}
+
 void World::plot() {
-    // No mutex because only used in world functions that are already locked
+    std::lock_guard<std::mutex> lock(world_mutex); // Lock the mutex
     std::cout << "Plotting world..." << std::endl;
+    for (auto& pair : robot_tracker) {
+        Robot* robot = pair.second;
+        cv::Scalar color = robot->getColor();
+        Pose2D robot_pose = robot->getPose();
+        std::cout << "Plotting robot ID: " << robot->getID() << " at pose: " << robot_pose.x << ", " << robot_pose.y << " with color: " << color << std::endl;
+        cv::circle(image, cv::Point(robot_pose.x, robot_pose.y), 5, color, -1);
+    }
     cv::imshow("Quadrant Image", image);
     cv::waitKey(300);
 }
@@ -62,6 +80,7 @@ void World::printTrackedRobots() {
         std::cout << " Raw Robot ID: " << ID_robo_pair.first << std::endl;
         if (ID_robo_pair.second != nullptr) {
             std::cout << " From Instance Robot ID: " << ID_robo_pair.second->getID() << std::endl;
+            std::cout << " Pose: " << ID_robo_pair.second->getPose().x << ", " << ID_robo_pair.second->getPose().y << std::endl;
         } else {
             std::cout << " Null Robot instance" << std::endl;
         }
@@ -96,4 +115,11 @@ bool World::inComms(int id1, int id2) {
     Pose2D p1 = robot1->getPose(); Pose2D p2 = robot2->getPose();
     double distance_between_robots = distance->getEuclideanDistance(p1.x,p1.y,p2.x,p2.y);
     return distance_between_robots <= comms_range;
+}
+
+bool World::isCollision(int x, int y) {
+
+    // For now just check for collisions with other robots, but will need to consider obstacles later
+    // This is not necessary for the first round of CBBA so leaving this for when we add obstacles to do it all at once
+    return {};
 }

@@ -40,7 +40,6 @@ public:
 
     adjacency_vector convertImageToAdjacencyVector(int X, int Y);
     void printAdjacencyVector(const adjacency_vector &adj_vec, int Y);
-    //void printVector(std::vector<int> &vector);
     template <typename T>
     void printVector(const std::vector<T> &vec) const;
     std::vector<double> initializeDistances(int V, int robot_start_loc_idx, int Y);
@@ -52,15 +51,6 @@ public:
     std::pair<int,int> getCoords(int idx, int Y);
     bool inBounds(int x, int y, int X, int Y);
     std::vector<P> getNeighbors(int x, int y, int X, int Y);
-
-    //double getEuclideanDistance(int x1, int y1, int x2, int y2); // E.g. weight between vertices (pixels) for dijkstra (MOVED TO Distance)
-    
-    // Don't need any of the below functions anymore?
-
-    /*matrix initializeDistances(int X, int Y, Pose2D robot_start_loc); //can u use matrix
-    matrix initializeVisits(int X, int Y); // can u use matrix
-
-    void printMatrix(std::vector<std::vector<double>> distance_tracker);*/
 
 };
 

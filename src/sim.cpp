@@ -12,12 +12,15 @@
 #include "behaviortree_cpp/loggers/bt_cout_logger.h"
 #include "behaviortree_cpp/decorators/loop_node.h"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
+#include "CBBA.hpp"
 
 
 
 #include <iostream>
 
-static const char* xml_text = R"(
+// This tree sends both robots to their goal locations, then they send each other messages and regroup to the same location if they hear them
+// For now, that location is set at 0,0 as opposed to a location splitting the distance between a robot and another
+/*static const char* xml_text = R"(
 
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
@@ -46,16 +49,49 @@ static const char* xml_text = R"(
         </Sequence>
      </BehaviorTree>
 </root>
+)";*/
+
+// This tree is to test a moving robot passing by a stationary one
+/*static const char* xml_text = R"(
+
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <PlanShortestPath path="{path}" goal="{goal}" />
+            <QueueSize queue="{path}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}">
+                <Sequence>
+                    <PopFromQueue queue="{path}" popped_item="{wp}" />
+                    <UseWaypoint waypoint="{wp}" />
+                </Sequence>
+            </Repeat>
+            <RunTest waypoint="{wp}"/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";
+*/
+
+// This tree is for testing initial bundle assembly only
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <Bundle />
+        </Sequence>
+     </BehaviorTree>
+</root>
 )";
 
-void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world) {
+
+void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world) {
 
     // Should we also change colors of each robot or add id number to visual?
 
     std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
 
     // Initialize robot
-    Robot robot(&planner, &shortest_path, &scorer, &world, goal_pose, robot_id);
+    Robot robot(&planner, &shortest_path, &scorer, &world, goal_pose, robot_id, color);
     {
         robot.init(initial_pose);
         world.plot();
@@ -64,6 +100,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, int step_siz
 
     // Register BT nodes using std::ref to ensure actual class instaces are used and not copies
     BehaviorTreeFactory factory;
+    //factory.registerNodeType<Parallel>("Parallel");
     factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
     factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
     factory.registerNodeType<RepeatNode>("RepeatNode");
@@ -72,6 +109,8 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, int step_siz
     factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
     factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
     factory.registerNodeType<Regroup>("Regroup", std::ref(robot));
+    factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
+    factory.registerNodeType<RunTest>("RunTest"); // sync action node cannot return running
 
     // Create behavior tree
     auto tree = factory.createTreeFromText(xml_text); // See MainTree XML above
@@ -95,7 +134,6 @@ int main(int argc, char ** argv)
 
   std::cout << "Running simulation..." << std::endl;
 
-
   // ## Common Initialization ## //
   // How big will the world be (in pixels)?
   const int X = 400; // Down
@@ -109,19 +147,60 @@ int main(int argc, char ** argv)
   const double comms_range = 50.0; //
 
   Distance distance; SensorModel sensor_model(&distance); World world (X, Y, &distance, &sensor_model, comms_range);
-  Planner planner (step_size); ShortestPath shortest_path (step_size); Scorer scorer;
+  Planner planner (step_size); ShortestPath shortest_path (step_size); Scorer scorer; CBBA cbba;
 
   std::cout << "Inits are done..." << std::endl;
 
+  std::cout << "************** Testing CBBA stuff **************" << std::endl;
+
+  // Define a Pose2D object
+  Pose2D task_location{1, 2, 0};
+  Pose2D task_location2{10, 20, 0};
+
+  //std::vector<Pose2D> locations = {taskLocation};
+  //std::vector<Pose2D> locations2 = {taskLocation2};
+
+  // Create a Task object (id, name, loc, priority, utility, bid)
+  Task task1(1, "Deliver Package", task_location, 1.0, 50.0, 1.0);
+  Task task2(2, "Deliver Package 2", task_location2, 2.0, 75.0, 2.0);
+
+  Bundle bundle;
+  bundle.addTask(task1);
+  bundle.addTask(task2);
+
+  bundle.print();
+
+  Task nexttask = bundle.popNextTask();
+
+  nexttask.print();
+
+  std::cout << "Press Enter to continue..." << std::endl;
+  std::cin.get();
+
+  // Robot colors
+  std::vector<cv::Scalar> colors = {
+      cv::Scalar(255, 0, 0),    // Blue
+      cv::Scalar(0, 255, 0),    // Green
+      cv::Scalar(0, 0, 255),    // Red
+      cv::Scalar(0, 255, 255),  // Yellow
+      cv::Scalar(255, 255, 0),  // Cyan
+      cv::Scalar(255, 0, 255),  // Magenta
+      cv::Scalar(255, 255, 255) // White
+  };
+
   // Example way to pass different goals to shortest path in each robot
-  Pose2D initial_pose1{20, 10, 0};
-  Pose2D initial_pose2{10, 10, 0};
-  Pose2D goal_pose1{20, 7, 0}; // Robot 1 goal
-  Pose2D goal_pose2{10, 7, 0}; // Robot 2 goal
+  Pose2D initial_pose1{10, 10, 0};
+  Pose2D initial_pose2{20, 10, 0};
+  //Pose2D goal_pose1{10, 7, 0}; 
+  //Pose2D goal_pose2{20, 7, 0};
+  Pose2D goal_pose1{10,10,0};
+  Pose2D goal_pose2{5,10,0};
+  cv::Scalar color1 = cv::Scalar(0, 0, 255); // Red color
+  cv::Scalar color2 = cv::Scalar(255, 0, 0); // Blue color
 
   // Create and start threads for each robot
-  std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world));
-  std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world));
+  std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world));
+  std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world));
 
   std::cout << "Threads started..." << std::endl;
 

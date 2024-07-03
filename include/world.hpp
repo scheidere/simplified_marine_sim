@@ -35,6 +35,8 @@ public:
 
     std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
 
+    void clear(Pose2D pose);
+
     void plot();
 
     void trackRobot(Robot* robot);
@@ -46,6 +48,8 @@ public:
     std::mutex& getWorldMutex() { return world_mutex; }
 
     void printMessageTracker();
+
+    bool isCollision(int x, int y);
 
 };
 

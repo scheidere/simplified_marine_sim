@@ -29,17 +29,6 @@ adjacency_vector Planner::convertImageToAdjacencyVector(int X, int Y) {
     return adj_vec;
 }
 
-/*void Planner::printAdjacencyVector(adjacency_vector &adj_vec, int Y) { //added &
-    for (size_t i = 0; i < adj_vec.size(); ++i) {
-        std::pair coords_current = getCoords(i, Y);
-        std::cout << "Vertex " << i << ": " << coords_current.first << ", " << coords_current.second << " neighbors:" << std::endl;
-        for (const auto& neighbor : adj_vec[i]) {
-            std::pair coords = getCoords(neighbor.first, Y);
-            std::cout << "  Neighbor: " << neighbor.first << ", (x,y): " << coords.first << ", " << coords.second << ", Distance: " << neighbor.second << std::endl;
-        }
-    }
-}*/
-
 void Planner::printAdjacencyVector(const adjacency_vector &adj_vec, int Y) {
     for (const auto& v : adj_vec) { // v is vector of P pairs (double, int), vec is main adjacency vector
         for (const auto& p : v) {

@@ -5,13 +5,16 @@
 #include <iostream>
 #include "robot.hpp"
 #include "world.hpp"
+#include "CBBA.hpp"
 
 struct Msg {
-    int id;
-    // Add more later, like pose
+    int id; // sender robot ID
+    int task_id; // Task sender is currently doing
+    Pose2D location; // Current location of sender
+    Bundle bundle; // Sender bundle of tasks
 
-    Msg(int id)
-        : id(id) {}
+    Msg(int id, int task_id, Pose2D location, Bundle bundle)
+        : id(id), task_id(task_id), location(location), bundle(bundle) {}
 };
 
 class Message {
@@ -28,18 +31,4 @@ private:
     
 };
 
-/*class Message {
-protected:
-    int robot_id; // ID of robot sending message
-
-
-public:
-    Message(int robot_id);
-
-    int getSenderID() const { return robot_id; }
-
-    void sendMessage(int origin_robot_id);
-
-};
-*/
 #endif

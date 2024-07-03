@@ -2,7 +2,7 @@
 #include "message.hpp"
 
 Message::Message(Robot& sender)
-    : msg(sender.getID()) // Will have more robot info once set up
+        : msg(sender.getID(), sender.getCurrentTaskID(), sender.getPose(), sender.getBundle()) 
 {
 }
 

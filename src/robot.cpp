@@ -9,12 +9,16 @@
 
 // Create state class, which will contain robot condition functions
 
-Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& goal_pose, int robot_id) 
+Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& goal_pose, int robot_id, cv::Scalar dot_color) 
 : planner(p), shortest_path(sp), scorer(s), world(w), goal(goal_pose), id(robot_id) {
-    pose = {0, 0, 0}; // Is this used? 
+    pose = {0, 0, 0};
     goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
+    color = dot_color;
     id = robot_id; // Robot ID
-    world->trackRobot(this); //id,this pair or just this?
+    task_id = 0; // ID of current task, have zero represent undefined
+    world->trackRobot(this);
+    battery_level = 1.0;
+    tasks.init()
 
 
     // Add current task ID
@@ -22,39 +26,37 @@ Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& go
     // What needs to be passed as messages between robots
 }
 
-void Robot::test() {
-    std::cout << "Hello world from the robot class!" << std::endl;
-}
-
-void Robot::world_test() {
-    std::cout << "Testing robot class access to world class (400 = pass): " << world->getX() << std::endl;
-}
-
-void Robot::other_tests() {
-    //std::cout << "Planner: " << planner->getP() << " via robot"<< std::endl;
-    std::cout << "Scorer: " << scorer->getS() << " via robot" << std::endl;
-
-}
-
 void Robot::init (Pose2D initial_pose) {
     // Access world for image
     cv::Mat image = world->getImage();
-    // Red dot at x,y location
-    cv::circle(image, cv::Point(initial_pose.x, initial_pose.y), 5, cv::Scalar(0, 0, 255), -1);
+    cv::circle(image, cv::Point(initial_pose.x, initial_pose.y), 5, color, -1);
     pose = initial_pose; // Set current robot pose variable
 
 }
 
-void Robot::move(Pose2D waypoint) {
-    // Access world for image
-    cv::Mat image = world->getImage();
+void Robot::updateBatteryLevel(double drain_percent) {
 
-    // Clear old robot location
-    cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
-    // Update sim image to reflect robot movement
-    cv::circle(image, cv::Point(waypoint.x, waypoint.y), 5, cv::Scalar(0, 0, 255), -1);
-    world->plot(); // Added to work with BT
+    battery_level -= drain_percent * battery_level;
+    if (battery_level < 0) battery_level = 0; // Cap at minimum of zero
+}
+
+void Robot::move(Pose2D waypoint) {
+
+    // Would be more efficient to just avoid collisions so the white circle never overwrites another robots dot as one moves by
+    // As is every robot thread will clear all robots for each of its robots movements
+
+    std::cout << "In move for robot with ID " << getID() << std::endl;
+
+    world->clear(pose); // Clear all robot dots (technically only need to clear moving ones, but this is easier)
+    std::cout << "Before: ";
+    world->printTrackedRobots();
     pose = waypoint; // Update x and y within robot class
+    std::cout << "After: ";
+    world->printTrackedRobots();
+    world->plot(); // Add dots at all robot locations
+    double drain_percent = 0.01;
+    updateBatteryLevel(drain_percent);
+    std::cout << "New battery level after move: "  << battery_level << " for robot ID " << id << std::endl;
 }
 
 void Robot::updateRobotMessageQueue(Msg msg) {

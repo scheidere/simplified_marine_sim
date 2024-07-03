@@ -117,31 +117,6 @@ PortsList ReceiveMessage::providedPorts()
     //return {};
 }
 
-/*start here, make this a condition and init the condition in sim with the rest of the nodes 
-then add another sequence to the tree and pass the goal waypoint from this node to _shortest_path
-probably just create another action node that has the center waypoint and calls shortestpath and returns the path 
-then the same node logic as elsewhere in the tree can be used for the robot(s) to traverse to converge to same spot
-*/
-/*Regroup::Regroup(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
-    : SyncActionNode(name, config), _world(world), _receiver(receiver) {} // Make this a condition
-
-NodeStatus Regroup::tick()
-{
-    if (_receiver.regroup();) {
-        return return NodeStatus::SUCCESS;
-    }
-    return NodeStatus::FAILURE;
-}
-
-PortsList Regroup::providedPorts()
-{
-    // Added this because it was complaining when there were no ports
-    // This input is not actually needed by this node 
-    // So this is just for testing
-    return { InputPort<Pose2D>("waypoint") };
-    //return {};
-}*/
-
 Regroup::Regroup(const std::string& name, const NodeConfig& config, Robot& receiver)
     : ConditionNode(name, config), _receiver(receiver) {} // Make this a condition
 
@@ -164,6 +139,39 @@ PortsList Regroup::providedPorts()
     // Outputs goal to regroup with other robots (then shortestpath planner can take in waypoint)
     return { OutputPort<Pose2D>("rendezvous") };
   }
+
+TestCond::TestCond(const std::string& name, const NodeConfig& config, Robot& receiver)
+    : ConditionNode(name, config), _receiver(receiver) {} // Make this a condition
+
+NodeStatus TestCond::tick()
+{
+    std::cout << "in TestCond" << std::endl;
+    return NodeStatus::FAILURE;
+}
+
+PortsList TestCond::providedPorts()
+  {
+    // Outputs goal to regroup with other robots (then shortestpath planner can take in waypoint)
+    return { InputPort<Pose2D>("waypoint") };
+  }
+
+RunTest::RunTest(const std::string& name, const NodeConfig& config)
+    : ThreadedAction(name, config) {}
+
+NodeStatus RunTest::tick()
+{
+    std::cout << "Running RunTest action to keep ticking..." << std::endl;
+    return NodeStatus::RUNNING;
+}
+
+PortsList RunTest::providedPorts()
+{
+    // Added this because it was complaining when there were no ports
+    // This input is not actually needed by this node 
+    // So this is just for testing
+    return { InputPort<Pose2D>("waypoint") };
+    //return {};
+}
 
 // Method below is for SimpleConditionNode
 /*NodeStatus Regroup()
