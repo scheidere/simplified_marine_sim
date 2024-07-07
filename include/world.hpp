@@ -20,6 +20,7 @@ protected:
     mutable std::mutex world_mutex; // mutex for MR access to robot tracker (and downstream), mutable for access of consts
     double comms_range;
     std::unordered_map<int,std::vector<Msg>> message_tracker; // receiving robot ID, message struct
+    std::vector<Pose2D> areaACoords; std::vector<Pose2D> areaBCoords; std::vector<Pose2D> areaCCoords; std::vector<Pose2D> areaDCoords;
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, double comms_range);
@@ -50,6 +51,8 @@ public:
     void printMessageTracker();
 
     bool isCollision(int x, int y);
+
+    std::vector<Pose2D> getQuadrantCenters();
 
 };
 

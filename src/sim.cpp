@@ -153,8 +153,17 @@ int main(int argc, char ** argv)
 
   std::cout << "************** Testing CBBA stuff **************" << std::endl;
 
+  // Initialize all possible tasks (each robot will have a subset of these)
+  // Note: all tasks are actions, but not all actions are tasks (e.g., resurface to charge is only an action)
+  // It is needed, but not specifically an objective of the team like the tasks should be
+  std::vector<Pose2D> quadrant_centers = world.getQuadrantCenters();
+  Task exploreA(0, "Explore area A", quadrant_centers[0], 0, 0, 0); // ID, priority, utility, bid all zero initially
+  Task exploreB(0, "Explore area B", quadrant_centers[1], 0, 0, 0);
+  Task exploreC(0, "Explore area C", quadrant_centers[2], 0, 0, 0);
+  Task exploreD(0, "Explore area D", quadrant_centers[3], 0, 0, 0);
+
   // Define a Pose2D object
-  Pose2D task_location{1, 2, 0};
+  /*Pose2D task_location{1, 2, 0};
   Pose2D task_location2{10, 20, 0};
 
   //std::vector<Pose2D> locations = {taskLocation};
@@ -176,7 +185,7 @@ int main(int argc, char ** argv)
 
   std::cout << "Press Enter to continue..." << std::endl;
   std::cin.get();
-
+*/
   // Robot colors
   std::vector<cv::Scalar> colors = {
       cv::Scalar(255, 0, 0),    // Blue

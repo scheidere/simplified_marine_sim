@@ -45,6 +45,8 @@ public:
     bool regroup();
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);
+    bool batteryLow();
+    //void resurfaceToCharge();
 
     // Will need to add a function/functions that deal with battery level checking and eval wrt tasks
     // Like how do we know, given a task, how much battery it could take, do we translate distance to battery?

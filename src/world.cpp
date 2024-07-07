@@ -10,7 +10,8 @@ World::World(int X, int Y, Distance* d, SensorModel* s, double comms_range)
     distance(d), 
     sensor_model(s),
     comms_range(comms_range),
-    image(init())
+    image(init()),
+    defineQuadrants()
 {
 
 }
@@ -122,4 +123,39 @@ bool World::isCollision(int x, int y) {
     // For now just check for collisions with other robots, but will need to consider obstacles later
     // This is not necessary for the first round of CBBA so leaving this for when we add obstacles to do it all at once
     return {};
+}
+
+void World::defineQuadrants() {
+
+    /* -> +x (down +y)
+    A   |   B
+    ____|____
+        | 
+    C   |   D
+    */
+    // Corners:: top left: tl, bottom left: bl, top right: tr, bottom right: br
+    Pose2D tlA{0,0,0}; Pose2D blA{0,Y/2,0}; Pose2D trA{X/2,0,0}; Pose2D brA{X/2,Y/2,0};
+    areaAcoords.push_back(tlA,blA,trA,brA)
+    Pose2D tlB{X/2,0,0}; Pose2D blB{X/2,Y/2,0}; Pose2D trB{X,0,0}; Pose2D brB{X,Y/2,0};
+    areaBcoords.push_back(tlB,blB,trB,brB)
+    Pose2D tlA{0,Y/2,0}; Pose2D blC{0,Y,0}; Pose2D trC{X/2,0,0}; Pose2D brC{X/2,Y/2,0};
+    areaCcoords.push_back(tlC,blC,trC,brC)
+    Pose2D tlA{0,0,0}; Pose2D blD{0,Y/2,0}; Pose2D trD{X/2,0,0}; Pose2D brD{X/2,Y/2,0};
+    areaDcoords.push_back(tlD,blD,trD,brD)
+
+}
+
+std::vector<Pose2D> World::getQuadrantCenters() {
+
+    std::vector<Pose2D> quadrant_centers;
+    Pose2D centerA{X/4,X/4,0};
+    Pose2D centerB{X/4,3*X/4,0};
+    Pose2D centerC{3*X/4,X/4,0};
+    Pose2D centerD{3*X/4,3*X/4,0};
+    quadrant_centers.push_back(centerA); // Upper left, area A
+    quadrant_centers.push_back(centerB); // Lower left, area B
+    quadrant_centers.push_back(centerC); // Upper right, area C
+    quadrant_centers.push_back(centerD); // Lower right, area D
+
+    return quadrant_centers;
 }

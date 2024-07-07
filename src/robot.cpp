@@ -40,6 +40,19 @@ void Robot::updateBatteryLevel(double drain_percent) {
     if (battery_level < 0) battery_level = 0; // Cap at minimum of zero
 }
 
+bool Robot::batteryLow() {
+
+    if (battery_level < 0.15) {
+        return true;
+    } else { return false; }
+}
+
+/*void resurfaceToCharge() {
+    
+}*/
+
+resurface to charge (10 "steps" up to surface)
+
 void Robot::move(Pose2D waypoint) {
 
     // Would be more efficient to just avoid collisions so the white circle never overwrites another robots dot as one moves by
