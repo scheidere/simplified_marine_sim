@@ -1,65 +1,159 @@
 #include <cstdio>
 #include <cmath>
-#include "CBBA.hpp"
+#include <iostream>
+#include <stdexcept>
+#include "world.hpp"
 #include "robot.hpp"
+#include "CBBA.hpp"
 
-
+class Robot;
 
 CBBA::CBBA() {
 
 }
 
-double CBBA::createBid(Robot * robot, Task& task) {
-    // Based on utility and robot state
+double CBBA::calculatePathUtility(Robot& robot, Path path) {
+    try {
+        double distance_weight = 1;
+        double priority_weight = 1;
+        double battery_weight;
+        double battery_level = robot.getBatteryLevel();
 
-    // Utility already considers distance and priority, so now we consider battery level
-    double battery_weight = 1; // What should this weight be? Maybe it weighs more when battery level is beyond certain thresholds?
-    double battery_level = robot->getBatteryLevel();
-    if (battery_level > 0.5) {
-        battery_weight = 0.1; // Less concerned about battery when it is above 50%
-    } else if (battery_level > 0.1) {
-        battery_weight = 0.5;
-    } else { // < 10% battery level
-        battery_weight = 1;
+        if (battery_level > 0.5) {
+            battery_weight = 0.9;
+        } else if (battery_level > 0.1) {
+            battery_weight = 0.5;
+        } else {
+            battery_weight = 0.1;
+        }
+
+        double distance = 0;
+        double task_priority_sum = 0;
+        Pose2D prev_location = robot.getPose();
+
+        for (const auto& task : path.tasks) {
+            Pose2D new_location = task.location;
+            double delta = Distance::getEuclideanDistance(prev_location.x, prev_location.y, new_location.x, new_location.y);
+            distance += delta;
+            prev_location = new_location;
+            task_priority_sum += task.priority;
+        }
+
+        return distance_weight * (1.0 / distance) + priority_weight * task_priority_sum + battery_weight * battery_level;
+    } catch (const std::exception& e) {
+        std::cerr << "Error in calculatePathUtility: " << e.what() << std::endl;
+        return 0; // Return a default value or handle the error appropriately
     }
-
-    // High battery level, the higher the bid (so inversed and higher battery weight for lower battery level)
-    return task.utility - battery_weight * (1.0/battery_level);
-
 }
 
-double CBBA::calculateUtility(Robot * robot, Task& task) {
-    // Based on task aspects, e.g., how easy, how important
+std::tuple<double, int> CBBA::calculateMaxScoreImprovement(Robot& robot, Path path, double path_score_before, Task task) {
+    try {
+        Path test_path = path;
+        double max_score_improvement = 0;
+        int max_n = -1;
 
-    // Importance weights
-    double distance_weight = 1; // for now it is 1, since we are not considering anything else
-    double priority_weight = 1; // Not sure how we want to weigh priority vs distance so leaving 1 as well
+        for (int n = 0; n <= path.tasks.size(); n++) {
+            test_path.addTask(task, n);
+            double path_score_after = calculatePathUtility(robot, test_path);
+            double delta_c_ij = path_score_after - path_score_before;
+            if (delta_c_ij > max_score_improvement) {
+                max_score_improvement = delta_c_ij;
+                max_n = n;
+            }
+        }
 
-    // Task info
-    Pose2D robot_location = robot->getPose(); // Current robot location
-    Pose2D task_location = task.location; // Center if there is a whole area to explore, otherwise singular task location, like a drop off point for an item
-    double distance = Distance::getEuclideanDistance(robot_location.x,robot_location.y,task_location.x,task_location.y);
-    double task_priority = task.priority;
-
-    // We want higher utility value for lower distance, because that means easier
-    // and we also want higher utility for higher task priority
-    return distance_weight * (1.0/distance) + priority_weight * task_priority;
-
-
+        return std::make_tuple(max_score_improvement, max_n);
+    } catch (const std::exception& e) {
+        std::cerr << "Error in calculateMaxScoreImprovement: " << e.what() << std::endl;
+        return std::make_tuple(0.0, -1); // Return default values or handle the error appropriately
+    }
 }
 
-// Fancy functions here
-void CBBA::buildBundle(Robot * robot) {
+bool CBBA::TaskInBundle(Bundle& bundle, Task& task) {
+    try {
+        if (bundle.tasks.size() > 0) {
+            for (const auto& task_in_bundle : bundle.tasks) {
+                if (task.id == task_in_bundle.id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    } catch (const std::exception& e) {
+        std::cerr << "Error in TaskInBundle: " << e.what() << std::endl;
+        return false; // Return a default value or handle the error appropriately
+    }
+}
 
+std::tuple<Task, int, double> CBBA::findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i) {
+    try {
+        Pose2D placeholder{0, 0, 0};
+        Task best_task_J(0, "Placeholder task", placeholder, 0, 0, 0);
+        int best_index_n = -1;
+        double path_score_before = calculatePathUtility(robot, p_i);
+        double overall_max_score_improvement = 0;
+
+        for (auto& task_j : allTasks) {
+            if (!TaskInBundle(b_i, task_j)) {
+                int j = world.getTaskIndex(task_j);
+                auto [max_score_improvement, n] = calculateMaxScoreImprovement(robot, p_i, path_score_before, task_j);
+                h_i.win_indicator[j] = max_score_improvement > y_i.winning_bids[j];
+                if (max_score_improvement > overall_max_score_improvement) {
+                    overall_max_score_improvement = max_score_improvement;
+                    best_task_J = task_j;
+                    best_index_n = n;
+                }
+            }
+        }
+
+        return std::make_tuple(best_task_J, best_index_n, overall_max_score_improvement);
+    } catch (const std::exception& e) {
+        std::cerr << "Error in findTaskForMaxScoreImprovement: " << e.what() << std::endl;
+        Pose2D placeholder{0, 0, 0};
+        Task default_task(0, "Error Task", placeholder, 0, 0, 0);
+        return std::make_tuple(default_task, -1, 0.0); // Return default values or handle the error appropriately
+    }
+}
+
+void CBBA::buildBundle(World& world, Robot& robot) {
+    try {
+        std::cout << "in CBBA::buildBundle..." << std::endl;
+
+        // Example code for building bundle
+        // std::vector<Task> allTasks = world.getAllTasks();
+        // int numTasks = allTasks.size();
+        // WinningBids y_i(numTasks); y_i = robot.getWinningBids();
+        // WinningAgentIndices z_i(numTasks); z_i = robot.getWinningAgentIndices();
+        // Bundle b_i = robot.getBundle(); Path p_i = robot.getPath();
+        // NewWinIndicator h_i(numTasks);
+
+        // while (b_i.tasks.size() < allTasks.size()) {
+        //     auto [best_task_J, best_path_index_n, overall_max_score_improvement] = findTaskForMaxScoreImprovement(world, robot, allTasks, b_i, p_i, h_i, y_i);
+        //     int j = world.getTaskIndex(best_task_J);
+        //     b_i.addTask(best_task_J);
+        //     p_i.addTask(best_task_J, best_path_index_n);
+        //     y_i.winning_bids[j] = overall_max_score_improvement;
+        //     z_i.winning_agent_indices[j] = robot.getID();
+        // }
+
+        std::cout << "at end of CBBA::buildBundle..." << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error in buildBundle: " << e.what() << std::endl;
+    }
 }
 
 void CBBA::printBundle() {
-
+    try {
+        // Implement printBundle logic here
+    } catch (const std::exception& e) {
+        std::cerr << "Error in printBundle: " << e.what() << std::endl;
+    }
 }
-
 
 void CBBA::obtainConsensus() {
-
+    try {
+        // Implement obtainConsensus logic here
+    } catch (const std::exception& e) {
+        std::cerr << "Error in obtainConsensus: " << e.what() << std::endl;
+    }
 }
-
-

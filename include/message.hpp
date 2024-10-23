@@ -3,9 +3,10 @@
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include "robot.hpp"
 #include "world.hpp"
-#include "CBBA.hpp"
+#include "robot.hpp"
+//#include "CBBA.hpp"
+#include "structs.hpp"
 
 struct Msg {
     int id; // sender robot ID

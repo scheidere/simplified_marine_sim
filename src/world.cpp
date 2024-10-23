@@ -4,58 +4,77 @@
 #include "world.hpp"
 #include "robot.hpp"
 
+struct Task;
+
 World::World(int X, int Y, Distance* d, SensorModel* s, double comms_range) 
     : X(X),
     Y(Y), 
     distance(d), 
     sensor_model(s),
     comms_range(comms_range),
-    image(init()),
-    defineQuadrants()
+    image(init())
 {
-
+    try {
+        defineQuadrants();
+        initAllTasks();
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    }
 }
 
 cv::Mat& World::getImage() { 
     std::lock_guard<std::mutex> lock(world_mutex);
     return image; 
-
 }
 
 cv::Mat World::init() {
-    // White background, mutex not necessary for init
-    std::cout << "Initializing world..." << std::endl;
-    cv::Mat image(X, Y, CV_8UC3, cv::Scalar(255, 255, 255));
-
-    return image;
+    try {
+        std::cout << "Initializing world..." << std::endl;
+        cv::Mat image(X, Y, CV_8UC3, cv::Scalar(255, 255, 255));
+        return image;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in init: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    }
 }
 
-// Like other functions with mutex, should only be used outside this class
 std::unordered_map<int, Robot*>& World::getRobotTracker() { 
     std::lock_guard<std::mutex> lock(world_mutex);
-    //std::cout << "IN GETROBOTTRACKER" << std::endl;
     return robot_tracker;
 }
 
-// Like other functions with mutex, should only be used outside this class
 std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
     std::lock_guard<std::mutex> lock(world_mutex);
     return message_tracker;
+}
+
+std::vector<Task>& World::getAllTasks() {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    std::cout << "Returning all tasks. Number of tasks: " << allTasks.size() << std::endl;
+    return allTasks;
+}
+
+int World::getTaskIndex(Task task_j) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    auto it = std::find_if(allTasks.begin(), allTasks.end(), [&](const Task& task) {
+        return task.id == task_j.id;
+    });
+
+    int j = std::distance(allTasks.begin(), it);
+
+    return j;
 }
 
 void World::clear(Pose2D pose) {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Clearing world..." << std::endl;
     cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
-    // Loop robot tracker
-    /*for (auto& pair : robot_tracker) {
-        Robot* robot = pair.second;
-        cv::circle(image, cv::Point(robot->getPose().x, robot->getPose().y), 5, cv::Scalar(255, 255, 255), -1);
-    }*/
 }
 
 void World::plot() {
-    std::lock_guard<std::mutex> lock(world_mutex); // Lock the mutex
+    std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Plotting world..." << std::endl;
     for (auto& pair : robot_tracker) {
         Robot* robot = pair.second;
@@ -68,9 +87,9 @@ void World::plot() {
     cv::waitKey(300);
 }
 
-void World::trackRobot(Robot* robot) { // Save robot instances by ID int
+void World::trackRobot(Robot* robot) {
     std::lock_guard<std::mutex> lock(world_mutex);
-    //std::cout << "IN TRACKROBOT; Tracking Robot ID: " << robot->getID() << std::endl;
+    std::cout << "Tracking Robot ID: " << robot->getID() << std::endl;
     robot_tracker[robot->getID()] = robot;
 }
 
@@ -91,24 +110,22 @@ void World::printTrackedRobots() {
 void World::printMessageTracker() {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "World message tracker:" << std::endl;
-    //std::cout << message_tracker.size() << std::endl;
     for (auto& pair : message_tracker) {
         int receiverID = pair.first;
         std::vector<Msg>& messages = pair.second;
 
         std::cout << "Receiver ID: " << receiverID << std::endl;
+        std::cout << "Number of messages for receiver: " << messages.size() << std::endl;
         for (auto& msg : messages) {
             std::cout << "  From ID: " << msg.id << std::endl;
         }
     }
-    std::cout << "in print msg tracker END" << std::endl;
+    std::cout << "End of printMessageTracker" << std::endl;
 }
 
 bool World::inComms(int id1, int id2) {
     std::lock_guard<std::mutex> lock(world_mutex);
-    //std::cout << "in inComms func after mutex" << std::endl;
     if (robot_tracker.find(id1) == robot_tracker.end() || robot_tracker.find(id2) == robot_tracker.end()) {
-        //std::cout << "One or both robots does not exist! Cannot check if they are close enough for comms." << std::endl;
         return false;
     }
     Robot* robot1 = robot_tracker[id1];
@@ -119,43 +136,86 @@ bool World::inComms(int id1, int id2) {
 }
 
 bool World::isCollision(int x, int y) {
-
-    // For now just check for collisions with other robots, but will need to consider obstacles later
-    // This is not necessary for the first round of CBBA so leaving this for when we add obstacles to do it all at once
     return {};
 }
 
 void World::defineQuadrants() {
+    try {
+        Pose2D tlA{0,0,0}; Pose2D blA{0,Y/2,0}; Pose2D trA{X/2,0,0}; Pose2D brA{X/2,Y/2,0};
+        areaACoords.push_back(tlA); areaACoords.push_back(blA); areaACoords.push_back(trA); areaACoords.push_back(brA);
+        Pose2D tlB{0,Y/2,0}; Pose2D blB{0,Y,0}; Pose2D trB{X/2,Y/2,0}; Pose2D brB{X/2,Y,0};
+        areaBCoords.push_back(tlB); areaBCoords.push_back(blB); areaBCoords.push_back(trB); areaBCoords.push_back(brB);
+        Pose2D tlC{X/2,0,0}; Pose2D blC{X/2,Y/2,0}; Pose2D trC{X,0,0}; Pose2D brC{X,Y/2,0};
+        areaCCoords.push_back(tlC); areaCCoords.push_back(blC); areaCCoords.push_back(trC); areaCCoords.push_back(brC);
+        Pose2D tlD{X/2,Y/2,0}; Pose2D blD{X/2,Y,0}; Pose2D trD{X,Y/2,0}; Pose2D brD{X,Y,0};
+        areaDCoords.push_back(tlD); areaDCoords.push_back(blD); areaDCoords.push_back(trD); areaDCoords.push_back(brD);
 
-    /* -> +x (down +y)
-    A   |   B
-    ____|____
-        | 
-    C   |   D
-    */
-    // Corners:: top left: tl, bottom left: bl, top right: tr, bottom right: br
-    Pose2D tlA{0,0,0}; Pose2D blA{0,Y/2,0}; Pose2D trA{X/2,0,0}; Pose2D brA{X/2,Y/2,0};
-    areaAcoords.push_back(tlA,blA,trA,brA)
-    Pose2D tlB{X/2,0,0}; Pose2D blB{X/2,Y/2,0}; Pose2D trB{X,0,0}; Pose2D brB{X,Y/2,0};
-    areaBcoords.push_back(tlB,blB,trB,brB)
-    Pose2D tlA{0,Y/2,0}; Pose2D blC{0,Y,0}; Pose2D trC{X/2,0,0}; Pose2D brC{X/2,Y/2,0};
-    areaCcoords.push_back(tlC,blC,trC,brC)
-    Pose2D tlA{0,0,0}; Pose2D blD{0,Y/2,0}; Pose2D trD{X/2,0,0}; Pose2D brD{X/2,Y/2,0};
-    areaDcoords.push_back(tlD,blD,trD,brD)
-
+        std::cout << "Quadrants defined." << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in defineQuadrants: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    }
 }
 
 std::vector<Pose2D> World::getQuadrantCenters() {
-
     std::vector<Pose2D> quadrant_centers;
-    Pose2D centerA{X/4,X/4,0};
-    Pose2D centerB{X/4,3*X/4,0};
-    Pose2D centerC{3*X/4,X/4,0};
-    Pose2D centerD{3*X/4,3*X/4,0};
-    quadrant_centers.push_back(centerA); // Upper left, area A
-    quadrant_centers.push_back(centerB); // Lower left, area B
-    quadrant_centers.push_back(centerC); // Upper right, area C
-    quadrant_centers.push_back(centerD); // Lower right, area D
+    try {
+        Pose2D centerA{X/4,X/4,0};
+        Pose2D centerB{X/4,3*X/4,0};
+        Pose2D centerC{3*X/4,X/4,0};
+        Pose2D centerD{3*X/4,3*X/4,0};
+        quadrant_centers.push_back(centerA);
+        quadrant_centers.push_back(centerB);
+        quadrant_centers.push_back(centerC);
+        quadrant_centers.push_back(centerD);
 
+        int size = 5;
+
+        cv::rectangle(image, cv::Point(centerA.x - size, centerA.y - size), cv::Point(centerA.x + size, centerA.y + size), cv::Scalar(0, 0, 0), -1);
+        cv::rectangle(image, cv::Point(centerB.x - size, centerB.y - size), cv::Point(centerB.x + size, centerB.y + size), cv::Scalar(0, 0, 0), -1);
+        cv::rectangle(image, cv::Point(centerC.x - size, centerC.y - size), cv::Point(centerC.x + size, centerC.y + size), cv::Scalar(0, 0, 0), -1);
+        cv::rectangle(image, cv::Point(centerD.x - size, centerD.y - size), cv::Point(centerD.x + size, centerD.y + size), cv::Scalar(0, 0, 0), -1);
+
+        std::cout << "Quadrant centers defined: " << quadrant_centers.size() << " centers." << std::endl;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in getQuadrantCenters: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    }
     return quadrant_centers;
+}
+
+void World::initAllTasks() {
+    try {
+        std::vector<Pose2D> quadrant_centers = getQuadrantCenters();
+
+        if (quadrant_centers.size() < 4) {
+            throw std::runtime_error("Not enough quadrant centers to initialize tasks.");
+        }
+
+        Task exploreA(1, "Explore area A", quadrant_centers[0], 0, 0, 0); 
+        allTasks.push_back(exploreA);
+        Task exploreB(2, "Explore area B", quadrant_centers[1], 0, 0, 0); 
+        allTasks.push_back(exploreB);
+        Task exploreC(3, "Explore area C", quadrant_centers[2], 0, 0, 0); 
+        allTasks.push_back(exploreC);
+        Task exploreD(4, "Explore area D", quadrant_centers[3], 0, 0, 0); 
+        allTasks.push_back(exploreD);
+
+        std::cout << "Initialized all tasks. Number of tasks: " << allTasks.size() << std::endl;
+
+        // Check the size of allTasks
+        if (allTasks.size() > allTasks.max_size()) {
+            throw std::length_error("The number of tasks exceeds the maximum allowable size.");
+        }
+    } catch (const std::length_error& e) {
+        std::cerr << "std::length_error caught in initAllTasks: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    } catch (const std::runtime_error& e) {
+        std::cerr << "std::runtime_error caught in initAllTasks: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in initAllTasks: " << e.what() << std::endl;
+        throw; // Re-throw to propagate the exception
+    }
 }

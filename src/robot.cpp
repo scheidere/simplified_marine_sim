@@ -1,16 +1,17 @@
 #include <cstdio>
+#include <stdexcept> // For exception handling
 #include "planners.hpp"
 #include "scorer.hpp"
-#include "robot.hpp"
 #include "world.hpp"
+#include "robot.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
-
 // Create state class, which will contain robot condition functions
 
-Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& goal_pose, int robot_id, cv::Scalar dot_color) 
-: planner(p), shortest_path(sp), scorer(s), world(w), goal(goal_pose), id(robot_id) {
+// Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
+Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar dot_color) 
+: planner(p), shortest_path(sp), scorer(s), world(w), goal(goal_pose), id(robot_id), winning_bids(1), winning_agent_indices(1) {
     pose = {0, 0, 0};
     goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
     color = dot_color;
@@ -18,46 +19,78 @@ Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& go
     task_id = 0; // ID of current task, have zero represent undefined
     world->trackRobot(this);
     battery_level = 1.0;
-    tasks.init()
+    init(initial_pose);
+    assignable_tasks = tasks; // Tasks that can be assigned to this robot
 
+    std::cout << "Robot constructor: Getting all tasks from world..." << std::endl;
+    std::vector<Task> allTasks = world->getAllTasks();
+    int numTasks = allTasks.size();
+    std::cout << "Number of tasks in world: " << numTasks << std::endl;
 
-    // Add current task ID
-    // Where will we record things like at_place, in_comms, battery_low, etc.?
-    // What needs to be passed as messages between robots
+    // Sanity check on task size
+    if (numTasks > 1000000) {
+        std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
+    }
+
+    try {
+        std::cout << "Allocating winning_bids and winning_agent_indices vectors..." << std::endl;
+        winning_bids = WinningBids(numTasks);
+        winning_agent_indices = WinningAgentIndices(numTasks);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught during vector allocation in constructor: " << e.what() << std::endl;
+        throw;
+    }
+    
+    initializeWinningBidsAndIndices();
+}
+
+void Robot::initializeWinningBidsAndIndices() {
+    std::cout << "Initializing winning bids and indices..." << std::endl;
+    std::vector<Task> allTasks = world->getAllTasks();
+    int numTasks = allTasks.size();
+
+    // Sanity check on task size
+    if (numTasks > 1000000) {
+        std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
+    }
+
+    try {
+        std::cout << "Allocating vectors in initializeWinningBidsAndIndices..." << std::endl;
+        winning_bids = WinningBids(numTasks);
+        winning_agent_indices = WinningAgentIndices(numTasks);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught during vector allocation in initializeWinningBidsAndIndices: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 void Robot::init (Pose2D initial_pose) {
+    std::cout << "Initializing robot pose..." << std::endl;
     // Access world for image
     cv::Mat image = world->getImage();
     cv::circle(image, cv::Point(initial_pose.x, initial_pose.y), 5, color, -1);
     pose = initial_pose; // Set current robot pose variable
+}
 
+void Robot::printTasksVector() {
+    std::cout << "TESTING TASK VECTOR PRINT" << std::endl;
+    std::cout << "Number of assignable tasks: " << assignable_tasks.size() << std::endl;
+
+    for (const auto& task : assignable_tasks) {
+        task.print();
+    }
 }
 
 void Robot::updateBatteryLevel(double drain_percent) {
-
     battery_level -= drain_percent * battery_level;
     if (battery_level < 0) battery_level = 0; // Cap at minimum of zero
 }
 
 bool Robot::batteryLow() {
-
-    if (battery_level < 0.15) {
-        return true;
-    } else { return false; }
+    return battery_level < 0.15;
 }
 
-/*void resurfaceToCharge() {
-    
-}*/
-
-resurface to charge (10 "steps" up to surface)
-
 void Robot::move(Pose2D waypoint) {
-
-    // Would be more efficient to just avoid collisions so the white circle never overwrites another robots dot as one moves by
-    // As is every robot thread will clear all robots for each of its robots movements
-
     std::cout << "In move for robot with ID " << getID() << std::endl;
 
     world->clear(pose); // Clear all robot dots (technically only need to clear moving ones, but this is easier)
@@ -67,52 +100,54 @@ void Robot::move(Pose2D waypoint) {
     std::cout << "After: ";
     world->printTrackedRobots();
     world->plot(); // Add dots at all robot locations
+
     double drain_percent = 0.01;
     updateBatteryLevel(drain_percent);
-    std::cout << "New battery level after move: "  << battery_level << " for robot ID " << id << std::endl;
+    std::cout << "New battery level after move: " << battery_level << " for robot ID " << id << std::endl;
 }
 
 void Robot::updateRobotMessageQueue(Msg msg) {
     std::cout << "IN updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
-    std::vector<Msg>& message_queue = getMessageQueue();
-    message_queue.push_back(msg);
+    try {
+        message_queue.push_back(msg);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught while updating message queue: " << e.what() << std::endl;
+        throw;
+    }
     std::cout << "END updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
-
 }
 
-void Robot::receiveMessages() { // do we need world as arg or is that redundant?
+void Robot::receiveMessages() {
     std::cout << "in receiveMessages........" << std::endl;
-    std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world->getMessageTracker();
-    // Get message from world message tracker by checking receiver index
+    std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = world->getMessageTracker();
+
     int receiverID = getID();
     std::cout << "receiverID: " << receiverID << std::endl;
     std::cout << "Printed msg tracker from world: " << std::endl;
     world->printMessageTracker();
     std::cout << "world msg tracker printed above, size = " << world_msg_tracker.size() << std::endl;
-    if (world_msg_tracker.find(receiverID) != world_msg_tracker.end()) { //problem is that we don't ever enter this if statement (start with message tracker print above (nothing prints))
+
+    if (world_msg_tracker.find(receiverID) != world_msg_tracker.end()) {
         std::cout << "in if" << std::endl;
-        std::vector<Msg>& messages = world_msg_tracker[receiverID]; // Vector of messages queued for current robot
+        std::vector<Msg>& messages = world_msg_tracker[receiverID];
         std::cout << "length of messages from world (should be 1?): " << messages.size() << std::endl;
         std::cout << "!messages.empty(): " << !messages.empty() << std::endl;
+
         if (!messages.empty()) {
-            Msg msg = messages.front();  // Assuming we take the oldest message in queue
-            // Add message to receiver robot message queue
+            Msg msg = messages.front();
             updateRobotMessageQueue(msg);
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
         }
-
     }
-
 }
 
 bool Robot::regroup() {
-    // Pull oldest message from robot message queue
     std::cout << " IN REGROUP" << std::endl;
     std::cout << "message_queue length" << message_queue.size() << std::endl;
-    if (!message_queue.empty()){
-        Msg least_recent_msg = message_queue[0]; // For sake of this test, get message (which rn just has ID)
-        std::cout << "MESSAGE EXISTS from robot ID " << least_recent_msg.id << std::endl; 
-        //Pose2D goal_pose1{30, 30, 0}; // and if it exists, then trigger robot to go to center (200,200)
+
+    if (!message_queue.empty()) {
+        Msg least_recent_msg = message_queue[0];
+        std::cout << "MESSAGE EXISTS from robot ID " << least_recent_msg.id << std::endl;
         std::cout << "in regroup before true" << std::endl;
         return true;
     }

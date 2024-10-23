@@ -5,10 +5,14 @@
 #include <iostream>
 #include "distance.hpp"
 #include "sensor_model.hpp"
+#include "robot.hpp"
 #include "message.hpp"
+#include "CBBA.hpp"
 
-struct Msg;
+
+struct Task;
 class Robot;
+struct Msg;
 
 class World {
 protected:
@@ -21,6 +25,7 @@ protected:
     double comms_range;
     std::unordered_map<int,std::vector<Msg>> message_tracker; // receiving robot ID, message struct
     std::vector<Pose2D> areaACoords; std::vector<Pose2D> areaBCoords; std::vector<Pose2D> areaCCoords; std::vector<Pose2D> areaDCoords;
+    std::vector<Task> allTasks;
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, double comms_range);
@@ -35,6 +40,12 @@ public:
     std::unordered_map<int, Robot*>& getRobotTracker(); //{ return robot_tracker; }
 
     std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
+
+    void initAllTasks();
+
+    std::vector<Task>& getAllTasks();
+
+    int getTaskIndex(Task task); // std::pair<Task, int>
 
     void clear(Pose2D pose);
 
@@ -51,6 +62,8 @@ public:
     void printMessageTracker();
 
     bool isCollision(int x, int y);
+
+    void defineQuadrants();
 
     std::vector<Pose2D> getQuadrantCenters();
 

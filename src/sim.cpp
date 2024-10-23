@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <mutex>
 #include <thread>
+#include <exception>
+#include <iostream>
 #include "distance.hpp"
 #include "sensor_model.hpp"
 #include "world.hpp"
@@ -14,46 +16,8 @@
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "CBBA.hpp"
 
-
-
-#include <iostream>
-
-// This tree sends both robots to their goal locations, then they send each other messages and regroup to the same location if they hear them
-// For now, that location is set at 0,0 as opposed to a location splitting the distance between a robot and another
+// Run to show robots traversing to different waypoints
 /*static const char* xml_text = R"(
-
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <PlanShortestPath path="{path}" goal="{goal}" />
-            <QueueSize queue="{path}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}">
-                <Sequence>
-                    <PopFromQueue queue="{path}" popped_item="{wp}" />
-                    <UseWaypoint waypoint="{wp}" />
-                </Sequence>
-            </Repeat>
-            <SendMessage waypoint="{wp}"/>
-            <ReceiveMessage waypoint="{wp}"/>
-            <Sequence>
-              <Regroup rendezvous="{rv}"/>
-              <PlanShortestPath path="{path2}" goal="{rv}" />
-              <QueueSize queue="{path2}" size="{wp_size}" />
-              <Repeat num_cycles="{wp_size}">
-                  <Sequence>
-                      <PopFromQueue queue="{path2}" popped_item="{wp2}" />
-                      <UseWaypoint waypoint="{wp2}" />
-                  </Sequence>
-              </Repeat>
-              </Sequence>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// This tree is to test a moving robot passing by a stationary one
-/*static const char* xml_text = R"(
-
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -69,158 +33,184 @@
         </Sequence>
      </BehaviorTree>
 </root>
-)";
-*/
+)";*/
 
-// This tree is for testing initial bundle assembly only
+// Run to test BuildBundle only
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
-            <Bundle />
+            <BuildBundle/>
         </Sequence>
      </BehaviorTree>
 </root>
 )";
 
+void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world, CBBA& cbba) {
+    std::cout << "Entering run_robot for robot " << robot_id << std::endl;
 
-void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world) {
+    try {
+        std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
 
-    // Should we also change colors of each robot or add id number to visual?
+        try {
+            Robot robot(&planner, &shortest_path, &scorer, &world, initial_pose, goal_pose, assignable_tasks, robot_id, color);
+            std::cout << "Robot " << robot_id << " created successfully." << std::endl;
 
-    std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
+            {
+                world.plot();
+                std::cout << "ID Check in Robot " << robot.getID() << std::endl;
+                robot.printTasksVector();
+            }
 
-    // Initialize robot
-    Robot robot(&planner, &shortest_path, &scorer, &world, goal_pose, robot_id, color);
-    {
-        robot.init(initial_pose);
-        world.plot();
-        std::cout << "ID Check in Robot " << robot.getID() << std::endl;
-    } // Mutex unlocks
+            // Register Behavior Tree nodes
+            std::cout << "Registering Behavior Tree nodes for robot " << robot_id << "..." << std::endl;
+            BehaviorTreeFactory factory;
 
-    // Register BT nodes using std::ref to ensure actual class instaces are used and not copies
-    BehaviorTreeFactory factory;
-    //factory.registerNodeType<Parallel>("Parallel");
-    factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
-    factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
-    factory.registerNodeType<RepeatNode>("RepeatNode");
-    factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
-    factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
-    factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
-    factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
-    factory.registerNodeType<Regroup>("Regroup", std::ref(robot));
-    factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
-    factory.registerNodeType<RunTest>("RunTest"); // sync action node cannot return running
+            try {
+                factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
+                factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
+                factory.registerNodeType<RepeatNode>("RepeatNode");
+                factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
+                factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
+                factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
+                factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
+                factory.registerNodeType<Regroup>("Regroup", std::ref(robot));
+                factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
+                factory.registerNodeType<RunTest>("RunTest");
+                factory.registerNodeType<RunTest2>("RunTest2");
+                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba)); // Threaded action with args
+                //factory.registerNodeType<Test>("Test", std::ref(robot));
+                //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
+                /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
+                    auto node = std::make_shared<BuildBundle>(name, config);
+                    node->setParams(world, robot, cbba);
+                    return node;
+                });*/
 
-    // Create behavior tree
-    auto tree = factory.createTreeFromText(xml_text); // See MainTree XML above
+                std::cout << "Behavior Tree nodes registered successfully for robot " << robot_id << "." << std::endl;
+            } catch (const std::exception& e) {
+                std::cerr << "Exception caught during BehaviorTreeFactory node registration for robot " << robot_id << ": " << e.what() << std::endl;
+                throw;
+            }
 
-    // Log node statuses (command line)
-    //StdCoutLogger logger(tree); // THIS IS AN ISSUE, might need mutex for this too?
-    //logger.enableTransitionToIdle(false);
+            try {
+                std::cout << "Creating behavior tree for robot " << robot_id << "..." << std::endl;
+                auto tree = factory.createTreeFromText(xml_text);
+                std::cout << "Behavior tree created successfully for robot " << robot_id << "." << std::endl;
 
-    // Execute the behavior tree
-    tree.tickWhileRunning();
+                std::cout << "Starting tree tick for robot " << robot_id << "..." << std::endl;
+                tree.tickWhileRunning();
+                std::cout << "Tree tick completed for robot " << robot_id << "." << std::endl;
+            } catch (const std::exception& e) {
+                std::cerr << "Exception caught during behavior tree creation or execution for robot " << robot_id << ": " << e.what() << std::endl;
+                throw;
+            }
 
-    std::cout << "Robot " << robot_id << " simulation complete." << std::endl;
+            std::cout << "Robot " << robot_id << " simulation complete." << std::endl;
+        } catch (const std::length_error& e) {
+            std::cerr << "std::length_error caught during robot creation or initialization for robot " << robot_id << ": " << e.what() << std::endl;
+            throw;
+        } catch (const std::exception& e) {
+            std::cerr << "Exception caught during robot creation or initialization for robot " << robot_id << ": " << e.what() << std::endl;
+            throw;
+        }
+    } catch (const std::length_error& e) {
+        std::cerr << "std::length_error caught in run_robot for robot " << robot_id << ": " << e.what() << std::endl;
+        throw;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in run_robot for robot " << robot_id << ": " << e.what() << std::endl;
+        throw;
+    } catch (...) {
+        std::cerr << "Unknown exception caught in run_robot for robot " << robot_id << std::endl;
+        throw;
+    }
 
- }
+    std::cout << "Exiting run_robot for robot " << robot_id << std::endl;
+}
 
+int main(int argc, char** argv) {
+    try {
+        std::cout << "Running simulation..." << std::endl;
 
-int main(int argc, char ** argv)
-{
-  (void) argc;
-  (void) argv;
+        const int X = 400;
+        const int Y = 400;
+        const int step_size = 1;
+        if (step_size != 1) {
+            std::cout << "Your step size is larger than 1! Have you made changes in planners for smaller final step/neighbors etc.?" << std::endl;
+            std::cin.get();
+        }
+        const double comms_range = 50.0;
 
-  std::cout << "Running simulation..." << std::endl;
+        Distance distance;
+        SensorModel sensor_model(&distance);
+        World world(X, Y, &distance, &sensor_model, comms_range);
+        Planner planner(step_size);
+        ShortestPath shortest_path(step_size);
+        Scorer scorer;
+        CBBA cbba;
 
-  // ## Common Initialization ## //
-  // How big will the world be (in pixels)?
-  const int X = 400; // Down
-  const int Y = 400; // Right
-  // How far can the robot(s) go in one step? LEAVE AS 1 unless you double check usage, esp. in planners.
-  const int step_size = 1; // In pixels
-  if (step_size != 1) {
-    std::cout << "Your step size is larger than 1! Have made changes in planners for smaller final step/neighbors etc.?" << std::endl;
-    std::cin.get();
-  }
-  const double comms_range = 50.0; //
+        std::cout << "Inits are done..." << std::endl;
+        std::cout << "************** Testing CBBA stuff **************" << std::endl;
 
-  Distance distance; SensorModel sensor_model(&distance); World world (X, Y, &distance, &sensor_model, comms_range);
-  Planner planner (step_size); ShortestPath shortest_path (step_size); Scorer scorer; CBBA cbba;
+        std::vector<Task> allTasks;
+        try {
+            allTasks = world.getAllTasks();
+        } catch (const std::exception& e) {
+            std::cerr << "Exception caught while getting tasks from world: " << e.what() << std::endl;
+            return -1;
+        }
 
-  std::cout << "Inits are done..." << std::endl;
+        std::vector<Task> assignable_tasks1;
+        std::vector<Task> assignable_tasks2;
+        try {
+            assignable_tasks1 = { allTasks[0], allTasks[1], allTasks[2], allTasks[3] };
+            assignable_tasks2 = { allTasks[0], allTasks[1], allTasks[2], allTasks[3] };
+        } catch (const std::out_of_range& e) {
+            std::cerr << "std::out_of_range caught while accessing tasks: " << e.what() << std::endl;
+            return -1;
+        }
 
-  std::cout << "************** Testing CBBA stuff **************" << std::endl;
+        std::vector<cv::Scalar> colors = {
+            cv::Scalar(255, 0, 0),
+            cv::Scalar(0, 255, 0),
+            cv::Scalar(0, 0, 255),
+            cv::Scalar(0, 255, 255),
+            cv::Scalar(255, 255, 0),
+            cv::Scalar(255, 0, 255),
+            cv::Scalar(255, 255, 255)
+        };
 
-  // Initialize all possible tasks (each robot will have a subset of these)
-  // Note: all tasks are actions, but not all actions are tasks (e.g., resurface to charge is only an action)
-  // It is needed, but not specifically an objective of the team like the tasks should be
-  std::vector<Pose2D> quadrant_centers = world.getQuadrantCenters();
-  Task exploreA(0, "Explore area A", quadrant_centers[0], 0, 0, 0); // ID, priority, utility, bid all zero initially
-  Task exploreB(0, "Explore area B", quadrant_centers[1], 0, 0, 0);
-  Task exploreC(0, "Explore area C", quadrant_centers[2], 0, 0, 0);
-  Task exploreD(0, "Explore area D", quadrant_centers[3], 0, 0, 0);
+        Pose2D initial_pose1{10, 10, 0};
+        Pose2D initial_pose2{20, 10, 0};
+        Pose2D goal_pose1{10, 10, 0};
+        Pose2D goal_pose2{5, 10, 0};
+        cv::Scalar color1 = cv::Scalar(0, 0, 255);
+        cv::Scalar color2 = cv::Scalar(255, 0, 0);
 
-  // Define a Pose2D object
-  /*Pose2D task_location{1, 2, 0};
-  Pose2D task_location2{10, 20, 0};
+        try {
+            std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, assignable_tasks1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(cbba));
+            std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, assignable_tasks2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(cbba));
 
-  //std::vector<Pose2D> locations = {taskLocation};
-  //std::vector<Pose2D> locations2 = {taskLocation2};
+            std::cout << "Threads started..." << std::endl;
 
-  // Create a Task object (id, name, loc, priority, utility, bid)
-  Task task1(1, "Deliver Package", task_location, 1.0, 50.0, 1.0);
-  Task task2(2, "Deliver Package 2", task_location2, 2.0, 75.0, 2.0);
+            robot1.join();
+            robot2.join();
+        } catch (const std::exception& e) {
+            std::cerr << "Exception caught while starting or joining threads: " << e.what() << std::endl;
+            return -1;
+        }
 
-  Bundle bundle;
-  bundle.addTask(task1);
-  bundle.addTask(task2);
+        std::cout << "Both threads finished" << std::endl;
 
-  bundle.print();
+        std::cout << "Terminate by pressing any key..." << std::endl;
+        cv::waitKey(0);
 
-  Task nexttask = bundle.popNextTask();
-
-  nexttask.print();
-
-  std::cout << "Press Enter to continue..." << std::endl;
-  std::cin.get();
-*/
-  // Robot colors
-  std::vector<cv::Scalar> colors = {
-      cv::Scalar(255, 0, 0),    // Blue
-      cv::Scalar(0, 255, 0),    // Green
-      cv::Scalar(0, 0, 255),    // Red
-      cv::Scalar(0, 255, 255),  // Yellow
-      cv::Scalar(255, 255, 0),  // Cyan
-      cv::Scalar(255, 0, 255),  // Magenta
-      cv::Scalar(255, 255, 255) // White
-  };
-
-  // Example way to pass different goals to shortest path in each robot
-  Pose2D initial_pose1{10, 10, 0};
-  Pose2D initial_pose2{20, 10, 0};
-  //Pose2D goal_pose1{10, 7, 0}; 
-  //Pose2D goal_pose2{20, 7, 0};
-  Pose2D goal_pose1{10,10,0};
-  Pose2D goal_pose2{5,10,0};
-  cv::Scalar color1 = cv::Scalar(0, 0, 255); // Red color
-  cv::Scalar color2 = cv::Scalar(255, 0, 0); // Blue color
-
-  // Create and start threads for each robot
-  std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world));
-  std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world));
-
-  std::cout << "Threads started..." << std::endl;
-
-  // Wait for both threads to finish
-  robot1.join();
-  robot2.join();
-
-  std::cout << "Both threads finished" << std::endl;
-
-  std::cout << "Terminate by pressing any key..." << std::endl;
-  cv::waitKey(0);
-
-  return 0;
+        return 0;
+    } catch (const std::length_error& e) {
+        std::cerr << "std::length_error caught in main: " << e.what() << std::endl;
+        return -1;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in main: " << e.what() << std::endl;
+        return -1;
+    }
 }
