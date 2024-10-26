@@ -35,8 +35,20 @@
 </root>
 )";*/
 
-// Run to test BuildBundle only
+// Run to test message broadcasting and receipt
 static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <SendMessage/>
+            <ReceiveMessage/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";
+
+// Run to test BuildBundle only
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -44,7 +56,7 @@ static const char* xml_text = R"(
         </Sequence>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world, CBBA& cbba) {
     std::cout << "Entering run_robot for robot " << robot_id << std::endl;
@@ -74,6 +86,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<
                 factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
                 factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
                 factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
+                factory.registerNodeType<TestMessages>("TestMessages", std::ref(world), std::ref(robot));
                 factory.registerNodeType<Regroup>("Regroup", std::ref(robot));
                 factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
                 factory.registerNodeType<RunTest>("RunTest");

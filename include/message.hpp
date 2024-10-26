@@ -22,6 +22,7 @@ class Message {
 public:
     Message(Robot& sender);
 
+    //void printMessage(Msg msg);
     void broadcastMessage(World& world);
     void updateWorldMessageTracker(World& world, int receiverID);
     //void updateRobotMessageQueue(Robot& receiver);

@@ -44,3 +44,14 @@ void Message::broadcastMessage(World& world) {
     }
     //std::cout << "Finished broadcasting message" << std::endl;
 }
+
+/*void Message::printMessage(Msg msg) {
+    std::cout << "Message ID:" << msg.id << ":\n";
+    std::cout << "Task ID: " << msg.task_id << "\n";
+    std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
+   /* std::cout << "Bundle: [";
+    for (const auto& task : msg.bundle.tasks) {
+        std::cout << task << " "; // Assuming tasks can be printed this way
+    }
+    std::cout << "]\n";
+}*/

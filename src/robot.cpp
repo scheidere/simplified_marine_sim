@@ -123,9 +123,9 @@ void Robot::receiveMessages() {
 
     int receiverID = getID();
     std::cout << "receiverID: " << receiverID << std::endl;
-    std::cout << "Printed msg tracker from world: " << std::endl;
-    world->printMessageTracker();
-    std::cout << "world msg tracker printed above, size = " << world_msg_tracker.size() << std::endl;
+    //std::cout << "Printed msg tracker from world: " << std::endl;
+    //world->printMessageTracker();
+    //std::cout << "world msg tracker printed above, size = " << world_msg_tracker.size() << std::endl;
 
     if (world_msg_tracker.find(receiverID) != world_msg_tracker.end()) {
         std::cout << "in if" << std::endl;
@@ -139,6 +139,23 @@ void Robot::receiveMessages() {
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
         }
     }
+}
+
+void Robot::printMessageQueue(const std::vector<Msg>& message_queue) {
+    for (const auto& msg : message_queue) {
+        printMessage(msg);
+    }
+}
+
+void Robot::printMessage(Msg msg) { // no mutex because used within the function above
+    std::cout << "Message ID:" << msg.id << "\n";
+    std::cout << "Task ID: " << msg.task_id << "\n";
+    std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
+   /* std::cout << "Bundle: [";
+    for (const auto& task : msg.bundle.tasks) {
+        std::cout << task << " "; // Assuming tasks can be printed this way
+    }
+    std::cout << "]\n";*/
 }
 
 bool Robot::regroup() {

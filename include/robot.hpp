@@ -55,6 +55,8 @@ public:
     void printTasksVector();
     void move(Pose2D waypoint);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
+    void printMessageQueue(std::vector<Msg>&  message_queue);
+    void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
     bool regroup();

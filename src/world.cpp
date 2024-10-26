@@ -117,10 +117,23 @@ void World::printMessageTracker() {
         std::cout << "Receiver ID: " << receiverID << std::endl;
         std::cout << "Number of messages for receiver: " << messages.size() << std::endl;
         for (auto& msg : messages) {
-            std::cout << "  From ID: " << msg.id << std::endl;
+            //std::cout << "  From ID: " << msg.id << std::endl;
+            std::cout << "Printing message..." << std::endl;
+            printMessage(msg);
         }
     }
     std::cout << "End of printMessageTracker" << std::endl;
+}
+
+void World::printMessage(Msg msg) { // no mutex because used within the function above
+    std::cout << "Message ID:" << msg.id << "\n";
+    std::cout << "Task ID: " << msg.task_id << "\n";
+    std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
+   /* std::cout << "Bundle: [";
+    for (const auto& task : msg.bundle.tasks) {
+        std::cout << task << " "; // Assuming tasks can be printed this way
+    }
+    std::cout << "]\n";*/
 }
 
 bool World::inComms(int id1, int id2) {

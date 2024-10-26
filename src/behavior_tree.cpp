@@ -82,6 +82,10 @@ NodeStatus SendMessage::tick()
         Message msg(_sender);
         msg.broadcastMessage(_world);
         std::cout << "SendMessage: Completed" << std::endl;
+        // The following test works
+        //std::cout << "Testing sent message by printing world message tracker" << std::endl;
+        //_world.printMessageTracker();
+        //std::cout << "SendMessage Test Completed" << std::endl;
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in SendMessage::tick: " << e.what() << std::endl;
@@ -100,9 +104,9 @@ ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config
 NodeStatus ReceiveMessage::tick()
 {
     try {
-        std::cout << "ReceiveMessage: Receiving message" << std::endl;
+        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
         _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        std::cout << "ReceiveMessage: Completed" << std::endl;
+        //std::cout << "ReceiveMessage: Completed" << std::endl;
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
@@ -111,6 +115,27 @@ NodeStatus ReceiveMessage::tick()
 }
 
 PortsList ReceiveMessage::providedPorts()
+{
+    return { InputPort<Pose2D>("waypoint") };
+}
+
+ReceiveMessage::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
+    : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
+
+NodeStatus TestMessages::tick()
+{
+    try {
+        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
+        _receiver.getMessageQueue(); // does correct instance of world get passed to robot class? like only one instance of world should be used
+        //std::cout << "ReceiveMessage: Completed" << std::endl;
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList TestMessages::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
 }

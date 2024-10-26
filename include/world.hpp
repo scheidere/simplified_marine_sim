@@ -67,6 +67,8 @@ public:
 
     std::vector<Pose2D> getQuadrantCenters();
 
+    void printMessage(Msg msg);
+
 };
 
 #endif

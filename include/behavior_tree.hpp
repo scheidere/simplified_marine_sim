@@ -64,6 +64,18 @@ public:
     static PortsList providedPorts();
 };
 
+class TestMessages : public SyncActionNode {
+private:
+    World& _world;
+    Robot& _receiver;
+
+public:
+    TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 class Regroup : public ConditionNode {
 private:
     Robot& _receiver;
