@@ -36,16 +36,40 @@
 )";*/
 
 // Run to test message broadcasting and receipt
+// RunTest helps prints organization
+// Issue is that broadcast only happens once and receive only happens once (not per robot, so only one sends, and one receives instead of both)
+// Adding shortestpath block beneath sequence before the message testing, in case issue is initialization timing
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
             <SendMessage/>
+            <PlanShortestPath path="{path}" goal="{goal}" />
+            <QueueSize queue="{path}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}">
+                <Sequence>
+                    <PopFromQueue queue="{path}" popped_item="{wp}" />
+                    <UseWaypoint waypoint="{wp}" />
+                </Sequence>
+            </Repeat>
             <ReceiveMessage/>
+            <RunTest waypoint="{wp}"/> 
         </Sequence>
      </BehaviorTree>
 </root>
 )";
+
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <SendMessage/>
+            <ReceiveMessage/>
+            <RunTest waypoint="{wp}"/> 
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
 
 // Run to test BuildBundle only
 /*static const char* xml_text = R"(

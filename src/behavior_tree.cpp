@@ -79,6 +79,8 @@ NodeStatus SendMessage::tick()
 {
     try {
         std::cout << "SendMessage: Broadcasting message" << std::endl;
+        std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting message...";
+        _sender.log(log_msg);
         Message msg(_sender);
         msg.broadcastMessage(_world);
         std::cout << "SendMessage: Completed" << std::endl;
@@ -107,6 +109,8 @@ NodeStatus ReceiveMessage::tick()
         //std::cout << "ReceiveMessage: Receiving message" << std::endl;
         _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
         //std::cout << "ReceiveMessage: Completed" << std::endl;
+        std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving message(s)...";
+        _receiver.log(log_msg);
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
@@ -119,7 +123,7 @@ PortsList ReceiveMessage::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
-ReceiveMessage::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
+TestMessages::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
 
 NodeStatus TestMessages::tick()

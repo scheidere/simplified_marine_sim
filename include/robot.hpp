@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <fstream>
 #include "planners.hpp"
 #include "scorer.hpp"
 #include "world.hpp"
@@ -37,6 +38,8 @@ private:
     WinningBids winning_bids;
     WinningAgentIndices winning_agent_indices;
     void initializeWinningBidsAndIndices();
+    std::ofstream robot_log; // Init file for each robot to log in
+
 
 
 public:
@@ -55,7 +58,7 @@ public:
     void printTasksVector();
     void move(Pose2D waypoint);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
-    void printMessageQueue(std::vector<Msg>&  message_queue);
+    void printMessageQueue(const std::vector<Msg>&  message_queue);
     void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
@@ -65,6 +68,8 @@ public:
     bool batteryLow();
     WinningBids& getWinningBids() { return winning_bids; }
     WinningAgentIndices& getWinningAgentIndices() { return winning_agent_indices; }
+    std::string generateLogFilename();
+    void log(std::string log_msg);
 
     //void resurfaceToCharge();
 

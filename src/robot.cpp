@@ -32,6 +32,14 @@ Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& in
         std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
     }
 
+    // Get filename for logging and then open it
+    std::string filename = generateLogFilename();
+    std::ofstream clear(filename, std::ios::out); // Clear logging file from previous run
+    clear.close();
+    robot_log.open(filename, std::ios::app); // Allow appending
+    //std::string log_msg = "testing log_msg";
+    //log(log_msg);
+
     try {
         std::cout << "Allocating winning_bids and winning_agent_indices vectors..." << std::endl;
         winning_bids = WinningBids(numTasks);
@@ -42,6 +50,28 @@ Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& in
     }
     
     initializeWinningBidsAndIndices();
+}
+
+std::string Robot::generateLogFilename() {
+    std::ostringstream oss;
+    oss << "robot_" << id << "_log.txt";  // Create a string in the format "filename_<robotID>.txt"
+    return oss.str();
+}
+
+void Robot::log(std::string log_msg) {
+
+    if (robot_log.is_open()) {
+        //std::cerr << "LOG FILE IS OPEN FOR ROBOT " << id << std::endl;
+
+        //robot_log << "Testing: " << id << std::endl;
+        robot_log << log_msg << std::endl;
+        //robot_log.flush(); // Write immediately
+        //robot_log.close();
+
+    } else {
+        std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Failed to open log file for Robot ID " << id << std::endl;
+    }
+
 }
 
 void Robot::initializeWinningBidsAndIndices() {
@@ -137,6 +167,8 @@ void Robot::receiveMessages() {
             Msg msg = messages.front();
             updateRobotMessageQueue(msg);
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
+            std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
+            log(log_msg);
         }
     }
 }
