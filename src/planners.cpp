@@ -6,7 +6,7 @@
 #include "distance.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
-Planner::Planner(int step_size) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>())
+Planner::Planner(int step_size, int obs_radius) : step_size(step_size), obs_radius(obs_radius), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>())
 {
 }
 
@@ -149,9 +149,12 @@ void Planner::printPlan(const std::shared_ptr<BT::ProtectedQueue<Pose2D>>& plan)
     }
 }
 
-ShortestPath::ShortestPath(int step_size) : Planner(step_size) {
+
+ShortestPath::ShortestPath(int step_size) : Planner(step_size, obs_radius) {
 
 }
+
+//std::make_shared<BT::ProtectedQueue<Pose2D>> ShortestPath::getPlan()
 
 std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
 
@@ -257,3 +260,24 @@ std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D start_pose
 
 
 
+CoveragePath::CoveragePath(int step_size, int obs_radius) : ShortestPath(step_size) {
+
+}
+
+std::shared_ptr<BT::ProtectedQueue<Pose2D>> CoveragePath::plan(Pose2D start_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y) {
+
+    /*int start_idx = getIndex(start_pose.x,start_pose.y,Y); // Idx of robot current location
+    auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue that will hold the shortest path
+    adjacency_vector graph = convertImageToAdjacencyVector(X, Y);
+
+    int V = X*Y; // Number of vertices
+    std::vector<double> distance_tracker = initializeDistances(V, start_idx, Y);
+    std::vector<bool> visit_tracker = initializeVisits(V);*/
+
+    std::cout << "shortest path issue here..." << std::endl;
+    std::cout << "Step size check: " << step_size << std::endl;
+
+    auto plan = ShortestPath::plan(start_pose, corner2, X, Y); // Testing that shortest path works from here
+
+    return plan;
+}

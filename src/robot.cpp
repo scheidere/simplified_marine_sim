@@ -10,8 +10,8 @@
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
-Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar dot_color) 
-: planner(p), shortest_path(sp), scorer(s), world(w), goal(goal_pose), id(robot_id), winning_bids(1), winning_agent_indices(1) {
+Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar dot_color) 
+: planner(p), shortest_path(sp), coverage_path(cp), scorer(s), world(w), goal(goal_pose), id(robot_id), winning_bids(1), winning_agent_indices(1) {
     pose = {0, 0, 0};
     goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
     color = dot_color;
@@ -190,7 +190,7 @@ void Robot::printMessage(Msg msg) { // no mutex because used within the function
     std::cout << "]\n";*/
 }
 
-bool Robot::regroup() {
+bool Robot::needRegroup() {
     std::cout << " IN REGROUP" << std::endl;
     std::cout << "message_queue length" << message_queue.size() << std::endl;
 

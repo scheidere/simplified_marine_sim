@@ -23,6 +23,7 @@ private:
     Pose2D goal;
     Planner* planner;
     ShortestPath* shortest_path;
+    CoveragePath* coverage_path;
     Scorer* scorer;
     World* world; // Point to single,shared world instance
     std::vector<Msg> message_queue;
@@ -43,7 +44,7 @@ private:
 
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, Scorer* scorer, World* world, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar color); // Is this right with planners?
+    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, Scorer* scorer, World* world, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar color); // Is this right with planners?
 
     int getID() const { return id; }
     int getCurrentTaskID() const { return task_id; }
@@ -62,7 +63,7 @@ public:
     void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
-    bool regroup();
+    bool needRegroup();
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);
     bool batteryLow();

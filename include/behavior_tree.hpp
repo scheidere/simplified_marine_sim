@@ -27,6 +27,36 @@ public:
 
 };
 
+class PlanCoveragePath : public SyncActionNode {
+private:
+    World& _world;
+    Robot& _robot;
+    CoveragePath& _coverage_path;
+
+public:
+    PlanCoveragePath(const std::string& name, const BT::NodeConfig& config, World& w, Robot& r, CoveragePath& cp);
+
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+
+};
+
+class PlanRegroupPath : public SyncActionNode {
+private:
+    World& _world;
+    Robot& _robot;
+    ShortestPath& _shortest_path;
+
+public:
+    PlanRegroupPath(const std::string& name, const BT::NodeConfig& config, World& w, Robot& r, ShortestPath& sp);
+
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+
+};
+
 class UseWaypoint : public ThreadedAction {
 private:
 	World& _world;
@@ -40,7 +70,7 @@ public:
     static PortsList providedPorts();
 };
 
-class SendMessage : public SyncActionNode {
+/*class SendMessage : public SyncActionNode {
 private:
     World& _world;
     Robot& _sender;
@@ -53,6 +83,30 @@ public:
 };
 
 class ReceiveMessage : public SyncActionNode {
+private:
+    World& _world;
+    Robot& _receiver;
+
+public:
+    ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};*/
+
+class SendMessage : public ThreadedAction {
+private:
+    World& _world;
+    Robot& _sender;
+
+public:
+    SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ReceiveMessage : public ThreadedAction {
 private:
     World& _world;
     Robot& _receiver;
@@ -76,12 +130,12 @@ public:
     static PortsList providedPorts();
 };
 
-class Regroup : public ConditionNode {
+class NeedRegroup : public ConditionNode {
 private:
     Robot& _receiver;
 
 public:
-    Regroup(const std::string& name, const NodeConfig& config, Robot& receiver);
+    NeedRegroup(const std::string& name, const NodeConfig& config, Robot& receiver);
     NodeStatus tick() override;
 
     static PortsList providedPorts();

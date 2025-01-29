@@ -76,6 +76,10 @@ void World::clear(Pose2D pose) {
 void World::plot() {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Plotting world..." << std::endl;
+
+    // Plotting quadrant centers (for now)
+    std::vector<Pose2D> quadrant_centers = getQuadrantCenters(); // also plots them; will remove once we add obstacles
+
     for (auto& pair : robot_tracker) {
         Robot* robot = pair.second;
         cv::Scalar color = robot->getColor();
@@ -83,6 +87,7 @@ void World::plot() {
         std::cout << "Plotting robot ID: " << robot->getID() << " at pose: " << robot_pose.x << ", " << robot_pose.y << " with color: " << color << std::endl;
         cv::circle(image, cv::Point(robot_pose.x, robot_pose.y), 5, color, -1);
     }
+
     cv::imshow("Quadrant Image", image);
     cv::waitKey(300);
 }
