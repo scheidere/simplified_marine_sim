@@ -10,8 +10,8 @@
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
-Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar dot_color) 
-: planner(p), shortest_path(sp), scorer(s), world(w), goal(goal_pose), id(robot_id), winning_bids(1), winning_agent_indices(1) {
+Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar dot_color) 
+: planner(p), shortest_path(sp), coverage_path(cp), scorer(s), world(w), goal(goal_pose), id(robot_id), winning_bids(1), winning_agent_indices(1) {
     pose = {0, 0, 0};
     goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
     color = dot_color;
@@ -32,6 +32,14 @@ Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& in
         std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
     }
 
+    // Get filename for logging and then open it
+    std::string filename = generateLogFilename();
+    std::ofstream clear(filename, std::ios::out); // Clear logging file from previous run
+    clear.close();
+    robot_log.open(filename, std::ios::app); // Allow appending
+    //std::string log_msg = "testing log_msg";
+    //log(log_msg);
+
     try {
         std::cout << "Allocating winning_bids and winning_agent_indices vectors..." << std::endl;
         winning_bids = WinningBids(numTasks);
@@ -42,6 +50,28 @@ Robot::Robot(Planner* p, ShortestPath* sp, Scorer* s, World* w, const Pose2D& in
     }
     
     initializeWinningBidsAndIndices();
+}
+
+std::string Robot::generateLogFilename() {
+    std::ostringstream oss;
+    oss << "robot_" << id << "_log.txt";  // Create a string in the format "filename_<robotID>.txt"
+    return oss.str();
+}
+
+void Robot::log(std::string log_msg) {
+
+    if (robot_log.is_open()) {
+        //std::cerr << "LOG FILE IS OPEN FOR ROBOT " << id << std::endl;
+
+        //robot_log << "Testing: " << id << std::endl;
+        robot_log << log_msg << std::endl;
+        //robot_log.flush(); // Write immediately
+        //robot_log.close();
+
+    } else {
+        std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Failed to open log file for Robot ID " << id << std::endl;
+    }
+
 }
 
 void Robot::initializeWinningBidsAndIndices() {
@@ -137,6 +167,8 @@ void Robot::receiveMessages() {
             Msg msg = messages.front();
             updateRobotMessageQueue(msg);
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
+            std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
+            log(log_msg);
         }
     }
 }
@@ -158,7 +190,7 @@ void Robot::printMessage(Msg msg) { // no mutex because used within the function
     std::cout << "]\n";*/
 }
 
-bool Robot::regroup() {
+bool Robot::needRegroup() {
     std::cout << " IN REGROUP" << std::endl;
     std::cout << "message_queue length" << message_queue.size() << std::endl;
 

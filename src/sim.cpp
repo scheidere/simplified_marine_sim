@@ -36,16 +36,94 @@
 )";*/
 
 // Run to test message broadcasting and receipt
-static const char* xml_text = R"(
+// RunTest helps prints organization
+// Issue is that broadcast only happens once and receive only happens once (not per robot, so only one sends, and one receives instead of both)
+// Adding shortestpath block beneath sequence before the message testing, in case issue is initialization timing
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <SendMessage/>
+            <PlanShortestPath path="{path}" goal="{goal}" />
+            <QueueSize queue="{path}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}">
+                <Sequence>
+                    <PopFromQueue queue="{path}" popped_item="{wp}" />
+                    <UseWaypoint waypoint="{wp}" />
+                </Sequence>
+            </Repeat>
+            <ReceiveMessage/>
+            <NeedRegroup/>
+            <RunTest waypoint="{wp}"/> 
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Test path traversal triggered by a condition, which relates to robots sending and having received messages
+// First let's test a delay function (threaded action so more than one tick, and just have it wait for 5 seconds between send and receive)
+// HERE NEXT
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <SendMessage/>
+            <PlanShortestPath path="{path}" goal="{goal}" />
+            <QueueSize queue="{path}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}">
+                <Sequence>
+                    <PopFromQueue queue="{path}" popped_item="{wp}" />
+                    <UseWaypoint waypoint="{wp}" />
+                </Sequence>
+            </Repeat>
+            <ReceiveMessage/>
+            <NeedRegroup/>
+            <RunTest waypoint="{wp}"/> 
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
             <SendMessage/>
             <ReceiveMessage/>
+            <Sequence name="regroup_sequence">
+                <NeedRegroup/>
+                <PlanRegroupPath path="{path}" />
+                <QueueSize queue="{path}" size="{wp_size}" />
+                <Repeat num_cycles="{wp_size}">
+                <Sequence>
+                    <PopFromQueue queue="{path}" popped_item="{wp}" />
+                    <UseWaypoint waypoint="{wp}" />
+                </Sequence>
+            </Repeat>
+            </Sequence>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <PlanCoveragePath path="{path}" />
+            <QueueSize queue="{path}" size="{wp_size}" />
+            <Repeat num_cycles="{wp_size}">
+            <Sequence>
+                <PopFromQueue queue="{path}" popped_item="{wp}" />
+                <UseWaypoint waypoint="{wp}" />
+            </Sequence>
+            </Repeat>
         </Sequence>
      </BehaviorTree>
 </root>
 )";
+
+// <RunTest waypoint="{wp}"/> 
 
 // Run to test BuildBundle only
 /*static const char* xml_text = R"(
@@ -58,14 +136,21 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, Scorer& scorer, World& world, CBBA& cbba) {
+double getCurrentTime() {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() / 1000.0;
+}
+
+
+void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, Scorer& scorer, World& world, CBBA& cbba) {
     std::cout << "Entering run_robot for robot " << robot_id << std::endl;
 
     try {
         std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
 
         try {
-            Robot robot(&planner, &shortest_path, &scorer, &world, initial_pose, goal_pose, assignable_tasks, robot_id, color);
+            Robot robot(&planner, &shortest_path, &coverage_path, &scorer, &world, initial_pose, goal_pose, assignable_tasks, robot_id, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
 
             {
@@ -80,6 +165,8 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<
 
             try {
                 factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
+                factory.registerNodeType<PlanCoveragePath>("PlanCoveragePath", std::ref(world), std::ref(robot), std::ref(coverage_path));
+                factory.registerNodeType<PlanRegroupPath>("PlanRegroupPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
                 factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
                 factory.registerNodeType<RepeatNode>("RepeatNode");
                 factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
@@ -87,7 +174,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<
                 factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
                 factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
                 factory.registerNodeType<TestMessages>("TestMessages", std::ref(world), std::ref(robot));
-                factory.registerNodeType<Regroup>("Regroup", std::ref(robot));
+                factory.registerNodeType<NeedRegroup>("NeedRegroup", std::ref(robot));
                 factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
                 factory.registerNodeType<RunTest>("RunTest");
                 factory.registerNodeType<RunTest2>("RunTest2");
@@ -143,6 +230,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<
 
 int main(int argc, char** argv) {
     try {
+        double start_time = getCurrentTime();
         std::cout << "Running simulation..." << std::endl;
 
         const int X = 400;
@@ -153,12 +241,14 @@ int main(int argc, char** argv) {
             std::cin.get();
         }
         const double comms_range = 50.0;
+        const int obs_radius = 4;
 
         Distance distance;
         SensorModel sensor_model(&distance);
         World world(X, Y, &distance, &sensor_model, comms_range);
-        Planner planner(step_size);
+        Planner planner(step_size, obs_radius);
         ShortestPath shortest_path(step_size);
+        CoveragePath coverage_path(step_size, obs_radius);
         Scorer scorer;
         CBBA cbba;
 
@@ -193,7 +283,7 @@ int main(int argc, char** argv) {
             cv::Scalar(255, 255, 255)
         };
 
-        Pose2D initial_pose1{10, 10, 0};
+        Pose2D initial_pose1{0, 0, 0};
         Pose2D initial_pose2{20, 10, 0};
         Pose2D goal_pose1{10, 10, 0};
         Pose2D goal_pose2{5, 10, 0};
@@ -201,8 +291,8 @@ int main(int argc, char** argv) {
         cv::Scalar color2 = cv::Scalar(255, 0, 0);
 
         try {
-            std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, assignable_tasks1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(cbba));
-            std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, assignable_tasks2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(scorer), std::ref(world), std::ref(cbba));
+            std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, assignable_tasks1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(cbba));
+            std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, assignable_tasks2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(cbba));
 
             std::cout << "Threads started..." << std::endl;
 
@@ -214,6 +304,10 @@ int main(int argc, char** argv) {
         }
 
         std::cout << "Both threads finished" << std::endl;
+
+        double end_time = getCurrentTime();
+        double total_time = end_time - start_time;
+        std::cout << "Execution time: " << total_time << std::endl;
 
         std::cout << "Terminate by pressing any key..." << std::endl;
         cv::waitKey(0);

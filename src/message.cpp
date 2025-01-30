@@ -42,6 +42,11 @@ void Message::broadcastMessage(World& world) {
             }
         }
     }
+
+
+    // Adding a delay to help with concurrency issue if nothing is done between sending and listening for messages (in BT structure)
+    
+
     //std::cout << "Finished broadcasting message" << std::endl;
 }
 

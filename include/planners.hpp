@@ -24,15 +24,17 @@ class Planner {
 protected:
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> current_plan;
     int step_size; // In pixels
+    int obs_radius; // Observation radius in pixels
 
 public:
-    Planner(int step_size);
+    Planner(int step_size, int obs_radius);
 
     void test();
 
     // Getter/setter functions for private variables
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> getPlan() const { return current_plan; }
     int getStepSize() const { return step_size; }
+    int getObsRadius() const { return obs_radius; }
     void updatePlan(std::shared_ptr<BT::ProtectedQueue<Pose2D>> new_plan) { current_plan = new_plan; }
     void updateStepSize(double new_step_size) { step_size = new_step_size; }   
 
@@ -60,6 +62,19 @@ public:
 
     // This function generates shortest path to waypoint (does not change sim state)
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y);
+
+    // Update distance from start node to current node (given) with respect to its neighbor node
+    //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);
+
+
+};
+
+class CoveragePath : public ShortestPath {
+public:
+    CoveragePath(int step_size, int obs_radius);
+
+    // This function generates shortest path to waypoint (does not change sim state)
+    std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y);
 
     // Update distance from start node to current node (given) with respect to its neighbor node
     //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);
