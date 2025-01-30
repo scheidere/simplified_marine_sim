@@ -141,7 +141,7 @@ void Robot::receiveMessages() {
     }
 }
 
-void Robot::printMessageQueue(const std::vector<Msg>& message_queue) {
+void Robot::printMessageQueue(std::vector<Msg>& message_queue) {
     for (const auto& msg : message_queue) {
         printMessage(msg);
     }

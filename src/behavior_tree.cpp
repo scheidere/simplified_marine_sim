@@ -119,7 +119,7 @@ PortsList ReceiveMessage::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
-ReceiveMessage::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
+TestMessages::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
 
 NodeStatus TestMessages::tick()
