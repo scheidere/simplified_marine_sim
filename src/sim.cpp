@@ -15,6 +15,7 @@
 #include "behaviortree_cpp/decorators/loop_node.h"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "CBBA.hpp"
+#include "parser.hpp"
 
 // Run to show robots traversing to different waypoints
 /*static const char* xml_text = R"(
@@ -106,7 +107,7 @@
 </root>
 )";*/
 
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -121,12 +122,12 @@ static const char* xml_text = R"(
         </Sequence>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 // <RunTest waypoint="{wp}"/> 
 
-// Run to test BuildBundle only
-/*static const char* xml_text = R"(
+// Run to test BuildBundle only (currently crashes)
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -134,7 +135,7 @@ static const char* xml_text = R"(
         </Sequence>
      </BehaviorTree>
 </root>
-)";*/
+)";
 
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
@@ -232,6 +233,9 @@ int main(int argc, char** argv) {
     try {
         double start_time = getCurrentTime();
         std::cout << "Running simulation..." << std::endl;
+
+        // Testing parsing
+        parseJSON("/home/emily/sa-mrbt_ws/src/simplified_marine_sim/config/input.json");
 
         const int X = 400;
         const int Y = 400;

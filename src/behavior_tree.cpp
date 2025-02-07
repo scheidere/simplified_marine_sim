@@ -233,10 +233,6 @@ PortsList ReceiveMessage::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 635e067bd0de8b3cb2fb1f3ddf9231e052920ad2
 TestMessages::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
 
@@ -353,6 +349,7 @@ NodeStatus BuildBundle::tick()
 {
     try {
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
+        _cbba.buildBundle(_world, _robot);
         return NodeStatus::RUNNING;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in BuildBundle::tick: " << e.what() << std::endl;

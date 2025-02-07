@@ -1,56 +1,71 @@
 {
 	"global_tasks": [
 		{
-			// Explore the entire area A+B+C+D
+			"_comments": ["Explore the entire area A+B+C+D"],
 			"id": "Explore", 
 			"reward": 20, 
 			"requires": ["Explore_A","Explore_B","Explore_C","Explore_D"]
 		}
-		{
-			"id": "global_name", 
-			"reward": 20, 
-			"requires": ["local_task_name","local_task_name"]
-		}
-
-		// Add more global tasks
 	],
 	"local_tasks": [
+
 		{
-			"id": "name",
-			"type": "coverage", // or something else like "inspection"
-			"area": {"xmin": 0, "xmax": 10, "ymin": 0, "ymax": 10}, // Type means this line will change, maybe more properties or just different
-			"reward": 5
-		}
-		{
-			// Explore quadrant A
 			"id": "Explore_A",
 			"type": "coverage",
 			"area": {"xmin": 0, "xmax": 100, "ymin": 0, "ymax": 100},
 			"reward": 5
-		}
+		},
 		{
-			// Explore quadrant B
 			"id": "Explore_B",
 			"type": "coverage",
 			"area": {"xmin": 100, "xmax": 200, "ymin": 0, "ymax": 100},
 			"reward": 5
-		}
+		},
 		{
-			// Explore quadrant C
 			"id": "Explore_C",
 			"type": "coverage",
 			"area": {"xmin": 0, "xmax": 100, "ymin": 100, "ymax": 200},
 			"reward": 5
-		}
+		},
 		{
-			// Explore quadrant D
 			"id": "Explore_D",
 			"type": "coverage",
 			"area": {"xmin": 100, "xmax": 200, "ymin": 100, "ymax": 200},
 			"reward": 5
 		}
+	],
+	"agent_capabilities": [
+		{
+			"_comments": [
+    			"Capabilities of the agents by type",
+    			"Temporary tasks, both types should be able to explore all areas (just want to test simply first)"
+			],
+			"mapper": ["Explore_A", "Explore_B"],
+			"analysis": ["Explore_C", "Explore_D"]
+		}
+	],
 
-		// Add more local tasks (and also fault/subtask hierachy info)
-	]
+	"agents": [
+		{
+			"id": "1",
+			"type": "mapper"
+		},
+		{
+			"id": "2",
+			"type": "analysis"
+		},
+		{
+			"id": "3",
+			"type": "mapper"
+		},
+		{
+			"id": "4",
+			"type": "analysis"
+		}
+	],
+
+	"cbba": {
+		"max_depth": 3
+	}
 
 }

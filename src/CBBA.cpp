@@ -136,6 +136,9 @@ void CBBA::buildBundle(World& world, Robot& robot) {
         //     z_i.winning_agent_indices[j] = robot.getID();
         // }
 
+        std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
+        robot.log(log_msg);
+
         std::cout << "at end of CBBA::buildBundle..." << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error in buildBundle: " << e.what() << std::endl;

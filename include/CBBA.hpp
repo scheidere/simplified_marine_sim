@@ -32,7 +32,42 @@ struct NewWinIndicator { // h_i
 
 class CBBA {
 private:
-    int temp;
+    int num_agents; // Number of agents (including all types)
+    int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
+    int max_depth; // Maximum number of tasks an agent can hold in its bundle
+
+    // Time-related stuff?
+    // time window flag
+    // time duration flag (all durations > 0)
+    // time interval list [earliest start, latest end] if tasks are time dependent
+
+    // General agent/task info
+    std::vector<int> agent_indices; // is this really needed
+    std::vector<std::string> agent_types;
+    //std::vector<robot class instance> agents; tbd
+    std::vector<std::string> task_types;
+    //std::vector<task class or struct instance> tasks; tbd pick either class or struct to represent each task
+    std::vector<std::vector<int>> capabilities; // Denotes which agents can do which tasks (0: can't; 1: can by self; 2: can co-op; 3: TBD)
+
+    // In the following 2D vectors, one row for each agent and columns are for the task-related info
+    std::vector<std::vector<int>> bundle;  // Assigned tasks for all agents
+    std::vector<std::vector<int>> path;    // Task execution order for all agents
+    std::vector<std::vector<double>> execution_times; // Execution times for each agent's tasks
+    std::vector<std::vector<double>> scores; // Scores for each agent's tasks
+
+    // Spatial limits X Y Z of world
+
+    // Auction info
+    std::vector<std::vector<double>> bids;
+    std::vector<std::vector<int>> winners; // by index
+    std::vector<std::vector<double>> winning_bids;
+
+    // Will need to pass world class in
+
+
+
+
+
 
 public:
     CBBA();

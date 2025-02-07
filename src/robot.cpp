@@ -54,7 +54,7 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w
 
 std::string Robot::generateLogFilename() {
     std::ostringstream oss;
-    oss << "robot_" << id << "_log.txt";  // Create a string in the format "filename_<robotID>.txt"
+    oss << "robot_" << id << "_log.txt";  // Create a string in the format "robot_<robotID>_log.txt"
     return oss.str();
 }
 
