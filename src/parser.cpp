@@ -5,7 +5,25 @@
 
 using json = nlohmann::json;
 
-void parseJSON(const std::string& filename) {
+Parser::Parser(const std::string& input_path) {
+
+}
+
+json Parser::parse(const std::string& input_path) {
+
+    // Get JSON object j
+    std::ifstream file(input_path);
+    json j;
+
+    try {
+        file >> j;
+    } catch (json::parse_error& e) {
+        std::cerr << "JSON Parse Error: " << e.what() << std::endl;
+    }
+    return j;
+}
+
+void Parser::parseJSON(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;

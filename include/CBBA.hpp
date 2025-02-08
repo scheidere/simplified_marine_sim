@@ -55,22 +55,19 @@ private:
     std::vector<std::vector<double>> execution_times; // Execution times for each agent's tasks
     std::vector<std::vector<double>> scores; // Scores for each agent's tasks
 
-    // Spatial limits X Y Z of world
-
     // Auction info
     std::vector<std::vector<double>> bids;
     std::vector<std::vector<int>> winners; // by index
     std::vector<std::vector<double>> winning_bids;
 
-    // Will need to pass world class in
-
-
-
-
+    // Spatial limits X Y Z of world
+    // Will need to pass world class in somewhere
 
 
 public:
-    CBBA();
+    CBBA(const std::string& input_path);
+
+    void init(const std::string& input_path);
 
     //double createBid(Robot * robot, Task& task); // I don't think this is explicitly needed
 

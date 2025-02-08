@@ -5,10 +5,16 @@
 #include "world.hpp"
 #include "robot.hpp"
 #include "CBBA.hpp"
+#include "parser.hpp"
 
 class Robot;
 
-CBBA::CBBA() {
+CBBA::CBBA(const std::string& input_path) {
+
+    init(input_path);
+}
+
+void CBBA::init(const std::string& input_path) {
 
 }
 
