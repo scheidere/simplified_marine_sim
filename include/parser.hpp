@@ -5,16 +5,27 @@
 
 using json = nlohmann::json;
 
-class Parser {
+class JSONParser {
 private:
-	json input_file;
+	std::string input_path;
+	json j;
 
 public:
-	Parser(const std::string& input_path);
-	json parse(const std::string& input_path);
+	JSONParser(const std::string& input_path);
 
-	// Function to parse the JSON file and do something with the data
-	void parseJSON(const std::string& filename);
+	json parse();
+
+	int getNumAgents();
+
+	int getNumLocalTasks();
+
+	int getMaxDepth();
+
+	std::vector<int> getAgentIndices();
+
+	std::vector<std::string> getAgentTypes();
+
+	std::vector<std::string> getTaskTypes();
 
 };
 

@@ -235,11 +235,11 @@ int main(int argc, char** argv) {
         std::cout << "Running simulation..." << std::endl;
 
         // Testing parsing
-        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+        //std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
         //std::string path = (std::filesystem::current_path() / "src/simplified_marine_sim/config/input.json").string(); also works
         //std::cout << path << std::endl;
-        Parser parser(&path);
-        parser.parseJSON(path);
+        //JSONParser parser(path);
+        //parser.parseJSON(path);
 
         const int X = 400;
         const int Y = 400;
@@ -258,7 +258,10 @@ int main(int argc, char** argv) {
         ShortestPath shortest_path(step_size);
         CoveragePath coverage_path(step_size, obs_radius);
         Scorer scorer;
-        CBBA cbba;
+
+        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+        JSONParser parser(path);
+        CBBA cbba(parser);
 
         std::cout << "Inits are done..." << std::endl;
         std::cout << "************** Testing CBBA stuff **************" << std::endl;

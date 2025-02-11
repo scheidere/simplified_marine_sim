@@ -2,14 +2,18 @@
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <unordered_set>
+
 
 using json = nlohmann::json;
 
-Parser::Parser(const std::string& input_path) {
+JSONParser::JSONParser(const std::string& input_filepath) {
+    input_path = input_filepath;
+    j = parse();
 
 }
 
-json Parser::parse(const std::string& input_path) {
+json JSONParser::parse() {
 
     // Get JSON object j
     std::ifstream file(input_path);
@@ -23,35 +27,101 @@ json Parser::parse(const std::string& input_path) {
     return j;
 }
 
-void Parser::parseJSON(const std::string& filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Error opening file: " << filename << std::endl;
-        std::cin.get();
-        return;
+int JSONParser::getNumAgents() {
+
+    int num_agents;
+
+    if (j.contains("agents") && j["agents"].is_array()) {
+        num_agents = j["agents"].size();
+        std::cout << "Number of agents: " << num_agents << std::endl;
+    }
+    else {
+        std::cerr << "Error: agent info not found or invalid in JSON." << std::endl;
     }
 
-    json j;
-    try {
-        file >> j;
-    } catch (json::parse_error& e) {
-        std::cerr << "JSON Parse Error: " << e.what() << std::endl;
-        return;
+    return num_agents;
+}
+
+int JSONParser::getNumLocalTasks() {
+
+    int num_local_tasks;
+
+    if (j.contains("local_tasks") && j["local_tasks"].is_array()) {
+        num_local_tasks = j["local_tasks"].size();
+        std::cout << "Number of local tasks: " << num_local_tasks << std::endl;
     }
 
-    std::cout << "+++++++++++++++++++++" << std::endl;
-    std::cout << "All input shown below: " << j.dump(4) << std::endl;
-    std::cout << "+++++++++++++++++++++" << std::endl;
+    return num_local_tasks;
+}
 
-    std::cout << "Parsed global tasks: " << std::endl;
-    json global_tasks = j["global_tasks"];
-    std::cout << global_tasks.dump(4) << std::endl;
-    for (auto& task : global_tasks) {
-        std::cout << "ID: " << task["id"] << std::endl;
+int JSONParser::getMaxDepth() {
+
+    int max_depth;
+
+    if (j.contains("cbba") && j["cbba"].is_object()) {
+        if (j["cbba"].contains("max_depth") && j["cbba"]["max_depth"].is_number_integer()) {
+            //std::cout << j["cbba"]["max_depth"] << std::endl;
+            max_depth = j["cbba"]["max_depth"];
+        } else {
+            std::cerr << "Error: max_depth not found or invalid in JSON." << std::endl;
+        }
     }
-    //std::cout << "ID: " << global_tasks[0]<< std::endl;
-    std::cout << "=====================" << std::endl;
+    else {
+        std::cerr << "Error: cbba section not found in JSON." << std::endl;
+    }
 
-    std::cout << "Parsed JSON successfully.\nPress Enter to continue...";
-    std::cin.get();
+    return max_depth;
+}
+
+std::vector<int> JSONParser::getAgentIndices() {
+
+    std::vector<int> agent_indices;
+
+    if (j.contains("agents") && j["agents"].is_array()) {
+        for (const auto& agent : j["agents"]) {
+            agent_indices.push_back(agent["id"]);
+            std::cout << agent["id"] << std::endl;
+        }
+    }
+    else {
+        std::cerr << "Error: agent indices not found or invalid in JSON." << std::endl;
+    }
+
+    return agent_indices;
+}
+
+std::vector<std::string> JSONParser::getAgentTypes() {
+
+    std::unordered_set<std::string> unique_agent_types; // unordered set to only get unique types
+
+    if (j.contains("agents") && j["agents"].is_array()) {
+        for (const auto& agent : j["agents"]) {
+            unique_agent_types.insert(agent["type"].get<std::string>()); // Have to explicitly convert to string, json library can't do unless basic like vector
+        }
+    }
+    else {
+        std::cerr << "Error: agent types not found or invalid in JSON." << std::endl;
+    }
+
+    std::vector<std::string> agent_types(unique_agent_types.begin(), unique_agent_types.end());
+
+    return agent_types;
+}
+
+std::vector<std::string> JSONParser::getTaskTypes() {
+
+    std::unordered_set<std::string> unique_task_types; // unordered set to only get unique types
+
+    if (j.contains("local_tasks") && j["local_tasks"].is_array()) {
+        for (const auto& task : j["local_tasks"]) {
+            unique_task_types.insert(task["type"].get<std::string>()); // Have to explicitly convert to string, json library can't do unless basic like vector
+        }
+    }
+    else {
+        std::cerr << "Error: task types not found or invalid in JSON." << std::endl;
+    }
+
+    std::vector<std::string> task_types(unique_task_types.begin(), unique_task_types.end());
+
+    return task_types;
 }

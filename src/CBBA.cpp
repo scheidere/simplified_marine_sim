@@ -9,13 +9,38 @@
 
 class Robot;
 
-CBBA::CBBA(const std::string& input_path) {
-
-    init(input_path);
+CBBA::CBBA(JSONParser& parser) : parser(parser) {
+    init();
 }
 
-void CBBA::init(const std::string& input_path) {
+void CBBA::init() {
 
+    // Parse at all
+    json j = parser.parse();
+    //std::cout << "Printing parsed json from CBBA init" << std::endl;
+    //std::cout << j.dump(4) << std::endl;
+    //std::cin.get();
+
+    num_agents = parser.getNumAgents();
+    //std::cout << num_agents << std::endl;
+
+    num_tasks = parser.getNumLocalTasks();
+
+    max_depth = parser.getMaxDepth(); //j["cbba"]["max_depth"];
+    //std::cout << max_depth << std::endl;
+
+    std::vector<int> agent_indices = parser.getAgentIndices();
+    std::vector<std::string> agent_types = parser.getAgentTypes();
+    for (auto& t: agent_types) {
+        std::cout << t << std::endl;
+    }
+
+    std::vector<std::string> task_types = parser.getTaskTypes();
+    for (auto& t: task_types) {
+        std::cout << t << std::endl;
+    }
+
+    std::cin.get();
 }
 
 double CBBA::calculatePathUtility(Robot& robot, Path path) {

@@ -9,6 +9,7 @@
 #include "world.hpp"
 #include "robot.hpp"
 #include "structs.hpp"
+#include "parser.hpp"
 
 
 struct NewWinIndicator;
@@ -32,6 +33,9 @@ struct NewWinIndicator { // h_i
 
 class CBBA {
 private:
+
+    JSONParser& parser; 
+
     int num_agents; // Number of agents (including all types)
     int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     int max_depth; // Maximum number of tasks an agent can hold in its bundle
@@ -65,9 +69,9 @@ private:
 
 
 public:
-    CBBA(const std::string& input_path);
+    CBBA(JSONParser& parser);
 
-    void init(const std::string& input_path);
+    void init();
 
     //double createBid(Robot * robot, Task& task); // I don't think this is explicitly needed
 
