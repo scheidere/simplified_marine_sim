@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 #include "world.hpp"
 #include "robot.hpp"
 #include "CBBA.hpp"
@@ -40,7 +41,35 @@ void CBBA::init() {
         std::cout << t << std::endl;
     }
 
+    std::vector<std::vector<int>> agent_capabilities = parser.getAgentCapabilities(agent_types, task_types);
+    print2DVector(agent_capabilities);
+
+    // Elements in bundle and path will be numeric task IDs, so 1+ (-1 if unassigned)
+    std::vector<std::vector<int>> bundle(num_agents, std::vector<int>(max_depth, -1));
+    std::vector<std::vector<int>> path(num_agents, std::vector<int>(max_depth, -1));
+    //std::vector<std::vector<std::string>> execution_times(num_agents, std::vector<int>(max_depth, -1));
+    std::vector<std::vector<int>> scores(num_agents, std::vector<int>(max_depth, -1));
+
+    print2DVector(bundle);
+
+    // Initialized -1 because bids can be 0 but not negative (and agent IDs are 1+)
+    std::vector<std::vector<double>> bids(num_agents, std::vector<double>(num_tasks, -1)); // bids
+    std::vector<std::vector<int>> winners(num_agents, std::vector<int>(num_tasks, -1)); // winners (agent IDs)
+    std::vector<std::vector<double>> winning_bids(num_agents, std::vector<double>(num_tasks, -1)); // winning bids
+
+    print2DVector(bids);
+
     std::cin.get();
+}
+
+template <typename T>
+void CBBA::print2DVector(const std::vector<std::vector<T>>& vec) {
+    for (const auto& row : vec) {
+        for (const auto& elem : row) {
+            std::cout << elem << " ";  // Print each element
+        }
+        std::cout << std::endl;  // Newline after each row
+    }
 }
 
 double CBBA::calculatePathUtility(Robot& robot, Path path) {

@@ -125,3 +125,50 @@ std::vector<std::string> JSONParser::getTaskTypes() {
 
     return task_types;
 }
+
+std::vector<std::vector<int>> JSONParser::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
+
+    // Not including checks for JSON agents or local_tasks array existence
+    // This function is called in CBBA init AFTER functions with those checks run successfully
+
+    // Note that the order of the rows (agent types) will of course match the agent_types vector,
+    // and not necessarily the order in the JSON agent_capabilities
+
+    std::vector<std::vector<int>> capabilities;
+
+    for (int i = 0; i < agent_types.size(); i++) {
+        std::vector<int> row; // Create a row for each agent type
+        for (int j = 0; j < task_types.size(); j++) { // Each column is different task type
+            row.push_back(getCompatibility(agent_types[i], task_types[j]));
+        }
+        capabilities.push_back(row); // Add row to capabilities matrix
+    }
+
+    return capabilities;
+}
+
+int JSONParser::getCompatibility(std::string agent_type, std::string task_type) {
+
+    // 0 - not able; 1 - able; 
+    // Dealing with these later: 2 - able with assistance (co-op); 3 - co-op after fault
+
+    if (j.contains("agent_capabilities") && j["agent_capabilities"].is_array()) {
+        //std::cout << agent_type << std::endl;
+        //std::cout << task_type << std::endl;
+        //std::cin.get();
+        for (const auto& t : j["agent_capabilities"][1][agent_type]) {
+            //std::cout << t << " " << task_type << std::endl;
+            //std::cin.get();
+            if (t == task_type) {
+                //std::cout << "agent type for found match: " << agent_type << " 1" << std::endl;
+                return 1;
+            }
+        }
+    }
+    else {
+        std::cerr << "Error: agent_capabilities not found or invalid in JSON." << std::endl;  
+    }
+
+    //std::cout << "agent type for found match: " << agent_type << " 0" << std::endl;
+    return 0; // Did not find given task type in list of capabilities (task types it can do) for given agent type
+}

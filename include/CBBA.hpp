@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include "planners.hpp"
 #include "distance.hpp"
@@ -44,6 +45,7 @@ private:
     // time window flag
     // time duration flag (all durations > 0)
     // time interval list [earliest start, latest end] if tasks are time dependent
+    // Execution times vector commented out below
 
     // General agent/task info
     std::vector<int> agent_indices; // is this really needed
@@ -53,10 +55,10 @@ private:
     //std::vector<task class or struct instance> tasks; tbd pick either class or struct to represent each task
     std::vector<std::vector<int>> capabilities; // Denotes which agents can do which tasks (0: can't; 1: can by self; 2: can co-op; 3: TBD)
 
-    // In the following 2D vectors, one row for each agent and columns are for the task-related info
+    // In the following 2D vectors, one row for each agent and columns are for the task-related info (up to max_depth num of tasks)
     std::vector<std::vector<int>> bundle;  // Assigned tasks for all agents
     std::vector<std::vector<int>> path;    // Task execution order for all agents
-    std::vector<std::vector<double>> execution_times; // Execution times for each agent's tasks
+    //std::vector<std::vector<double>> execution_times; // Execution times for each agent's tasks
     std::vector<std::vector<double>> scores; // Scores for each agent's tasks
 
     // Auction info
@@ -89,6 +91,9 @@ public:
     void printBundle();
 
     void obtainConsensus();
+
+    template <typename T>
+    void print2DVector(const std::vector<std::vector<T>>& vec);
 
 
 };

@@ -27,6 +27,10 @@ public:
 
 	std::vector<std::string> getTaskTypes();
 
+	std::vector<std::vector<int>> getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types);
+
+	int getCompatibility(std::string agent_type, std::string task_type);
+
 };
 
 
