@@ -35,9 +35,9 @@ struct NewWinIndicator { // h_i
 class CBBA {
 private:
 
-    JSONParser& parser; 
+    Robot& robot; // Reference to specific robot on team
 
-    int num_agents; // Number of agents (including all types)
+    //int num_agents; // Number of agents (including all types)
     int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     int max_depth; // Maximum number of tasks an agent can hold in its bundle
 
@@ -56,41 +56,44 @@ private:
     std::vector<std::vector<int>> capabilities; // Denotes which agents can do which tasks (0: can't; 1: can by self; 2: can co-op; 3: TBD)
 
     // In the following 2D vectors, one row for each agent and columns are for the task-related info (up to max_depth num of tasks)
-    std::vector<std::vector<int>> bundle;  // Assigned tasks for all agents
-    std::vector<std::vector<int>> path;    // Task execution order for all agents
-    //std::vector<std::vector<double>> execution_times; // Execution times for each agent's tasks
-    std::vector<std::vector<double>> scores; // Scores for each agent's tasks
+    std::vector<int> bundle;  // Assigned tasks for all agents
+    std::vector<int> path;    // Task execution order for all agents
+    //std::vector<double> execution_times; // Execution times for each agent's tasks
+    std::vector<double> scores; // Scores for each agent's tasks
 
     // Auction info
-    std::vector<std::vector<double>> bids;
-    std::vector<std::vector<int>> winners; // by index
-    std::vector<std::vector<double>> winning_bids;
+    std::vector<double> bids;
+    std::vector<int> winners; // by index
+    std::vector<double> winning_bids;
 
     // Spatial limits X Y Z of world
     // Will need to pass world class in somewhere
 
 
 public:
-    CBBA(JSONParser& parser);
+    CBBA(Robot& robot);
 
-    void init();
+    //void init();
 
     //double createBid(Robot * robot, Task& task); // I don't think this is explicitly needed
 
-    double calculatePathUtility(Robot& robot, Path path);
+    //double calculatePathUtility(Robot& robot, Path path);
 
-    void buildBundle(World& world, Robot& robot);
+    void buildBundle();
 
     //std::tuple<const Task&, int, int, double> findTaskForMaxScoreImprovement(Robot* robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
-    std::tuple<Task, int, double> findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
+    //std::tuple<Task, int, double> findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
 
-    std::tuple<double, int> calculateMaxScoreImprovement(Robot& robot, Path path, double path_score_before, Task task);
+    //std::tuple<double, int> calculateMaxScoreImprovement(Robot& robot, Path path, double path_score_before, Task task);
 
-    bool TaskInBundle(Bundle& bundle, Task& task);
+    //bool TaskInBundle(Bundle& bundle, Task& task);
 
-    void printBundle();
+    //void printBundle();
 
-    void obtainConsensus();
+    //void obtainConsensus();
+
+    template <typename T>
+    void print1DVector(const std::vector<T>& vec);
 
     template <typename T>
     void print2DVector(const std::vector<std::vector<T>>& vec);

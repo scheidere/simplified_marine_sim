@@ -6,11 +6,12 @@
 
 struct Task;
 
-World::World(int X, int Y, Distance* d, SensorModel* s, double comms_range) 
+World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double comms_range) 
     : X(X),
     Y(Y), 
     distance(d), 
     sensor_model(s),
+    parser(p),
     comms_range(comms_range),
     image(init())
 {

@@ -10,11 +10,11 @@
 
 class Robot;
 
-CBBA::CBBA(JSONParser& parser) : parser(parser) {
-    init();
+CBBA::CBBA(Robot& r) : robot(r) {
+    //init();
 }
 
-void CBBA::init() {
+/*void CBBA::init() {
 
     // Parse at all
     json j = parser.parse();
@@ -22,7 +22,7 @@ void CBBA::init() {
     //std::cout << j.dump(4) << std::endl;
     //std::cin.get();
 
-    num_agents = parser.getNumAgents();
+    //num_agents = parser.getNumAgents(); // Don't need this because we will run separate threads for each agent
     //std::cout << num_agents << std::endl;
 
     num_tasks = parser.getNumLocalTasks();
@@ -45,21 +45,31 @@ void CBBA::init() {
     print2DVector(agent_capabilities);
 
     // Elements in bundle and path will be numeric task IDs, so 1+ (-1 if unassigned)
-    std::vector<std::vector<int>> bundle(num_agents, std::vector<int>(max_depth, -1));
-    std::vector<std::vector<int>> path(num_agents, std::vector<int>(max_depth, -1));
-    //std::vector<std::vector<std::string>> execution_times(num_agents, std::vector<int>(max_depth, -1));
-    std::vector<std::vector<int>> scores(num_agents, std::vector<int>(max_depth, -1));
+    bundle = std::vector<int>(max_depth, -1);
+    path = std::vector<int>(max_depth, -1);
+    scores = std::vector<double>(max_depth, -1);
 
-    print2DVector(bundle);
+    print1DVector(bundle);
 
     // Initialized -1 because bids can be 0 but not negative (and agent IDs are 1+)
-    std::vector<std::vector<double>> bids(num_agents, std::vector<double>(num_tasks, -1)); // bids
-    std::vector<std::vector<int>> winners(num_agents, std::vector<int>(num_tasks, -1)); // winners (agent IDs)
-    std::vector<std::vector<double>> winning_bids(num_agents, std::vector<double>(num_tasks, -1)); // winning bids
+    bids = std::vector<double>(num_tasks, -1);
+    winners = std::vector<int>(num_tasks, -1); // winners (agent IDs)
+    winning_bids = std::vector<double>(num_tasks, -1);
 
-    print2DVector(bids);
+    print1DVector(bids);
 
     std::cin.get();
+}*/
+
+//std::vector<std::vector<int>> buildBundle() {}
+
+template <typename T>
+void CBBA::print1DVector(const std::vector<T>& vec) {
+    for (const auto& elem : vec) {
+        std::cout << elem << " ";  // Print each element
+    }
+    std::cout << std::endl;  // Newline after
+    
 }
 
 template <typename T>
@@ -72,7 +82,7 @@ void CBBA::print2DVector(const std::vector<std::vector<T>>& vec) {
     }
 }
 
-double CBBA::calculatePathUtility(Robot& robot, Path path) {
+/*double CBBA::calculatePathUtility(Robot& robot, Path path) {
     try {
         double distance_weight = 1;
         double priority_weight = 1;
@@ -173,9 +183,9 @@ std::tuple<Task, int, double> CBBA::findTaskForMaxScoreImprovement(World& world,
         Task default_task(0, "Error Task", placeholder, 0, 0, 0);
         return std::make_tuple(default_task, -1, 0.0); // Return default values or handle the error appropriately
     }
-}
+}*/
 
-void CBBA::buildBundle(World& world, Robot& robot) {
+void CBBA::buildBundle() {
     try {
         std::cout << "in CBBA::buildBundle..." << std::endl;
 
@@ -197,7 +207,7 @@ void CBBA::buildBundle(World& world, Robot& robot) {
         // }
 
         std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
-        robot.log(log_msg);
+        robot.log(log_msg); // not sure this works, remove comment once tested
 
         std::cout << "at end of CBBA::buildBundle..." << std::endl;
     } catch (const std::exception& e) {
@@ -205,7 +215,7 @@ void CBBA::buildBundle(World& world, Robot& robot) {
     }
 }
 
-void CBBA::printBundle() {
+/*void CBBA::printBundle() {
     try {
         // Implement printBundle logic here
     } catch (const std::exception& e) {
@@ -219,4 +229,4 @@ void CBBA::obtainConsensus() {
     } catch (const std::exception& e) {
         std::cerr << "Error in obtainConsensus: " << e.what() << std::endl;
     }
-}
+}*/

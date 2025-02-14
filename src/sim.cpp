@@ -144,14 +144,14 @@ double getCurrentTime() {
 }
 
 
-void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, Scorer& scorer, World& world, CBBA& cbba) {
+void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, Scorer& scorer, World& world, JSONParser& parser) {
     std::cout << "Entering run_robot for robot " << robot_id << std::endl;
 
     try {
         std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
 
         try {
-            Robot robot(&planner, &shortest_path, &coverage_path, &scorer, &world, initial_pose, goal_pose, assignable_tasks, robot_id, color);
+            Robot robot(&planner, &shortest_path, &coverage_path, &scorer, &world, &parser, initial_pose, goal_pose, assignable_tasks, robot_id, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
 
             {
@@ -179,7 +179,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<
                 factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
                 factory.registerNodeType<RunTest>("RunTest");
                 factory.registerNodeType<RunTest2>("RunTest2");
-                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba)); // Threaded action with args
+                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot)); // Threaded action with args
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
@@ -251,17 +251,16 @@ int main(int argc, char** argv) {
         const double comms_range = 50.0;
         const int obs_radius = 4;
 
+        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+        JSONParser parser(path);
+
         Distance distance;
         SensorModel sensor_model(&distance);
-        World world(X, Y, &distance, &sensor_model, comms_range);
+        World world(X, Y, &distance, &sensor_model, &parser, comms_range);
         Planner planner(step_size, obs_radius);
         ShortestPath shortest_path(step_size);
         CoveragePath coverage_path(step_size, obs_radius);
         Scorer scorer;
-
-        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
-        JSONParser parser(path);
-        CBBA cbba(parser);
 
         std::cout << "Inits are done..." << std::endl;
         std::cout << "************** Testing CBBA stuff **************" << std::endl;
@@ -302,8 +301,8 @@ int main(int argc, char** argv) {
         cv::Scalar color2 = cv::Scalar(255, 0, 0);
 
         try {
-            std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, assignable_tasks1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(cbba));
-            std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, assignable_tasks2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(cbba));
+            std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, assignable_tasks1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
+            std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, assignable_tasks2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
 
             std::cout << "Threads started..." << std::endl;
 

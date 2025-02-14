@@ -10,6 +10,8 @@
 //#include "message.hpp"
 #include "structs.hpp"
 #include "CBBA.hpp"
+#include "parser.hpp"
+
 
 struct Msg;
 //struct Task;
@@ -26,6 +28,7 @@ private:
     CoveragePath* coverage_path;
     Scorer* scorer;
     World* world; // Point to single,shared world instance
+    JSONParser* parser;
     std::vector<Msg> message_queue;
     cv::Scalar color;
     double battery_level;
@@ -44,7 +47,7 @@ private:
 
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, Scorer* scorer, World* world, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar color); // Is this right with planners?
+    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, Scorer* scorer, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar color); // Is this right with planners?
 
     int getID() const { return id; }
     int getCurrentTaskID() const { return task_id; }

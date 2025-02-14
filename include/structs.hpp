@@ -7,6 +7,8 @@
 #include <limits>
 #include <string>
 
+// leaving this structs for now to see if we can get a simple version working with just vectors in cbba class
+
 struct WinningBids {
     std::vector<double> winning_bids;
     int numTasks;

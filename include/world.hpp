@@ -19,6 +19,7 @@ protected:
     int X; int Y;
     Distance* distance;
     SensorModel* sensor_model;
+    JSONParser* parser;
     cv::Mat image;
     std::unordered_map<int, Robot*> robot_tracker; // id, instance
     mutable std::mutex world_mutex; // mutex for MR access to robot tracker (and downstream), mutable for access of consts
@@ -28,7 +29,7 @@ protected:
     std::vector<Task> allTasks;
 
 public:
-    World(int X, int Y, Distance* distance, SensorModel* sensor_model, double comms_range);
+    World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
 
     int getX() const { return X; }
     int getY() const { return Y; }

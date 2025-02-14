@@ -170,12 +170,10 @@ public:
 
 class BuildBundle : public ThreadedAction {
 private:
-	World& _world;
 	Robot& _robot;
-	CBBA& _cbba;
-
+    
 public:
-    BuildBundle(const std::string& name, const NodeConfig& config, World& w, Robot& r, CBBA& cbba);
+    BuildBundle(const std::string& name, const NodeConfig& config, Robot& r);
 
     NodeStatus tick() override;
 

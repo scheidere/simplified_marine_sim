@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "world.hpp"
 #include "robot.hpp"
+#include "CBBA.hpp"
 #include "planners.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "behaviortree_cpp/blackboard.h"
@@ -342,14 +343,15 @@ PortsList RunTest2::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
-BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, World& w, Robot& r, CBBA& cbba)
-    : ThreadedAction(name, config), _world(w), _robot(r), _cbba(cbba) {}
+BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robot& r)
+    : ThreadedAction(name, config), _robot(r) {}
 
 NodeStatus BuildBundle::tick()
 {
     try {
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
-        _cbba.buildBundle(_world, _robot);
+        CBBA cbba(_robot);
+        cbba.buildBundle();
         return NodeStatus::RUNNING;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in BuildBundle::tick: " << e.what() << std::endl;
@@ -362,111 +364,3 @@ PortsList BuildBundle::providedPorts()
     return { };
 }
 
-/*Test::Test(const std::string& name, const NodeConfig& config, Robot& robot)
-    : SyncActionNode(name, config), _robot(robot) {}
-
-NodeStatus Test::tick()
-{
-    try {
-        std::cout << "Running Test action to keep ticking..." << std::endl;
-        return NodeStatus::RUNNING;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in Test::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList Test::providedPorts()
-{
-    return {};
-}*/
-
-
-/*
-// Action_A has a different constructor than the default one.
-class Action_A: public SyncActionNode
-{
-
-public:
-    // additional arguments passed to the constructor
-    Action_A(const std::string& name, const NodeConfig& config,
-             int arg_int, std::string arg_str):
-        SyncActionNode(name, config),
-        _arg1(arg_int),
-        _arg2(arg_str) {}
-
-    // this example doesn't require any port
-    static PortsList providedPorts() { return {}; }
-
-    // tick() can access the private members
-    NodeStatus tick() override;
-
-private:
-    int _arg1;
-    std::string _arg2;
-};
-*/
-
-/*BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, World& w, Robot& r, CBBA& cbba)
-    : ThreadedAction(name, config), _world(w), _robot(r), _cbba(cbba) {}
-
-NodeStatus BuildBundle::tick()
-{
-    try {
-        std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
-        _cbba.buildBundle(_world, _robot);
-        Bundle b = _robot.getBundle();
-        if (b.tasks.size() > 0) {
-            std::cout << "IT WORKED A LITTLE AT LEAST: Bundle built for robot " << _robot.getID() << std::endl;
-            return NodeStatus::SUCCESS;
-        }
-        std::cout << "No tasks added to bundle" << std::endl;
-        return NodeStatus::FAILURE;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in BuildBundle::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList BuildBundle::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}*/
-
-/*BuildBundle::BuildBundle(const std::string& name, const BT::NodeConfig& config)
-    : ThreadedAction(name, config), _world(nullptr), _robot(nullptr), _cbba(nullptr) {}
-
-
-void BuildBundle::setParams(World& world, Robot& robot, CBBA& cbba)
-{
-    _world = &world;
-    _robot = &robot;
-    _cbba = &cbba;
-}
-
-NodeStatus BuildBundle::tick()
-{
-    try {
-        if (!_world || !_robot || !_cbba) {
-            throw std::runtime_error("BuildBundle: World, Robot, or CBBA not initialized.");
-        }
-        
-        std::cout << "Building bundle for robot " << _robot->getID() << "..." << std::endl;
-        _cbba->buildBundle(*_world, *_robot);
-        Bundle b = _robot->getBundle();
-        if (b.tasks.size() > 0) {
-            std::cout << "IT WORKED A LITTLE AT LEAST: Bundle built for robot " << _robot->getID() << std::endl;
-            return NodeStatus::SUCCESS;
-        }
-        std::cout << "No tasks added to bundle" << std::endl;
-        return NodeStatus::FAILURE;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in BuildBundle::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList BuildBundle::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}*/
