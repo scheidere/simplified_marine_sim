@@ -8,6 +8,8 @@
 #include "robot.hpp"
 #include "planners.hpp"
 #include "message.hpp"
+#include "parser.hpp"
+
 
 using namespace BT;
 
@@ -171,9 +173,10 @@ public:
 class BuildBundle : public ThreadedAction {
 private:
 	Robot& _robot;
-    
+    JSONParser& _parser;
+
 public:
-    BuildBundle(const std::string& name, const NodeConfig& config, Robot& r);
+    BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p);
 
     NodeStatus tick() override;
 

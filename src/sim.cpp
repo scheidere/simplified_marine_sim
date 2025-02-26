@@ -16,6 +16,7 @@
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "CBBA.hpp"
 #include "parser.hpp"
+#include "utils.hpp"
 
 // Run to show robots traversing to different waypoints
 /*static const char* xml_text = R"(
@@ -144,20 +145,20 @@ double getCurrentTime() {
 }
 
 
-void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<Task> assignable_tasks, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, Scorer& scorer, World& world, JSONParser& parser) {
+void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, Scorer& scorer, World& world, JSONParser& parser) {
     std::cout << "Entering run_robot for robot " << robot_id << std::endl;
 
     try {
         std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
 
         try {
-            Robot robot(&planner, &shortest_path, &coverage_path, &scorer, &world, &parser, initial_pose, goal_pose, assignable_tasks, robot_id, color);
+            Robot robot(&planner, &shortest_path, &coverage_path, &scorer, &world, &parser, initial_pose, goal_pose, robot_id, robot_type, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
 
             {
                 world.plot();
                 std::cout << "ID Check in Robot " << robot.getID() << std::endl;
-                robot.printTasksVector();
+                //robot.printTasksVector();
             }
 
             // Register Behavior Tree nodes
@@ -179,7 +180,7 @@ void run_robot(int robot_id, Pose2D initial_pose, Pose2D goal_pose, std::vector<
                 factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
                 factory.registerNodeType<RunTest>("RunTest");
                 factory.registerNodeType<RunTest2>("RunTest2");
-                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot)); // Threaded action with args
+                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(parser)); // Threaded action with args
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
@@ -262,10 +263,15 @@ int main(int argc, char** argv) {
         CoveragePath coverage_path(step_size, obs_radius);
         Scorer scorer;
 
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::cout << "in main 1" << std::endl;
+        std::unordered_map<std::string,std::vector<int>> test = world.getAllCapabilities();
+        utils::printCapabilities(test);
+        std::cout << "in main 2" << std::endl;
         std::cout << "Inits are done..." << std::endl;
-        std::cout << "************** Testing CBBA stuff **************" << std::endl;
 
-        std::vector<Task> allTasks;
+
+        /*std::vector<Task> allTasks;
         try {
             allTasks = world.getAllTasks();
         } catch (const std::exception& e) {
@@ -281,9 +287,9 @@ int main(int argc, char** argv) {
         } catch (const std::out_of_range& e) {
             std::cerr << "std::out_of_range caught while accessing tasks: " << e.what() << std::endl;
             return -1;
-        }
+        }*/
 
-        std::vector<cv::Scalar> colors = {
+/*        std::vector<cv::Scalar> colors = {
             cv::Scalar(255, 0, 0),
             cv::Scalar(0, 255, 0),
             cv::Scalar(0, 0, 255),
@@ -291,23 +297,42 @@ int main(int argc, char** argv) {
             cv::Scalar(255, 255, 0),
             cv::Scalar(255, 0, 255),
             cv::Scalar(255, 255, 255)
-        };
+        };*/
 
-        Pose2D initial_pose1{0, 0, 0};
+        //auto agents = world.getAgents(); update to getAllAgentsInfo
+        auto agents_info = world.getAllAgentsInfo();
+        std::vector<std::thread> robot_threads;
+
+ /*       Pose2D initial_pose1{0, 0, 0};
         Pose2D initial_pose2{20, 10, 0};
         Pose2D goal_pose1{10, 10, 0};
-        Pose2D goal_pose2{5, 10, 0};
-        cv::Scalar color1 = cv::Scalar(0, 0, 255);
-        cv::Scalar color2 = cv::Scalar(255, 0, 0);
-
+        Pose2D goal_pose2{5, 10, 0};*/
+/*        cv::Scalar color1 = cv::Scalar(0, 0, 255);
+*//*        cv::Scalar color2 = cv::Scalar(255, 0, 0);
+*/
         try {
-            std::thread robot1(run_robot, 1, initial_pose1, goal_pose1, assignable_tasks1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
-            std::thread robot2(run_robot, 2, initial_pose2, goal_pose2, assignable_tasks2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
+            //for (const auto& agent : agents) { TODO update to traversed unordered map values (which are the agent structs now)
+            for (const auto& pair : agents_info) {
+                const auto& agent = pair.second;
+                robot_threads.emplace_back(
+                    run_robot, agent.id, agent.type, agent.initial_pose, agent.goal_pose, agent.color,
+                    step_size, std::ref(planner), std::ref(shortest_path), 
+                    std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser)
+                );
+            }
+
+            std::cout << "Threads started..." << std::endl;
+
+            for (auto& thread : robot_threads) {
+                thread.join();
+            }
+            /*std::thread robot1(run_robot, initial_pose1, goal_pose1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
+            std::thread robot2(run_robot, initial_pose2, goal_pose2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
 
             std::cout << "Threads started..." << std::endl;
 
             robot1.join();
-            robot2.join();
+            robot2.join();*/
         } catch (const std::exception& e) {
             std::cerr << "Exception caught while starting or joining threads: " << e.what() << std::endl;
             return -1;
@@ -330,4 +355,5 @@ int main(int argc, char** argv) {
         std::cerr << "Exception caught in main: " << e.what() << std::endl;
         return -1;
     }
+
 }

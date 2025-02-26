@@ -20,6 +20,7 @@ struct Msg;
 class Robot {
 private:
     int id;
+    std::string type;
     int task_id;
     Pose2D pose;
     Pose2D goal;
@@ -32,34 +33,52 @@ private:
     std::vector<Msg> message_queue;
     cv::Scalar color;
     double battery_level;
-    std::vector<Task> assignable_tasks;
-    /*WinningBids winning_bids(world);
-    WinningAgentIndices winning_agent_indices(world);*/
-    //WinningBids winning_bids; // y_i; One double for each task j, initialized with zeros
-    //WinningAgentIndices winning_agent_indices; // z_i; One for each task j, so if 2 at index j in this vector, that means agent 2 has highest bid on task j
-    Bundle bundle; // Empty initially
-    Path path; // Empty initially
-    WinningBids winning_bids;
-    WinningAgentIndices winning_agent_indices;
-    void initializeWinningBidsAndIndices();
+
+    std::vector<int> doable_task_ids; // doable local tasks by id
+
+    // We initialize bundle if needed at the beginning of CBBA's BuildBundle() (where init path and scores?)
+    /*so bundle will have assigned task IDs in order of time added, 
+    scores will have the score for each assigned task in that same order, 
+    and the path will have the same IDs but in the order they should be attempted*/
+    std::vector<int> bundle; // Assigned tasks for this agent
+    std::vector<int> path;  // Task execution order for this agent's assigned tasks
+    std::vector<double> scores; // Scores for this agent's assigned tasks
+    //The following three maps are indexed (unordered map keys) by task IDs
+    std::unordered_map<int, double> bids; // Values are bids
+    std::unordered_map<int, int> winners; // Values are agent IDs
+    std::unordered_map<int, double> winning_bids; // Values are bids obviously
+
+    std::vector<std::vector<int>> feasible_tasks; // initialized with ones because all assumed to be feasible
+
     std::ofstream robot_log; // Init file for each robot to log in
 
 
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, Scorer* scorer, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar color); // Is this right with planners?
+    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, Scorer* scorer, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
     int getID() const { return id; }
+    std::string getType() const { return type; }
     int getCurrentTaskID() const { return task_id; }
     int getX() const { return pose.x; }
     int getY() const { return pose.y; }
     Pose2D getPose() const { return pose; }
     Pose2D getGoalPose() const { return goal; }
     cv::Scalar getColor() const {return color; }
-    Bundle& getBundle() { return bundle; }
-    Path& getPath() { return path; }
+    //Bundle& getBundle() { return bundle; }
+    std::vector<int>& getBundle() { return bundle; }
+    //Path& getPath() { return path; }
+    std::vector<int>& getPath() { return path; }
+    std::vector<double>& getScores() { return scores; }
+    std::unordered_map<int,double> initBids();    
+    std::unordered_map<int,int> initWinners();
+    std::unordered_map<int,double> initWinningBids();
+    std::unordered_map<int, double>& getBids() { return bids; }
+    std::unordered_map<int, int>& getWinners() { return winners; }
+    std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
+    std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
     void init(Pose2D initial_pose);
-    void printTasksVector();
+    //void printTasksVector();
     void move(Pose2D waypoint);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
     void printMessageQueue(std::vector<Msg>&  message_queue);
@@ -70,10 +89,10 @@ public:
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);
     bool batteryLow();
-    WinningBids& getWinningBids() { return winning_bids; }
-    WinningAgentIndices& getWinningAgentIndices() { return winning_agent_indices; }
+    //WinningBids& getWinningBids() { return winning_bids; }
+    //WinningAgentIndices& getWinningAgentIndices() { return winning_agent_indices; }
     std::string generateLogFilename();
-    void log(std::string log_msg);
+    void log_info(std::string log_msg);
 
     //void resurfaceToCharge();
 
@@ -83,3 +102,4 @@ public:
 };
 
 #endif
+ 

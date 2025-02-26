@@ -8,6 +8,7 @@
 #include "planners.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "behaviortree_cpp/blackboard.h"
+#include "parser.hpp"
 
 using namespace BT;
 
@@ -139,7 +140,7 @@ NodeStatus SendMessage::tick()
     try {
         std::cout << "SendMessage: Broadcasting message" << std::endl;
         std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting message...";
-        _sender.log(log_msg);
+        _sender.log_info(log_msg);
         Message msg(_sender);
         msg.broadcastMessage(_world);
         std::cout << "SendMessage: Completed" << std::endl;
@@ -169,7 +170,7 @@ NodeStatus ReceiveMessage::tick()
         _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
         //std::cout << "ReceiveMessage: Completed" << std::endl;
         std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving message(s)...";
-        _receiver.log(log_msg);
+        _receiver.log_info(log_msg);
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
@@ -190,7 +191,7 @@ NodeStatus SendMessage::tick()
     try {
         std::cout << "SendMessage: Broadcasting message" << std::endl;
         std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting message...";
-        _sender.log(log_msg);
+        _sender.log_info(log_msg);
         Message msg(_sender);
         msg.broadcastMessage(_world);
         std::cout << "SendMessage: Completed" << std::endl;
@@ -221,7 +222,7 @@ NodeStatus ReceiveMessage::tick()
         _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
         //std::cout << "ReceiveMessage: Completed" << std::endl;
         std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving message(s)...";
-        _receiver.log(log_msg);
+        _receiver.log_info(log_msg);
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
@@ -268,12 +269,12 @@ NodeStatus NeedRegroup::tick()
         if (_receiver.needRegroup()) {
             std::cout << "Regroup triggered" << std::endl;
             std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + ": regroup condition True";
-            _receiver.log(log_msg);
+            _receiver.log_info(log_msg);
             return NodeStatus::SUCCESS;
         }
         std::cout << "Regroup NOT triggered" << std::endl;
         std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + ": regroup condition False";
-        _receiver.log(log_msg);
+        _receiver.log_info(log_msg);
         return NodeStatus::FAILURE;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Regroup::tick: " << e.what() << std::endl;
@@ -343,14 +344,14 @@ PortsList RunTest2::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
-BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robot& r)
-    : ThreadedAction(name, config), _robot(r) {}
+BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p)
+    : ThreadedAction(name, config), _robot(r), _parser(p) {}
 
 NodeStatus BuildBundle::tick()
 {
     try {
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
-        CBBA cbba(_robot);
+        CBBA cbba(_robot, _parser);
         cbba.buildBundle();
         return NodeStatus::RUNNING;
     } catch (const std::exception& e) {

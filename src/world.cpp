@@ -3,6 +3,10 @@
 #include "sensor_model.hpp"
 #include "world.hpp"
 #include "robot.hpp"
+#include "parser.hpp"
+#include "structs.hpp"
+#include "utils.hpp"
+
 
 struct Task;
 
@@ -16,8 +20,21 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
     image(init())
 {
     try {
+
         defineQuadrants();
-        initAllTasks();
+        //initAllTasks();
+        num_agents = parser->getNumAgents();
+        all_agents_info = initAllAgentsInfo(); // pairs of agent id: struct
+        num_tasks = parser->getNumLocalTasks();
+        all_tasks_info = initAllTasksInfo();
+        agent_indices = parser->getAgentIndices();
+        agent_types = parser->getAgentTypes();
+        task_types = parser->getTaskTypes();
+        //std::cout << "start world init print" << std::endl;
+        all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types);
+        utils::printCapabilities(all_agent_capabilities);
+        //std::cout << "end world init print" << std::endl;
+        //print2DVector(agent_capabilities);
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
@@ -40,6 +57,122 @@ cv::Mat World::init() {
     }
 }
 
+
+std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
+
+    std::cout << "start world getter cap" << std::endl;
+    utils::printCapabilities(all_agent_capabilities);
+    std::cout << "end world getter cap" << std::endl;
+    return all_agent_capabilities;
+}
+
+/*void initAllRobots(whattype run_robot) {
+
+    if (parser.j.contains("agents") && parser.j["agents"].is_array()) {
+        for (const auto& agent : j["agents"]) {
+            agent_indices.push_back(agent["id"]);
+            std::cout << agent["id"] << std::endl;
+            std::thread robot1(run_robot, initial_pose1, goal_pose1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
+
+        }
+    }
+    else {
+        std::cerr << "Error: agent info not found or invalid in JSON." << std::endl;
+    }
+
+}*/
+
+// moved to structs.hpp
+/*struct AgentInfo {
+    int id;
+    Pose2D initial_pose;
+    cv::Scalar color;
+};*/
+
+//std::vector<AgentInfo> World::getAgents() {
+std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
+    std::unordered_map<int,AgentInfo> all_agents_info;
+
+    auto parsed_agents = parser->j["agents"]; // Assume parser extracts JSON info
+    for (const auto& agent : parsed_agents) {
+        int id = agent["id"].get<int>();
+        AgentInfo agent_struct = {
+            id,
+            agent["type"],
+            Pose2D{agent["start_x"].get<int>(), agent["start_y"].get<int>(), 0}, // Note we ignore the orientation theta for now
+            Pose2D{agent["goal_x"].get<int>(), agent["goal_y"].get<int>(), 0}, // here too
+            colors[id % colors.size()]  // Assign color cyclically
+        };
+        all_agents_info[id] = agent_struct;
+
+    }
+    return all_agents_info;
+}
+
+std::unordered_map<int,TaskInfo> World::initAllTasksInfo() {
+    std::unordered_map<int,TaskInfo> all_tasks_info;
+
+    auto parsed_tasks = parser->j["local_tasks"]; // Assume parser extracts JSON info
+    for (const auto& task : parsed_tasks) {
+        int id = task["id"].get<int>();
+        TaskInfo task_struct = { // later will need to add checks to catch different types of task components that are or aren't present
+            id,
+            task["type"], // maybe can set up checks by type
+            task["area"].get<std::unordered_map<std::string, int>>(),
+            task["reward"]   
+        };
+        all_tasks_info[id] = task_struct;
+
+    }
+    return all_tasks_info;
+}
+
+std::vector<int> World::getRobotCapabilities(Robot* robot) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    //std::cout << "in world getRobotCapabilities " << std::endl;
+    //std::cout << all_agent_capabilities.size() << std::endl;
+
+    std::vector<int> doable_local_tasks;
+
+    std::string agent_type = robot->getType();
+    //std::cout << "Robot type: " << type << std::endl;
+    //std::cin.get();
+
+    if (all_agent_capabilities.find(agent_type) == all_agent_capabilities.end()) {
+        std::cout << "Error: Capabilities for type " << agent_type << " not found!" << std::endl;
+        return {};  // Return an empty vector
+    }
+
+    std::string log_msg = "Robot " + std::to_string(robot->getID()) + " is capable of the following tasks by id: ";
+    robot->log_info(log_msg);
+    //for (const auto& elem : vec) {
+    std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
+
+    for (int i=0; i<task_types.size(); i++) {
+        //robot->log("test2");
+        for (auto& pair : all_tasks_info) {
+            TaskInfo& local_task = pair.second;
+            if (robot_capabilities_by_type[i]==1 && task_types[i]==local_task.type) {
+                // Found doable task 
+                doable_local_tasks.push_back(pair.first); // pair.first is local task id (int)
+                std::string log_msg = std::to_string(pair.first);
+                robot->log_info(log_msg);
+            }
+        }
+
+
+        //std::string log_msg2 = task_types[i] + ": " + std::to_string(robot_capabilities[i]);
+        //robot->log(log_msg2);
+    }
+
+    std::cout << "Doable local tasks vector: " << std::endl;
+    utils::print1DVector(doable_local_tasks);
+
+    return doable_local_tasks; // List of specific task indices of all doable types for given robot
+
+}
+
 std::unordered_map<int, Robot*>& World::getRobotTracker() { 
     std::lock_guard<std::mutex> lock(world_mutex);
     return robot_tracker;
@@ -50,7 +183,7 @@ std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
     return message_tracker;
 }
 
-std::vector<Task>& World::getAllTasks() {
+/*std::vector<Task>& World::getAllTasks() {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Returning all tasks. Number of tasks: " << allTasks.size() << std::endl;
     return allTasks;
@@ -66,7 +199,7 @@ int World::getTaskIndex(Task task_j) {
     int j = std::distance(allTasks.begin(), it);
 
     return j;
-}
+}*/
 
 void World::clear(Pose2D pose) {
     std::lock_guard<std::mutex> lock(world_mutex);
@@ -204,7 +337,7 @@ std::vector<Pose2D> World::getQuadrantCenters() {
     return quadrant_centers;
 }
 
-void World::initAllTasks() {
+/*void World::initAllTasks() {
     try {
         std::vector<Pose2D> quadrant_centers = getQuadrantCenters();
 
@@ -237,4 +370,4 @@ void World::initAllTasks() {
         std::cerr << "Exception caught in initAllTasks: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
     }
-}
+}*/

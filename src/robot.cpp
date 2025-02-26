@@ -7,51 +7,67 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "parser.hpp"
+#include "utils.hpp"
 
 
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
-Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w, JSONParser* psr, const Pose2D& initial_pose, const Pose2D& goal_pose, std::vector<Task> tasks, int robot_id, cv::Scalar dot_color) 
-: planner(p), shortest_path(sp), coverage_path(cp), scorer(s), world(w), parser(psr), goal(goal_pose), id(robot_id), winning_bids(1), winning_agent_indices(1) {
+Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w, JSONParser* psr, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
+: planner(p), shortest_path(sp), coverage_path(cp), scorer(s), world(w), parser(psr), id(robot_id), type(robot_type) {
+    
+    // Get filename for logging and then open it
+    std::string filename = generateLogFilename();
+    std::ofstream clear(filename, std::ios::out); // Clear logging file from previous run
+    clear.close();
+    robot_log.open(filename, std::ios::app); // Allow appending
+
     pose = {0, 0, 0};
     goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
     color = dot_color;
-    id = robot_id; // Robot ID
+    id = robot_id;
+    type = robot_type;
     task_id = 0; // ID of current task, have zero represent undefined
     world->trackRobot(this);
     battery_level = 1.0;
     init(initial_pose);
-    assignable_tasks = tasks; // Tasks that can be assigned to this robot
+    //assignable_tasks = tasks; // Tasks that can be assigned to this robot
+
+    doable_task_ids = world->getRobotCapabilities(this); // doable local tasks (by id)
+    //std::cout << "Printing capabilities..." << std::endl;
+    //utils::print1DVector(capabilities);
+    //std::cin.get();
+
+    // Bundle/path/scores are initialized when buildBundle is first called
+
+    // Bids/winners/winning_bids initialized here :)
+    bids = initBids();
+    log_info("Bids (task id: double): ");
+    utils::logUnorderedMap(bids, *this);
+    winners = initWinners();
+    log_info("Winners (task id: int): ");
+    utils::logUnorderedMap(winners, *this);
+    winning_bids = initWinningBids();
+    log_info("Winning bids (task id: double): ");
+    utils::logUnorderedMap(winning_bids, *this);
+
+    // Can robot do task i at j idx in bundle
+    //feasible_tasks = world->initFeasibleTasks(this); // dimensions: num_tasks x max_depth
 
     std::cout << "Robot constructor: Getting all tasks from world..." << std::endl;
-    std::vector<Task> allTasks = world->getAllTasks();
-    int numTasks = allTasks.size();
+    //std::vector<Task> allTasks = world->getAllTasks();
+    int numTasks = world->getNumLocalTasks(); //allTasks.size(); // why are we doing this?? check it's needed
     std::cout << "Number of tasks in world: " << numTasks << std::endl;
+
+    // Elements in bundle and path will be numeric task IDs, so 1+ (-1 if unassigned)
+    // There is a check in CBBA::BuildBundle to init them to have total num (max_depth) elements with -1 initially
+    //bundle = std::vector<int>(max_depth, -1); //doesn't work cuz no access to max_depth here, it's in cbba
 
     // Sanity check on task size
     if (numTasks > 1000000) {
         std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
     }
 
-    // Get filename for logging and then open it
-    std::string filename = generateLogFilename();
-    std::ofstream clear(filename, std::ios::out); // Clear logging file from previous run
-    clear.close();
-    robot_log.open(filename, std::ios::app); // Allow appending
-    //std::string log_msg = "testing log_msg";
-    //log(log_msg);
-
-    try {
-        std::cout << "Allocating winning_bids and winning_agent_indices vectors..." << std::endl;
-        winning_bids = WinningBids(numTasks);
-        winning_agent_indices = WinningAgentIndices(numTasks);
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught during vector allocation in constructor: " << e.what() << std::endl;
-        throw;
-    }
-    
-    initializeWinningBidsAndIndices();
 }
 
 std::string Robot::generateLogFilename() {
@@ -60,10 +76,11 @@ std::string Robot::generateLogFilename() {
     return oss.str();
 }
 
-void Robot::log(std::string log_msg) {
+void Robot::log_info(std::string log_msg) {
 
     if (robot_log.is_open()) {
-        //std::cerr << "LOG FILE IS OPEN FOR ROBOT " << id << std::endl;
+        std::cerr << "LOG FILE IS OPEN FOR ROBOT " << id << std::endl;
+        //std::cin.get();
 
         //robot_log << "Testing: " << id << std::endl;
         robot_log << log_msg << std::endl;
@@ -76,24 +93,38 @@ void Robot::log(std::string log_msg) {
 
 }
 
-void Robot::initializeWinningBidsAndIndices() {
-    std::cout << "Initializing winning bids and indices..." << std::endl;
-    std::vector<Task> allTasks = world->getAllTasks();
-    int numTasks = allTasks.size();
+std::unordered_map<int,double> Robot::initBids() {
 
-    // Sanity check on task size
-    if (numTasks > 1000000) {
-        std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
+    std::unordered_map<int,double> bids;
+
+    for (int task_id : doable_task_ids) { // traverse doable tasks
+       bids[task_id] = 0.0; // Initialize each key with 0.0
     }
 
-    try {
-        std::cout << "Allocating vectors in initializeWinningBidsAndIndices..." << std::endl;
-        winning_bids = WinningBids(numTasks);
-        winning_agent_indices = WinningAgentIndices(numTasks);
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught during vector allocation in initializeWinningBidsAndIndices: " << e.what() << std::endl;
-        throw;
+    return bids; 
+}
+
+std::unordered_map<int,int> Robot::initWinners() {
+
+    std::unordered_map<int,int> winners;
+
+    for (int task_id : doable_task_ids) { // traverse doable tasks
+       winners[task_id] = -1; // Initialize each key with -1 to represent no winners
     }
+
+    return winners;
+}
+
+std::unordered_map<int,double> Robot::initWinningBids() {
+
+    std::unordered_map<int,double> winning_bids;
+
+    for (int task_id : doable_task_ids) { // traverse doable tasks
+       winning_bids[task_id] = 0.0; // Initialize each key with 0.0
+    }
+
+    return winning_bids; 
+
 }
 
 void Robot::init (Pose2D initial_pose) {
@@ -102,15 +133,6 @@ void Robot::init (Pose2D initial_pose) {
     cv::Mat image = world->getImage();
     cv::circle(image, cv::Point(initial_pose.x, initial_pose.y), 5, color, -1);
     pose = initial_pose; // Set current robot pose variable
-}
-
-void Robot::printTasksVector() {
-    std::cout << "TESTING TASK VECTOR PRINT" << std::endl;
-    std::cout << "Number of assignable tasks: " << assignable_tasks.size() << std::endl;
-
-    for (const auto& task : assignable_tasks) {
-        task.print();
-    }
 }
 
 void Robot::updateBatteryLevel(double drain_percent) {
@@ -170,7 +192,7 @@ void Robot::receiveMessages() {
             updateRobotMessageQueue(msg);
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
-            log(log_msg);
+            log_info(log_msg);
         }
     }
 }

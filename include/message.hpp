@@ -12,9 +12,11 @@ struct Msg {
     int id; // sender robot ID
     int task_id; // Task sender is currently doing
     Pose2D location; // Current location of sender
-    Bundle bundle; // Sender bundle of tasks
+    std::vector<int> bundle; // Sender bundle of tasks
 
-    Msg(int id, int task_id, Pose2D location, Bundle bundle)
+    // add more robot/cbba info here later
+
+    Msg(int id, int task_id, Pose2D location, std::vector<int> bundle)
         : id(id), task_id(task_id), location(location), bundle(bundle) {}
 };
 

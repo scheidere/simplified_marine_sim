@@ -3,7 +3,8 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <unordered_set>
-
+#include <unordered_map>
+#include <utils.hpp>
 
 using json = nlohmann::json;
 
@@ -126,7 +127,7 @@ std::vector<std::string> JSONParser::getTaskTypes() {
     return task_types;
 }
 
-std::vector<std::vector<int>> JSONParser::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
+std::unordered_map<std::string, std::vector<int>> JSONParser::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
 
     // Not including checks for JSON agents or local_tasks array existence
     // This function is called in CBBA init AFTER functions with those checks run successfully
@@ -134,15 +135,29 @@ std::vector<std::vector<int>> JSONParser::getAgentCapabilities(std::vector<std::
     // Note that the order of the rows (agent types) will of course match the agent_types vector,
     // and not necessarily the order in the JSON agent_capabilities
 
-    std::vector<std::vector<int>> capabilities;
+    std::unordered_map<std::string, std::vector<int>> capabilities;
 
-    for (int i = 0; i < agent_types.size(); i++) {
+    //std::cout << "Creating capabilities map" << std::endl;
+    //std::cin.get();
+
+    //for (int i = 0; i < agent_types.size(); i++) {
+    for (auto agent_type : agent_types) {
         std::vector<int> row; // Create a row for each agent type
         for (int j = 0; j < task_types.size(); j++) { // Each column is different task type
-            row.push_back(getCompatibility(agent_types[i], task_types[j]));
+            //std::cout << task_types[j] << std::endl;
+            row.push_back(getCompatibility(agent_type, task_types[j]));
         }
-        capabilities.push_back(row); // Add row to capabilities matrix
+        //std::cout << "Row for " << agent_type << " is " << std::endl;
+        //utils::print1DVector(row);
+        capabilities[agent_type] = row; // Add capabilities vector 
+        //std::cout << "Capabilities found for " << type << ": ";
     }
+
+    //std::cout << "Agent capabilities retrieved, size: " << capabilities.size() << std::endl;
+
+
+    //std::cout << "End in parser capabilities function" << std::endl;
+    //std::cin.get();
 
     return capabilities;
 }
@@ -172,3 +187,7 @@ int JSONParser::getCompatibility(std::string agent_type, std::string task_type) 
     //std::cout << "agent type for found match: " << agent_type << " 0" << std::endl;
     return 0; // Did not find given task type in list of capabilities (task types it can do) for given agent type
 }
+
+/*json JSONParser::getAgentsList() {
+
+}*/

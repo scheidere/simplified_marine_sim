@@ -8,6 +8,8 @@
 #include "robot.hpp"
 #include "message.hpp"
 #include "CBBA.hpp"
+#include "structs.hpp"
+#include <unordered_map>
 
 
 struct Task;
@@ -26,7 +28,27 @@ protected:
     double comms_range;
     std::unordered_map<int,std::vector<Msg>> message_tracker; // receiving robot ID, message struct
     std::vector<Pose2D> areaACoords; std::vector<Pose2D> areaBCoords; std::vector<Pose2D> areaCCoords; std::vector<Pose2D> areaDCoords;
-    std::vector<Task> allTasks;
+    //std::vector<Task> allTasks; // struct stuff, ignoring for now
+
+    int num_agents; // Total number of robots in the world
+    std::unordered_map<int,AgentInfo> all_agents_info;
+    int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
+    std::unordered_map<int,TaskInfo> all_tasks_info;
+    std::vector<int> agent_indices; // is this really needed
+    std::vector<std::string> agent_types;
+    std::vector<std::string> task_types;
+    std::unordered_map<std::string, std::vector<int>> all_agent_capabilities; // Denotes which agents can do which tasks by agent type (0: can't; 1: can by self; 2: can co-op; 3: TBD)
+
+    std::vector<cv::Scalar> colors = {
+        cv::Scalar(255, 0, 0),
+        cv::Scalar(0, 255, 0),
+        cv::Scalar(0, 0, 255),
+        cv::Scalar(0, 255, 255),
+        cv::Scalar(255, 255, 0),
+        cv::Scalar(255, 0, 255),
+        cv::Scalar(255, 255, 255)
+    };
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
@@ -38,15 +60,21 @@ public:
 
     cv::Mat init();
 
+    void initAllRobots();
+
     std::unordered_map<int, Robot*>& getRobotTracker(); //{ return robot_tracker; }
 
     std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
 
-    void initAllTasks();
+    int getNumAgents() {return num_agents; }
 
-    std::vector<Task>& getAllTasks();
+    int getNumLocalTasks() {return num_tasks; }
 
-    int getTaskIndex(Task task); // std::pair<Task, int>
+    //void initAllTasks();
+
+    //std::vector<Task>& getAllTasks();
+
+    //int getTaskIndex(Task task); // std::pair<Task, int>
 
     void clear(Pose2D pose);
 
@@ -69,6 +97,21 @@ public:
     std::vector<Pose2D> getQuadrantCenters();
 
     void printMessage(Msg msg);
+
+    //std::vector<AgentInfo> getAgents(); //AgentInfo is a struct
+
+    std::unordered_map<int,AgentInfo> initAllAgentsInfo();
+
+    std::unordered_map<int,AgentInfo>& getAllAgentsInfo() { return all_agents_info; }
+
+    std::unordered_map<int,TaskInfo> initAllTasksInfo();
+
+    std::unordered_map<int,TaskInfo>& getAllTasksInfo() { return all_tasks_info; }
+
+    std::unordered_map<std::string,std::vector<int>> getAllCapabilities(); // { return all_agent_capabilities; }
+
+    std::vector<int> getRobotCapabilities(Robot* robot);
+
 
 };
 

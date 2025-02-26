@@ -8,10 +8,11 @@ using json = nlohmann::json;
 class JSONParser {
 private:
 	std::string input_path;
-	json j;
 
 public:
 	JSONParser(const std::string& input_path);
+
+	json j; // Making this public for ease
 
 	json parse();
 
@@ -27,9 +28,11 @@ public:
 
 	std::vector<std::string> getTaskTypes();
 
-	std::vector<std::vector<int>> getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types);
+	std::unordered_map<std::string, std::vector<int>> getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types);
 
 	int getCompatibility(std::string agent_type, std::string task_type);
+
+	//json getAgentsList();
 
 };
 

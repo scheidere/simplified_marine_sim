@@ -7,11 +7,18 @@
 #include "robot.hpp"
 #include "CBBA.hpp"
 #include "parser.hpp"
+#include <utils.hpp>
 
 class Robot;
 
-CBBA::CBBA(Robot& r) : robot(r) {
-    //init();
+CBBA::CBBA(Robot& r, JSONParser& p) : robot(r), parser(p) {
+    init();
+}
+
+void CBBA::init() {
+
+    max_depth = parser.getMaxDepth(); // Currently, this is only thing CBBA parses directly (the rest robot should have)
+    //std::cout << max_depth << std::endl;
 }
 
 /*void CBBA::init() {
@@ -185,9 +192,29 @@ std::tuple<Task, int, double> CBBA::findTaskForMaxScoreImprovement(World& world,
     }
 }*/
 
+
+
 void CBBA::buildBundle() {
     try {
         std::cout << "in CBBA::buildBundle..." << std::endl;
+
+        std::vector<int>& bundle = robot.getBundle();  // Get a reference to the bundle
+        std::vector<int>& path = robot.getPath();
+        std::vector<double>& scores = robot.getScores();
+
+        if (bundle.empty()) {
+            bundle.resize(max_depth, -1);  // Initialize bundle with the correct size (default value 0)
+        }
+
+        if (path.empty()) {
+            path.resize(max_depth, -1);  // Initialize bundle with the correct size (default value 0)
+        }
+
+        if (scores.empty()) {
+            scores.resize(max_depth, 0.0);  // Initialize bundle with the correct size (default value 0)
+        }
+
+        bundleAdd();
 
         // Example code for building bundle
         // std::vector<Task> allTasks = world.getAllTasks();
@@ -207,12 +234,37 @@ void CBBA::buildBundle() {
         // }
 
         std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
-        robot.log(log_msg); // not sure this works, remove comment once tested
+        robot.log_info(log_msg); // not sure this works, remove comment once tested
 
         std::cout << "at end of CBBA::buildBundle..." << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error in buildBundle: " << e.what() << std::endl;
     }
+}
+
+void CBBA::bundleAdd() {
+    try {
+
+        // Random
+        //std::cout << std::to_string(robot.getID()) << std::endl;
+        //std::cout << "WE ARE IN BUNDLEADD" << std::endl;
+
+        // Get bundle
+        std::vector bundle = robot.getBundle();
+        utils::print1DVector(bundle);
+
+        // Check if bundle is full (i.e., at max_depth)
+        while (bundle.size() < max_depth) {
+
+
+
+        }
+    
+        //std::cin.get();
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error in bundleAdd: " << e.what() << std::endl;
+    };
 }
 
 /*void CBBA::printBundle() {
