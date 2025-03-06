@@ -145,19 +145,25 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
     }
 
     std::string log_msg = "Robot " + std::to_string(robot->getID()) + " is capable of the following tasks by id: ";
-    robot->log_info(log_msg);
+    //robot->log_info(log_msg);
     //for (const auto& elem : vec) {
     std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
 
     for (int i=0; i<task_types.size(); i++) {
         //robot->log("test2");
+        //robot->log_info(std::to_string(i));
+        //robot->log_info("Traversing all_task_info unordered_map...");
         for (auto& pair : all_tasks_info) {
             TaskInfo& local_task = pair.second;
+            std::string log_msg3 = local_task.type;
+            //robot->log_info(log_msg3);
             if (robot_capabilities_by_type[i]==1 && task_types[i]==local_task.type) {
                 // Found doable task 
+                std::string log_msg1 = "Found task of type " + local_task.type + " saving " + std::to_string(pair.first);  
+                //robot->log_info(log_msg1);
                 doable_local_tasks.push_back(pair.first); // pair.first is local task id (int)
-                std::string log_msg = std::to_string(pair.first);
-                robot->log_info(log_msg);
+                std::string log_msg2 = std::to_string(pair.first);
+                //robot->log_info(log_msg2);
             }
         }
 
@@ -165,6 +171,11 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
         //std::string log_msg2 = task_types[i] + ": " + std::to_string(robot_capabilities[i]);
         //robot->log(log_msg2);
     }
+
+    // Since we traverse all_tasks_info which is an unordered map, tasks not necessarily traversed from id 1 and increasing
+    // For simplicity, let's sort capabilities so id's are in increasing order
+    std::sort(doable_local_tasks.begin(), doable_local_tasks.end());
+    utils::log1DVector(doable_local_tasks, *robot);
 
     std::cout << "Doable local tasks vector: " << std::endl;
     utils::print1DVector(doable_local_tasks);

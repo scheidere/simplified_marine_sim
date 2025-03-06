@@ -38,12 +38,21 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w
     //utils::print1DVector(capabilities);
     //std::cin.get();
 
-    // Bundle/path/scores are initialized when buildBundle is first called
+    std::string hi = "doable_task_ids: ";
+    log_info(hi);
+    utils::log1DVector(doable_task_ids, *this);
+
+    max_depth = parser->getMaxDepth(); // Also in CBBA
+
+    bundle.resize(max_depth, -1);
+    path.resize(max_depth, -1);
+    scores.resize(max_depth, 0.0);
 
     // Bids/winners/winning_bids initialized here :)
     bids = initBids();
     log_info("Bids (task id: double): ");
-    utils::logUnorderedMap(bids, *this);
+    //utils::logUnorderedMap(bids, *this);
+    utils::logMap(bids, *this);
     winners = initWinners();
     log_info("Winners (task id: int): ");
     utils::logUnorderedMap(winners, *this);
@@ -93,9 +102,11 @@ void Robot::log_info(std::string log_msg) {
 
 }
 
-std::unordered_map<int,double> Robot::initBids() {
+//std::unordered_map<int,double> Robot::initBids() {
+std::map<int,double> Robot::initBids() {
 
-    std::unordered_map<int,double> bids;
+    //std::unordered_map<int,double> bids;
+    std::map<int,double> bids;
 
     for (int task_id : doable_task_ids) { // traverse doable tasks
        bids[task_id] = 0.0; // Initialize each key with 0.0

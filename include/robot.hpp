@@ -36,6 +36,8 @@ private:
 
     std::vector<int> doable_task_ids; // doable local tasks by id
 
+    int max_depth;
+
     // We initialize bundle if needed at the beginning of CBBA's BuildBundle() (where init path and scores?)
     /*so bundle will have assigned task IDs in order of time added, 
     scores will have the score for each assigned task in that same order, 
@@ -44,11 +46,11 @@ private:
     std::vector<int> path;  // Task execution order for this agent's assigned tasks
     std::vector<double> scores; // Scores for this agent's assigned tasks
     //The following three maps are indexed (unordered map keys) by task IDs
-    std::unordered_map<int, double> bids; // Values are bids
+    std::map<int, double> bids; // Values are bids // changed to map from unordered for tie priority to lower int task IDs
     std::unordered_map<int, int> winners; // Values are agent IDs
     std::unordered_map<int, double> winning_bids; // Values are bids obviously
 
-    std::vector<std::vector<int>> feasible_tasks; // initialized with ones because all assumed to be feasible
+    //std::vector<std::vector<int>> feasible_tasks; // initialized with ones because all assumed to be feasible)
 
     std::ofstream robot_log; // Init file for each robot to log in
 
@@ -66,17 +68,20 @@ public:
     Pose2D getGoalPose() const { return goal; }
     cv::Scalar getColor() const {return color; }
     //Bundle& getBundle() { return bundle; }
+    std::vector<int>& getDoableTaskIDs() { return doable_task_ids; }
     std::vector<int>& getBundle() { return bundle; }
     //Path& getPath() { return path; }
     std::vector<int>& getPath() { return path; }
     std::vector<double>& getScores() { return scores; }
-    std::unordered_map<int,double> initBids();    
+    //std::unordered_map<int,double> initBids();  
+    std::map<int,double> initBids();  
     std::unordered_map<int,int> initWinners();
     std::unordered_map<int,double> initWinningBids();
-    std::unordered_map<int, double>& getBids() { return bids; }
+    //std::unordered_map<int, double>& getBids() { return bids; }
+    std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
-    std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
+    //std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
     void init(Pose2D initial_pose);
     //void printTasksVector();
     void move(Pose2D waypoint);

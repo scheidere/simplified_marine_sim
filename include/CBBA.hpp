@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <limits>
 #include "planners.hpp"
 #include "distance.hpp"
 #include "world.hpp"
@@ -42,6 +43,8 @@ private:
     //int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     int max_depth; // Maximum number of tasks an agent can hold in its bundle
 
+    const double epsilon = std::numeric_limits<double>::epsilon();
+
     // Time-related stuff?
     // time window flag
     // time duration flag (all durations > 0)
@@ -78,6 +81,27 @@ public:
     //double calculatePathUtility(Robot& robot, Path path);
 
     void buildBundle();
+
+    std::unordered_map<int,int> initLocalWinIndicatorH();
+
+    double getPathScore(std::vector<int> path);
+
+    std::vector<int> addTaskToPath(int task_id, std::vector<int> test_path, int position_n);
+
+    std::vector<int> shiftTaskInPath(int i, std::vector<int> path);
+
+    int findFirstEmptyElement(std::vector<int> path);
+
+    std::unordered_map<int, std::vector<int>> getTestPaths(int new_task_id);
+
+    std::pair<double,int> computeBid(int task_id);
+
+    //int getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h);
+    int getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h);
+
+    void addTaskToBundleEnd(std::vector<int>& bundle, int task_id);
+
+    int getBundleOrPathSize(const std::vector<int>& vec);
 
     void bundleAdd();
 

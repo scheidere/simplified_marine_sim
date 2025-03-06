@@ -50,12 +50,32 @@ void printUnorderedMap(const std::unordered_map<K, V>& my_map) {
     }
 }
 
+// Log a map
+template <typename K, typename V>
+void logMap(const std::map<K, V>& my_map, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& pair : my_map) {
+        log_msg << pair.first << " : " << pair.second << "\n";
+    }
+    robot.log_info(log_msg.str()); // robot function
+}
+
 // Log an unordered_map
 template <typename K, typename V>
 void logUnorderedMap(const std::unordered_map<K, V>& my_map, Robot& robot) {
     std::ostringstream log_msg;
     for (const auto& pair : my_map) {
         log_msg << pair.first << " : " << pair.second << "\n";
+    }
+    robot.log_info(log_msg.str()); // robot function
+}
+
+// Log a 1D vector
+template <typename T>
+void log1DVector(const std::vector<T>& vec, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& elem : vec) {
+        log_msg << elem << " ";
     }
     robot.log_info(log_msg.str()); // robot function
 }
