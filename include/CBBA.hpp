@@ -94,6 +94,8 @@ public:
 
     std::unordered_map<int, std::vector<int>> getTestPaths(int new_task_id);
 
+    void updatePath(std::vector<int>& path, int n, int new_task_id);
+
     std::pair<double,int> computeBid(int task_id);
 
     //int getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h);

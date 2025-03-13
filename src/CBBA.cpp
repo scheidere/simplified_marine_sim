@@ -152,23 +152,6 @@ void CBBA::buildBundle() {
 
         bundleAdd(); // Populate bundle to
 
-        // Example code for building bundle
-        // std::vector<Task> allTasks = world.getAllTasks();
-        // int numTasks = allTasks.size();
-        // WinningBids y_i(numTasks); y_i = robot.getWinningBids();
-        // WinningAgentIndices z_i(numTasks); z_i = robot.getWinningAgentIndices();
-        // Bundle b_i = robot.getBundle(); Path p_i = robot.getPath();
-        // NewWinIndicator h_i(numTasks);
-
-        // while (b_i.tasks.size() < allTasks.size()) {
-        //     auto [best_task_J, best_path_index_n, overall_max_score_improvement] = findTaskForMaxScoreImprovement(world, robot, allTasks, b_i, p_i, h_i, y_i);
-        //     int j = world.getTaskIndex(best_task_J);
-        //     b_i.addTask(best_task_J);
-        //     p_i.addTask(best_task_J, best_path_index_n);
-        //     y_i.winning_bids[j] = overall_max_score_improvement;
-        //     z_i.winning_agent_indices[j] = robot.getID();
-        // }
-
         std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
         robot.log_info(log_msg);
         std::string b = "Bundle: ";
@@ -177,6 +160,16 @@ void CBBA::buildBundle() {
         std::string p = "Path: ";
         robot.log_info(p);
         utils::log1DVector(robot.getPath(), robot);
+
+        /*
+        Notes:
+        1. Path order logic for ties: Since getTestPaths() inserts in a certain way (the new task ID first at left, then each between element, then the end/right),
+        the lowest task ID won't always be prioritized to the left of an equally performing higher task ID in the path.
+        For example, the path may be 2 3 1 (and 1 and 3 affect the path the same way) instead of 2 1 3... 
+        In this example, these paths perform the same, and during bundle building, task 2 is chosen, then task 1 (path is 2 1 -1 at this point), then task 3...
+        When task 3 is added, it first looks at test paths 3 2 1, then 2 3 1, then 2 1 3. Since the final two have the same score, 
+        the first test path to win is chosen: 2 3 1.
+        */
 
         std::cout << "at end of CBBA::buildBundle..." << std::endl;
     } catch (const std::exception& e) {
@@ -197,6 +190,20 @@ std::unordered_map<int,int> CBBA::initLocalWinIndicatorH() {
 }
 
 double CBBA::getPathScore(std::vector<int> path) {
+    double score = 0.0;
+    
+    for (int i = 0; i < getBundleOrPathSize(path); i++) {
+        if (path[i] == 2) {
+            score += (i == 0) ? 3.0 : 2.0; // val if true: val if false
+        } else {
+            score += 1.0; // Assign base reward for other tasks
+        }
+    }
+
+    return score;
+}
+
+/*double CBBA::getPathScore(std::vector<int> path) {
 
     // for now just the sum of cost/benefit for each task in path (probably won't change wrt order now)
 
@@ -212,10 +219,15 @@ double CBBA::getPathScore(std::vector<int> path) {
     } else {
         //robot.log_info("IN THE ELSE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         for (int i=0; i < getBundleOrPathSize(path); i++) {
-            std::string plz = "i: " + std::to_string(i) + " path[i]: " + std::to_string(path[i]);
-            robot.log_info(plz);
+            //std::string plz = "i: " + std::to_string(i) + " path[i]: " + std::to_string(path[i]);
+            //robot.log_info(plz);
             if (path[i]==2) {
-                robot.log_info("Found 2!!");
+                //robot.log_info("Found 2!!");
+                if (path[i]==2 && i==0) {
+                    //robot.log_info("Score is 3");
+                    return 3.0; // prioritize task 2 at start of path (aka i=0)
+                }
+                //robot.log_info("Score is 2");
                 return 2.0; // just for testing, we prioritize task id 2
             }
         }
@@ -225,7 +237,7 @@ double CBBA::getPathScore(std::vector<int> path) {
     //robot.log_info("end getPathScore");
     return 1.0;
     
-}
+}*/
 
 /*std::vector<int> getPossiblePathPositions() {
 
@@ -331,7 +343,7 @@ std::unordered_map<int, std::vector<int>> CBBA::getTestPaths(int new_task_id) {
         utils::log1DVector(test_path,robot);
     }*/
 
-    //robot.log_info("end getTestPaths");
+    robot.log_info("end getTestPaths");
 
     return test_paths;
 
@@ -341,8 +353,8 @@ std::unordered_map<int, std::vector<int>> CBBA::getTestPaths(int new_task_id) {
 std::pair<double, int> CBBA::computeBid(int task_id) {
     // Calculate maximum score improvement (will use as bid)
     double max_score_improvement = 0.0;
-    double marginal_score_improvement_c;
-    int best_position_n;
+    double marginal_score_improvement_c = 0.0;
+    int best_position_n = -1;
 
     robot.log_info("in computeBid");
 
@@ -358,7 +370,7 @@ std::pair<double, int> CBBA::computeBid(int task_id) {
 
     //robot.log_info("Checking loop in computeBid...");
     for (auto& [n,test_path] : test_paths) {
-        std::string str2 = "n: " + std::to_string(n) + ", test_path2:";
+        std::string str2 = "n: " + std::to_string(n) + ", test_path:";
         robot.log_info(str2);
         utils::log1DVector(test_path,robot);
         //robot.log_info("why no new path score print");
@@ -368,6 +380,8 @@ std::pair<double, int> CBBA::computeBid(int task_id) {
         marginal_score_improvement_c = new_path_score - current_path_score;
         std::string bleu = "marginal_score_improvement_c: " + std::to_string(marginal_score_improvement_c);
         robot.log_info(bleu);
+        std::string bleu2 = "max_score_improvement: " + std::to_string(max_score_improvement);
+        robot.log_info(bleu2);
         if (marginal_score_improvement_c > max_score_improvement) {
             robot.log_info("Found new max max_score_improvement");
             max_score_improvement = marginal_score_improvement_c;
@@ -375,26 +389,9 @@ std::pair<double, int> CBBA::computeBid(int task_id) {
         }
     }
 
-    // Get score for adding given task to path at each possible n
-    // Get possible n's (tasks in path must be adjacent like 2,1,-1 not 2,-1,1)
-    /*std::vector<int> possible_positions = getPossiblePathPositions();
-    for (auto n : possible_positions) {
-        std::vector<int> test_path = getTestPaths(task_id,n);
-        double new_path_score = getPathScore(test_path);
-        marginal_score_improvement_c = new_path_score - current_path_score;
-        if (marginal_score_improvement_c > max_score_improvement) {
-            max_score_improvement = marginal_score_improvement_c;
-            best_position_n = n;
-        }
-    }*/
-
-    //updates return with n and figure out how to track that in bundleAdd
-    //make up values for path scores to test initially
-
-    //std::string str1 = "The bid is " + std::to_string(max_score_improvement) + " at position " + std::to_string(best_position_n);
-    //robot.log_info(str1);
-
-    //robot.log_info("end computeBid");
+    if (best_position_n != 0) {
+        robot.log_info("FOUND: best position n is something other than 0 in computeBid");
+    }
 
     // return max marginal score improvement for that task and the n describing where it must be in the path to achieve this score
     return std::make_pair(max_score_improvement, best_position_n);
@@ -407,9 +404,9 @@ int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_
     // Get the task id for the task that has the max new winning bid, J
     // h is local win indicator with elements 0 or 1
 
-    robot.log_info("in getBestTaskID");
-    robot.log_info("indicator h:");
-    utils::logUnorderedMap(h, robot);
+    //robot.log_info("in getBestTaskID");
+    //robot.log_info("indicator h:");
+    //utils::logUnorderedMap(h, robot);
 
     double max_product = 0.0;
     int ID_of_max = -1;
@@ -429,7 +426,7 @@ int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_
     }
 
 
-    robot.log_info("end getBestTaskID");
+    //robot.log_info("end getBestTaskID");
     return ID_of_max;
 
 }
@@ -447,12 +444,27 @@ int CBBA::getBundleOrPathSize(const std::vector<int>& vec) {
     });
 }
 
+void CBBA::updatePath(std::vector<int>& path, int n, int new_task_id) {
+
+    if (path[n]==-1) { // for first task in path or ones added after that cleanly based on n
+        // Aleady empty so just assign new task to n position in path
+        path[n] = new_task_id;
+    } else { // shift existing task in path to prioritize new task over the one tied in that location
+        for (int i = path.size() - 1; i > n; --i) {
+            path[i] = path[i - 1];  // Move each task one position to the right
+        }
+        //path[n+1] = path[n]; // does this work?
+        path[n] = new_task_id;
+
+    }
+}
+
 void CBBA::bundleAdd() {
     try {
 
         // Random
         //std::cout << std::to_string(robot.getID()) << std::endl;
-        std::cout << "WE ARE IN BUNDLEADD" << std::endl;
+        //std::cout << "WE ARE IN BUNDLEADD" << std::endl;
         std::vector<int>& bundle = robot.getBundle();
         std::vector<int>& path = robot.getPath();
         std::vector<double>& scores = robot.getScores();
@@ -461,15 +473,15 @@ void CBBA::bundleAdd() {
         std::unordered_map<int, int>& winners = robot.getWinners();
         std::unordered_map<int, double>& winning_bids = robot.getWinningBids();
 
-        std::string log_msg = "Bundle is this before changes:";
-        robot.log_info(log_msg);
-        utils::log1DVector(bundle, robot);
+        //std::string log_msg = "Bundle is this before changes:";
+        //robot.log_info(log_msg);
+        //utils::log1DVector(bundle, robot);
         int size = getBundleOrPathSize(bundle);
-        std::string log_msg5 = "Size of bundle before changes is " + std::to_string(size);
-        robot.log_info(log_msg5);
-        robot.log_info("Doable task ids:");
+        //std::string log_msg5 = "Size of bundle before changes is " + std::to_string(size);
+        //robot.log_info(log_msg5);
+        //robot.log_info("Doable task ids:");
         std::vector<int> test = robot.getDoableTaskIDs();
-        utils::log1DVector(test, robot);
+        //utils::log1DVector(test, robot);
 
         // Check if bundle is full (i.e., at max_depth)
         while (getBundleOrPathSize(bundle) < max_depth) {
@@ -489,17 +501,18 @@ void CBBA::bundleAdd() {
             std::unordered_map<int,int> best_position_n_tracker; // keys are task id's and values are best index n in path
             for (auto task_id : robot.getDoableTaskIDs()) {
                 if ( std::find(bundle.begin(), bundle.end(), task_id) == bundle.end() ) { // for each doable task not in bundle already
-                    std::string str1 = "Looking at the following doable task not in bundle:" + std::to_string(task_id);
+                    //std::string str1 = "Looking at the following doable task not in bundle:" + std::to_string(task_id);
+                    std::string str1 = "-----Potential next task: " + std::to_string(task_id);
                     robot.log_info(str1);
                     std::pair<double,int> bid_and_best_path_position = computeBid(task_id);
                     bids[task_id] = bid_and_best_path_position.first; best_position_n_tracker[task_id] = bid_and_best_path_position.second;
-                    robot.log_info("After computeBid update, bids: ");
-                    utils::logMap(bids, robot);
+                    //robot.log_info("After computeBid update, bids: ");
+                    //utils::logMap(bids, robot);
                     robot.log_info("and best position tracker: ");
                     utils::logUnorderedMap(best_position_n_tracker, robot);
                     if ( bids[task_id] - winning_bids[task_id] > epsilon ) {
                         // Found better bid so track in local win indicator h
-                        std::string log_msg1 = "For task " + std::to_string(task_id) + "bid (" + std::to_string(bids[task_id]) + ") > winning bid(" + std::to_string(winning_bids[task_id]) + ")";
+                        std::string log_msg1 = "For task " + std::to_string(task_id) + " bid (" + std::to_string(bids[task_id]) + ") > winning bid(" + std::to_string(winning_bids[task_id]) + ")";
                         robot.log_info(log_msg1);
                         local_win_indicator_h[task_id] = 1;
 
@@ -521,13 +534,16 @@ void CBBA::bundleAdd() {
             std::string blob = "Best task ID is " + std::to_string(J); 
             robot.log_info(blob);
             int n = best_position_n_tracker[J];
-            robot.log_info("before bundle change ===============================");
-            utils::log1DVector(bundle, robot);
+            std::string loggy = "Best position in path is: " + std::to_string(n);
+            robot.log_info(loggy);
+            //robot.log_info("before bundle change ===============================");
+            //utils::log1DVector(bundle, robot);
             addTaskToBundleEnd(bundle, J); // Insert J at end of bundle
-            robot.log_info("after bundle change ===============================");
-            utils::log1DVector(bundle, robot);
-            robot.log_info("=====");
-            path[n] = J; // Insert J at n in path
+            //robot.log_info("after bundle change ===============================");
+            //utils::log1DVector(bundle, robot);
+            //robot.log_info("=====");
+            updatePath(path,n,J);
+            //path[n] = J; // Insert J at n in path
             winning_bids[J] = bids[J]; // Add bid associated with J to winning bid list
             winners[J] = robot.getID(); // Add current agent ID since it just won
             bids.erase(J); // Remove task now in bundle from future consideration
