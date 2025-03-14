@@ -27,12 +27,15 @@ public:
     //void printMessage(Msg msg);
     void broadcastMessage(World& world);
     void updateWorldMessageTracker(World& world, int receiverID);
+    void ping(World& world);
+    void updateWorldPingTracker(World& world, int receiverID, int senderID);
     //void updateRobotMessageQueue(Robot& receiver);
     //void receiveMessages(World& world, Robot& receiver);
 
 private:
+    Robot& sender;
     Msg msg; // Private member variable
-    
+  
 };
 
 #endif

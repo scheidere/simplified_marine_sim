@@ -203,53 +203,6 @@ double CBBA::getPathScore(std::vector<int> path) {
     return score;
 }
 
-/*double CBBA::getPathScore(std::vector<int> path) {
-
-    // for now just the sum of cost/benefit for each task in path (probably won't change wrt order now)
-
-    //robot.log_info("in getPathScore");
-    //std::string boo = "Path size is " + std::to_string(getBundleOrPathSize(path));
-    //robot.log_info(boo);
-    //robot.log_info("Path is: ");
-    //utils::log1DVector(path, robot);
-
-    if (getBundleOrPathSize(path)==0) {
-        //robot.log_info("returning 0");
-        return 0.0; // Path is empty
-    } else {
-        //robot.log_info("IN THE ELSE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        for (int i=0; i < getBundleOrPathSize(path); i++) {
-            //std::string plz = "i: " + std::to_string(i) + " path[i]: " + std::to_string(path[i]);
-            //robot.log_info(plz);
-            if (path[i]==2) {
-                //robot.log_info("Found 2!!");
-                if (path[i]==2 && i==0) {
-                    //robot.log_info("Score is 3");
-                    return 3.0; // prioritize task 2 at start of path (aka i=0)
-                }
-                //robot.log_info("Score is 2");
-                return 2.0; // just for testing, we prioritize task id 2
-            }
-        }
-    }
-
-    //robot.log_info("Not empty but no task 2 found so total reward is 1.0 (just for testing)");
-    //robot.log_info("end getPathScore");
-    return 1.0;
-    
-}*/
-
-/*std::vector<int> getPossiblePathPositions() {
-
-    std::vector<int> possible_positions;
-
-    if first element -1, it empty, so only possible is 0
-    if first element num and second -1, can be 0 or 2 and other must be shifted to 1
-
-
-    return possible_positions;
-}*/
-
 std::vector<int> CBBA::addTaskToPath(int task_id, std::vector<int> test_path, int position_n) {
  
     // Pass in path that has a valid empty slot (assume that position n is valid)

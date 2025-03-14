@@ -108,6 +108,18 @@ public:
     static PortsList providedPorts();
 };
 
+class Ping : public ThreadedAction {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 class ReceiveMessage : public ThreadedAction {
 private:
     World& _world;
@@ -119,6 +131,18 @@ public:
 
     static PortsList providedPorts();
 };
+
+/*class ReceivePing : public ThreadedAction {
+private:
+    World& _world;
+    Robot& _receiver;
+
+public:
+    ReceivePing(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};*/
 
 class TestMessages : public SyncActionNode {
 private:

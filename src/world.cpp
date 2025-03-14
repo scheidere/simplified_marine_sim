@@ -194,6 +194,11 @@ std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
     return message_tracker;
 }
 
+std::unordered_map<int,std::vector<int>>& World::getPingTracker() {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    return ping_tracker;
+}
+
 /*std::vector<Task>& World::getAllTasks() {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Returning all tasks. Number of tasks: " << allTasks.size() << std::endl;

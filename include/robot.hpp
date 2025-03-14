@@ -90,6 +90,7 @@ public:
     void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
+    void receivePings();
     bool needRegroup();
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);

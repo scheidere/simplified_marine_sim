@@ -88,7 +88,7 @@ std::string Robot::generateLogFilename() {
 void Robot::log_info(std::string log_msg) {
 
     if (robot_log.is_open()) {
-        std::cerr << "LOG FILE IS OPEN FOR ROBOT " << id << std::endl;
+        //std::cerr << "LOG FILE IS OPEN FOR ROBOT " << id << std::endl;
         //std::cin.get();
 
         //robot_log << "Testing: " << id << std::endl;
@@ -206,6 +206,44 @@ void Robot::receiveMessages() {
             log_info(log_msg);
         }
     }
+}
+
+void Robot::receivePings() {
+
+    std::cout << "in receivePings........" << std::endl;
+    std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
+
+    int receiverID = getID();
+    std::cout << "receiverID: " << receiverID << std::endl;
+
+    // just for print >>>
+    /*for (const auto& pair : world_ping_tracker) {
+        int receiver_id = pair.first;
+        const std::vector<int>& pings = pair.second;
+
+        if (receiver_id == getID())
+
+        std::cout << "Receiver ID: " << receiverID << " received pings from: ";
+        std::string bla = "Receiver ID: " + std::to_string(receiverID) + " received pings from: ";
+        log_info(bla);
+        utils::log1DVector(pings,*this);
+    }*/
+    // <<< just for print
+
+    
+    if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
+        log_info("Found id in world ping tracker");
+        std::vector<int>& pings = world_ping_tracker[receiverID];
+        utils::log1DVector(pings, *this);
+   
+        if (!pings.empty()) {
+            int first_heard_robot_ID = pings.front();
+            std::cout << "Robot " << getID() << " received a message from Robot " << first_heard_robot_ID << std::endl;
+            std::string log_msg = "Robot " + std::to_string(id) + " received ping from Robot " + std::to_string(first_heard_robot_ID);
+            log_info(log_msg);
+        }
+    }
+
 }
 
 void Robot::printMessageQueue(std::vector<Msg>& message_queue) {

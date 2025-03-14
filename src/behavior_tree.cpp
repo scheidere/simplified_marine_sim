@@ -212,6 +212,35 @@ PortsList SendMessage::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
+Ping::Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ThreadedAction(name, config), _world(world), _robot(robot) {}
+
+NodeStatus Ping::tick()
+{
+    try {
+        std::cout << "Ping: Pinging (both sending 1 ping and listening to pings from others)" << std::endl;
+        //std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting minimal message (ping)...";
+        //_sender.log_info(log_msg);
+        Message msg(_robot);
+        msg.ping(_world);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Allowing for time for all robots to ping before listening (can prolly remove once ongoing pinging happening)
+        _robot.receivePings();
+        std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
+        std::cout << log_msg << std::endl;
+        std::cout << "Ping: Completed" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in SendMessage::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList Ping::providedPorts()
+{
+    return { InputPort<Pose2D>("waypoint") };
+}
+
 ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : ThreadedAction(name, config), _world(world), _receiver(receiver) {}
 
@@ -234,6 +263,30 @@ PortsList ReceiveMessage::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
 }
+
+/*ReceivePing::ReceivePing(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
+    : ThreadedAction(name, config), _world(world), _receiver(receiver) {}
+
+NodeStatus ReceivePing::tick()
+{
+    try {
+        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
+        _receiver.receivePings(); // does correct instance of world get passed to robot class? like only one instance of world should be used
+        //std::cout << "ReceiveMessage: Completed" << std::endl;
+        std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving pings(s)...";
+        std::cout << log_msg << std::endl;
+        //_receiver.log_info(log_msg);
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ReceivePing::providedPorts()
+{
+    return { InputPort<Pose2D>("waypoint") };
+}*/
 
 TestMessages::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : SyncActionNode(name, config), _world(world), _receiver(receiver) {}

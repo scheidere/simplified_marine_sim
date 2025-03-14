@@ -127,12 +127,22 @@
 
 // <RunTest waypoint="{wp}"/> 
 
-// Run to test BuildBundle only (currently crashes)
-static const char* xml_text = R"(
+// Run to test BuildBundle only
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
             <BuildBundle/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <Ping/>
         </Sequence>
      </BehaviorTree>
 </root>
@@ -181,6 +191,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<RunTest>("RunTest");
                 factory.registerNodeType<RunTest2>("RunTest2");
                 factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(parser)); // Threaded action with args
+                factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
