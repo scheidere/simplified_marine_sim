@@ -85,6 +85,7 @@ public:
     void init(Pose2D initial_pose);
     //void printTasksVector();
     void move(Pose2D waypoint);
+    void printWorldPingTracker(std::unordered_map<int, std::vector<int>>& world_ping_tracker);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
     void printMessageQueue(std::vector<Msg>&  message_queue);
     void printMessage(Msg msg);
@@ -99,6 +100,7 @@ public:
     //WinningAgentIndices& getWinningAgentIndices() { return winning_agent_indices; }
     std::string generateLogFilename();
     void log_info(std::string log_msg);
+    bool checkIfNewInfoAvailable();
 
     //void resurfaceToCharge();
 

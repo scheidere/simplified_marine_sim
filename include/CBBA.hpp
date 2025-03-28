@@ -80,6 +80,24 @@ public:
 
     //double calculatePathUtility(Robot& robot, Path path);
 
+    int getTaskIndex(int task_id, std::vector<int>& vec);
+
+    void testGetTaskIndex();
+
+    void removeGaps(std::vector<int>& vec);
+
+    void testRemoveGaps();
+
+    bool isFeasible(int task_id);
+
+    //void bundleRemove();
+    void bundleRemove(std::vector<int>& bundle, 
+                        std::vector<int>& path, 
+                        std::unordered_map<int, int>& winners, 
+                        std::unordered_map<int, double>& winning_bids);
+
+    void testBundleRemove();
+
     void buildBundle();
 
     std::unordered_map<int,int> initLocalWinIndicatorH();

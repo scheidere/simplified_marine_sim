@@ -54,7 +54,15 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID)
     //std::lock_guard<std::mutex> lock(world.getWorldMutex());
     std::unordered_map<int,std::vector<int>>& world_ping_tracker = world.getPingTracker();
     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
+
+    if (receiverID == senderID) { 
+        std::cerr << "ERROR: Robot " << senderID << " is adding itself to ping tracker! Fix this!" << std::endl;
+        return; 
+    }
+
     world_ping_tracker[receiverID].push_back(senderID);
+    std::string bla = "Ping to robot " + std::to_string(receiverID) + " from robot " + std::to_string(senderID);
+    sender.log_info(bla);
     std::cout << "in ping update world tracker, world ping tracker after: " << world_ping_tracker.size() << std::endl;
 }
 
@@ -63,6 +71,7 @@ void Message::ping(World& world) {
     std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
     
     int senderID = sender.getID();
+    sender.log_info("In ping");
 
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;
@@ -72,15 +81,15 @@ void Message::ping(World& world) {
 
             bool inComms = world.inComms(senderID, receiverID);
             if (inComms) {
+                //std::string bla = "DEBUG: Robot " + std::to_string(senderID) + " pinging Robot " + std::to_string(receiverID);
+                //sender.log_info(bla);
                 // In range, so update tracker so each receiver will know what robots are newly in range (but haven't send messages yet)
                 updateWorldPingTracker(world, receiverID, senderID);
             }
         }
-
     }
-
-
 }
+
 
 /*void Message::printMessage(Msg msg) {
     std::cout << "Message ID:" << msg.id << ":\n";

@@ -128,7 +128,7 @@
 // <RunTest waypoint="{wp}"/> 
 
 // Run to test BuildBundle only
-/*static const char* xml_text = R"(
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -136,9 +136,10 @@
         </Sequence>
      </BehaviorTree>
 </root>
-)";*/
+)";
 
-static const char* xml_text = R"(
+// Pinging works, if tested like this needs little delay between sending and listening to allow all robots to hear
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -146,7 +147,54 @@ static const char* xml_text = R"(
         </Sequence>
      </BehaviorTree>
 </root>
-)";
+)";*/
+
+// parallel node testing
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+  <BehaviorTree ID="MainTree">
+    <Parallel name="parallel" success_count="2" failure_count="2">
+        <Ping/> 
+        <RunTest waypoint="{wp}"/>
+    </Parallel>
+  </BehaviorTree>
+</root>  )";*/
+
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+  <BehaviorTree ID="MainTree">
+    <Parallel name="parallel" success_count="2" failure_count="2">
+        <Ping/>
+        <Fallback> 
+            <NewInfoAvailable waypoint="{wp}"/>
+        </Fallback>
+    </Parallel>
+  </BehaviorTree>
+</root>  )";*/
+
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+  <BehaviorTree ID="MainTree">
+    <Sequence>
+        <Ping/>
+        <Fallback> 
+            <NewInfoAvailable/>
+        </Fallback>
+    </Sequence>
+  </BehaviorTree>
+</root>  )";*/
+
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+  <BehaviorTree ID="MainTree">
+    <Fallback>
+        <Fallback> 
+            <NewInfoAvailable/>
+        </Fallback>
+        <Ping/>
+    </Fallback>
+  </BehaviorTree>
+</root>  )";*/
 
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
@@ -192,6 +240,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<RunTest2>("RunTest2");
                 factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(parser)); // Threaded action with args
                 factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
+                factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
+                factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

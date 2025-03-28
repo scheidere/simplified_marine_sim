@@ -228,10 +228,9 @@ NodeStatus Ping::tick()
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
         std::cout << log_msg << std::endl;
         std::cout << "Ping: Completed" << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
-        std::cerr << "Exception caught in SendMessage::tick: " << e.what() << std::endl;
+        std::cerr << "Exception caught in Ping::tick: " << e.what() << std::endl;
         return NodeStatus::FAILURE;
     }
 }
@@ -241,6 +240,32 @@ PortsList Ping::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
+NewInfoAvailable::NewInfoAvailable(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}
+
+NodeStatus NewInfoAvailable::tick()
+{
+    try {
+        std::cout << "Checking if new info is available (any pings heard)..." << std::endl;
+
+        bool info_available = _robot.checkIfNewInfoAvailable();
+
+        if (info_available) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in NewInfoAvailable::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList NewInfoAvailable::providedPorts()
+{
+    return { InputPort<Pose2D>("waypoint") };
+}
 ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : ThreadedAction(name, config), _world(world), _receiver(receiver) {}
 
@@ -355,6 +380,25 @@ NodeStatus TestCond::tick()
 }
 
 PortsList TestCond::providedPorts()
+{
+    return { InputPort<Pose2D>("waypoint") };
+}
+
+DummySuccessAction::DummySuccessAction(const std::string& name, const NodeConfig& config)
+    : ThreadedAction(name, config) {}
+
+NodeStatus DummySuccessAction::tick()
+{
+    try {
+        std::cout << "Running DummySuccessAction action to get success..." << std::endl;
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DummySuccessAction::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DummySuccessAction::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
 }

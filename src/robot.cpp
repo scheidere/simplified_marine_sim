@@ -44,7 +44,7 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w
 
     max_depth = parser->getMaxDepth(); // Also in CBBA
 
-    bundle.resize(max_depth, -1);
+    bundle.resize(max_depth, -1); // init bundle
     path.resize(max_depth, -1);
     scores.resize(max_depth, 0.0);
 
@@ -208,38 +208,64 @@ void Robot::receiveMessages() {
     }
 }
 
+bool Robot::checkIfNewInfoAvailable() {
+
+    log_info("In checkIfNewInfoAvailable...");
+
+    bool info_available = false;
+
+    std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
+    int receiverID = getID();
+
+    // just for print >>>
+    printWorldPingTracker(world_ping_tracker);
+    // <<< just for print
+
+    if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) { // Find current robot's ping vector
+        //log_info("Found current robot in ping tracker");
+        std::vector<int>& pings = world_ping_tracker[receiverID];
+        if (!pings.empty()) {
+            info_available = true;
+            log_info("New info available");
+        }
+    }
+
+    log_info("end checkIfNewInfoAvailable");
+
+    return info_available;
+}
+
+void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<int>>& world_ping_tracker) {
+
+   for (const auto& pair : world_ping_tracker) {
+        int temp_id = pair.first;
+        const std::vector<int>& pings = pair.second;
+
+        std::string bla = "Receiver ID: " + std::to_string(temp_id) + " received pings from: ";
+        log_info(bla);
+        utils::log1DVector(pings,*this);
+    }
+}
+
 void Robot::receivePings() {
 
     std::cout << "in receivePings........" << std::endl;
     std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
 
-    int receiverID = getID();
+    int receiverID = id;
     std::cout << "receiverID: " << receiverID << std::endl;
 
-    // just for print >>>
-    /*for (const auto& pair : world_ping_tracker) {
-        int receiver_id = pair.first;
-        const std::vector<int>& pings = pair.second;
-
-        if (receiver_id == getID())
-
-        std::cout << "Receiver ID: " << receiverID << " received pings from: ";
-        std::string bla = "Receiver ID: " + std::to_string(receiverID) + " received pings from: ";
-        log_info(bla);
-        utils::log1DVector(pings,*this);
-    }*/
-    // <<< just for print
-
+    printWorldPingTracker(world_ping_tracker);
     
     if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
-        log_info("Found id in world ping tracker");
+        //log_info("Found id in world ping tracker");
         std::vector<int>& pings = world_ping_tracker[receiverID];
-        utils::log1DVector(pings, *this);
+        //utils::log1DVector(pings, *this);
    
         if (!pings.empty()) {
             int first_heard_robot_ID = pings.front();
-            std::cout << "Robot " << getID() << " received a message from Robot " << first_heard_robot_ID << std::endl;
-            std::string log_msg = "Robot " + std::to_string(id) + " received ping from Robot " + std::to_string(first_heard_robot_ID);
+            std::cout << "Robot " << receiverID << " received a ping from Robot " << first_heard_robot_ID << std::endl;
+            std::string log_msg = "Robot " + std::to_string(receiverID) + " received ping from Robot " + std::to_string(first_heard_robot_ID);
             log_info(log_msg);
         }
     }

@@ -120,6 +120,18 @@ public:
     static PortsList providedPorts();
 };
 
+class NewInfoAvailable : public ConditionNode {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    NewInfoAvailable(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 class ReceiveMessage : public ThreadedAction {
 private:
     World& _world;
@@ -181,6 +193,14 @@ public:
 class RunTest : public ThreadedAction {
 public:
     RunTest(const std::string& name, const NodeConfig& config);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DummySuccessAction : public ThreadedAction {
+public:
+    DummySuccessAction(const std::string& name, const NodeConfig& config);
     NodeStatus tick() override;
 
     static PortsList providedPorts();

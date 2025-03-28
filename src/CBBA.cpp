@@ -144,13 +144,30 @@ std::tuple<Task, int, double> CBBA::findTaskForMaxScoreImprovement(World& world,
     }
 }*/
 
+void CBBA::testGetTaskIndex() {
+
+    // Passed (idx of 2 is 1)
+
+    std::vector<int> testv = {1,2,3};
+    utils::log1DVector(testv, robot);
+    int idx = getTaskIndex(2, testv);
+    std::string bla = "Task index of 2 in the above vector is: " + std::to_string(idx);
+    robot.log_info(bla);
+
+}
 
 
 void CBBA::buildBundle() {
     try {
         std::cout << "in CBBA::buildBundle..." << std::endl;
 
-        bundleAdd(); // Populate bundle to
+        // Let's test the individual functions used in bundleRemove()
+        //testGetTaskIndex(); // Passed
+        //testRemovePathGaps();
+        testBundleRemove();
+
+
+       /* bundleAdd(); // Populate bundle to
 
         std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
         robot.log_info(log_msg);
@@ -171,10 +188,300 @@ void CBBA::buildBundle() {
         the first test path to win is chosen: 2 3 1.
         */
 
-        std::cout << "at end of CBBA::buildBundle..." << std::endl;
+        /*std::cout << "at end of CBBA::buildBundle..." << std::endl;*/
     } catch (const std::exception& e) {
         std::cerr << "Error in buildBundle: " << e.what() << std::endl;
     }
+}
+
+int CBBA::getTaskIndex(int task_id, std::vector<int>& vec) {
+    // Note, this is index as in location in the bundle or path (or other relevant vector)
+    // This is not task ID
+
+    auto it = std::find(vec.begin(), vec.end(), task_id);
+    if (it != vec.end()) {
+        int index = std::distance(vec.begin(), it);
+        //std::cout << "The index of " << task_id << " is: " << index << std::endl;
+        return index;
+    }
+
+    return -1; // Valid int but invalid index to denote error: task_id not found
+}
+
+/*void CBBA::removePathGaps(std::vector<int>& path) {
+    // Remove gaps (-1) in path so only appear at end
+
+    for (int i = 0; i < path.size(); ++i) {
+        // If the element is -1, found empty
+        if (path[i] == -1) {
+            // Shift tasks left to fill the gap
+            for (int j = i; j < path.size() - 1; ++j) {
+                path[j] = path[j + 1];
+            }
+            // Set the last element to -1 to maintain path size
+            path[path.size() - 1] = -1;
+            --i; // Decrement to recheck where -1 found, in case more than one shift (of all non-empty elements) required
+        }
+    }
+}*/
+
+/*void CBBA::removePathGaps(std::vector<int>& path) {
+    // Remove gaps (-1) in path so only appear at end
+
+    int write_idx = 0;  // Position to write the first non-empty value of path
+
+    // Move non-empty (-1) values to start
+    for (int read_idx = 0; read_idx < path.size(); ++read_idx) {
+        //std::string bla = "write_idx: " + std::to_string(write_idx) + " read_idx: " + std::to_string(read_idx);
+        //robot.log_info(bla);
+        //utils::log1DVector(path,robot);
+        if (path[read_idx] != -1) {
+            path[write_idx] = path[read_idx];
+            //path[read_idx] = -1;
+            write_idx++;
+        }
+    }
+
+    // Fill the remaining elements with -1 (more efficient than writing each in loop)
+    std::fill(path.begin() + write_idx, path.end(), -1);
+}*/
+
+void CBBA::removeGaps(std::vector<int>& vec) {
+    // Remove gaps (-1) in the given vector so they only appear at the end
+
+    int write_idx = 0;  // Position to write the first non-empty value
+
+    // Move non-empty (-1) values to start
+    for (int read_idx = 0; read_idx < vec.size(); ++read_idx) {
+        //std::string bla = "write_idx: " + std::to_string(write_idx) + " read_idx: " + std::to_string(read_idx);
+        //robot.log_info(bla);
+        //utils::log1DVector(path,robot);
+        if (vec[read_idx] != -1) {
+            vec[write_idx] = vec[read_idx];
+            write_idx++;
+        }
+    }
+
+    // Fill the remaining elements with -1 (more efficient than writing each in loop)
+    std::fill(vec.begin() + write_idx, vec.end(), -1);
+}
+
+void CBBA::testRemoveGaps() {
+
+    // In progress 
+    // Passed (result should be {3,-1,-1} for {-1,-1,3})
+    // Passed (should be {2,3,-1} for {2,-1,3})
+    // Passed (should be {2,3,-1} for {-1,2,3})
+
+    //std::vector<int> test = {-1, -1, 3};  // Example test vector
+    //std::vector<int> test = {2, -1, 3};  // Example test vector
+    std::vector<int> test = {-1, 2, 3};  // Example test vector
+    std::vector<int>& path = robot.getPath();  
+
+    path = test;
+    std::vector<int>& path2 = robot.getPath(); // see if assigning test worked
+    robot.log_info("Path before removing gaps: ");
+    utils::log1DVector(path2, robot);
+    removeGaps(path2);
+    robot.log_info("Path after removing gaps: ");
+    std::vector<int>& path3 = robot.getPath();
+    utils::log1DVector(path3, robot);
+}
+
+bool CBBA::isFeasible(int task_id) {
+
+    std::vector<int> doable_task_ids = robot.getDoableTaskIDs(); // We will remove tasks from this elsewhere when they are found to become infeasible
+    return std::find(doable_task_ids.begin(), doable_task_ids.end(), task_id) != doable_task_ids.end();
+}
+
+//void CBBA::bundleRemove() {
+void CBBA::bundleRemove(std::vector<int>& bundle, 
+                        std::vector<int>& path, 
+                        std::unordered_map<int, int>& winners, 
+                        std::unordered_map<int, double>& winning_bids) {
+
+    robot.log_info("In bundleRemove...");
+    utils::log1DVector(bundle,robot);
+    utils::log1DVector(path,robot);
+    utils::logUnorderedMap(winners,robot);
+    utils::logUnorderedMap(winning_bids,robot);
+
+    // Check if bundle has tasks in it (because if empty, nothing to remove so return)
+
+        // For task in bundle, 
+            // Check if current agent is still winner for that task in winners list
+            // If not, remove from bundle and path
+            // Can assume that winners list and winning bid list is up to date in this case
+            // shift path so no gaps
+            // go to next task, because can't remove twice
+
+            // if task is no longer feasible, remove from bundle and path
+            // Update winners and winning_bids lists to reflect this agent "losing" this task
+            // shift path so no gaps
+
+    // or more compactly:
+
+    // If bundle is empty, return  
+
+    // For each task in bundle:  
+        // If this agent is no longer the winner OR task is no longer feasible:  
+            // Remove task from bundle and path  
+            // Update winners and winning bids if needed  
+            // Shift path to remove gaps 
+
+    // std::vector<int>& bundle = robot.getBundle();
+    // std::vector<int>& path = robot.getPath();
+    // std::unordered_map<int, int>& winners = robot.getWinners();
+    // std::unordered_map<int, double>& winning_bids = robot.getWinningBids();
+
+/*    for (auto it = bundle.begin(); it != bundle.end();) {
+        int task_id = *it;
+
+        // robot.log_info("in loop");
+
+        bool new_winner_found = (winners[task_id] != robot.getID());
+        //std::string bla = "New winner found: " + std::to_string(new_winner_found);
+        //robot.log_info(bla);
+
+        // If new winner or task no longer feasible
+        if (new_winner_found || !isFeasible(task_id)) { // need to add || !isFeasible(task_id) once isFeasible is implemented
+            // robot.log_info("new winner found"); this does print
+            // Find in bundle and remove
+            auto b_idx = getTaskIndex(task_id, bundle);
+            bundle[b_idx] = -1; // Now empty
+            utils::log1DVector(bundle,robot);
+
+            // Find in path and remove
+            auto p_idx = getTaskIndex(task_id, path);
+            path[p_idx] = -1; 
+            utils::log1DVector(path,robot);
+
+            // Shift path to remove gaps
+            removePathGaps(path);
+            utils::log1DVector(path,robot);
+
+            // Update winners and winning_bids vectors if not already (assuming would already be in new_winner_found case)
+            if (!new_winner_found) {
+                winners[task_id] = -1; // now no winner
+                winning_bids[task_id] = 0.0;
+            }
+
+
+        }
+
+        //robot.log_info("testing......."); this does print
+
+    }*/
+
+    /*for (auto it = bundle.begin(); it != bundle.end(); ++it) {
+        int task_id = *it;
+        utils::logUnorderedMap(winners,robot);
+        bool new_winner_found = (winners[task_id] != robot.getID());
+        std::string bla = "for task_id: " + std::to_string(task_id) + "New winner found: " + std::to_string(new_winner_found) + " winners[task_id]: " + std::to_string(winners[task_id]);
+        robot.log_info(bla);
+
+        if (new_winner_found || !isFeasible(task_id)) {
+            // Mark as removed instead of erasing
+            *it = -1;  // Remove task id from bundle and replace with -1 to denote empty
+
+            // Find in path and remove
+            auto p_idx = getTaskIndex(task_id, path);
+            path[p_idx] = -1;
+
+            // Update winners and winning_bids vectors if not already
+            if (!new_winner_found) {
+                robot.log_info("No new winner found, reflecting change via removing current robot id as winner for removed task...");
+                winners[task_id] = -1;
+                winning_bids[task_id] = 0.0;
+            }
+        }
+    }
+
+    removeGaps(bundle);
+    removeGaps(path);*/
+
+    for (auto it = bundle.begin(); it != bundle.end(); ++it) {
+        int task_id = *it;
+
+        // Skip if task_id is -1 because empty
+        if (task_id == -1) {
+            continue;
+        }
+
+        bool new_winner_found = (winners[task_id] != robot.getID());
+
+        robot.log_info("New winner found: " + std::to_string(new_winner_found) + " winners[task_id]: " + std::to_string(winners[task_id]));
+
+        if (new_winner_found || !isFeasible(task_id)) {
+            *it = -1;  // Remove task id from bundle and replace with -1 to denote empty
+
+            // Find in path and remove
+            auto p_idx = getTaskIndex(task_id, path);
+            path[p_idx] = -1;
+
+            // Update winners and winning_bids vectors if not already
+            if (!new_winner_found) {
+                robot.log_info("No new winner found, reflecting change via removing current robot id as winner for removed task...");
+                winners[task_id] = -1;
+                winning_bids[task_id] = 0.0;
+            }
+
+            // Log winners after modification
+            robot.log_info("After modification, winners: ");
+            for (const auto& winner : winners) {
+                robot.log_info("task_id: " + std::to_string(winner.first) + " winner: " + std::to_string(winner.second));
+            }
+        }
+    }
+
+removeGaps(bundle);
+removeGaps(path);
+
+    robot.log_info("Final results for bundleRemove (bundle, path, winners, winning_bids): ");
+    utils::log1DVector(bundle,robot);
+    utils::log1DVector(path,robot);
+    utils::logUnorderedMap(winners,robot);
+    utils::logUnorderedMap(winning_bids,robot);
+
+
+
+}
+
+void CBBA::testBundleRemove() {
+
+    // Passes with the below (robot 2 ends up with empty bundle and path, robot 1 has no changes)
+    std::vector<int> bundle = {1,2,3};
+    std::vector<int> path = {1,2,3};
+    std::unordered_map<int, int> winners = {
+    {1, 1},
+    {2, 1}, 
+    {3, 1}  
+    };
+    std::unordered_map<int, double> winning_bids = {
+    {1, 10.5},
+    {2, 12.0},
+    {3, 9.8}
+    };
+
+    // Passed (robot 2 ends with 1,-1,-1, robot 1 ends with 2,-1,-1)
+    /*std::vector<int> bundle = {1,2,-1};
+    std::vector<int> path = {2,1,-1};
+    std::unordered_map<int, int> winners = {
+    {1, 2},
+    {2, 1}, 
+    {3, 1}  // not relevant for this test
+    };
+    std::unordered_map<int, double> winning_bids = { // don't think this matters
+    {1, 10.5},
+    {2, 12.0},
+    {3, 9.8}
+    };*/
+
+    // In progress, test case where no new winner found but found task in bundle that !isFeasible (so should see changes to winners/winning_bids)
+    do this and remove prints from bundleRemove
+
+    bundleRemove(bundle,path,winners,winning_bids);
+
 }
 
 std::unordered_map<int,int> CBBA::initLocalWinIndicatorH() {

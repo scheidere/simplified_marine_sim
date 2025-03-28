@@ -33,6 +33,8 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         //std::cout << "start world init print" << std::endl;
         all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types);
         utils::printCapabilities(all_agent_capabilities);
+        initMessageTracker();
+        initPingTracker();
         //std::cout << "end world init print" << std::endl;
         //print2DVector(agent_capabilities);
     } catch (const std::exception& e) {
@@ -57,6 +59,17 @@ cv::Mat World::init() {
     }
 }
 
+void World::initMessageTracker() {
+    for (const auto& [robot_id, _] : all_agents_info) {
+        message_tracker[robot_id] = {};  // Initialize with an empty vector
+    }
+}
+
+void World::initPingTracker() {
+    for (const auto& [robot_id, _] : all_agents_info) {
+        ping_tracker[robot_id] = {};  // Initialize with an empty vector
+    }
+}
 
 std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
 

@@ -115,6 +115,10 @@ public:
 
     std::vector<int> getRobotCapabilities(Robot* robot);
 
+    void initMessageTracker();
+
+    void initPingTracker();
+
 
 };
 
