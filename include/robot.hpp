@@ -49,6 +49,7 @@ private:
     std::map<int, double> bids; // Values are bids // changed to map from unordered for tie priority to lower int task IDs
     std::unordered_map<int, int> winners; // Values are agent IDs
     std::unordered_map<int, double> winning_bids; // Values are bids obviously
+    std::unordered_map<int, double> timestamps; // Time of last info update from each of other agents
 
     //std::vector<std::vector<int>> feasible_tasks; // initialized with ones because all assumed to be feasible)
 
@@ -77,6 +78,7 @@ public:
     std::map<int,double> initBids();  
     std::unordered_map<int,int> initWinners();
     std::unordered_map<int,double> initWinningBids();
+    std::unordered_map<int,double> initTimestamps();
     //std::unordered_map<int, double>& getBids() { return bids; }
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
@@ -91,7 +93,9 @@ public:
     void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
+    double getMessageReceptionTime();
     void receivePings();
+    void updateTimestamps();
     bool needRegroup();
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);

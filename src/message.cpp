@@ -2,7 +2,8 @@
 #include "message.hpp"
 
 Message::Message(Robot& sender)
-        : sender(sender), msg(sender.getID(), sender.getCurrentTaskID(), sender.getPose(), sender.getBundle()) 
+    : sender(sender),
+      msg(sender.getID(), sender.getWinners(), sender.getWinningBids()) // Timestamp updated upon receipt by another robot
 {
 }
 
@@ -90,6 +91,10 @@ void Message::ping(World& world) {
     }
 }
 
+/*double Message::getTimestamp() { //do we want this here
+    // Time of last information update from other robot
+}
+*/
 
 /*void Message::printMessage(Msg msg) {
     std::cout << "Message ID:" << msg.id << ":\n";

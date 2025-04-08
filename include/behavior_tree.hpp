@@ -144,6 +144,18 @@ public:
     static PortsList providedPorts();
 };
 
+class Communicate : public ThreadedAction {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    Communicate(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 /*class ReceivePing : public ThreadedAction {
 private:
     World& _world;

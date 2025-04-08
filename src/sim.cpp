@@ -127,7 +127,7 @@
 
 // <RunTest waypoint="{wp}"/> 
 
-// Run to test BuildBundle only
+/*// Run to test BuildBundle only
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
@@ -136,7 +136,7 @@ static const char* xml_text = R"(
         </Sequence>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 // Pinging works, if tested like this needs little delay between sending and listening to allow all robots to hear
 /*static const char* xml_text = R"(
@@ -196,6 +196,18 @@ static const char* xml_text = R"(
   </BehaviorTree>
 </root>  )";*/
 
+// Run to test BuildBundle only
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <BuildBundle/>
+            <Communicate/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";
+
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
@@ -233,6 +245,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
                 factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
                 factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
+                factory.registerNodeType<Communicate>("Communicate", std::ref(world), std::ref(robot));
                 factory.registerNodeType<TestMessages>("TestMessages", std::ref(world), std::ref(robot));
                 factory.registerNodeType<NeedRegroup>("NeedRegroup", std::ref(robot));
                 factory.registerNodeType<TestCond>("TestCond", std::ref(robot));

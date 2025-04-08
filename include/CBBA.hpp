@@ -88,13 +88,14 @@ public:
 
     void testRemoveGaps();
 
-    bool isFeasible(int task_id);
+    bool isFeasible(int task_id, bool do_test_3 = false);
 
     //void bundleRemove();
     void bundleRemove(std::vector<int>& bundle, 
                         std::vector<int>& path, 
                         std::unordered_map<int, int>& winners, 
-                        std::unordered_map<int, double>& winning_bids);
+                        std::unordered_map<int, double>& winning_bids,
+                        bool do_test_3 = false);
 
     void testBundleRemove();
 
@@ -123,7 +124,14 @@ public:
 
     int getBundleOrPathSize(const std::vector<int>& vec);
 
-    void bundleAdd();
+    void bundleAdd(std::vector<int>& bundle, 
+                        std::vector<int>& path, 
+                        std::vector<double>& scores,
+                        std::map<int, double>& bids,
+                        std::unordered_map<int, int>& winners, 
+                        std::unordered_map<int, double>& winning_bids);
+
+    //void resolveConflicts();
 
     //std::tuple<const Task&, int, int, double> findTaskForMaxScoreImprovement(Robot* robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
     //std::tuple<Task, int, double> findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);

@@ -21,6 +21,8 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
 {
     try {
 
+        start_time = std::chrono::steady_clock::now();
+
         defineQuadrants();
         //initAllTasks();
         num_agents = parser->getNumAgents();
@@ -41,6 +43,15 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
     }
+}
+
+std::chrono::steady_clock::time_point World::getStartTime() const {
+    return start_time;
+}
+
+double World::getElapsedTime() const {
+    auto now = std::chrono::steady_clock::now();
+    return std::chrono::duration<double>(now - start_time).count();
 }
 
 cv::Mat& World::getImage() { 
@@ -295,8 +306,8 @@ void World::printMessageTracker() {
 
 void World::printMessage(Msg msg) { // no mutex because used within the function above
     std::cout << "Message ID:" << msg.id << "\n";
-    std::cout << "Task ID: " << msg.task_id << "\n";
-    std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
+    //std::cout << "Task ID: " << msg.task_id << "\n";
+    //std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
    /* std::cout << "Bundle: [";
     for (const auto& task : msg.bundle.tasks) {
         std::cout << task << " "; // Assuming tasks can be printed this way
@@ -365,6 +376,44 @@ std::vector<Pose2D> World::getQuadrantCenters() {
     }
     return quadrant_centers;
 }
+
+std::vector<int> World::getNeighborsInComms(int robot_id) {
+
+    // Not yet tested
+
+    // Return vector of robot IDs, one for each robot in comms with given robot ID
+
+    return ping_tracker[robot_id];
+}
+
+double World::getMaxNeighborTimestamp(int i, int k) {
+
+    // Not yet tested
+
+    // Given k, the id of a robot not within comms with current robot with id i
+    // Return the maximum (latest) timestamp that a neighbor of (in comms with) i received a message from k
+    // If none of the neighbor has no msg from k, return -1
+
+    double max_timestamp = -1.0;
+
+    std::vector<int> neighbors = getNeighborsInComms(i);
+
+    for (int id : neighbors) {
+        for (Msg msg : message_tracker[id]) {
+            if (msg.id == k) { // Found robot m in comms with both i and k, that has received a msg from k
+                // Found message from k
+                if (msg.timestamp > max_timestamp) { // Found more recent timestamp of info received by m from k
+                    max_timestamp = msg.timestamp;
+                }
+            }
+
+        }
+    }
+
+    return max_timestamp;
+}
+
+
 
 /*void World::initAllTasks() {
     try {

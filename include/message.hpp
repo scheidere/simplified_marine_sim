@@ -10,14 +10,17 @@
 
 struct Msg {
     int id; // sender robot ID
-    int task_id; // Task sender is currently doing
-    Pose2D location; // Current location of sender
-    std::vector<int> bundle; // Sender bundle of tasks
+    //int task_id; // Task sender is currently doing
+    //Pose2D location; // Current location of sender
+    std::unordered_map<int,int> winners;
+    std::unordered_map<int,double> winning_bids;
+    double timestamp;
 
     // add more robot/cbba info here later
 
-    Msg(int id, int task_id, Pose2D location, std::vector<int> bundle)
-        : id(id), task_id(task_id), location(location), bundle(bundle) {}
+    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids)
+        : id(id), winners(winners), winning_bids(winning_bids), timestamp(-1.0) {} 
+
 };
 
 class Message {
@@ -32,9 +35,12 @@ public:
     //void updateRobotMessageQueue(Robot& receiver);
     //void receiveMessages(World& world, Robot& receiver);
 
+    //double getTimestamp();
+
 private:
     Robot& sender;
     Msg msg; // Private member variable
+
   
 };
 

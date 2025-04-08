@@ -10,6 +10,7 @@
 #include "CBBA.hpp"
 #include "structs.hpp"
 #include <unordered_map>
+#include <chrono>
 
 
 struct Task;
@@ -50,12 +51,19 @@ protected:
         cv::Scalar(255, 255, 255)
     };
 
+    std::chrono::steady_clock::time_point start_time;
+
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
 
     int getX() const { return X; }
     int getY() const { return Y; }
+
+    std::chrono::steady_clock::time_point getStartTime() const;
+    
+    double getElapsedTime() const;
 
     cv::Mat& getImage();
 
@@ -119,6 +127,9 @@ public:
 
     void initPingTracker();
 
+    std::vector<int> getNeighborsInComms(int robot_id_i);
+
+    double getMaxNeighborTimestamp(int robot_id_i, int out_of_range_robot_id_k);
 
 };
 

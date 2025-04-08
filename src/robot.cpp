@@ -59,6 +59,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w
     winning_bids = initWinningBids();
     log_info("Winning bids (task id: double): ");
     utils::logUnorderedMap(winning_bids, *this);
+    timestamps = initTimestamps();
+
 
     // Can robot do task i at j idx in bundle
     //feasible_tasks = world->initFeasibleTasks(this); // dimensions: num_tasks x max_depth
@@ -138,6 +140,24 @@ std::unordered_map<int,double> Robot::initWinningBids() {
 
 }
 
+std::unordered_map<int,double> Robot::initTimestamps() {
+
+    std::unordered_map<int,double> timestamps;
+
+    // Get agentinfo from world
+    std::unordered_map<int,AgentInfo> all_agents_info = world->getAllAgentsInfo();
+
+    for (const auto& [id_k, agent] : all_agents_info) {
+        // For all id's k, not equal to current id i, init timestamp
+        if (id_k != id) {
+            timestamps[id_k] = -1; 
+        }
+    }
+
+    return timestamps; 
+
+}
+
 void Robot::init (Pose2D initial_pose) {
     std::cout << "Initializing robot pose..." << std::endl;
     // Access world for image
@@ -200,12 +220,18 @@ void Robot::receiveMessages() {
 
         if (!messages.empty()) {
             Msg msg = messages.front();
+            msg.timestamp = getMessageReceptionTime();
             updateRobotMessageQueue(msg);
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
             log_info(log_msg);
         }
     }
+}
+
+double Robot::getMessageReceptionTime() {
+
+    return world->getElapsedTime();
 }
 
 bool Robot::checkIfNewInfoAvailable() {
@@ -272,6 +298,41 @@ void Robot::receivePings() {
 
 }
 
+void Robot::updateTimestamps() {
+
+    // Not yet tested
+
+    log_info("Timestamps BEFORE change:");
+    utils::logUnorderedMap(timestamps,*this);
+
+    bool found_msg_from_k;
+    for (auto& [id_k, timestamp] : timestamps) {
+        // Check if current robot has new msg directly from k, and if so, update 
+        found_msg_from_k = false;
+        for (Msg& msg : message_queue) {
+            if (msg.id == id_k) {
+                // Found message from robot k
+                timestamps[id_k] = msg.timestamp;
+                found_msg_from_k = true;
+            }
+        }
+
+
+        // Indirect timestamp case, relayed via some agent m who is in range of i and received a message from k
+        if (!found_msg_from_k) { 
+            // Robot k not in comms with robot i (current) so check robots in range with both i and k for msg from k
+            double new_timestamp = world->getMaxNeighborTimestamp(id,id_k); // latest timestamp of msg from k that a neighbor to i received
+            if (new_timestamp != -1.0) { // If actually new info
+                timestamps[id_k] = new_timestamp;
+            }
+        }
+
+    }
+
+    log_info("Timestamps AFTER change:");
+    utils::logUnorderedMap(timestamps,*this);
+}
+
 void Robot::printMessageQueue(std::vector<Msg>& message_queue) {
     for (const auto& msg : message_queue) {
         printMessage(msg);
@@ -280,8 +341,8 @@ void Robot::printMessageQueue(std::vector<Msg>& message_queue) {
 
 void Robot::printMessage(Msg msg) { // no mutex because used within the function above
     std::cout << "Message ID:" << msg.id << "\n";
-    std::cout << "Task ID: " << msg.task_id << "\n";
-    std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
+    //std::cout << "Task ID: " << msg.task_id << "\n";
+    //std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
    /* std::cout << "Bundle: [";
     for (const auto& task : msg.bundle.tasks) {
         std::cout << task << " "; // Assuming tasks can be printed this way
@@ -302,3 +363,4 @@ bool Robot::needRegroup() {
     std::cout << "in regroup before false" << std::endl;
     return false;
 }
+

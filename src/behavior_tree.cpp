@@ -266,6 +266,7 @@ PortsList NewInfoAvailable::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
 }
+
 ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
     : ThreadedAction(name, config), _world(world), _receiver(receiver) {}
 
@@ -287,6 +288,38 @@ NodeStatus ReceiveMessage::tick()
 PortsList ReceiveMessage::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
+}
+
+Communicate::Communicate(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ThreadedAction(name, config), _world(world), _robot(robot) {}
+
+NodeStatus Communicate::tick()
+{
+    try {
+
+        // Send messages
+        std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
+        _robot.log_info(log_msg);
+        Message msg(_robot);
+        msg.broadcastMessage(_world);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
+
+        // Receive messages
+        _robot.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
+        std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";
+        _robot.log_info(log_msg2);
+
+        _robot.updateTimestamps();
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in Communicate::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList Communicate::providedPorts()
+{
+    return {};
 }
 
 /*ReceivePing::ReceivePing(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
@@ -450,7 +483,8 @@ NodeStatus BuildBundle::tick()
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
         CBBA cbba(_robot, _parser);
         cbba.buildBundle();
-        return NodeStatus::RUNNING;
+        //return NodeStatus::RUNNING; // was there a purpose for this other than testing?
+        return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in BuildBundle::tick: " << e.what() << std::endl;
         return NodeStatus::FAILURE;
