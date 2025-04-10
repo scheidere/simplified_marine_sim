@@ -131,7 +131,11 @@ public:
                         std::unordered_map<int, int>& winners, 
                         std::unordered_map<int, double>& winning_bids);
 
-    //void resolveConflicts();
+    void update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
+    std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k); 
+
+    void reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, double>& winning_bids_i);
+    void resolveConflicts();
 
     //std::tuple<const Task&, int, int, double> findTaskForMaxScoreImprovement(Robot* robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
     //std::tuple<Task, int, double> findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);

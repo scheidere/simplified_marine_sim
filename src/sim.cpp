@@ -203,6 +203,7 @@ static const char* xml_text = R"(
         <Sequence name="root_sequence">
             <BuildBundle/>
             <Communicate/>
+            <ResolveConflicts/>
         </Sequence>
      </BehaviorTree>
 </root>
@@ -252,6 +253,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<RunTest>("RunTest");
                 factory.registerNodeType<RunTest2>("RunTest2");
                 factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(parser)); // Threaded action with args
+                factory.registerNodeType<ResolveConflicts>("ResolveConflicts", std::ref(robot), std::ref(parser)); // Threaded action with args
                 factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
                 factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));

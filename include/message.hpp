@@ -14,12 +14,13 @@ struct Msg {
     //Pose2D location; // Current location of sender
     std::unordered_map<int,int> winners;
     std::unordered_map<int,double> winning_bids;
-    double timestamp;
+    std::unordered_map<int,double> timestamps;
+    // double timestamp;
 
     // add more robot/cbba info here later
 
-    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids)
-        : id(id), winners(winners), winning_bids(winning_bids), timestamp(-1.0) {} 
+    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::unordered_map<int,double> timestamps)
+        : id(id), winners(winners), winning_bids(winning_bids), timestamps(timestamps) {} 
 
 };
 

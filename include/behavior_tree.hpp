@@ -239,83 +239,17 @@ public:
     static PortsList providedPorts();
 };
 
-/*class BuildBundle : public ThreadedAction {
+class ResolveConflicts : public ThreadedAction {
 private:
-    World& _world;
     Robot& _robot;
-    CBBA& _cbba;
+    JSONParser& _parser;
 
 public:
-    BuildBundle(const std::string& name, const NodeConfig& config, World& w, Robot& r, CBBA& cbba);
+    ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p);
+
     NodeStatus tick() override;
 
     static PortsList providedPorts();
-};*/
-
-
-/*class Test : public SyncActionNode {
-private:
-    Robot& _robot;
-public:
-    RunTest(const std::string& name, const NodeConfig& config, Robot& robot);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};*/
-
-/*
-// Action_A has a different constructor than the default one.
-class Action_A: public SyncActionNode
-{
-
-public:
-    // additional arguments passed to the constructor
-    Action_A(const std::string& name, const NodeConfig& config,
-             int arg_int, std::string arg_str):
-        SyncActionNode(name, config),
-        _arg1(arg_int),
-        _arg2(arg_str) {}
-
-    // this example doesn't require any port
-    static PortsList providedPorts() { return {}; }
-
-    // tick() can access the private members
-    NodeStatus tick() override;
-
-private:
-    int _arg1;
-    std::string _arg2;
 };
-*/
 
-/*class BuildBundle : public ThreadedAction {
-private:
-    World& _world;
-    Robot& _robot;
-    CBBA& _cbba;
-
-public:
-    BuildBundle(const std::string& name, const NodeConfig& config, World& w, Robot& r, CBBA& cbba);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};*/
-
-/*class BuildBundle : public ThreadedAction {
-private:
-    World* _world;
-    Robot* _robot;
-    CBBA* _cbba;
-
-public:
-    BuildBundle(const std::string& name, const NodeConfig& config);
-
-    static PortsList providedPorts();
-
-    void setParams(World& world, Robot& robot, CBBA& cbba);
-
-    NodeStatus tick() override;
-
-};
-*/
 #endif

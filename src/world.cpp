@@ -386,7 +386,7 @@ std::vector<int> World::getNeighborsInComms(int robot_id) {
     return ping_tracker[robot_id];
 }
 
-double World::getMaxNeighborTimestamp(int i, int k) {
+double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 
     // Not yet tested
 
@@ -396,14 +396,14 @@ double World::getMaxNeighborTimestamp(int i, int k) {
 
     double max_timestamp = -1.0;
 
-    std::vector<int> neighbors = getNeighborsInComms(i);
+    std::vector<int> neighbors_of_i = getNeighborsInComms(id_i);
 
-    for (int id : neighbors) {
-        for (Msg msg : message_tracker[id]) {
-            if (msg.id == k) { // Found robot m in comms with both i and k, that has received a msg from k
+    for (int id_m : neighbors_of_i) {
+        for (Msg msg : message_tracker[id_m]) {
+            if (msg.id == id_k) { // Found robot m in comms with both i and k, that has received a msg from k
                 // Found message from k
-                if (msg.timestamp > max_timestamp) { // Found more recent timestamp of info received by m from k
-                    max_timestamp = msg.timestamp;
+                if (msg.timestamps[id_k] > max_timestamp) { // Found more recent timestamp of info received by m from k
+                    max_timestamp = msg.timestamps[id_k];
                 }
             }
 

@@ -83,6 +83,7 @@ public:
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
+    std::unordered_map<int, double>& getTimestamps() { return timestamps; }
     //std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
     void init(Pose2D initial_pose);
     //void printTasksVector();

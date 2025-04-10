@@ -3,7 +3,7 @@
 
 Message::Message(Robot& sender)
     : sender(sender),
-      msg(sender.getID(), sender.getWinners(), sender.getWinningBids()) // Timestamp updated upon receipt by another robot
+      msg(sender.getID(), sender.getWinners(), sender.getWinningBids(), sender.getTimestamps()) // Timestamp updated upon receipt by another robot
 {
 }
 

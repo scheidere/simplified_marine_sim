@@ -220,7 +220,7 @@ void Robot::receiveMessages() {
 
         if (!messages.empty()) {
             Msg msg = messages.front();
-            msg.timestamp = getMessageReceptionTime();
+            //timestamps[msg.id] = getMessageReceptionTime(); this is done in updateTimestamps
             updateRobotMessageQueue(msg);
             std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
@@ -312,7 +312,7 @@ void Robot::updateTimestamps() {
         for (Msg& msg : message_queue) {
             if (msg.id == id_k) {
                 // Found message from robot k
-                timestamps[id_k] = msg.timestamp;
+                timestamps[id_k] = getMessageReceptionTime(); //msg.timestamp;
                 found_msg_from_k = true;
             }
         }

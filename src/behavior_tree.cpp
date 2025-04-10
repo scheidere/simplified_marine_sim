@@ -496,3 +496,23 @@ PortsList BuildBundle::providedPorts()
     return { };
 }
 
+ResolveConflicts::ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p)
+    : ThreadedAction(name, config), _robot(r), _parser(p) {}
+
+NodeStatus ResolveConflicts::tick()
+{
+    try {
+        std::cout << "Resolving conflicts for robot " << _robot.getID() << "..." << std::endl;
+        CBBA cbba(_robot, _parser);
+        cbba.resolveConflicts();
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ResolveConflicts::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ResolveConflicts::providedPorts()
+{
+    return { };
+}
