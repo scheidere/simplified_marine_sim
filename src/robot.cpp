@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <stdexcept> // For exception handling
 #include "planners.hpp"
-#include "scorer.hpp"
 #include "world.hpp"
 #include "robot.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -13,8 +12,8 @@
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
-Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, Scorer* s, World* w, JSONParser* psr, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
-: planner(p), shortest_path(sp), coverage_path(cp), scorer(s), world(w), parser(psr), id(robot_id), type(robot_type) {
+Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParser* psr, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
+: planner(p), shortest_path(sp), coverage_path(cp), world(w), parser(psr), id(robot_id), type(robot_type) {
     
     // Get filename for logging and then open it
     std::string filename = generateLogFilename();

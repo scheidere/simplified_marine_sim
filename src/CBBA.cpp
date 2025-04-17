@@ -319,8 +319,8 @@ void CBBA::bundleRemove(std::vector<int>& bundle,
         }
     }
 
-removeGaps(bundle);
-removeGaps(path);
+    removeGaps(bundle);
+    removeGaps(path);
 
     robot.log_info("Final results for bundleRemove (bundle, path, winners, winning_bids): ");
     utils::log1DVector(bundle,robot);
@@ -736,7 +736,7 @@ void CBBA::reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_
     winners_i[j] = -1; winning_bids_i[j] = 0.0;
 }
 
-void CBBA::resolveConflicts() {
+void CBBA::resolveConflicts(bool do_test) {
 
     // Given communication between at least two agents, check for conflicts in shared info
     // Option 1: Update agent i's y (winning bids) and z (winners) with agent k's
@@ -766,8 +766,14 @@ void CBBA::resolveConflicts() {
         robot.log_info("Timestamps: ");
         utils::logUnorderedMap(timestamps_k,robot);
 
+        if (do_test) {
+            // This will change parts of these vectors/unordered maps to test different parts of the conflict resolution logic
+            testResolveConflicts(id_i, message_queue_i, winners_i, winning_bids_i, timestamps_i,
+                                id_k, winners_k, winning_bids_k, timestamps_k);
+        }
+
         for (auto& [j, winner_ij] : winners_i) { // Looping all tasks j
-            if (winner_ij == winners_k[j]) { // If i and k agree about winner of task j
+            if (winner_ij == winners_k[j]) { // CASE 1: If i and k agree about winner of task j
                 if (winner_ij == id_k) { // If winner is k
                     update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
                 }
@@ -780,7 +786,7 @@ void CBBA::resolveConflicts() {
                 // If winner is i or unsure, leave (no change)
 
 
-            } else if (winners_k[j] == id_k) { // They don't agree and k thinks it is the winner of task j
+            } else if (winners_k[j] == id_k) { // CASE 2: They don't agree and k thinks it is the winner of task j
                 if (winner_ij == id_i && winning_bids_k[j] > winning_bids_i[j]) { // If i thinks i
                     update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
                 } else if (winner_ij == -1) { // If i is unsure
@@ -793,7 +799,7 @@ void CBBA::resolveConflicts() {
 
                 }
                 
-            } else if (winners_k[j] == id_i) { // They don't agree and k thinks i should be the winner of task j
+            } else if (winners_k[j] == id_i) { // CASE 3: They don't agree and k thinks i should be the winner of task j
                 if (winner_ij == id_k) { // If i thinks k
                     reset(j, winners_i, winning_bids_i);
                 } else if (winner_ij != -1) { // If i thinks m
@@ -804,8 +810,10 @@ void CBBA::resolveConflicts() {
                 }
                 // If i is unsure, leave (no change)
 
-            } else if (winners_k[j] != -1) { // They don't agree and k thinks another agent m (not i or k) wins task j
+            } else if (winners_k[j] != -1) { // CASE 4: They don't agree and k thinks another agent m (not i or k) wins task j
                 // Only other option is unsure aka -1, so if not -1, then must be another id m
+
+                if (do_test) {robot.log_info("in else for k thinks m");}
 
                 int m = winners_k[j];
 
@@ -833,7 +841,9 @@ void CBBA::resolveConflicts() {
                     }
                 }
 
-            } else if (winners_k[j] == -1) {
+            } else if (winners_k[j] == -1) { // CASE 5: They don't agree and k is unsure
+
+                if (do_test) {robot.log_info("in else for k is unsure");}
 
                 if (winner_ij == id_k) { // If i thinks k
                     update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
@@ -845,13 +855,289 @@ void CBBA::resolveConflicts() {
                 }
                 // If i thinks i, leave (no change)
 
-            } else {
-                // LEAVE
             }
+        }
+
+        if (do_test) {
+            robot.log_info("Current robot's winners and winning_bids after resolveConflicts...");
+            utils::logUnorderedMap(winners_i, robot);
+            utils::logUnorderedMap(winning_bids_i, robot);
+
         }
 
 
     }
+
+}
+
+// inputs: robot i winners, winning_bids, message_queue (to get msg's from each k), timestamps
+void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::unordered_map<int, int>& winners_i, 
+    std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int,double>& timestamps_i,
+    int id_k, std::unordered_map<int, int>& winners_k, 
+    std::unordered_map<int, double>& winning_bids_k, std::unordered_map<int,double>& timestamps_k) {
+
+    robot.log_info("Before testResolveConflicts changes anything for testing...");
+    std::string bla = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";
+    robot.log_info(bla);
+    utils::logUnorderedMap(winners_i, robot);
+    utils::logUnorderedMap(winning_bids_i, robot);
+    utils::logUnorderedMap(timestamps_i, robot);
+    std::string bla1 = "Other robot " + std::to_string(id_k) + " (winners, winning_bids, timestamps):";
+    robot.log_info(bla1);
+    utils::logUnorderedMap(winners_k, robot);            
+    utils::logUnorderedMap(winning_bids_k, robot);
+    utils::logUnorderedMap(timestamps_k, robot);
+ 
+
+    // ***** TEST 1: If robot i and robot k agree on winner of some task j
+    int task_j = 1; // This is random
+
+    //  // Test 1.A 
+    // They agree on k winning for task j (this should result in update of winners and winning bids for robot i) - PASSED
+    /*winners_i[task_j] = id_k;
+    winners_k[task_j] = id_k;
+    winning_bids_k[task_j] = 10;*/ // Making it different so we see an update if it happens (as it should)
+    
+    //  // Test 1.B
+    // They agree on i winning for task j - Should result in no change - PASSED
+    /*winners_i[task_j] = id_i;
+    winners_k[task_j] = id_i;
+    winning_bids_k[task_j] = 10;*/
+
+    //  // Test 1.C
+    // They are both unsure who should win task j - Should result in no change - PASSED
+    /*winners_i[task_j] = -1;
+    winners_k[task_j] = -1;
+    winning_bids_k[task_j] = 10;*/
+
+    //  // Test 1.D
+    // They agree on another robot m winning for task j (not i or k) (result depends on timestamp - see 2 cases below)
+    // Let's choose m = 3 (technically testing with just 2 robots for simplicity so manufacturing this)
+    /*int id_m = 3;
+    winners_i[task_j] = id_m;
+    winners_k[task_j] = id_m;
+    winning_bids_k[task_j] = 10;*/
+
+    // 1.D.1 - Should result in update because km timestamp more recent - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;*/
+
+    // 1.D.2 - Should result in no change because im timestamp more recent - PASSED
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;*/
+
+    // ***** Test 2: If robot i and robot k don't agree and k thinks k is winner of task j
+    //winners_k[task_j] = id_k; // UNCOMMENT part 1/3
+
+    //  // Test 2.A
+    // i thinks i and k thinks k - Result depends on winning bids
+    //winners_i[task_j] = id_i;
+
+    // 2.A.1 - Should result in update because k winning bid higher than i winning bid - PASSED
+    /*winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/
+
+    // 2.A.2 - Should result in no change because i winning bid higher than k winning bid - PASSED
+    /*winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 5;*/
+
+    //  // Test 2.B
+    // i is unsure - Should result in update (winners, winning bids) in every case
+    /*winners_i[task_j] = -1;
+    winning_bids_i[task_j] = -1; // Here just to observe update
+    winning_bids_k[task_j] = 5;*/ // Here just to observe update
+
+    //  // Test 2.C 
+    // UNCOMMENT part 2/3 (example)
+    // i thinks another robot m
+    /*int id_m = 3;
+    winners_i[task_j] = id_m;*/
+
+    // 2.C.1 - Should result in update because k has higher timestamp from m (even though lower bid for j) - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;
+    winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 5;*/
+
+    // 2.C.2 - Should result in update because k has higher timestamp from m and k has higher bid for j - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;
+    winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/
+
+    // 2.C.3 - Should result in no change because i has higher timestamp and bid - PASSED
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;
+    winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 5;*/
+
+    // 2.C.4 - Should result in update because k has higher bid for j (even though lower timestamp) - PASSED
+    // UNCOMMENT part 3/3 (example)
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;
+    winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/
+
+    // ***** Test 3: If robot i and robot k don't agree and k thinks i is winner of task j
+    //winners_k[task_j] = id_i; // UNCOMMENT part 1/3
+
+    //  // Test 3.A
+    // i thinks k - Should result in reset - PASSED
+    //winners_i[task_j] = id_k;
+
+    //  // Test 3.B
+    // i thinks another robot m;
+    // UNCOMMENT part 2/3 (example)
+    /*int id_m = 3;
+    winners_i[task_j] = id_m;*/
+
+    // 3.B.1 - Should not change because i has more recent info from m - PASSED
+    // UNCOMMENT part 3/3 (example)
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;*/
+
+    // 3.B.2 - Should reset because k has more recent info from m - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;*/
+
+    //  // Test 3.C
+    // i is unsure - Should result in no change - PASSED
+    //winners_i[task_j] = -1;
+
+    // ***** Test 4: If robot i and robot k don't agree and k thinks another robot m is winner of task j
+    // UNCOMMENT part 1/3
+    /*int id_m = 3;
+    winners_k[task_j] = id_m;*/
+
+    //  // Test 4.A
+    // i thinks i
+    //winners_i[task_j] = id_i; // UNCOMMENT part 2/3 (example)
+
+    // 4.A.1 - Should result in no change - PASSED
+    // UNCOMMENT part 3/3 (example)
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;
+    winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/
+
+
+    // 4.A.2 - Should result in update - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;
+    winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/
+
+    // 4.A.3 - Should result in no change - PASSED
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;
+    winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 5;*/
+
+
+    // 4.A.4 - Should result in no change - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;
+    winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 5;*/
+
+
+    //  // Test 4.B
+    // i thinks k
+    //winners_i[task_j] = id_k;
+
+    // 4.B.1 - Should result in reset - PASSED
+    // UNCOMMENT part 3/3 (example)
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;*/
+
+    // 4.B.2 - Should result in update - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;*/
+
+    //  // Test 4.C
+    // i is unsure
+    //winners_i[task_j] = -1;
+
+    // 4.C.1 - Should result in no change - PASSED
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;*/
+
+    // 4.C.2 - Should result in update - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;*/
+
+    //  // Test 4.D
+    // is thinks another robot n
+    /*int id_n = 4;
+    winners_i[task_j] = id_n;*/
+
+    // 4.D.1 - Should update since km and kn timestamp win over im and in respectively (k wins both timestamps) - PASSED
+    /*timestamps_i[id_m] = 2; 
+    timestamps_k[id_m] = 3; // k wins this
+    timestamps_i[id_n] = 2; 
+    timestamps_k[id_n] = 3; // and either k wins this
+    winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 5;*/ // or k wins this (but doesn't in this example)
+
+
+    // 4.D.2 - Should update since timestamp km > im and winning bid kj > ij (k wins m timestamp and winning bids) - PASSED
+    /*timestamps_i[id_m] = 2; 
+    timestamps_k[id_m] = 3; // k wins this
+    timestamps_i[id_n] = 3; 
+    timestamps_k[id_n] = 2; // and either k wins this (but doesn't in this example)
+    winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/ // or k wins this
+
+    // 4.D.3 - Should reset because i wins timestamp for m (but thinks n), and k wins timestamp for n (but thinks m) - PASSED
+    /*timestamps_i[id_m] = 3; // i wins this 
+    timestamps_k[id_m] = 2;
+    timestamps_i[id_n] = 2; 
+    timestamps_k[id_n] = 3; // and k wins this
+    // winning bids should be irrelevant so making them same
+    winning_bids_i[task_j] = 10;
+    winning_bids_k[task_j] = 10;*/
+
+    // ***** Test 5: If robot i and robot k don't agree and k is unsure who should win task j
+    // UNCOMMENT part 1/3
+    winners_k[task_j] = -1;
+
+    //  // Test 5.A
+    // i thinks i - Should be no change - PASSED
+    //winners_i[task_j] = id_i;
+
+    //  // Test 5.B
+    // i thinks k - Should update - PASSED
+    /*winners_i[task_j] = id_k;
+    winning_bids_i[task_j] = 5;
+    winning_bids_k[task_j] = 10;*/
+
+
+    //  // Test 5.C
+    // i thinks m
+    int id_m = 3;
+    winners_i[task_j] = id_m; // UNCOMMENT part 2/3 (example)
+
+    // 5.C.1 - Should result in no change because i more confident and has more recent info from m - PASSED
+    // UNCOMMENT part 3/3 (example)
+    timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;
+
+    // 5.C.2 - Should result in update since k has more recent info - PASSED
+    /*timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3;*/
+    
+
+    robot.log_info("After testResolveConflicts changes things for testing...");
+    std::string bla2 = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";
+    robot.log_info(bla2);
+    utils::logUnorderedMap(winners_i, robot);
+    utils::logUnorderedMap(winning_bids_i, robot);
+    utils::logUnorderedMap(timestamps_i, robot);
+    std::string bla3 = "Other robot " + std::to_string(id_k) + " (winners, winning_bids, timestamps):";
+    robot.log_info(bla3);
+    utils::logUnorderedMap(winners_k, robot);            
+    utils::logUnorderedMap(winning_bids_k, robot);
+    utils::logUnorderedMap(timestamps_k, robot);
 
 }
 

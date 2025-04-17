@@ -12,7 +12,7 @@ find_package(behaviortree_cpp REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 # Add executable
-add_executable(sim src/sim.cpp src/CBBA.cpp src/distance.cpp src/message.cpp src/sensor_model.cpp src/world.cpp src/planners.cpp src/scorer.cpp src/robot.cpp src/behavior_tree.cpp src/parser.cpp)
+add_executable(sim src/sim.cpp src/CBBA.cpp src/distance.cpp src/message.cpp src/sensor_model.cpp src/world.cpp src/planners.cpp src/robot.cpp src/behavior_tree.cpp src/parser.cpp)
 
 ament_target_dependencies(sim behaviortree_cpp)
 

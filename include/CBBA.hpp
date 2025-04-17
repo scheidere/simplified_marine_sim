@@ -6,6 +6,7 @@
 #include <sstream>
 #include <cmath>
 #include <limits>
+#include "message.hpp"
 #include "planners.hpp"
 #include "distance.hpp"
 #include "world.hpp"
@@ -14,23 +15,7 @@
 #include "parser.hpp"
 
 
-/*struct NewWinIndicator;
-struct NewWinIndicator { // h_i
-    std::vector<bool> win_indicator;
-    int numTasks;
-
-    NewWinIndicator(int numTasks) : numTasks(numTasks), win_indicator(init()) {}
-
-    std::vector<bool> init() {
-        // Get the list of all tasks
-        //std::vector<bool> allTasks = world->getAllTasks();
-        //int n = allTasks.size(); // Get number of tasks to set indices, once and for all
-
-        // Initialize the vector with zero for each task
-        std::vector<bool> win_indicator(numTasks, true);
-        return win_indicator;
-    }
-};*/
+struct Msg;
 
 
 class CBBA {
@@ -135,7 +120,15 @@ public:
     std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k); 
 
     void reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, double>& winning_bids_i);
-    void resolveConflicts();
+    void resolveConflicts(bool do_test = false);
+
+    void testResolveConflicts(int id_i, std::vector<Msg>& message_queue, 
+                                std::unordered_map<int, int>& winners_i, 
+                                std::unordered_map<int, double>& winning_bids_i, 
+                                std::unordered_map<int,double>& timestamps_i,
+                                int id_k, std::unordered_map<int, int>& winners_k, 
+                                std::unordered_map<int, double>& winning_bids_k, 
+                                std::unordered_map<int,double>& timestamps_k);
 
     //std::tuple<const Task&, int, int, double> findTaskForMaxScoreImprovement(Robot* robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
     //std::tuple<Task, int, double> findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);

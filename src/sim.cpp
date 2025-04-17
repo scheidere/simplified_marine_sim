@@ -7,7 +7,6 @@
 #include "sensor_model.hpp"
 #include "world.hpp"
 #include "planners.hpp"
-#include "scorer.hpp"
 #include "robot.hpp"
 #include "behavior_tree.hpp"
 #include "behaviortree_cpp/bt_factory.h"
@@ -216,14 +215,14 @@ double getCurrentTime() {
 }
 
 
-void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, Scorer& scorer, World& world, JSONParser& parser) {
+void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, World& world, JSONParser& parser) {
     std::cout << "Entering run_robot for robot " << robot_id << std::endl;
 
     try {
         std::cout << "Creating robot " << robot_id << " with step size " << step_size << "..." << std::endl;
 
         try {
-            Robot robot(&planner, &shortest_path, &coverage_path, &scorer, &world, &parser, initial_pose, goal_pose, robot_id, robot_type, color);
+            Robot robot(&planner, &shortest_path, &coverage_path, &world, &parser, initial_pose, goal_pose, robot_id, robot_type, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
 
             {
@@ -337,7 +336,6 @@ int main(int argc, char** argv) {
         Planner planner(step_size, obs_radius);
         ShortestPath shortest_path(step_size);
         CoveragePath coverage_path(step_size, obs_radius);
-        Scorer scorer;
 
         std::this_thread::sleep_for(std::chrono::seconds(2));
         std::cout << "in main 1" << std::endl;
@@ -393,7 +391,7 @@ int main(int argc, char** argv) {
                 robot_threads.emplace_back(
                     run_robot, agent.id, agent.type, agent.initial_pose, agent.goal_pose, agent.color,
                     step_size, std::ref(planner), std::ref(shortest_path), 
-                    std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser)
+                    std::ref(coverage_path), std::ref(world), std::ref(parser)
                 );
             }
 

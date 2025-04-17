@@ -504,7 +504,8 @@ NodeStatus ResolveConflicts::tick()
     try {
         std::cout << "Resolving conflicts for robot " << _robot.getID() << "..." << std::endl;
         CBBA cbba(_robot, _parser);
-        cbba.resolveConflicts();
+        //cbba.resolveConflicts();
+        cbba.resolveConflicts(true); // for testing
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ResolveConflicts::tick: " << e.what() << std::endl;

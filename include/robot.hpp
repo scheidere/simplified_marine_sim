@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include "planners.hpp"
-#include "scorer.hpp"
 #include "world.hpp"
 //#include "message.hpp"
 #include "structs.hpp"
@@ -27,7 +26,6 @@ private:
     Planner* planner;
     ShortestPath* shortest_path;
     CoveragePath* coverage_path;
-    Scorer* scorer;
     World* world; // Point to single,shared world instance
     JSONParser* parser;
     std::vector<Msg> message_queue;
@@ -58,7 +56,7 @@ private:
 
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, Scorer* scorer, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
+    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
     int getID() const { return id; }
     std::string getType() const { return type; }
