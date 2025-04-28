@@ -133,15 +133,28 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     return all_agents_info;
 }
 
-std::unordered_map<int,TaskInfo> World::initAllTasksInfo() {
+/*std::unordered_map<int,TaskInfo> World::initAllTasksInfo() {
     std::unordered_map<int,TaskInfo> all_tasks_info;
 
     auto parsed_tasks = parser->j["local_tasks"]; // Assume parser extracts JSON info
     for (const auto& task : parsed_tasks) {
         int id = task["id"].get<int>();
+
+        std::unordered_map<std::string, int> area;
+        std::unordered_map<std::string, int> location;
+
+        if (task.contains("area")) {
+            area = task["area"].get<std::unordered_map<std::string, int>>();
+        }
+
+        if (task.contains("location")) {
+            location = task["location"].get<std::unordered_map<std::string, int>>();
+        }
+
         TaskInfo task_struct = { // later will need to add checks to catch different types of task components that are or aren't present
             id,
             task["type"], // maybe can set up checks by type
+            task["location"].get<std::pair<int,int>>,
             task["area"].get<std::unordered_map<std::string, int>>(),
             task["reward"]   
         };
@@ -149,6 +162,95 @@ std::unordered_map<int,TaskInfo> World::initAllTasksInfo() {
 
     }
     return all_tasks_info;
+}*/
+
+std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
+    std::unordered_map<int, TaskInfo> all_tasks_info;
+
+    auto parsed_tasks = parser->j["local_tasks"]; // Assume parser extracts JSON info
+    for (const auto& task : parsed_tasks) {
+        int id = task["id"].get<int>();
+        std::string type = task["type"];
+        double reward = task["reward"];
+
+        std::unordered_map<std::string, int> area; // This will remain empty if no area defined in input json
+        std::pair<int, int> location = {-1, -1};
+
+        if (task.contains("area")) {
+            area = task["area"].get<std::unordered_map<std::string, int>>();
+        }
+
+        if (task.contains("location")) {
+            auto loc_json = task["location"];
+            int x = loc_json.value("x", -1);  // fallback to -1 if missing
+            int y = loc_json.value("y", -1);
+            location = std::make_pair(x, y);
+        }
+
+        TaskInfo task_struct = {
+            id,
+            type,
+            location,
+            area,
+            reward
+        };
+
+        all_tasks_info[id] = task_struct;
+    }
+
+    return all_tasks_info;
+}
+
+TaskInfo& World::getTaskInfo(int task_id) {
+
+    if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
+        return all_tasks_info.at(task_id);
+    } else {
+        throw std::runtime_error("Task ID not found in all_tasks_info");
+    }
+}
+
+double& World::getTaskReward(int task_id) {
+
+    TaskInfo& task_info = getTaskInfo(task_id);
+    return task_info.reward;
+}
+
+std::pair<int, int> World::getTaskLocation(int task_id, Robot* robot) { // Robot passed in for TESTING ONLY
+    TaskInfo& task_info = getTaskInfo(task_id);
+
+    robot->log_info("in getTaskLocation");
+
+    std::string bla = "x: " + std::to_string(task_info.location.first) + ", y: " + std::to_string(task_info.location.second);
+    robot->log_info(bla);
+
+    // If task location is explicitly set
+    if (task_info.location.first != -1 && task_info.location.second != -1) {
+
+        robot->log_info("task location explicitly exists (not quadrant-defined) and found");
+
+        int x = task_info.location.first;
+        int y = task_info.location.second;
+        return std::make_pair(x, y);
+    } 
+    // If location is defined via quadrant area
+    else if (!task_info.area.empty()) {
+        robot->log_info("task location must be calculated from quadrant given as area");
+        return getTaskLocationFromArea(task_info.area); // pass the area map
+    } 
+    // If no location information exists
+    else {
+        throw std::runtime_error("Task has no location or area defined.");
+    }
+}
+
+std::pair<int,int> World::getTaskLocationFromArea(std::unordered_map<std::string, int>& area) {
+
+    int xmin = area.at("xmin");; int xmax = area.at("xmax");; int ymin = area.at("ymin");; int ymax = area.at("ymax");
+    int xcenter = (xmin + xmax) / 2; int ycenter = (ymin + ymax) / 2; 
+    std::pair<int,int> center = std::make_pair(xcenter,ycenter);
+
+    return center;
 }
 
 std::vector<int> World::getRobotCapabilities(Robot* robot) {

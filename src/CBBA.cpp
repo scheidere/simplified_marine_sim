@@ -7,11 +7,12 @@
 #include "robot.hpp"
 #include "CBBA.hpp"
 #include "parser.hpp"
+#include "distance.hpp"
 #include <utils.hpp>
 
 class Robot;
 
-CBBA::CBBA(Robot& r, JSONParser& p) : robot(r), parser(p) {
+CBBA::CBBA(Robot& r, World& w, JSONParser& p) : robot(r), world(w), parser(p) {
     init();
 }
 
@@ -410,19 +411,179 @@ std::unordered_map<int,int> CBBA::initLocalWinIndicatorH() {
     return local_win_indicator_h;
 }
 
-double CBBA::getPathScore(std::vector<int> path) {
-    double score = 0.0;
-    
+
+
+/*std::pair<int,int> CBBA::getTaskLocation(int task_id) {
+
+    std::pair<int,int> location;
+
+    // Get area from all tasks object in world
+    std::unordered_map<int,TaskInfo>& all_tasks_info = world.getTaskInfo(task_id);
+
+
+    return location;
+
+}*/
+
+double CBBA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
+
+    // Get distance along path to location of given task_id
+
+    robot.log_info("in cumulative distance function");
+
+    if (std::find(path.begin(), path.end(), task_id) == path.end()) {
+        throw std::runtime_error("Task ID " + std::to_string(task_id) + " not found in path.");
+    }
+
+    double distance = 0;
+
+    // Get robot location to init "prev" location
+    Pose2D current_pose = robot.getPose();
+    int prev_x = current_pose.x;
+    int prev_y = current_pose.y;
+    std::string bla = "init prev loc: " + std::to_string(prev_x) + ", " + std::to_string(prev_y);
+    robot.log_info(bla);
+
     for (int i = 0; i < getBundleOrPathSize(path); i++) {
-        if (path[i] == 2) {
-            score += (i == 0) ? 3.0 : 2.0; // val if true: val if false
+
+        //ok i think the problem is the task location function might always be returning 0,0???
+        std::pair<int,int> location = world.getTaskLocation(path[i], &robot); // path[i] is a task id
+        int current_x = location.first;
+        int current_y = location.second;
+        std::string bla2 = "task loc: " + std::to_string(current_x) + ", " + std::to_string(current_y);
+        robot.log_info(bla2);
+
+
+        double new_dist = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
+        robot.log_info(std::to_string(new_dist));
+
+        distance += new_dist;
+
+        if (path[i] == task_id) {
+            return distance;
         } else {
-            score += 1.0; // Assign base reward for other tasks
+            prev_x = current_x;
+            prev_y = current_y;
+        }
+    }
+
+    robot.log_info("end cumulative distance function");
+
+    // Should never reach here due to check above
+    throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
+
+}
+
+double CBBA::getPathScore(std::vector<int> path, bool do_test) {
+
+    // WILL NEED TO UPDATE TO HANDLE TIME-DISCOUNTED REWARD (see CBBA paper)
+
+    double discount_factor = 0.999; // % future reward loses value
+    double score = 0.0;
+
+    robot.log_info("getPathScore distance check for path:");
+    utils::log1DVector(path, robot);
+    
+    double distance;
+    // for each task id in given vector (bundle or path)
+    for (int i = 0; i < getBundleOrPathSize(path); i++) {
+
+        int task_id = path[i];
+
+        if (!do_test) {
+
+            robot.log_info("in the right if**********");
+
+            // Get distance along path to given task
+            distance = getDistanceAlongPathToTask(path, path[i]);
+
+            // log for testing
+            /*std::string bla = "i: " + std::to_string(i);
+            robot.log_info(bla);
+            std::string bla2 = "Distance: " + std::to_string(distance);
+            robot.log_info(bla2);*/
+
+            int reward = world.getTaskReward(task_id);
+            //score += reward / (distance + 1.0); // Doesn't weigh distance enough, want to prioritize closer tasks more
+            //score += reward / pow(distance+1.0,3); // Still not enough to make diff
+            /*double alpha = 5.0/400.0; // max reward / max distance
+            double normalized = reward - alpha * distance;
+            score += normalized;*/
+
+            score += reward * pow(discount_factor, distance);
+
+        } else {
+            if (task_id == 2) {
+                score += (i == 0) ? 3.0 : 2.0; // val if true: val if false
+            } else {
+                score += 1.0; // Assign base reward for other tasks
+            }
         }
     }
 
     return score;
 }
+
+/*double CBBA::getPathScore(std::vector<int> path, bool do_test) {
+
+    // WILL NEED TO UPDATE TO HANDLE TIME-DISCOUNTED REWARD (see CBBA paper)
+
+    double discount_factor = 0.9; // % future reward loses value
+    double score = 0.0;
+
+    robot.log_info("getPathScore distance check for path:");
+    utils::log1DVector(path, robot);
+    
+    // for each task id in given vector (bundle or path)
+    for (int i = 0; i < getBundleOrPathSize(path); i++) {
+
+        int task_id = path[i];
+
+        if (!do_test) {
+
+            robot.log_info("in the right if**********");
+
+            // get robot location x,y
+            Pose2D current_pose = robot.getPose();
+            int robot_x = current_pose.x;
+            int robot_y = current_pose.y;
+
+            robot.log_info("Before distance call 1....");
+
+            // get task location x,y
+            std::pair<int,int> location = world.getTaskLocation(task_id);
+            int task_x = location.first;
+            int task_y = location.second;
+
+            robot.log_info("Before distance call....");
+
+            // Calc euclidean distance
+            double distance = Distance::getEuclideanDistance(robot_x, robot_y, task_x, task_y);
+
+            // log for testing
+            std::string bla = "i: " + std::to_string(i);
+            robot.log_info(bla);
+            std::string bla2 = "Distance: " + std::to_string(distance);
+            robot.log_info(bla2);
+
+            int reward = world.getTaskReward(task_id);
+            //score += reward / (distance + 1.0); // Doesn't weigh distance enough, want to prioritize closer tasks more
+            //score += reward / pow(distance+1.0,3); // Still not enough to make diff
+            /*double alpha = 5.0/400.0; // max reward / max distance
+            double normalized = reward - alpha * distance;
+            score += normalized;
+
+        } else {
+            if (task_id == 2) {
+                score += (i == 0) ? 3.0 : 2.0; // val if true: val if false
+            } else {
+                score += 1.0; // Assign base reward for other tasks
+            }
+        }
+    }
+
+    return score;
+}*/
 
 std::vector<int> CBBA::addTaskToPath(int task_id, std::vector<int> test_path, int position_n) {
  
@@ -538,6 +699,8 @@ std::pair<double, int> CBBA::computeBid(int task_id) {
     // Get score for current path (without adding new task)
     //robot.log_info("cuuureeennnttt path score call");
     double current_path_score = getPathScore(path);
+    std::string bloop = "Current score: " + std::to_string(current_path_score);
+    robot.log_info(bloop);
     //robot.log_info("end current_path_score");
 
     std::unordered_map<int, std::vector<int>> test_paths = getTestPaths(task_id);
@@ -752,11 +915,19 @@ void CBBA::resolveConflicts(bool do_test) {
     std::unordered_map<int, double> winning_bids_i = robot.getWinningBids();
     std::unordered_map<int,double> timestamps_i = robot.getTimestamps();
 
+
     for (auto& msg : message_queue_i) {
         int id_k = msg.id;
         std::unordered_map<int, int> winners_k = msg.winners;
         std::unordered_map<int, double> winning_bids_k = msg.winning_bids;
         std::unordered_map<int, double> timestamps_k = msg.timestamps;
+
+        // For reference in log file
+        robot.log_info("Current robot's winners, winning_bids and timestamps after resolveConflicts...");
+        utils::logUnorderedMap(winners_i, robot);
+        utils::logUnorderedMap(winning_bids_i, robot);
+        utils::logUnorderedMap(timestamps_i, robot);
+
         std::string bla = "Message from robot " + std::to_string(id_k) + ":";
         robot.log_info(bla);
         robot.log_info("Winners: ");
@@ -765,6 +936,7 @@ void CBBA::resolveConflicts(bool do_test) {
         utils::logUnorderedMap(winning_bids_k,robot);
         robot.log_info("Timestamps: ");
         utils::logUnorderedMap(timestamps_k,robot);
+
 
         if (do_test) {
             // This will change parts of these vectors/unordered maps to test different parts of the conflict resolution logic
@@ -858,7 +1030,8 @@ void CBBA::resolveConflicts(bool do_test) {
             }
         }
 
-        if (do_test) {
+        // (do_test)
+        if (true) {
             robot.log_info("Current robot's winners and winning_bids after resolveConflicts...");
             utils::logUnorderedMap(winners_i, robot);
             utils::logUnorderedMap(winning_bids_i, robot);

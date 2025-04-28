@@ -229,10 +229,11 @@ public:
 class BuildBundle : public ThreadedAction {
 private:
 	Robot& _robot;
+    World& _world;
     JSONParser& _parser;
 
 public:
-    BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p);
+    BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p);
 
     NodeStatus tick() override;
 
@@ -242,10 +243,11 @@ public:
 class ResolveConflicts : public ThreadedAction {
 private:
     Robot& _robot;
+    World& _world;
     JSONParser& _parser;
 
 public:
-    ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p);
+    ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p);
 
     NodeStatus tick() override;
 

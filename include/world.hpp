@@ -62,7 +62,7 @@ public:
     int getY() const { return Y; }
 
     std::chrono::steady_clock::time_point getStartTime() const;
-    
+
     double getElapsedTime() const;
 
     cv::Mat& getImage();
@@ -118,6 +118,14 @@ public:
     std::unordered_map<int,TaskInfo> initAllTasksInfo();
 
     std::unordered_map<int,TaskInfo>& getAllTasksInfo() { return all_tasks_info; }
+
+    TaskInfo& getTaskInfo(int task_id);
+
+    double& getTaskReward(int task_id);
+
+    std::pair<int,int> getTaskLocation(int task_id, Robot* robot); // robot passed in for TESTING ONLY
+
+    std::pair<int,int> getTaskLocationFromArea(std::unordered_map<std::string, int>& area);
 
     std::unordered_map<std::string,std::vector<int>> getAllCapabilities(); // { return all_agent_capabilities; }
 

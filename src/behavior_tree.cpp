@@ -474,14 +474,14 @@ PortsList RunTest2::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }
 
-BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p)
-    : ThreadedAction(name, config), _robot(r), _parser(p) {}
+BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p)
+    : ThreadedAction(name, config), _robot(r), _world(w), _parser(p) {}
 
 NodeStatus BuildBundle::tick()
 {
     try {
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
-        CBBA cbba(_robot, _parser);
+        CBBA cbba(_robot, _world, _parser);
         cbba.buildBundle();
         //return NodeStatus::RUNNING; // was there a purpose for this other than testing?
         return NodeStatus::SUCCESS;
@@ -496,16 +496,16 @@ PortsList BuildBundle::providedPorts()
     return { };
 }
 
-ResolveConflicts::ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, JSONParser& p)
-    : ThreadedAction(name, config), _robot(r), _parser(p) {}
+ResolveConflicts::ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p)
+    : ThreadedAction(name, config), _robot(r), _world(w), _parser(p) {}
 
 NodeStatus ResolveConflicts::tick()
 {
     try {
         std::cout << "Resolving conflicts for robot " << _robot.getID() << "..." << std::endl;
-        CBBA cbba(_robot, _parser);
-        //cbba.resolveConflicts();
-        cbba.resolveConflicts(true); // for testing
+        CBBA cbba(_robot, _world, _parser);
+        cbba.resolveConflicts();
+        //cbba.resolveConflicts(true); // for testing
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ResolveConflicts::tick: " << e.what() << std::endl;

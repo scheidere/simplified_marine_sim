@@ -22,6 +22,7 @@ class CBBA {
 private:
 
     Robot& robot; // Reference to specific robot on team
+    World& world;
     JSONParser& parser;
 
     //int num_agents; // Number of agents (including all types)
@@ -57,7 +58,7 @@ private:
 
 
 public:
-    CBBA(Robot& robot, JSONParser& parser);
+    CBBA(Robot& robot, World& world, JSONParser& parser);
 
     void init();
 
@@ -88,7 +89,9 @@ public:
 
     std::unordered_map<int,int> initLocalWinIndicatorH();
 
-    double getPathScore(std::vector<int> path);
+    double getDistanceAlongPathToTask(std::vector<int> path, int task_id);
+
+    double getPathScore(std::vector<int> path, bool do_test = false);
 
     std::vector<int> addTaskToPath(int task_id, std::vector<int> test_path, int position_n);
 

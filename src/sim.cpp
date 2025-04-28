@@ -195,14 +195,24 @@ static const char* xml_text = R"(
   </BehaviorTree>
 </root>  )";*/
 
-// Run to test BuildBundle only
-static const char* xml_text = R"(
+// Run to test BuildBundle, Communicate, and ResolveConflicts (without repetition until consensus) only
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
             <BuildBundle/>
             <Communicate/>
             <ResolveConflicts/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <BuildBundle/>
         </Sequence>
      </BehaviorTree>
 </root>
@@ -251,8 +261,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
                 factory.registerNodeType<RunTest>("RunTest");
                 factory.registerNodeType<RunTest2>("RunTest2");
-                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(parser)); // Threaded action with args
-                factory.registerNodeType<ResolveConflicts>("ResolveConflicts", std::ref(robot), std::ref(parser)); // Threaded action with args
+                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(world), std::ref(parser)); // Threaded action with args
+                factory.registerNodeType<ResolveConflicts>("ResolveConflicts", std::ref(robot), std::ref(world), std::ref(parser)); // Threaded action with args
                 factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
                 factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));

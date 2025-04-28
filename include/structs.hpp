@@ -9,7 +9,7 @@
 
 // leaving this structs for now to see if we can get a simple version working with just vectors in cbba class
 
-struct WinningBids {
+/*struct WinningBids {
     std::vector<double> winning_bids;
     int numTasks;
 
@@ -114,7 +114,7 @@ struct Bundle {
         tasks.pop_back(); // Ensure the task is removed from the bundle
         return nextTask;
     }
-};
+};*/
 
 struct AgentInfo {
     int id;
@@ -127,6 +127,7 @@ struct AgentInfo {
 struct TaskInfo {
     int id;
     std::string type;
+    std::pair<int,int> location;
     std::unordered_map<std::string,int> area;
     double reward;
 };
