@@ -208,10 +208,25 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
+// Testing bundle building only
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <BuildBundle/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Run to test BuildBundle, Communicate, and ResolveConflicts (with a second BuildBundle to test bundleRemove logic)
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
+            <BuildBundle/>
+            <Communicate/>
+            <ResolveConflicts/>
             <BuildBundle/>
         </Sequence>
      </BehaviorTree>
@@ -334,7 +349,7 @@ int main(int argc, char** argv) {
             std::cout << "Your step size is larger than 1! Have you made changes in planners for smaller final step/neighbors etc.?" << std::endl;
             std::cin.get();
         }
-        const double comms_range = 50.0;
+        const double comms_range = 310.0; //50.0;
         const int obs_radius = 4;
 
         std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");

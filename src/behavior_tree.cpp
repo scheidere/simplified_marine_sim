@@ -304,6 +304,8 @@ NodeStatus Communicate::tick()
         msg.broadcastMessage(_world);
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
 
+        //_robot.log_info("in communicate node, before receiveMessages");
+
         // Receive messages
         _robot.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
         std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";

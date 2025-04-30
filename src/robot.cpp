@@ -175,38 +175,38 @@ bool Robot::batteryLow() {
 }
 
 void Robot::move(Pose2D waypoint) {
-    std::cout << "In move for robot with ID " << getID() << std::endl;
+    //std::cout << "In move for robot with ID " << getID() << std::endl;
 
     world->clear(pose); // Clear all robot dots (technically only need to clear moving ones, but this is easier)
-    std::cout << "Before: ";
-    world->printTrackedRobots();
+    //std::cout << "Before: ";
+    //world->printTrackedRobots();
     pose = waypoint; // Update x and y within robot class
-    std::cout << "After: ";
-    world->printTrackedRobots();
+    //std::cout << "After: ";
+    //world->printTrackedRobots();
     world->plot(); // Add dots at all robot locations
 
     double drain_percent = 0.01;
     updateBatteryLevel(drain_percent);
-    std::cout << "New battery level after move: " << battery_level << " for robot ID " << id << std::endl;
+    //std::cout << "New battery level after move: " << battery_level << " for robot ID " << id << std::endl;
 }
 
 void Robot::updateRobotMessageQueue(Msg msg) {
-    std::cout << "IN updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
+    //std::cout << "IN updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
     try {
         message_queue.push_back(msg);
     } catch (const std::exception& e) {
         std::cerr << "Exception caught while updating message queue: " << e.what() << std::endl;
         throw;
     }
-    std::cout << "END updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
+    //std::cout << "END updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
 }
 
 void Robot::receiveMessages() {
-    std::cout << "in receiveMessages........" << std::endl;
+    //std::cout << "in receiveMessages........" << std::endl;
     std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = world->getMessageTracker();
 
     int receiverID = getID();
-    std::cout << "receiverID: " << receiverID << std::endl;
+    //std::cout << "receiverID: " << receiverID << std::endl;
     //std::cout << "Printed msg tracker from world: " << std::endl;
     //world->printMessageTracker();
     //std::cout << "world msg tracker printed above, size = " << world_msg_tracker.size() << std::endl;
@@ -214,14 +214,14 @@ void Robot::receiveMessages() {
     if (world_msg_tracker.find(receiverID) != world_msg_tracker.end()) {
         std::cout << "in if" << std::endl;
         std::vector<Msg>& messages = world_msg_tracker[receiverID];
-        std::cout << "length of messages from world (should be 1?): " << messages.size() << std::endl;
-        std::cout << "!messages.empty(): " << !messages.empty() << std::endl;
+        //std::cout << "length of messages from world (should be 1?): " << messages.size() << std::endl;
+        //std::cout << "!messages.empty(): " << !messages.empty() << std::endl;
 
         if (!messages.empty()) {
             Msg msg = messages.front();
             //timestamps[msg.id] = getMessageReceptionTime(); this is done in updateTimestamps
             updateRobotMessageQueue(msg);
-            std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
+            //std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
             log_info(log_msg);
         }
@@ -274,11 +274,11 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<int>>& wor
 
 void Robot::receivePings() {
 
-    std::cout << "in receivePings........" << std::endl;
+    //std::cout << "in receivePings........" << std::endl;
     std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
 
     int receiverID = id;
-    std::cout << "receiverID: " << receiverID << std::endl;
+    //std::cout << "receiverID: " << receiverID << std::endl;
 
     printWorldPingTracker(world_ping_tracker);
     
@@ -289,7 +289,7 @@ void Robot::receivePings() {
    
         if (!pings.empty()) {
             int first_heard_robot_ID = pings.front();
-            std::cout << "Robot " << receiverID << " received a ping from Robot " << first_heard_robot_ID << std::endl;
+            //std::cout << "Robot " << receiverID << " received a ping from Robot " << first_heard_robot_ID << std::endl;
             std::string log_msg = "Robot " + std::to_string(receiverID) + " received ping from Robot " + std::to_string(first_heard_robot_ID);
             log_info(log_msg);
         }
@@ -332,13 +332,13 @@ void Robot::updateTimestamps() {
     utils::logUnorderedMap(timestamps,*this);
 }
 
-void Robot::printMessageQueue(std::vector<Msg>& message_queue) {
+/*void Robot::printMessageQueue(std::vector<Msg>& message_queue) {
     for (const auto& msg : message_queue) {
         printMessage(msg);
     }
-}
+}*/
 
-void Robot::printMessage(Msg msg) { // no mutex because used within the function above
+/*void Robot::printMessage(Msg msg) { // no mutex because used within the function above
     std::cout << "Message ID:" << msg.id << "\n";
     //std::cout << "Task ID: " << msg.task_id << "\n";
     //std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
@@ -346,20 +346,19 @@ void Robot::printMessage(Msg msg) { // no mutex because used within the function
     for (const auto& task : msg.bundle.tasks) {
         std::cout << task << " "; // Assuming tasks can be printed this way
     }
-    std::cout << "]\n";*/
-}
+    std::cout << "]\n";}*/
 
 bool Robot::needRegroup() {
-    std::cout << " IN REGROUP" << std::endl;
-    std::cout << "message_queue length" << message_queue.size() << std::endl;
+    //std::cout << " IN REGROUP" << std::endl;
+    //std::cout << "message_queue length" << message_queue.size() << std::endl;
 
     if (!message_queue.empty()) {
         Msg least_recent_msg = message_queue[0];
-        std::cout << "MESSAGE EXISTS from robot ID " << least_recent_msg.id << std::endl;
-        std::cout << "in regroup before true" << std::endl;
+        //std::cout << "MESSAGE EXISTS from robot ID " << least_recent_msg.id << std::endl;
+        //std::cout << "in regroup before true" << std::endl;
         return true;
     }
-    std::cout << "in regroup before false" << std::endl;
+    //std::cout << "in regroup before false" << std::endl;
     return false;
 }
 

@@ -123,7 +123,8 @@ public:
 
     double& getTaskReward(int task_id);
 
-    std::pair<int,int> getTaskLocation(int task_id, Robot* robot); // robot passed in for TESTING ONLY
+    //std::pair<int,int> getTaskLocation(int task_id, Robot* robot); // robot passed in for TESTING ONLY
+    std::pair<int,int> getTaskLocation(int task_id);
 
     std::pair<int,int> getTaskLocationFromArea(std::unordered_map<std::string, int>& area);
 

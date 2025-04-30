@@ -84,9 +84,9 @@ void World::initPingTracker() {
 
 std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
 
-    std::cout << "start world getter cap" << std::endl;
+    //std::cout << "start world getter cap" << std::endl;
     utils::printCapabilities(all_agent_capabilities);
-    std::cout << "end world getter cap" << std::endl;
+    //std::cout << "end world getter cap" << std::endl;
     return all_agent_capabilities;
 }
 
@@ -216,18 +216,20 @@ double& World::getTaskReward(int task_id) {
     return task_info.reward;
 }
 
-std::pair<int, int> World::getTaskLocation(int task_id, Robot* robot) { // Robot passed in for TESTING ONLY
+//std::pair<int, int> World::getTaskLocation(int task_id, Robot* robot) { // Robot passed in for TESTING ONLY
+std::pair<int, int> World::getTaskLocation(int task_id) {
+
     TaskInfo& task_info = getTaskInfo(task_id);
 
-    robot->log_info("in getTaskLocation");
+    //robot->log_info("in getTaskLocation"); // TESTING ONLY, needs robot as input
 
     std::string bla = "x: " + std::to_string(task_info.location.first) + ", y: " + std::to_string(task_info.location.second);
-    robot->log_info(bla);
+    //robot->log_info(bla); // TESTING ONLY, needs robot as input
 
     // If task location is explicitly set
     if (task_info.location.first != -1 && task_info.location.second != -1) {
 
-        robot->log_info("task location explicitly exists (not quadrant-defined) and found");
+        //robot->log_info("task location explicitly exists (not quadrant-defined) and found"); // TESTING ONLY, needs robot as input
 
         int x = task_info.location.first;
         int y = task_info.location.second;
@@ -235,7 +237,7 @@ std::pair<int, int> World::getTaskLocation(int task_id, Robot* robot) { // Robot
     } 
     // If location is defined via quadrant area
     else if (!task_info.area.empty()) {
-        robot->log_info("task location must be calculated from quadrant given as area");
+        //robot->log_info("task location must be calculated from quadrant given as area"); // TESTING ONLY, needs robot as input
         return getTaskLocationFromArea(task_info.area); // pass the area map
     } 
     // If no location information exists
@@ -266,7 +268,7 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
     //std::cin.get();
 
     if (all_agent_capabilities.find(agent_type) == all_agent_capabilities.end()) {
-        std::cout << "Error: Capabilities for type " << agent_type << " not found!" << std::endl;
+        std::cerr << "Error: Capabilities for type " << agent_type << " not found!" << std::endl;
         return {};  // Return an empty vector
     }
 
@@ -303,7 +305,7 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
     std::sort(doable_local_tasks.begin(), doable_local_tasks.end());
     utils::log1DVector(doable_local_tasks, *robot);
 
-    std::cout << "Doable local tasks vector: " << std::endl;
+    //std::cout << "Doable local tasks vector: " << std::endl;
     utils::print1DVector(doable_local_tasks);
 
     return doable_local_tasks; // List of specific task indices of all doable types for given robot
@@ -351,7 +353,7 @@ void World::clear(Pose2D pose) {
 
 void World::plot() {
     std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "Plotting world..." << std::endl;
+    //std::cout << "Plotting world..." << std::endl;
 
     // Plotting quadrant centers (for now)
     std::vector<Pose2D> quadrant_centers = getQuadrantCenters(); // also plots them; will remove once we add obstacles
@@ -360,7 +362,7 @@ void World::plot() {
         Robot* robot = pair.second;
         cv::Scalar color = robot->getColor();
         Pose2D robot_pose = robot->getPose();
-        std::cout << "Plotting robot ID: " << robot->getID() << " at pose: " << robot_pose.x << ", " << robot_pose.y << " with color: " << color << std::endl;
+        //std::cout << "Plotting robot ID: " << robot->getID() << " at pose: " << robot_pose.x << ", " << robot_pose.y << " with color: " << color << std::endl;
         cv::circle(image, cv::Point(robot_pose.x, robot_pose.y), 5, color, -1);
     }
 
@@ -370,11 +372,11 @@ void World::plot() {
 
 void World::trackRobot(Robot* robot) {
     std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "Tracking Robot ID: " << robot->getID() << std::endl;
+    //std::cout << "Tracking Robot ID: " << robot->getID() << std::endl;
     robot_tracker[robot->getID()] = robot;
 }
 
-void World::printTrackedRobots() {
+/*void World::printTrackedRobots() {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Tracked Robots:" << std::endl;
     for (const auto& ID_robo_pair : robot_tracker) {
@@ -386,9 +388,9 @@ void World::printTrackedRobots() {
             std::cout << " Null Robot instance" << std::endl;
         }
     }
-}
+}*/
 
-void World::printMessageTracker() {
+/*void World::printMessageTracker() {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "World message tracker:" << std::endl;
     for (auto& pair : message_tracker) {
@@ -404,9 +406,9 @@ void World::printMessageTracker() {
         }
     }
     std::cout << "End of printMessageTracker" << std::endl;
-}
+}*/
 
-void World::printMessage(Msg msg) { // no mutex because used within the function above
+/*void World::printMessage(Msg msg) { // no mutex because used within the function above
     std::cout << "Message ID:" << msg.id << "\n";
     //std::cout << "Task ID: " << msg.task_id << "\n";
     //std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
@@ -414,8 +416,7 @@ void World::printMessage(Msg msg) { // no mutex because used within the function
     for (const auto& task : msg.bundle.tasks) {
         std::cout << task << " "; // Assuming tasks can be printed this way
     }
-    std::cout << "]\n";*/
-}
+    std::cout << "]\n";}*/
 
 bool World::inComms(int id1, int id2) {
     std::lock_guard<std::mutex> lock(world_mutex);
@@ -444,7 +445,7 @@ void World::defineQuadrants() {
         Pose2D tlD{X/2,Y/2,0}; Pose2D blD{X/2,Y,0}; Pose2D trD{X,Y/2,0}; Pose2D brD{X,Y,0};
         areaDCoords.push_back(tlD); areaDCoords.push_back(blD); areaDCoords.push_back(trD); areaDCoords.push_back(brD);
 
-        std::cout << "Quadrants defined." << std::endl;
+        //std::cout << "Quadrants defined." << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in defineQuadrants: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
@@ -470,7 +471,7 @@ std::vector<Pose2D> World::getQuadrantCenters() {
         cv::rectangle(image, cv::Point(centerC.x - size, centerC.y - size), cv::Point(centerC.x + size, centerC.y + size), cv::Scalar(0, 0, 0), -1);
         cv::rectangle(image, cv::Point(centerD.x - size, centerD.y - size), cv::Point(centerD.x + size, centerD.y + size), cv::Scalar(0, 0, 0), -1);
 
-        std::cout << "Quadrant centers defined: " << quadrant_centers.size() << " centers." << std::endl;
+        //std::cout << "Quadrant centers defined: " << quadrant_centers.size() << " centers." << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in getQuadrantCenters: " << e.what() << std::endl;

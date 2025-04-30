@@ -88,8 +88,8 @@ public:
     void move(Pose2D waypoint);
     void printWorldPingTracker(std::unordered_map<int, std::vector<int>>& world_ping_tracker);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
-    void printMessageQueue(std::vector<Msg>&  message_queue);
-    void printMessage(Msg msg);
+    //void printMessageQueue(std::vector<Msg>&  message_queue);
+    //void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
     double getMessageReceptionTime();

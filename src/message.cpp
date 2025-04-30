@@ -26,11 +26,21 @@ void Message::broadcastMessage(World& world) {
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;
         //std::cout << "in loop" << std::endl;
+
+        // TESTING ONLY
+        /*if (pair.first == msg.id) {
+            // Found sender
+            Robot* sender = pair.second;
+            sender->log_info("in broadcastMessage!!!!");
+        }
+*/
+
         //start here and below emily - you got this :)
         if (receiver->getID() != msg.id) { // msg.id is the sender robot's ID
             //std::cout << "got receiver ID that is not sender ID duh" << std::endl;
             //std::cout << msg.id << " is sender ID" << std::endl;
             int receiverID = receiver->getID();
+            //receiver->log_info("in broadcastMessage but receiving part where world message tracker should be updated");
             //std::cout << receiverID << " is receiverID" << std::endl;
             bool inComms = world.inComms(msg.id, receiverID);
             //std::cout << "inComms check for receiverID: " << receiverID << " result: " << inComms << std::endl;

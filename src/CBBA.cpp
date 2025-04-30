@@ -172,6 +172,12 @@ void CBBA::buildBundle() {
         std::unordered_map<int, int>& winners = robot.getWinners();
         std::unordered_map<int, double>& winning_bids = robot.getWinningBids();
 
+        robot.log_info("BEFORE bundleRemove...");
+        utils::log1DVector(bundle,robot);
+        utils::log1DVector(path,robot);
+        utils::logUnorderedMap(winners,robot);
+        utils::logUnorderedMap(winning_bids,robot);
+
         bundleRemove(bundle, path, winners, winning_bids); // Update bundle if new info reveals mistakes
 
         std::vector<double>& scores = robot.getScores();
@@ -446,8 +452,7 @@ double CBBA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
 
     for (int i = 0; i < getBundleOrPathSize(path); i++) {
 
-        //ok i think the problem is the task location function might always be returning 0,0???
-        std::pair<int,int> location = world.getTaskLocation(path[i], &robot); // path[i] is a task id
+        std::pair<int,int> location = world.getTaskLocation(path[i]); //&robot); // robot only for testing, path[i] is a task id
         int current_x = location.first;
         int current_y = location.second;
         std::string bla2 = "task loc: " + std::to_string(current_x) + ", " + std::to_string(current_y);
@@ -910,10 +915,13 @@ void CBBA::resolveConflicts(bool do_test) {
 
     // Current robot i
     int id_i = robot.getID(); 
-    std::vector<Msg> message_queue_i = robot.getMessageQueue();
-    std::unordered_map<int, int> winners_i = robot.getWinners();
-    std::unordered_map<int, double> winning_bids_i = robot.getWinningBids();
-    std::unordered_map<int,double> timestamps_i = robot.getTimestamps();
+    std::vector<Msg>& message_queue_i = robot.getMessageQueue();
+    std::unordered_map<int, int>& winners_i = robot.getWinners();
+    std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
+    std::unordered_map<int,double>& timestamps_i = robot.getTimestamps();
+
+    std::string blorp = "Size of message queue: " + std::to_string(message_queue_i.size());
+    robot.log_info(blorp);
 
 
     for (auto& msg : message_queue_i) {
