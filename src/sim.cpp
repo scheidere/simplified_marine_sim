@@ -220,7 +220,7 @@ static const char* xml_text = R"(
 )";*/
 
 // Run to test BuildBundle, Communicate, and ResolveConflicts (with a second BuildBundle to test bundleRemove logic)
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
@@ -229,6 +229,22 @@ static const char* xml_text = R"(
             <ResolveConflicts/>
             <BuildBundle/>
         </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Fallback>
+        <RepeatSequence name="root_sequence">
+            <BuildBundle/>
+            <Communicate/>
+            <ResolveConflicts/>
+            <CheckConvergence/>
+        </RepeatSequence>
+        <Ping/>
+        </Fallback>
      </BehaviorTree>
 </root>
 )";
@@ -281,6 +297,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
                 factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));
+                factory.registerNodeType<RepeatSequence>("RepeatSequence");
+                factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
@@ -349,7 +367,7 @@ int main(int argc, char** argv) {
             std::cout << "Your step size is larger than 1! Have you made changes in planners for smaller final step/neighbors etc.?" << std::endl;
             std::cin.get();
         }
-        const double comms_range = 310.0; //50.0;
+        const double comms_range = 50.0; //310.0
         const int obs_radius = 4;
 
         std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");

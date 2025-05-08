@@ -60,6 +60,12 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     utils::logUnorderedMap(winning_bids, *this);
     timestamps = initTimestamps();
 
+    // Inits for tracking of previous info for convergence checks between iterations
+    prev_bundle.resize(max_depth, -1);
+    prev_path.resize(max_depth, -1);
+    prev_winners = initWinners();
+    prev_winning_bids = initWinningBids();
+    num_converged_iterations = 0;
 
     // Can robot do task i at j idx in bundle
     //feasible_tasks = world->initFeasibleTasks(this); // dimensions: num_tasks x max_depth
@@ -362,3 +368,46 @@ bool Robot::needRegroup() {
     return false;
 }
 
+void Robot::countConvergedIterations() {
+
+    // This must be called before updateBeliefs() at the end of a CBBA round
+
+    bool found_difference = false;
+
+    // std::vector and std::unordered_map<int,int> support !=
+    if (bundle != prev_bundle) {  found_difference = true; }
+    if (path != prev_path) { found_difference = true; }
+    if (winners != prev_winners) { found_difference = true; }
+
+    // std::unordered_map<int,double> does not
+    for (const auto& [task_id, bid] : winning_bids) {
+        auto it = prev_winning_bids.find(task_id);
+        if (it == prev_winning_bids.end() || std::abs(it->second - bid) > 1e-6) {
+            found_difference = true;
+        }
+    }
+
+    if (found_difference) {
+        num_converged_iterations = 0;
+        //return false;
+    } else {     // If get here, no changes found, so system has converged at least temporarily (for the group in comms with current robot now)
+        log_info("At convergence for this round!!!!!");
+        num_converged_iterations += 1;
+        std::string bla = "Converged for " + std::to_string(num_converged_iterations) + " iterations...";
+        log_info(bla);
+        //return true;
+    }
+
+}
+
+void Robot::updateBeliefs(){
+
+    // This must be called after convergence is checked for a given round of CBBA
+
+    // Update belief tracking
+    prev_bundle = bundle;
+    prev_path = path;
+    prev_winners = winners;
+    prev_winning_bids = winning_bids;
+
+}

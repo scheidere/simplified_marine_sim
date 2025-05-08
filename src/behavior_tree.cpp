@@ -203,6 +203,7 @@ NodeStatus SendMessage::tick()
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in SendMessage::tick: " << e.what() << std::endl;
+        _sender.log_info("SendMessage node FAILURE");
         return NodeStatus::FAILURE;
     }
 }
@@ -231,6 +232,7 @@ NodeStatus Ping::tick()
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Ping::tick: " << e.what() << std::endl;
+        _robot.log_info("Ping node FAILURE");
         return NodeStatus::FAILURE;
     }
 }
@@ -281,6 +283,7 @@ NodeStatus ReceiveMessage::tick()
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
+        _receiver.log_info("ReceiveMessage node FAILURE");
         return NodeStatus::FAILURE;
     }
 }
@@ -315,6 +318,7 @@ NodeStatus Communicate::tick()
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Communicate::tick: " << e.what() << std::endl;
+        _robot.log_info("Communicate node FAILURE");
         return NodeStatus::FAILURE;
     }
 }
@@ -489,6 +493,7 @@ NodeStatus BuildBundle::tick()
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in BuildBundle::tick: " << e.what() << std::endl;
+        _robot.log_info("BuildBundle node FAILURE");
         return NodeStatus::FAILURE;
     }
 }
@@ -511,6 +516,7 @@ NodeStatus ResolveConflicts::tick()
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ResolveConflicts::tick: " << e.what() << std::endl;
+        _robot.log_info("ResolveConflicts node FAILURE");
         return NodeStatus::FAILURE;
     }
 }
@@ -518,4 +524,31 @@ NodeStatus ResolveConflicts::tick()
 PortsList ResolveConflicts::providedPorts()
 {
     return { };
+}
+
+CheckConvergence::CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}
+
+NodeStatus CheckConvergence::tick()
+{
+    try {
+        std::cout << "Checking whether the CBBA has resulted in local convergence and how this has been maintained by number of iterations..." << std::endl;
+
+        _robot.countConvergedIterations(); // Compare robot beliefs to beliefs at previous iteration (stored in)
+
+        int cumulative_convergence_count = _robot.getConvergenceCount(); // Number of iterations convergence has remained
+
+        _robot.updateBeliefs();
+
+        return NodeStatus::SUCCESS;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in CheckConvergence::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList CheckConvergence::providedPorts()
+{
+    return { OutputPort<double>("cumulative_covergence_count") };
 }

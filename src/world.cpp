@@ -516,39 +516,16 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
     return max_timestamp;
 }
 
+/*double World::calculateConvergenceCount(Robot* robot){
 
+    int cumulative_convergence_count = robot->getNumConvergedIterations(); // 0 if no match this iteration
 
-/*void World::initAllTasks() {
-    try {
-        std::vector<Pose2D> quadrant_centers = getQuadrantCenters();
+    if not first iteration
+        // Update belief tracking
+        prev_bundle = bundle;
+        prev_path = path;
+        prev_winners = winners;
+        prev_winning_bids = winning_bids;
 
-        if (quadrant_centers.size() < 4) {
-            throw std::runtime_error("Not enough quadrant centers to initialize tasks.");
-        }
-
-        Task exploreA(1, "Explore area A", quadrant_centers[0], 0, 0, 0); 
-        allTasks.push_back(exploreA);
-        Task exploreB(2, "Explore area B", quadrant_centers[1], 0, 0, 0); 
-        allTasks.push_back(exploreB);
-        Task exploreC(3, "Explore area C", quadrant_centers[2], 0, 0, 0); 
-        allTasks.push_back(exploreC);
-        Task exploreD(4, "Explore area D", quadrant_centers[3], 0, 0, 0); 
-        allTasks.push_back(exploreD);
-
-        std::cout << "Initialized all tasks. Number of tasks: " << allTasks.size() << std::endl;
-
-        // Check the size of allTasks
-        if (allTasks.size() > allTasks.max_size()) {
-            throw std::length_error("The number of tasks exceeds the maximum allowable size.");
-        }
-    } catch (const std::length_error& e) {
-        std::cerr << "std::length_error caught in initAllTasks: " << e.what() << std::endl;
-        throw; // Re-throw to propagate the exception
-    } catch (const std::runtime_error& e) {
-        std::cerr << "std::runtime_error caught in initAllTasks: " << e.what() << std::endl;
-        throw; // Re-throw to propagate the exception
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in initAllTasks: " << e.what() << std::endl;
-        throw; // Re-throw to propagate the exception
-    }
+    return cumulative_convergence_count;
 }*/

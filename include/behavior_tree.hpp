@@ -254,4 +254,16 @@ public:
     static PortsList providedPorts();
 };
 
+class CheckConvergence : public ConditionNode {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

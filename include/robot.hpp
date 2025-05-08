@@ -49,7 +49,13 @@ private:
     std::unordered_map<int, double> winning_bids; // Values are bids obviously
     std::unordered_map<int, double> timestamps; // Time of last info update from each of other agents
 
-    //std::vector<std::vector<int>> feasible_tasks; // initialized with ones because all assumed to be feasible)
+    // The follow are the previous bundle, path, winners and winning_bids, tracked to check for convergence between iterations
+    std::vector<int> prev_bundle;
+    std::vector<int> prev_path;
+    std::unordered_map<int, int> prev_winners;
+    std::unordered_map<int, double> prev_winning_bids;
+    int num_converged_iterations;
+
 
     std::ofstream robot_log; // Init file for each robot to log in
 
@@ -66,11 +72,11 @@ public:
     Pose2D getPose() const { return pose; }
     Pose2D getGoalPose() const { return goal; }
     cv::Scalar getColor() const {return color; }
-    //Bundle& getBundle() { return bundle; }
     std::vector<int>& getDoableTaskIDs() { return doable_task_ids; }
     std::vector<int>& getBundle() { return bundle; }
-    //Path& getPath() { return path; }
+    std::vector<int>& getPreviousBundle() { return prev_bundle; }
     std::vector<int>& getPath() { return path; }
+    std::vector<int>& getPreviousPath() { return prev_path; }
     std::vector<double>& getScores() { return scores; }
     //std::unordered_map<int,double> initBids();  
     std::map<int,double> initBids();  
@@ -82,6 +88,8 @@ public:
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
     std::unordered_map<int, double>& getTimestamps() { return timestamps; }
+    std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
+    std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
     //std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
     void init(Pose2D initial_pose);
     //void printTasksVector();
@@ -104,6 +112,9 @@ public:
     std::string generateLogFilename();
     void log_info(std::string log_msg);
     bool checkIfNewInfoAvailable();
+    void countConvergedIterations();
+    int getConvergenceCount() { return num_converged_iterations; }
+    void updateBeliefs();
 
     //void resurfaceToCharge();
 
