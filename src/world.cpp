@@ -486,7 +486,20 @@ std::vector<int> World::getNeighborsInComms(int robot_id) {
 
     // Return vector of robot IDs, one for each robot in comms with given robot ID
 
-    return ping_tracker[robot_id];
+    std::vector<int> neighbor_ids;
+
+    for (auto& pair : robot_tracker) {
+        int other_robot_id = pair.first;
+        Robot* robot = pair.second;
+        if ( other_robot_id != robot_id && inComms(robot_id,other_robot_id)) {
+            // Neighbor found! Potential neighbor is not self and is in comms range of robot with id = robot_id so it is a neighbor
+            neighbor_ids.push_back(other_robot_id);
+        }
+    }
+
+    return neighbor_ids;
+
+    //return ping_tracker[robot_id]; // old way, but want to avoid pinging for now
 }
 
 double World::getMaxNeighborTimestamp(int id_i, int id_k) {
@@ -501,6 +514,20 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 
     std::vector<int> neighbors_of_i = getNeighborsInComms(id_i);
 
+    Robot* robot = robot_tracker.at(id_i); // just for testing
+    robot->log_info("In getMaxNeighborTimestamp() in world...");
+    std::string bla = "Neighbors of robot " + std::to_string(id_i);
+    robot->log_info(bla);
+    utils::log1DVector(neighbors_of_i, *robot);
+
+    robot->log_info("Timestamps BEFORE change in world::getMaxNeighborTimestamp:");
+    utils::logUnorderedMap(robot->getTimestamps(),*robot);
+
+    std::string blork1 = "id_i: " + std::to_string(id_i);
+    robot->log_info(blork1);
+    std::string blork = "id_k: " + std::to_string(id_k);
+    robot->log_info(blork);
+
     for (int id_m : neighbors_of_i) {
         for (Msg msg : message_tracker[id_m]) {
             if (msg.id == id_k) { // Found robot m in comms with both i and k, that has received a msg from k
@@ -512,6 +539,9 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 
         }
     }
+
+    robot->log_info("Timestamps AFTER change in world::getMaxNeighborTimestamp:");
+    utils::logUnorderedMap(robot->getTimestamps(),*robot);
 
     return max_timestamp;
 }

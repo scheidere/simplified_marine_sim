@@ -42,7 +42,7 @@ private:
     and the path will have the same IDs but in the order they should be attempted*/
     std::vector<int> bundle; // Assigned tasks for this agent
     std::vector<int> path;  // Task execution order for this agent's assigned tasks
-    std::vector<double> scores; // Scores for this agent's assigned tasks
+    //std::vector<double> scores; // Scores for this agent's assigned tasks
     //The following three maps are indexed (unordered map keys) by task IDs
     std::map<int, double> bids; // Values are bids // changed to map from unordered for tie priority to lower int task IDs
     std::unordered_map<int, int> winners; // Values are agent IDs
@@ -56,6 +56,7 @@ private:
     std::unordered_map<int, double> prev_winning_bids;
     int num_converged_iterations;
 
+    int cbba_rounds;
 
     std::ofstream robot_log; // Init file for each robot to log in
 
@@ -77,7 +78,7 @@ public:
     std::vector<int>& getPreviousBundle() { return prev_bundle; }
     std::vector<int>& getPath() { return path; }
     std::vector<int>& getPreviousPath() { return prev_path; }
-    std::vector<double>& getScores() { return scores; }
+    //std::vector<double>& getScores() { return scores; }
     //std::unordered_map<int,double> initBids();  
     std::map<int,double> initBids();  
     std::unordered_map<int,int> initWinners();
@@ -115,6 +116,7 @@ public:
     void countConvergedIterations();
     int getConvergenceCount() { return num_converged_iterations; }
     void updateBeliefs();
+    int& getNumCBBARounds() {return cbba_rounds; }
 
     //void resurfaceToCharge();
 

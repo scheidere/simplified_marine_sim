@@ -9,6 +9,8 @@
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "behaviortree_cpp/blackboard.h"
 #include "parser.hpp"
+#include "utils.hpp"
+
 
 using namespace BT;
 
@@ -303,7 +305,13 @@ NodeStatus Communicate::tick()
         // Send messages
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
         _robot.log_info(log_msg);
+
+        _robot.log_info("Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:");
+        utils::logUnorderedMap(_robot.getTimestamps(),_robot);
+
         Message msg(_robot);
+        //_robot.log_info("Timestamps test: ");
+        //utils::logUnorderedMap(_robot.getTimestamps(), _robot);
         msg.broadcastMessage(_world);
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
 
@@ -314,7 +322,23 @@ NodeStatus Communicate::tick()
         std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";
         _robot.log_info(log_msg2);
 
+        for (const auto& msg : _robot.getMessageQueue()) {
+            std::string bla = "ID: " + std::to_string(msg.id);
+            _robot.log_info(bla);
+            _robot.log_info("Winners: ");
+            utils::logUnorderedMap(msg.winners,_robot);
+            _robot.log_info("Winning bids: ");
+            utils::logUnorderedMap(msg.winning_bids,_robot);
+            _robot.log_info("Timestamps: ");
+            utils::logUnorderedMap(msg.timestamps,_robot);
+        }
+            
+
         _robot.updateTimestamps();
+
+
+        _robot.log_info("Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:");
+        utils::logUnorderedMap(_robot.getTimestamps(),_robot);
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Communicate::tick: " << e.what() << std::endl;
@@ -486,6 +510,14 @@ BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robo
 NodeStatus BuildBundle::tick()
 {
     try {
+
+        // Checking if BT operating on it's own thread
+        std::thread::id thread_id = std::this_thread::get_id();
+        std::hash<std::thread::id> hasher;
+        size_t thread_hash = hasher(thread_id);
+        std::string bla = "Robot " + std::to_string(_robot.getID()) + " - Thread ID: " + std::to_string(thread_hash);
+        _robot.log_info(bla);
+
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
         CBBA cbba(_robot, _world, _parser);
         cbba.buildBundle();
@@ -513,6 +545,8 @@ NodeStatus ResolveConflicts::tick()
         CBBA cbba(_robot, _world, _parser);
         cbba.resolveConflicts();
         //cbba.resolveConflicts(true); // for testing
+        int& rounds = _robot.getNumCBBARounds();
+        rounds++;
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ResolveConflicts::tick: " << e.what() << std::endl;
@@ -534,11 +568,25 @@ NodeStatus CheckConvergence::tick()
     try {
         std::cout << "Checking whether the CBBA has resulted in local convergence and how this has been maintained by number of iterations..." << std::endl;
 
+        int& rounds = _robot.getNumCBBARounds();
+        std::string bloo = "CBBA Round " + std::to_string(rounds) + " complete";
+        _robot.log_info(bloo);
+
         _robot.countConvergedIterations(); // Compare robot beliefs to beliefs at previous iteration (stored in)
 
         int cumulative_convergence_count = _robot.getConvergenceCount(); // Number of iterations convergence has remained
 
         _robot.updateBeliefs();
+
+        _robot.log_info("After convergence check at end of CBBA round, bundle and path are the following:");
+        std::vector<int> bundle = _robot.getBundle();
+        _robot.log_info("Bundle:");
+        utils::log1DVector(bundle, _robot);
+        std::vector<int> path = _robot.getPath();
+        _robot.log_info("Path:");
+        utils::log1DVector(path, _robot);
+
+        setOutput("cumulative_convergence_count", cumulative_convergence_count);
 
         return NodeStatus::SUCCESS;
 
@@ -550,5 +598,5 @@ NodeStatus CheckConvergence::tick()
 
 PortsList CheckConvergence::providedPorts()
 {
-    return { OutputPort<double>("cumulative_covergence_count") };
+    return { OutputPort<int>("cumulative_convergence_count") };
 }

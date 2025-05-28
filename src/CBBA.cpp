@@ -167,6 +167,9 @@ void CBBA::buildBundle() {
         //testRemovePathGaps();
         //testBundleRemove();
 
+        robot.log_info("Timestamps BEFORE change in CBBA::buildBundle:");
+        utils::logUnorderedMap(robot.getTimestamps(),robot);
+
         std::vector<int>& bundle = robot.getBundle();
         std::vector<int>& path = robot.getPath();
         std::unordered_map<int, int>& winners = robot.getWinners();
@@ -180,10 +183,15 @@ void CBBA::buildBundle() {
 
         bundleRemove(bundle, path, winners, winning_bids); // Update bundle if new info reveals mistakes
 
-        std::vector<double>& scores = robot.getScores();
+        //std::vector<double>& scores = robot.getScores();
+        //scores.resize(max_depth, 0.0);
         std::map<int, double>& bids = robot.getBids();
+        bids = robot.initBids();
 
-        bundleAdd(bundle, path, scores, bids, winners, winning_bids); // Populate bundle if any empty slots
+        robot.log_info("Bids before bundle add should be reset, here they are:");
+        utils::logMap(bids, robot);
+        //bundleAdd(bundle, path, scores, bids, winners, winning_bids); // Populate bundle if any empty slots
+        bundleAdd(bundle, path, bids, winners, winning_bids); // Populate bundle if any empty slots
 
         std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
         robot.log_info(log_msg);
@@ -193,6 +201,9 @@ void CBBA::buildBundle() {
         std::string p = "Path: ";
         robot.log_info(p);
         utils::log1DVector(robot.getPath(), robot);
+
+        robot.log_info("Timestamps AFTER change in CBBA::buildBundle:");
+        utils::logUnorderedMap(robot.getTimestamps(),robot);
 
         /*
         Notes:
@@ -742,7 +753,7 @@ std::pair<double, int> CBBA::computeBid(int task_id) {
 }
 
 //int CBBA::getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h) {
-int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h) {
+int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h, std::vector<int>& bundle) {
     // Get the task id for the task that has the max new winning bid, J
     // h is local win indicator with elements 0 or 1
 
@@ -762,11 +773,6 @@ int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_
             ID_of_max = task_id;
         }
     }
-
-    if (ID_of_max==-1) { // no max found (likely all 0 in h indicating all tied)
-        ID_of_max = bids.begin()->first;// Pick lowest task id (as a default)
-    }
-
 
     //robot.log_info("end getBestTaskID");
     return ID_of_max;
@@ -788,6 +794,10 @@ int CBBA::getBundleOrPathSize(const std::vector<int>& vec) {
 
 void CBBA::updatePath(std::vector<int>& path, int n, int new_task_id) {
 
+    if (new_task_id==-1) { // only if the new task exists
+        robot.log_info("FOUND new task id of -1 in updatePath");
+    }
+    else {
     if (path[n]==-1) { // for first task in path or ones added after that cleanly based on n
         // Aleady empty so just assign new task to n position in path
         path[n] = new_task_id;
@@ -799,41 +809,58 @@ void CBBA::updatePath(std::vector<int>& path, int n, int new_task_id) {
         path[n] = new_task_id;
 
     }
+    }
+
 }
 
 void CBBA::bundleAdd(std::vector<int>& bundle, 
                         std::vector<int>& path, 
-                        std::vector<double>& scores,
+                        //std::vector<double>& scores,
                         std::map<int, double>& bids,
                         std::unordered_map<int, int>& winners, 
                         std::unordered_map<int, double>& winning_bids) {
     try {
 
-        
+        robot.log_info("++++++++++in bundleAdd START++++++++++");
+        robot.log_info("Bundle:");
+        utils::log1DVector(bundle, robot);
+        robot.log_info("Path:");
+        utils::log1DVector(path, robot);
+        robot.log_info("Winners:");
+        utils::logUnorderedMap(winners,robot);
+        robot.log_info("winning_bids:");
+        utils::logUnorderedMap(winning_bids,robot);
+        robot.log_info("+++++++++++++++++++++++++++++++++++++");
+
         int size = getBundleOrPathSize(bundle);
 
         std::vector<int> test = robot.getDoableTaskIDs();
 
-        // Check if bundle is full (i.e., at max_depth)
-        while (getBundleOrPathSize(bundle) < max_depth) {
+        // Check if bundle is full (i.e., at max_depth) 
+        while (getBundleOrPathSize(bundle) < max_depth) { // continues until full or stops via check that no new task found to add
 
-            robot.log_info("++++ While loop start ++++");
+            /*robot.log_info("++++ While loop start ++++");
             robot.log_info("Bundle:");
             utils::log1DVector(bundle, robot);
             robot.log_info("Path:");
             utils::log1DVector(path, robot);
             robot.log_info("Bids:");
             utils::logMap(bids, robot); // bids is map, not unordered
-            robot.log_info("++++  ++  ++++");
+            robot.log_info("++++  ++  ++++");*/
 
 
 
             std::unordered_map<int, int> local_win_indicator_h = initLocalWinIndicatorH();
             std::unordered_map<int,int> best_position_n_tracker; // keys are task id's and values are best index n in path
             for (auto task_id : robot.getDoableTaskIDs()) {
+                std::string bla = "Looking at doable task " + std::to_string(task_id);
+                robot.log_info(bla);
+
                 if ( std::find(bundle.begin(), bundle.end(), task_id) == bundle.end() ) { // for each doable task not in bundle already
-                    //std::string str1 = "Looking at the following doable task not in bundle:" + std::to_string(task_id);
-                    std::string str1 = "-----Potential next task: " + std::to_string(task_id);
+                    robot.log_info("Bundle currently is:");
+                    utils::log1DVector(bundle,robot);
+                    std::string str1 = "Looking at the following doable task not in bundle:" + std::to_string(task_id);
+                    //std::string str1 = "-----Potential next task: " + std::to_string(task_id);
                     robot.log_info(str1);
                     std::pair<double,int> bid_and_best_path_position = computeBid(task_id);
                     bids[task_id] = bid_and_best_path_position.first; best_position_n_tracker[task_id] = bid_and_best_path_position.second;
@@ -861,8 +888,8 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
                 }
             }
             // Get the task id for the task that has the max new winning bid, J
-            int J = getBestTaskID(bids, local_win_indicator_h);
-            std::string blob = "Best task ID is " + std::to_string(J); 
+            int J = getBestTaskID(bids, local_win_indicator_h, bundle);
+            std::string blob = "Best task ID is " + std::to_string(J);
             robot.log_info(blob);
             int n = best_position_n_tracker[J];
             std::string loggy = "Best position in path is: " + std::to_string(n);
@@ -879,11 +906,27 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
             winners[J] = robot.getID(); // Add current agent ID since it just won
             bids.erase(J); // Remove task now in bundle from future consideration
 
+            if (J == -1) {
+                robot.log_info("No valid task found to add to bundle. Exiting loop.");
+                break;
+            }
+
         }
     
         //std::string log_msg2 = "Bundle is this after bundleAdd:";
         //robot.log_info(log_msg2);
         //utils::log1DVector(bundle, robot);
+
+        robot.log_info("==========in bundleAdd END==========");
+        robot.log_info("Bundle:");
+        utils::log1DVector(bundle, robot);
+        robot.log_info("Path:");
+        utils::log1DVector(path, robot);
+        robot.log_info("Winners:");
+        utils::logUnorderedMap(winners,robot);
+        robot.log_info("winning_bids:");
+        utils::logUnorderedMap(winning_bids,robot);
+        robot.log_info("====================================");
 
     } catch (const std::exception& e) {
         std::cerr << "Error in bundleAdd: " << e.what() << std::endl;
@@ -906,6 +949,157 @@ void CBBA::reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_
 
 void CBBA::resolveConflicts(bool do_test) {
 
+    // Should be identical to previous resolveConflicts but without direct timestamps[bla] accessing 
+    // to avoid default 0 creation for non-existence keys (i.e., self id i)
+    // Have not confirmed it being identical by rerunning all the tests in testResolveConflicts
+
+    int id_i = robot.getID(); 
+    std::vector<Msg>& message_queue_i = robot.getMessageQueue();
+    std::unordered_map<int, int>& winners_i = robot.getWinners();
+    std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
+    std::unordered_map<int, double>& timestamps_i = robot.getTimestamps();
+
+    /*robot.log_info("Timestamps BEFORE change in CBBA::resolveConflicts:");
+    utils::logUnorderedMap(timestamps_i, robot);*/
+
+    std::string blorpl = "id_i in resolveConflicts: " + std::to_string(id_i);
+    robot.log_info(blorpl);
+
+    robot.log_info("Current robot's winners, winning_bids and timestamps before resolveConflicts...");
+    utils::logUnorderedMap(winners_i, robot);
+    utils::logUnorderedMap(winning_bids_i, robot);
+    utils::logUnorderedMap(timestamps_i, robot);
+
+    for (auto& msg : message_queue_i) {
+        int id_k = msg.id;
+        std::unordered_map<int, int>& winners_k = msg.winners;
+        std::unordered_map<int, double>& winning_bids_k = msg.winning_bids;
+        std::unordered_map<int, double>& timestamps_k = msg.timestamps;
+
+        std::string bla = "Message from robot " + std::to_string(id_k) + ":";
+        robot.log_info(bla);
+        robot.log_info("Winners: ");
+        utils::logUnorderedMap(winners_k, robot);
+        robot.log_info("Winning bids: ");
+        utils::logUnorderedMap(winning_bids_k, robot);
+        robot.log_info("Timestamps: ");
+        utils::logUnorderedMap(timestamps_k, robot);
+
+        if (do_test) {
+            testResolveConflicts(id_i, message_queue_i, winners_i, winning_bids_i, timestamps_i,
+                                 id_k, winners_k, winning_bids_k, timestamps_k);
+        }
+
+        for (auto& [j, winner_ij] : winners_i) {
+            int winner_kj = winners_k[j];
+
+            auto ts_k_m = [&](int m) {
+                return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
+            };
+
+            auto ts_i_m = [&](int m) {
+                return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
+            };
+
+            if (winner_ij == winner_kj) {
+                if (winner_ij == id_k) {
+                    update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                } else if (winner_ij != -1 && winner_ij != id_i) {
+                    int m = winner_ij;
+                    if (ts_k_m(m) > ts_i_m(m)) {
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    }
+                }
+
+            } else if (winner_kj == id_k) {
+                robot.log_info("winner_kj == id_k: ");
+                robot.log_info(std::to_string(id_k));
+                if (winner_ij == id_i) {
+                    if (winning_bids_k[j] > winning_bids_i[j]) {
+                        robot.log_info("k thinks k, i thinks i, k has higher bid so update");
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    }
+                } else if (winner_ij == -1) {
+                    robot.log_info("k thinks k, i does not know (-1), so update");
+                    update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                } else {
+                    int m = winner_ij;
+                    std::string blorpl2 = "id_m in resolveConflicts: " + std::to_string(m);
+                    robot.log_info(blorpl2);
+                    if (ts_k_m(m) > ts_i_m(m) || winning_bids_k[j] > winning_bids_i[j]) {
+                        robot.log_info("k thinks k, i thinks m, k timestamp more recent and k bid higher, so update");
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    }
+                }
+
+            } else if (winner_kj == id_i) {
+                if (winner_ij == id_k) {
+                    reset(j, winners_i, winning_bids_i);
+                } else if (winner_ij != -1) {
+                    int m = winner_ij;
+                    if (ts_k_m(m) > ts_i_m(m)) {
+                        reset(j, winners_i, winning_bids_i);
+                    }
+                }
+
+            } else if (winner_kj != -1) {
+                int m = winner_kj;
+
+                if (winner_ij == id_i) {
+                    if (ts_k_m(m) > ts_i_m(m) && winning_bids_k[j] > winning_bids_i[j]) {
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    }
+                } else if (winner_ij == id_k) {
+                    if (ts_k_m(m) > ts_i_m(m)) {
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    } else {
+                        reset(j, winners_i, winning_bids_i);
+                    }
+                } else if (winner_ij == -1) {
+                    if (ts_k_m(m) > ts_i_m(m)) {
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    }
+                } else {
+                    int n = winner_ij;
+                    if (ts_k_m(m) > ts_i_m(m) &&
+                        (ts_k_m(n) > ts_i_m(n) || winning_bids_k[j] > winning_bids_i[j])) {
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    } else if (ts_k_m(n) > ts_i_m(n) && ts_i_m(m) > ts_k_m(m)) {
+                        reset(j, winners_i, winning_bids_i);
+                    }
+                }
+
+            } else if (winner_kj == -1) {
+                if (winner_ij == id_k) {
+                    update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                } else if (winner_ij != id_i && winner_ij != -1) {
+                    int m = winner_ij;
+                    if (ts_k_m(m) > ts_i_m(m)) {
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    }
+                }
+            }
+        }
+
+        if (true) {
+            robot.log_info("Current robot's winners, winning_bids and timestamps after resolveConflicts...");
+            utils::logUnorderedMap(winners_i, robot);
+            utils::logUnorderedMap(winning_bids_i, robot);
+            utils::logUnorderedMap(timestamps_i, robot);
+        }
+    }
+
+    /*robot.log_info("Timestamps AFTER change in CBBA::resolveConflicts:");
+    utils::logUnorderedMap(timestamps_i, robot);
+*/
+    message_queue_i.clear();
+}
+
+/*void CBBA::resolveConflicts(bool do_test) {
+
+    // THIS SHOULD BE IDENTICAL FUNCTIONALLY TO THE ABOVE UNCOMMENTED VERSION EXCEPT:
+    // above we do not directly access timestamps[bla] becaues it will default give a value of 0 for keys that don't exist (aka self id i)
+
     // Given communication between at least two agents, check for conflicts in shared info
     // Option 1: Update agent i's y (winning bids) and z (winners) with agent k's
     // Option 2: Reset agent i's y and z's (to empty/0)
@@ -919,6 +1113,9 @@ void CBBA::resolveConflicts(bool do_test) {
     std::unordered_map<int, int>& winners_i = robot.getWinners();
     std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
     std::unordered_map<int,double>& timestamps_i = robot.getTimestamps();
+
+    robot.log_info("Timestamps BEFORE change in CBBA::resolveConflicts:");
+    utils::logUnorderedMap(timestamps_i,robot);
 
     std::string blorp = "Size of message queue: " + std::to_string(message_queue_i.size());
     robot.log_info(blorp);
@@ -1049,7 +1246,12 @@ void CBBA::resolveConflicts(bool do_test) {
 
     }
 
-}
+    robot.log_info("Timestamps AFTER change in CBBA::resolveConflicts:");
+    utils::logUnorderedMap(timestamps_i,robot);
+
+    message_queue_i.clear(); // Remove messages from robot i's queue because they have been processed (info is no longer new)
+
+}*/
 
 // inputs: robot i winners, winning_bids, message_queue (to get msg's from each k), timestamps
 void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::unordered_map<int, int>& winners_i, 
@@ -1071,7 +1273,7 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
  
 
     // ***** TEST 1: If robot i and robot k agree on winner of some task j
-    int task_j = 1; // This is random
+    int task_j = 2; //1; // This is random
 
     //  // Test 1.A 
     // They agree on k winning for task j (this should result in update of winners and winning bids for robot i) - PASSED
@@ -1108,19 +1310,19 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
     timestamps_k[id_m] = 2;*/
 
     // ***** Test 2: If robot i and robot k don't agree and k thinks k is winner of task j
-    //winners_k[task_j] = id_k; // UNCOMMENT part 1/3
+    winners_k[task_j] = id_k; // UNCOMMENT part 1/3
 
     //  // Test 2.A
     // i thinks i and k thinks k - Result depends on winning bids
-    //winners_i[task_j] = id_i;
+    winners_i[task_j] = id_i;
 
     // 2.A.1 - Should result in update because k winning bid higher than i winning bid - PASSED
     /*winning_bids_i[task_j] = 5;
     winning_bids_k[task_j] = 10;*/
 
     // 2.A.2 - Should result in no change because i winning bid higher than k winning bid - PASSED
-    /*winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 5;*/
+    winning_bids_i[task_j] = 4.37521; // 10;
+    winning_bids_k[task_j] =  4.36367; // 5;
 
     //  // Test 2.B
     // i is unsure - Should result in update (winners, winning bids) in every case
@@ -1280,7 +1482,7 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
 
     // ***** Test 5: If robot i and robot k don't agree and k is unsure who should win task j
     // UNCOMMENT part 1/3
-    winners_k[task_j] = -1;
+    //winners_k[task_j] = -1;
 
     //  // Test 5.A
     // i thinks i - Should be no change - PASSED
@@ -1295,18 +1497,18 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
 
     //  // Test 5.C
     // i thinks m
-    int id_m = 3;
+    /*int id_m = 3;
     winners_i[task_j] = id_m; // UNCOMMENT part 2/3 (example)
-
+*/
     // 5.C.1 - Should result in no change because i more confident and has more recent info from m - PASSED
     // UNCOMMENT part 3/3 (example)
-    timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;
+    /*timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 2;*/
 
     // 5.C.2 - Should result in update since k has more recent info - PASSED
     /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;*/
-    
+    timestamps_k[id_m] = 3;
+    */
 
     robot.log_info("After testResolveConflicts changes things for testing...");
     std::string bla2 = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";

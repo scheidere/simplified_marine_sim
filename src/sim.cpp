@@ -233,11 +233,12 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-static const char* xml_text = R"(
+// Ping node after repeat sequence, has issue with getNeighbors function in world that accesses ping tracker due to fallback logic limitation
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Fallback>
-        <RepeatSequence name="root_sequence">
+        <RepeatSequence name="repeat" convergence_threshold="3">
             <BuildBundle/>
             <Communicate/>
             <ResolveConflicts/>
@@ -247,7 +248,79 @@ static const char* xml_text = R"(
         </Fallback>
      </BehaviorTree>
 </root>
+)";*/
+
+// Ping node before repeat sequence (highlights issue where it stops after ping because returns SUCCESS)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Fallback>
+        <Ping/>
+        <RepeatSequence name="repeat" convergence_threshold="3">
+            <BuildBundle/>
+            <Communicate/>
+            <ResolveConflicts/>
+            <CheckConvergence/>
+        </RepeatSequence>
+        </Fallback>
+     </BehaviorTree>
+</root>
+)";*/
+
+
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Parallel name="parallel" success_count="2" failure_count="2">
+        <RepeatSequence name="repeat" convergence_threshold="3">
+            <BuildBundle/>
+            <Communicate/>
+            <ResolveConflicts/>
+            <CheckConvergence/>
+        </RepeatSequence>
+        <Ping/>
+        </Parallel>
+     </BehaviorTree>
+</root>
+)";*/
+
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <BuildBundle/>
+            <Communicate/>
+            <ResolveConflicts/>
+            <CheckConvergence/>
+            <BuildBundle/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <RepeatSequence name="repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}">
+            <BuildBundle/>
+            <Communicate/>
+            <ResolveConflicts/>
+            <CheckConvergence cumulative_convergence_count="{ccc}" />
+        </RepeatSequence>
+     </BehaviorTree>
+</root>
 )";
+
+// Even more basic test, tracking issue with ticking not being concurrent/in parallel (alternating tick counter)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <Communicate/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
 
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
@@ -315,8 +388,16 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
 
             try {
                 std::cout << "Creating behavior tree for robot " << robot_id << "..." << std::endl;
-                auto tree = factory.createTreeFromText(xml_text);
+                BT::Blackboard::Ptr blackboard = BT::Blackboard::create(); // Testing
+                std::cout << "====++++!!!!Created blackboard for robot " << robot_id << ": " << blackboard.get() << std::endl; 
+                auto tree = factory.createTreeFromText(xml_text, blackboard); // Testing this too
+                //auto tree = factory.createTreeFromText(xml_text); // Old way, results in some shared blackboard between robot threads
                 std::cout << "Behavior tree created successfully for robot " << robot_id << "." << std::endl;
+
+                // for more testing
+                std::cout << "Robot " << robot_id << " tree instance: " << &tree << std::endl;
+                auto root_node = tree.rootNode();
+                std::cout << "Robot " << robot_id << " root node: " << root_node << std::endl;
 
                 std::cout << "Starting tree tick for robot " << robot_id << "..." << std::endl;
                 tree.tickWhileRunning();
@@ -387,46 +468,10 @@ int main(int argc, char** argv) {
         std::cout << "in main 2" << std::endl;
         std::cout << "Inits are done..." << std::endl;
 
-
-        /*std::vector<Task> allTasks;
-        try {
-            allTasks = world.getAllTasks();
-        } catch (const std::exception& e) {
-            std::cerr << "Exception caught while getting tasks from world: " << e.what() << std::endl;
-            return -1;
-        }
-
-        std::vector<Task> assignable_tasks1;
-        std::vector<Task> assignable_tasks2;
-        try {
-            assignable_tasks1 = { allTasks[0], allTasks[1], allTasks[2], allTasks[3] };
-            assignable_tasks2 = { allTasks[0], allTasks[1], allTasks[2], allTasks[3] };
-        } catch (const std::out_of_range& e) {
-            std::cerr << "std::out_of_range caught while accessing tasks: " << e.what() << std::endl;
-            return -1;
-        }*/
-
-/*        std::vector<cv::Scalar> colors = {
-            cv::Scalar(255, 0, 0),
-            cv::Scalar(0, 255, 0),
-            cv::Scalar(0, 0, 255),
-            cv::Scalar(0, 255, 255),
-            cv::Scalar(255, 255, 0),
-            cv::Scalar(255, 0, 255),
-            cv::Scalar(255, 255, 255)
-        };*/
-
         //auto agents = world.getAgents(); update to getAllAgentsInfo
         auto agents_info = world.getAllAgentsInfo();
         std::vector<std::thread> robot_threads;
 
- /*       Pose2D initial_pose1{0, 0, 0};
-        Pose2D initial_pose2{20, 10, 0};
-        Pose2D goal_pose1{10, 10, 0};
-        Pose2D goal_pose2{5, 10, 0};*/
-/*        cv::Scalar color1 = cv::Scalar(0, 0, 255);
-*//*        cv::Scalar color2 = cv::Scalar(255, 0, 0);
-*/
         try {
             //for (const auto& agent : agents) { TODO update to traversed unordered map values (which are the agent structs now)
             for (const auto& pair : agents_info) {
@@ -443,13 +488,7 @@ int main(int argc, char** argv) {
             for (auto& thread : robot_threads) {
                 thread.join();
             }
-            /*std::thread robot1(run_robot, initial_pose1, goal_pose1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
-            std::thread robot2(run_robot, initial_pose2, goal_pose2, color2, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
-
-            std::cout << "Threads started..." << std::endl;
-
-            robot1.join();
-            robot2.join();*/
+            
         } catch (const std::exception& e) {
             std::cerr << "Exception caught while starting or joining threads: " << e.what() << std::endl;
             return -1;

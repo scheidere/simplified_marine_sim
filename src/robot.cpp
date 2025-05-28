@@ -45,7 +45,7 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     bundle.resize(max_depth, -1); // init bundle
     path.resize(max_depth, -1);
-    scores.resize(max_depth, 0.0);
+    //scores.resize(max_depth, 0.0);
 
     // Bids/winners/winning_bids initialized here :)
     bids = initBids();
@@ -83,6 +83,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     if (numTasks > 1000000) {
         std::cerr << "Warning: Number of tasks is unusually large: " << numTasks << std::endl;
     }
+
+    cbba_rounds = 0;
 
 }
 
@@ -225,7 +227,17 @@ void Robot::receiveMessages() {
 
         if (!messages.empty()) {
             Msg msg = messages.front();
+            messages.erase(messages.begin());  // Remove the message after reading
             //timestamps[msg.id] = getMessageReceptionTime(); this is done in updateTimestamps
+            // log_info("in receiveMessages!!!!");
+            // log_info("Size of world messages queue for current robot: ");
+            // log_info(std::to_string(messages.size()));
+            // log_info("Winners: ");
+            // utils::logUnorderedMap(msg.winners,*this);
+            // log_info("Winning bids: ");
+            // utils::logUnorderedMap(msg.winning_bids,*this);
+            // log_info("Timestamps: ");
+            // utils::logUnorderedMap(msg.timestamps,*this);
             updateRobotMessageQueue(msg);
             //std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
@@ -306,8 +318,12 @@ void Robot::receivePings() {
 void Robot::updateTimestamps() {
 
     // Not yet tested
+    // Timestamps map for current robot i maintains time of last message from each other robot by ID k
+    // Sometimes a message won't have been received from another robot k, and this is handled by the indirect timestamp case below
+    // The indirect timestamp case checks if a neighbor of robot i has received a message from robot k and if so, updates with that time
+    // What about when i = k? Did we prevent or handle this case?
 
-    log_info("Timestamps BEFORE change:");
+    log_info("Timestamps BEFORE change in robot::updateTimestamps:");
     utils::logUnorderedMap(timestamps,*this);
 
     bool found_msg_from_k;
@@ -318,6 +334,9 @@ void Robot::updateTimestamps() {
             if (msg.id == id_k) {
                 // Found message from robot k
                 timestamps[id_k] = getMessageReceptionTime(); //msg.timestamp;
+                if (timestamps[id_k] < 0.0001) {
+                    std::string blop = "Found timestamp of < 0.0001 for id k " + std::to_string(id_k); 
+                }
                 found_msg_from_k = true;
             }
         }
@@ -327,6 +346,9 @@ void Robot::updateTimestamps() {
         if (!found_msg_from_k) { 
             // Robot k not in comms with robot i (current) so check robots in range with both i and k for msg from k
             double new_timestamp = world->getMaxNeighborTimestamp(id,id_k); // latest timestamp of msg from k that a neighbor to i received
+            if (timestamps[id_k] < 0.0001) {
+                    std::string blop = "Found (in indirect case) timestamp of < 0.0001 for id k " + std::to_string(id_k); 
+                }
             if (new_timestamp != -1.0) { // If actually new info
                 timestamps[id_k] = new_timestamp;
             }
@@ -334,7 +356,7 @@ void Robot::updateTimestamps() {
 
     }
 
-    log_info("Timestamps AFTER change:");
+    log_info("Timestamps AFTER change in robot::updateTimestamps:");
     utils::logUnorderedMap(timestamps,*this);
 }
 

@@ -106,7 +106,7 @@ public:
     std::pair<double,int> computeBid(int task_id);
 
     //int getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h);
-    int getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h);
+    int getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h, std::vector<int>& bundle);
 
     void addTaskToBundleEnd(std::vector<int>& bundle, int task_id);
 
@@ -114,7 +114,7 @@ public:
 
     void bundleAdd(std::vector<int>& bundle, 
                         std::vector<int>& path, 
-                        std::vector<double>& scores,
+                        //std::vector<double>& scores,
                         std::map<int, double>& bids,
                         std::unordered_map<int, int>& winners, 
                         std::unordered_map<int, double>& winning_bids);

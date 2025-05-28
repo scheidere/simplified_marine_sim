@@ -54,7 +54,6 @@ protected:
     std::chrono::steady_clock::time_point start_time;
 
 
-
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
 
@@ -140,7 +139,7 @@ public:
 
     double getMaxNeighborTimestamp(int robot_id_i, int out_of_range_robot_id_k);
 
-    double getConvergenceCount();
+    //double calculateConvergenceCount();
 
 };
 

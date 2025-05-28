@@ -1,5 +1,7 @@
 #include <cstdio>
 #include "message.hpp"
+#include "utils.hpp"
+
 
 Message::Message(Robot& sender)
     : sender(sender),
@@ -28,12 +30,18 @@ void Message::broadcastMessage(World& world) {
         //std::cout << "in loop" << std::endl;
 
         // TESTING ONLY
-        /*if (pair.first == msg.id) {
-            // Found sender
-            Robot* sender = pair.second;
-            sender->log_info("in broadcastMessage!!!!");
-        }
-*/
+        // if (pair.first == msg.id) {
+        //     // Found sender
+        //     Robot* sender = pair.second;
+        //     sender->log_info("in broadcastMessage!!!!");
+        //     sender->log_info("Winners: ");
+        //     utils::logUnorderedMap(msg.winners,*sender);
+        //     sender->log_info("Winning bids: ");
+        //     utils::logUnorderedMap(msg.winning_bids,*sender);
+        //     sender->log_info("Timestamps: ");
+        //     utils::logUnorderedMap(msg.timestamps,*sender);
+        // }
+
 
         //start here and below emily - you got this :)
         if (receiver->getID() != msg.id) { // msg.id is the sender robot's ID
