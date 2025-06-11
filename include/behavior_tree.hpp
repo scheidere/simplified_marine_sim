@@ -13,7 +13,7 @@
 
 using namespace BT;
 
-
+// Will likely need to update to StatefulActionNode
 class PlanShortestPath : public SyncActionNode {
 private:
 	World& _world;
@@ -29,6 +29,7 @@ public:
 
 };
 
+// Will likely need to update to StatefulActionNode
 class PlanCoveragePath : public SyncActionNode {
 private:
     World& _world;
@@ -44,6 +45,7 @@ public:
 
 };
 
+// Will likely need to update to StatefulActionNode
 class PlanRegroupPath : public SyncActionNode {
 private:
     World& _world;
@@ -59,6 +61,7 @@ public:
 
 };
 
+// Will likely need to update to StatefulActionNode (if used - prob not)
 class UseWaypoint : public ThreadedAction {
 private:
 	World& _world;
@@ -72,53 +75,21 @@ public:
     static PortsList providedPorts();
 };
 
-/*class SendMessage : public SyncActionNode {
-private:
-    World& _world;
-    Robot& _sender;
-
-public:
-    SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class ReceiveMessage : public SyncActionNode {
-private:
-    World& _world;
-    Robot& _receiver;
-
-public:
-    ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};*/
-
-class SendMessage : public ThreadedAction {
-private:
-    World& _world;
-    Robot& _sender;
-
-public:
-    SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class Ping : public ThreadedAction {
+class Ping : public StatefulActionNode {
 private:
     World& _world;
     Robot& _robot;
 
 public:
     Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
-    NodeStatus tick() override;
+    //NodeStatus tick() override;
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
 
     static PortsList providedPorts();
 };
+
 
 class NewInfoAvailable : public ConditionNode {
 private:
@@ -132,50 +103,17 @@ public:
     static PortsList providedPorts();
 };
 
-class ReceiveMessage : public ThreadedAction {
-private:
-    World& _world;
-    Robot& _receiver;
-
-public:
-    ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class Communicate : public ThreadedAction {
+class Communicate : public StatefulActionNode {
 private:
     World& _world;
     Robot& _robot;
 
 public:
     Communicate(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-/*class ReceivePing : public ThreadedAction {
-private:
-    World& _world;
-    Robot& _receiver;
-
-public:
-    ReceivePing(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};*/
-
-class TestMessages : public SyncActionNode {
-private:
-    World& _world;
-    Robot& _receiver;
-
-public:
-    TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver);
-    NodeStatus tick() override;
+    // NodeStatus tick() override;
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
 
     static PortsList providedPorts();
 };
@@ -191,42 +129,7 @@ public:
     static PortsList providedPorts();
 };
 
-class TestCond : public ConditionNode {
-private:
-    Robot& _receiver;
-
-public:
-    TestCond(const std::string& name, const NodeConfig& config, Robot& receiver);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class RunTest : public ThreadedAction {
-public:
-    RunTest(const std::string& name, const NodeConfig& config);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class DummySuccessAction : public ThreadedAction {
-public:
-    DummySuccessAction(const std::string& name, const NodeConfig& config);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class RunTest2 : public ThreadedAction {
-public:
-    RunTest2(const std::string& name, const NodeConfig& config);
-    NodeStatus tick() override;
-
-    static PortsList providedPorts();
-};
-
-class BuildBundle : public ThreadedAction {
+class BuildBundle : public StatefulActionNode {
 private:
 	Robot& _robot;
     World& _world;
@@ -235,12 +138,15 @@ private:
 public:
     BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p);
 
-    NodeStatus tick() override;
+    //NodeStatus tick() override;
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
 
     static PortsList providedPorts();
 };
 
-class ResolveConflicts : public ThreadedAction {
+class ResolveConflicts : public StatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
@@ -249,7 +155,10 @@ private:
 public:
     ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p);
 
-    NodeStatus tick() override;
+    // NodeStatus tick() override;
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
 
     static PortsList providedPorts();
 };

@@ -14,6 +14,10 @@
 
 using namespace BT;
 
+// Note sync action nodes can't return running so need to update all of the following to be stateful action nodes instead 
+// (threaded actions are not compatible with our threading)
+
+// Will likely need to update to StatefulActionNode
 PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
     : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp) {}
 
@@ -47,6 +51,7 @@ PortsList PlanShortestPath::providedPorts()
     };
 }
 
+// Will likely need to update to StatefulActionNode (see cbba nodes defined elsewhere in this file for how)
 PlanCoveragePath::PlanCoveragePath(const std::string& name, const NodeConfig& config, World& w, Robot& r, CoveragePath& cp)
     : SyncActionNode(name, config), _world(w), _robot(r), _coverage_path(cp) {}
 
@@ -78,6 +83,7 @@ PortsList PlanCoveragePath::providedPorts()
     };
 }
 
+// Will likely need to update to StatefulActionNode
 PlanRegroupPath::PlanRegroupPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
     : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp) {}
 
@@ -105,6 +111,7 @@ PortsList PlanRegroupPath::providedPorts()
     };
 }
 
+// Will likely need to update to StatefulActionNode (if this is used alone - probably not)
 UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r)
     : ThreadedAction(name, config), _world(w), _robot(r) {}
 
@@ -185,7 +192,7 @@ PortsList ReceiveMessage::providedPorts()
     return { InputPort<Pose2D>("waypoint") };
 }*/
 
-SendMessage::SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender)
+/*SendMessage::SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender)
     : ThreadedAction(name, config), _world(world), _sender(sender) {}
 
 NodeStatus SendMessage::tick()
@@ -213,24 +220,31 @@ NodeStatus SendMessage::tick()
 PortsList SendMessage::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
-}
+}*/
 
 Ping::Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
-    : ThreadedAction(name, config), _world(world), _robot(robot) {}
+    : StatefulActionNode(name, config), _world(world), _robot(robot) {}
 
-NodeStatus Ping::tick()
-{
+NodeStatus Ping::onStart() {
+
+    return NodeStatus::RUNNING;
+}
+
+NodeStatus Ping::onRunning() {
+
     try {
-        std::cout << "Ping: Pinging (both sending 1 ping and listening to pings from others)" << std::endl;
+        // Commented out all prints/logs because pinging happens continuously now
+
+        //std::cout << "Ping: Pinging (both sending 1 ping and listening to pings from others)" << std::endl;
         //std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting minimal message (ping)...";
         //_sender.log_info(log_msg);
         Message msg(_robot);
         msg.ping(_world);
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Allowing for time for all robots to ping before listening (can prolly remove once ongoing pinging happening)
         _robot.receivePings();
-        std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
-        std::cout << log_msg << std::endl;
-        std::cout << "Ping: Completed" << std::endl;
+        //std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
+        //std::cout << log_msg << std::endl;
+        //std::cout << "Ping: Completed" << std::endl;
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Ping::tick: " << e.what() << std::endl;
@@ -239,13 +253,39 @@ NodeStatus Ping::tick()
     }
 }
 
+void Ping::onHalted() {}
+
+/*NodeStatus Ping::tick()
+{
+    try {
+        // Commented out all prints/logs because pinging happens continuously now
+
+        //std::cout << "Ping: Pinging (both sending 1 ping and listening to pings from others)" << std::endl;
+        //std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting minimal message (ping)...";
+        //_sender.log_info(log_msg);
+        Message msg(_robot);
+        msg.ping(_world);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Allowing for time for all robots to ping before listening (can prolly remove once ongoing pinging happening)
+        //_robot.receivePings();
+        //std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
+        //std::cout << log_msg << std::endl;
+        //std::cout << "Ping: Completed" << std::endl;
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in Ping::tick: " << e.what() << std::endl;
+        _robot.log_info("Ping node FAILURE");
+        return NodeStatus::FAILURE;
+    }
+}*/
+
 PortsList Ping::providedPorts()
 {
-    return { InputPort<Pose2D>("waypoint") };
+    return {};
 }
 
+
 NewInfoAvailable::NewInfoAvailable(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
-    : ConditionNode(name, config), _world(world), _robot(robot) {}
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
 
 NodeStatus NewInfoAvailable::tick()
 {
@@ -268,39 +308,27 @@ NodeStatus NewInfoAvailable::tick()
 
 PortsList NewInfoAvailable::providedPorts()
 {
-    return { InputPort<Pose2D>("waypoint") };
-}
-
-ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
-    : ThreadedAction(name, config), _world(world), _receiver(receiver) {}
-
-NodeStatus ReceiveMessage::tick()
-{
-    try {
-        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
-        _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        //std::cout << "ReceiveMessage: Completed" << std::endl;
-        std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving message(s)...";
-        _receiver.log_info(log_msg);
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
-        _receiver.log_info("ReceiveMessage node FAILURE");
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList ReceiveMessage::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
+    return {};
 }
 
 Communicate::Communicate(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
-    : ThreadedAction(name, config), _world(world), _robot(robot) {}
+    : StatefulActionNode(name, config), _world(world), _robot(robot) {}
 
-NodeStatus Communicate::tick()
+NodeStatus Communicate::onStart() {
+
+    return NodeStatus::RUNNING;
+}
+
+NodeStatus Communicate::onRunning()
 {
     try {
+
+        // Checking if BT operating on it's own thread - PASSED (Now that this is stateful action node it does! Unique thread id for each robot)
+        /*std::thread::id thread_id = std::this_thread::get_id();
+        std::hash<std::thread::id> hasher;
+        size_t thread_hash = hasher(thread_id);
+        std::string bla = "Robot " + std::to_string(_robot.getID()) + "'s Communicate - Thread ID: " + std::to_string(thread_hash);
+        _robot.log_info(bla);*/
 
         // Send messages
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
@@ -347,54 +375,11 @@ NodeStatus Communicate::tick()
     }
 }
 
+void Communicate::onHalted() {}
+
 PortsList Communicate::providedPorts()
 {
     return {};
-}
-
-/*ReceivePing::ReceivePing(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
-    : ThreadedAction(name, config), _world(world), _receiver(receiver) {}
-
-NodeStatus ReceivePing::tick()
-{
-    try {
-        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
-        _receiver.receivePings(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        //std::cout << "ReceiveMessage: Completed" << std::endl;
-        std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving pings(s)...";
-        std::cout << log_msg << std::endl;
-        //_receiver.log_info(log_msg);
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList ReceivePing::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}*/
-
-TestMessages::TestMessages(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
-    : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
-
-NodeStatus TestMessages::tick()
-{
-    try {
-        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
-        _receiver.getMessageQueue(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        //std::cout << "ReceiveMessage: Completed" << std::endl;
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList TestMessages::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
 }
 
 NeedRegroup::NeedRegroup(const std::string& name, const NodeConfig& config, Robot& receiver)
@@ -428,95 +413,25 @@ PortsList NeedRegroup::providedPorts()
     return { OutputPort<Pose2D>("rendezvous") };
 }
 
-TestCond::TestCond(const std::string& name, const NodeConfig& config, Robot& receiver)
-    : ConditionNode(name, config), _receiver(receiver) {}
-
-NodeStatus TestCond::tick()
-{
-    try {
-        std::cout << "in TestCond" << std::endl;
-        return NodeStatus::FAILURE;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in TestCond::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList TestCond::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}
-
-DummySuccessAction::DummySuccessAction(const std::string& name, const NodeConfig& config)
-    : ThreadedAction(name, config) {}
-
-NodeStatus DummySuccessAction::tick()
-{
-    try {
-        std::cout << "Running DummySuccessAction action to get success..." << std::endl;
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in DummySuccessAction::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList DummySuccessAction::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}
-
-RunTest::RunTest(const std::string& name, const NodeConfig& config)
-    : ThreadedAction(name, config) {}
-
-NodeStatus RunTest::tick()
-{
-    try {
-        std::cout << "Running RunTest action to keep ticking..." << std::endl;
-        return NodeStatus::RUNNING;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in RunTest::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList RunTest::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}
-
-RunTest2::RunTest2(const std::string& name, const NodeConfig& config)
-    : ThreadedAction(name, config) {}
-
-NodeStatus RunTest2::tick()
-{
-    try {
-        std::cout << "Running RunTest action to keep ticking..." << std::endl;
-        return NodeStatus::RUNNING;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in RunTest::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList RunTest2::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}
-
 BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p)
-    : ThreadedAction(name, config), _robot(r), _world(w), _parser(p) {}
+    : StatefulActionNode(name, config), _robot(r), _world(w), _parser(p) {}
 
-NodeStatus BuildBundle::tick()
+NodeStatus BuildBundle::onStart()
+{
+
+    return BT::NodeStatus::RUNNING;
+}
+
+NodeStatus BuildBundle::onRunning()
 {
     try {
 
-        // Checking if BT operating on it's own thread
-        std::thread::id thread_id = std::this_thread::get_id();
+        // Checking if BT operating on it's own thread - PASSED (Now that this is stateful action node it does! Unique thread id for each robot)
+       /* std::thread::id thread_id = std::this_thread::get_id();
         std::hash<std::thread::id> hasher;
         size_t thread_hash = hasher(thread_id);
-        std::string bla = "Robot " + std::to_string(_robot.getID()) + " - Thread ID: " + std::to_string(thread_hash);
-        _robot.log_info(bla);
+        std::string bla = "Robot " + std::to_string(_robot.getID()) + "'s BuildBundle - Thread ID: " + std::to_string(thread_hash);
+        _robot.log_info(bla);*/
 
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
         CBBA cbba(_robot, _world, _parser);
@@ -528,6 +443,12 @@ NodeStatus BuildBundle::tick()
         _robot.log_info("BuildBundle node FAILURE");
         return NodeStatus::FAILURE;
     }
+
+}
+
+void BuildBundle::onHalted()
+{
+    
 }
 
 PortsList BuildBundle::providedPorts()
@@ -536,11 +457,25 @@ PortsList BuildBundle::providedPorts()
 }
 
 ResolveConflicts::ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p)
-    : ThreadedAction(name, config), _robot(r), _world(w), _parser(p) {}
+    : StatefulActionNode(name, config), _robot(r), _world(w), _parser(p) {}
 
-NodeStatus ResolveConflicts::tick()
+
+NodeStatus ResolveConflicts::onStart()
+{
+    return NodeStatus::RUNNING;
+}
+
+NodeStatus ResolveConflicts::onRunning()
 {
     try {
+
+        // Checking if BT operating on it's own thread - PASSED (Now that this is stateful action node it does! Unique thread id for each robot)
+        /*std::thread::id thread_id = std::this_thread::get_id();
+        std::hash<std::thread::id> hasher;
+        size_t thread_hash = hasher(thread_id);
+        std::string bla = "Robot " + std::to_string(_robot.getID()) + "'s ResolveConflicts - Thread ID: " + std::to_string(thread_hash);
+        _robot.log_info(bla);*/
+
         std::cout << "Resolving conflicts for robot " << _robot.getID() << "..." << std::endl;
         CBBA cbba(_robot, _world, _parser);
         cbba.resolveConflicts();
@@ -553,6 +488,11 @@ NodeStatus ResolveConflicts::tick()
         _robot.log_info("ResolveConflicts node FAILURE");
         return NodeStatus::FAILURE;
     }
+}
+
+void ResolveConflicts::onHalted() 
+{
+
 }
 
 PortsList ResolveConflicts::providedPorts()

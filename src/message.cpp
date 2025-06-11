@@ -80,9 +80,9 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID)
     }
 
     world_ping_tracker[receiverID].push_back(senderID);
-    std::string bla = "Ping to robot " + std::to_string(receiverID) + " from robot " + std::to_string(senderID);
-    sender.log_info(bla);
-    std::cout << "in ping update world tracker, world ping tracker after: " << world_ping_tracker.size() << std::endl;
+    //std::string bla = "Ping to robot " + std::to_string(receiverID) + " from robot " + std::to_string(senderID) + "\n";
+    //sender.log_info(bla);
+    //std::cout << "in ping update world tracker, world ping tracker after: " << world_ping_tracker.size() << std::endl;
 }
 
 void Message::ping(World& world) {
@@ -90,7 +90,7 @@ void Message::ping(World& world) {
     std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
     
     int senderID = sender.getID();
-    sender.log_info("In ping");
+    //sender.log_info("In ping");
 
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;

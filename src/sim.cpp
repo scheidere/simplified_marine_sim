@@ -298,19 +298,6 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <RepeatSequence name="repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-            <CheckConvergence cumulative_convergence_count="{ccc}" />
-        </RepeatSequence>
-     </BehaviorTree>
-</root>
-)";
-
 // Even more basic test, tracking issue with ticking not being concurrent/in parallel (alternating tick counter)
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
@@ -321,6 +308,63 @@ static const char* xml_text = R"(
      </BehaviorTree>
 </root>
 )";*/
+
+// Outdated, but was testing of a cbba subtree idea under parallel node (has issues, missing repeat logic for ping)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Parallel name="parallel" success_count="2" failure_count="2">
+            <Ping/>
+            <Sequence name="cbba_root_sequence">
+                <NewInfoAvailable/>
+                <RepeatSequence name="repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}">
+                    <BuildBundle/>
+                    <Communicate/>
+                    <ResolveConflicts/>
+                    <CheckConvergence cumulative_convergence_count="{ccc}" />
+                </RepeatSequence>
+            </Sequence>
+        </Parallel>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Testing whether pinging continues repeating as expected given it is under a repeat decorator node with -1 for cycles which means infinite
+// This does work, and would work in this case indentically without the parallel node
+// To test this again, you will need to uncomment prints. I commented them out because it happens every tick and that is... too much.
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="1">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Main tree
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="2">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <Sequence name="cbba_root_sequence">
+                <NewInfoAvailable/>
+                <RepeatSequence name="repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}">
+                    <BuildBundle/>
+                    <Communicate/>
+                    <ResolveConflicts/>
+                    <CheckConvergence cumulative_convergence_count="{ccc}" />
+                </RepeatSequence>
+            </Sequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
 
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
@@ -357,18 +401,18 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<RepeatNode>("RepeatNode");
                 factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
                 factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
-                factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
-                factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
+                //factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
+                //factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
                 factory.registerNodeType<Communicate>("Communicate", std::ref(world), std::ref(robot));
-                factory.registerNodeType<TestMessages>("TestMessages", std::ref(world), std::ref(robot));
+                //factory.registerNodeType<TestMessages>("TestMessages", std::ref(world), std::ref(robot));
                 factory.registerNodeType<NeedRegroup>("NeedRegroup", std::ref(robot));
-                factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
-                factory.registerNodeType<RunTest>("RunTest");
-                factory.registerNodeType<RunTest2>("RunTest2");
+                //factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
+                //factory.registerNodeType<RunTest>("RunTest");
+                //factory.registerNodeType<RunTest2>("RunTest2");
                 factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(world), std::ref(parser)); // Threaded action with args
                 factory.registerNodeType<ResolveConflicts>("ResolveConflicts", std::ref(robot), std::ref(world), std::ref(parser)); // Threaded action with args
                 factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
-                factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
+                //factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));
                 factory.registerNodeType<RepeatSequence>("RepeatSequence");
                 factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot));

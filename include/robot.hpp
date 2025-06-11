@@ -57,6 +57,7 @@ private:
     int num_converged_iterations;
 
     int cbba_rounds;
+    std::vector<int> last_pings; // Pings when last check for new info occurred
 
     std::ofstream robot_log; // Init file for each robot to log in
 

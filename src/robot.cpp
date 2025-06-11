@@ -85,6 +85,7 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     }
 
     cbba_rounds = 0;
+    last_pings = {}; // Initializing last tracked pings with empty vector of ints
 
 }
 
@@ -250,7 +251,7 @@ double Robot::getMessageReceptionTime() {
 
     return world->getElapsedTime();
 }
-
+/*
 bool Robot::checkIfNewInfoAvailable() {
 
     log_info("In checkIfNewInfoAvailable...");
@@ -258,7 +259,7 @@ bool Robot::checkIfNewInfoAvailable() {
     bool info_available = false;
 
     std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
-    int receiverID = getID();
+    int receiverID = getID(); // can we just do id?
 
     // just for print >>>
     printWorldPingTracker(world_ping_tracker);
@@ -271,6 +272,54 @@ bool Robot::checkIfNewInfoAvailable() {
             info_available = true;
             log_info("New info available");
         }
+    }
+
+    log_info("end checkIfNewInfoAvailable");
+
+    return info_available;
+}*/
+
+bool Robot::checkIfNewInfoAvailable() {
+
+    log_info("In checkIfNewInfoAvailable...");
+
+    bool info_available = false;
+
+    std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
+    int receiverID = getID(); // can we just do id?
+
+    // just for print >>>
+    printWorldPingTracker(world_ping_tracker);
+    // <<< just for print
+
+    // Get pings from last update (i.e., check via this function) saved in last_pings (init'd as empty vector)
+
+
+
+    // Find current robot's ping vector
+    if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
+        std::vector<int>& new_pings = world_ping_tracker[receiverID];
+        log_info("new_pings: ");
+        utils::log1DVector(new_pings, *this);
+        log_info("last_pings: ");
+        utils::log1DVector(last_pings, *this);
+
+        for (const auto& other_robot_id : new_pings) {
+            // Check if the robot that sent the received ping had already been heard during the last check
+            if (std::find(last_pings.begin(), last_pings.end(), other_robot_id) == last_pings.end()) {
+                // other robot id not found in last_pings, meaning the robot has newly been heard via ping!
+                info_available = true;
+
+                // Update last_pings with new_pings
+                log_info("New info available");
+                last_pings = new_pings;
+                log_info("last_pings updated to: ");
+                utils::log1DVector(last_pings, *this);
+
+                break; // Stop checking because already found at least one instance of new info
+            }
+        }
+
     }
 
     log_info("end checkIfNewInfoAvailable");
@@ -291,6 +340,8 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<int>>& wor
 }
 
 void Robot::receivePings() {
+
+    // I don't think we really need this, it is just accessing world ping tracker and print/logging
 
     //std::cout << "in receivePings........" << std::endl;
     std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
