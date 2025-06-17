@@ -289,12 +289,10 @@ bool Robot::checkIfNewInfoAvailable() {
     int receiverID = getID(); // can we just do id?
 
     // just for print >>>
-    printWorldPingTracker(world_ping_tracker);
+    //printWorldPingTracker(world_ping_tracker);
     // <<< just for print
 
     // Get pings from last update (i.e., check via this function) saved in last_pings (init'd as empty vector)
-
-
 
     // Find current robot's ping vector
     if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
@@ -473,7 +471,7 @@ void Robot::countConvergedIterations() {
 
 }
 
-void Robot::updateBeliefs(){
+void Robot::updateBeliefs() {
 
     // This must be called after convergence is checked for a given round of CBBA
 
@@ -482,5 +480,17 @@ void Robot::updateBeliefs(){
     prev_path = path;
     prev_winners = winners;
     prev_winning_bids = winning_bids;
+
+}
+
+void Robot::resetConvergenceCount() {
+
+    num_converged_iterations = 0;
+
+}
+
+void Robot::resetNumCBBARounds() {
+
+    cbba_rounds = 0;
 
 }

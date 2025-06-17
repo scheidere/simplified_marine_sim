@@ -118,6 +118,8 @@ public:
     int getConvergenceCount() { return num_converged_iterations; }
     void updateBeliefs();
     int& getNumCBBARounds() {return cbba_rounds; }
+    void resetConvergenceCount();
+    void resetNumCBBARounds();
 
     //void resurfaceToCharge();
 

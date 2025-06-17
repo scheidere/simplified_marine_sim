@@ -79,10 +79,10 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID)
         return; 
     }
 
-    world_ping_tracker[receiverID].push_back(senderID);
-    //std::string bla = "Ping to robot " + std::to_string(receiverID) + " from robot " + std::to_string(senderID) + "\n";
-    //sender.log_info(bla);
-    //std::cout << "in ping update world tracker, world ping tracker after: " << world_ping_tracker.size() << std::endl;
+    if (std::find(world_ping_tracker[receiverID].begin(), world_ping_tracker[receiverID].end(), senderID) == world_ping_tracker[receiverID].end()) {
+        world_ping_tracker[receiverID].push_back(senderID); // here if want no duplicates, just id of robots that have pinged once (even if pinged multiple times)
+    }
+    //world_ping_tracker[receiverID].push_back(senderID); // here if want duplicates, so full list of pings by duplicate sender id
 }
 
 void Message::ping(World& world) {

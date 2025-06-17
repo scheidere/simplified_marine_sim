@@ -241,7 +241,7 @@ NodeStatus Ping::onRunning() {
         Message msg(_robot);
         msg.ping(_world);
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Allowing for time for all robots to ping before listening (can prolly remove once ongoing pinging happening)
-        _robot.receivePings();
+        //_robot.receivePings();
         //std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
         //std::cout << log_msg << std::endl;
         //std::cout << "Ping: Completed" << std::endl;
@@ -290,13 +290,22 @@ NewInfoAvailable::NewInfoAvailable(const std::string& name, const NodeConfig& co
 NodeStatus NewInfoAvailable::tick()
 {
     try {
-        std::cout << "Checking if new info is available (any pings heard)..." << std::endl;
+        //std::cout << "Checking if new info is available (any pings heard)..." << std::endl;
 
         bool info_available = _robot.checkIfNewInfoAvailable();
 
+        std::cout << "[Robot " << _robot.getID() << "] info_available is " << (info_available ? "TRUE" : "FALSE") << std::endl;
+
         if (info_available) {
+            std::string bla = "info_available is TRUE";
+            //std::cout << bla << std::endl;
+            _robot.resetNumCBBARounds(); // Clear rounds counted from last time CBBA ran
+            _robot.log_info(bla);
             return NodeStatus::SUCCESS;
         } else {
+            std::string bla1 = "info_available is FALSE";
+            //std::cout << bla1 << std::endl;
+            _robot.log_info(bla1);
             return NodeStatus::FAILURE;
         }
 
@@ -506,6 +515,20 @@ CheckConvergence::CheckConvergence(const std::string& name, const NodeConfig& co
 NodeStatus CheckConvergence::tick()
 {
     try {
+
+        // Check if RepeatSequence signaled a reset by setting blackboard to 0
+        auto blackboard_value = getInput<int>("cumulative_convergence_count_in");
+        if (blackboard_value.has_value()) {
+            std::cout << "HI HI HI HI HI cumulative_convergence_count in checkConvergence: " << blackboard_value.value() << std::endl;
+            if (blackboard_value.value() == 0) {
+                // Reset local (to robot) convergence count 
+                _robot.resetConvergenceCount();
+                std::cout << "Detected blackboard reset - resetting robot's internal count" << std::endl;
+            }
+        } else {
+            std::cout << "cumulative_convergence_count_in has no value!" << std::endl;
+        }
+
         std::cout << "Checking whether the CBBA has resulted in local convergence and how this has been maintained by number of iterations..." << std::endl;
 
         int& rounds = _robot.getNumCBBARounds();
@@ -526,8 +549,48 @@ NodeStatus CheckConvergence::tick()
         _robot.log_info("Path:");
         utils::log1DVector(path, _robot);
 
-        setOutput("cumulative_convergence_count", cumulative_convergence_count);
+        setOutput("cumulative_convergence_count_out", cumulative_convergence_count); // original
 
+        /*auto threshold_met = getInput<bool>("threshold_met");
+        if (threshold_met && threshold_met.value()) { // If given a threshold_met boolean variable as input AND it is true
+            cumulative_convergence_count = 0;  // Reset local counter
+            setOutput("cumulative_convergence_count", 0);  // Output reset value
+            std::cout << "hellohellohelloooooooo RESET convergence count due to threshold met" << std::endl;
+        } else { // Otherwise either not using threshold in unlimited repeat case OR using threshold and it's not yet reached
+            // Normal operation - output current count
+            setOutput("cumulative_convergence_count", cumulative_convergence_count);
+        }*/
+
+        /*auto threshold_met = getInput<bool>("threshold_met");
+        std::cout << "Successfully got threshold_met input" << std::endl;
+        std::cout << "threshold_met.has_value(): " << threshold_met.has_value() << std::endl;
+        
+        if (threshold_met.has_value()) {
+            std::cout << "threshold_met.value(): " << threshold_met.value() << std::endl;
+            if (threshold_met.value()) { 
+                std::cout << "Threshold was met, resetting count" << std::endl;
+                cumulative_convergence_count = 0;  
+                setOutput("cumulative_convergence_count", 0);  
+            } else {
+                std::cout << "Threshold not met, outputting normal count" << std::endl;
+                setOutput("cumulative_convergence_count", cumulative_convergence_count);
+            }
+        } else {
+            std::cout << "threshold_met has no value, outputting normal count" << std::endl;
+            setOutput("cumulative_convergence_count", cumulative_convergence_count);
+        }*/
+
+        // For testing, given we currently only have 2 robots, let's pseudo add 3 as if a third robot came into comms range for once of the robots (id 1)
+        // This should cause cbba to run twice for robot 1, and only once for robot 2
+        // Prevent duplicates of this id 3, since this node will be executed once per cbba round and there will be multiple rounds to reach convergence
+        std::unordered_map<int, std::vector<int>>& world_ping_tracker = _world.getPingTracker();
+        std::vector<int>& new_pings = world_ping_tracker[1];
+        if (std::find(new_pings.begin(), new_pings.end(), 3) == new_pings.end()) {
+            new_pings.push_back(3);  // Mimicking robot 1 hearing a ping from robot 3 that is newly in range
+            std::cout << "ADDING 3 TO ROBOT 1 PING TRACKER VECTOR" << std::endl;
+            _robot.printWorldPingTracker(world_ping_tracker);
+        }
+        
         return NodeStatus::SUCCESS;
 
     } catch (const std::exception& e) {
@@ -538,5 +601,7 @@ NodeStatus CheckConvergence::tick()
 
 PortsList CheckConvergence::providedPorts()
 {
-    return { OutputPort<int>("cumulative_convergence_count") };
+    return { InputPort<int>("cumulative_convergence_count_in"),
+            OutputPort<int>("cumulative_convergence_count_out") }; //,
+             //InputPort<bool>("threshold_met", "Check if threshold was reached")};
 }

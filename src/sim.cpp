@@ -344,7 +344,42 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-// Main tree
+// Testing unlimited version/use of repeat sequence, works now (had to remove default and make sure it never fails even if a child fails)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="1">
+            <RepeatSequence>
+            <Ping/>
+            <NewInfoAvailable/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Main tree (unlimited repeat sequence not working here yet)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="2">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable/>
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}" threshold_met="{threshold_met}">
+                    <BuildBundle/>
+                    <Communicate/>
+                    <ResolveConflicts/>
+                    <CheckConvergence cumulative_convergence_count="{ccc}" threshold_met="{threshold_met}" />
+                </RepeatSequence>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
@@ -352,15 +387,15 @@ static const char* xml_text = R"(
             <Repeat num_cycles="-1">
             <Ping/>
             </Repeat>
-            <Sequence name="cbba_root_sequence">
+            <RepeatSequence name="unlimited_repeat">
                 <NewInfoAvailable/>
-                <RepeatSequence name="repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}">
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
                     <BuildBundle/>
                     <Communicate/>
                     <ResolveConflicts/>
-                    <CheckConvergence cumulative_convergence_count="{ccc}" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" />
                 </RepeatSequence>
-            </Sequence>
+            </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
