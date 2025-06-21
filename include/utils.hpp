@@ -80,6 +80,16 @@ void log1DVector(const std::vector<T>& vec, Robot& robot) {
     robot.log_info(log_msg.str()); // robot function
 }
 
+// Log 1D vector of std::pair<int,double> elements
+template <>
+inline void log1DVector<std::pair<int,double>>(const std::vector<std::pair<int,double>>& vec, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& elem : vec) {
+        log_msg << "(" << elem.first << "," << elem.second << ") ";
+    }
+    robot.log_info(log_msg.str());
+}
+
 } // namespace end
 
 

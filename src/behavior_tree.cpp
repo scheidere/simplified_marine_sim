@@ -255,29 +255,6 @@ NodeStatus Ping::onRunning() {
 
 void Ping::onHalted() {}
 
-/*NodeStatus Ping::tick()
-{
-    try {
-        // Commented out all prints/logs because pinging happens continuously now
-
-        //std::cout << "Ping: Pinging (both sending 1 ping and listening to pings from others)" << std::endl;
-        //std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting minimal message (ping)...";
-        //_sender.log_info(log_msg);
-        Message msg(_robot);
-        msg.ping(_world);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Allowing for time for all robots to ping before listening (can prolly remove once ongoing pinging happening)
-        //_robot.receivePings();
-        //std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
-        //std::cout << log_msg << std::endl;
-        //std::cout << "Ping: Completed" << std::endl;
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in Ping::tick: " << e.what() << std::endl;
-        _robot.log_info("Ping node FAILURE");
-        return NodeStatus::FAILURE;
-    }
-}*/
-
 PortsList Ping::providedPorts()
 {
     return {};
@@ -551,44 +528,33 @@ NodeStatus CheckConvergence::tick()
 
         setOutput("cumulative_convergence_count_out", cumulative_convergence_count); // original
 
-        /*auto threshold_met = getInput<bool>("threshold_met");
-        if (threshold_met && threshold_met.value()) { // If given a threshold_met boolean variable as input AND it is true
-            cumulative_convergence_count = 0;  // Reset local counter
-            setOutput("cumulative_convergence_count", 0);  // Output reset value
-            std::cout << "hellohellohelloooooooo RESET convergence count due to threshold met" << std::endl;
-        } else { // Otherwise either not using threshold in unlimited repeat case OR using threshold and it's not yet reached
-            // Normal operation - output current count
-            setOutput("cumulative_convergence_count", cumulative_convergence_count);
-        }*/
+        _robot.log_info("RIGHT BEFORE SET TO 3 IF STATEMENT");
+        bool test = true;
+        if (test and _robot.getID() == 1) { // Only have robot 1 add it otherwise might create race condition
+            _robot.log_info("JUST INSIDE SET TO 3 IF STATEMENT (should only happen for robot id 1)");
+            // For testing, given we currently only have 2 robots, let's pseudo add 3 as if a third robot came into comms range for once of the robots (id 1)
+            // This should cause cbba to run twice for robot 1, and only once for robot 2
+            // Prevent duplicates of this id 3, since this node will be executed once per cbba round and there will be multiple rounds to reach convergence
+            std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = _world.getPingTracker();
+            //std::vector<int>& new_pings = world_ping_tracker[1];
+            std::vector<std::pair<int,double>>& new_pings = world_ping_tracker[1]; // Getting ping tracker for robot 1
 
-        /*auto threshold_met = getInput<bool>("threshold_met");
-        std::cout << "Successfully got threshold_met input" << std::endl;
-        std::cout << "threshold_met.has_value(): " << threshold_met.has_value() << std::endl;
-        
-        if (threshold_met.has_value()) {
-            std::cout << "threshold_met.value(): " << threshold_met.value() << std::endl;
-            if (threshold_met.value()) { 
-                std::cout << "Threshold was met, resetting count" << std::endl;
-                cumulative_convergence_count = 0;  
-                setOutput("cumulative_convergence_count", 0);  
-            } else {
-                std::cout << "Threshold not met, outputting normal count" << std::endl;
-                setOutput("cumulative_convergence_count", cumulative_convergence_count);
+            auto it = std::find_if(new_pings.begin(), new_pings.end(), 
+                       [](const std::pair<int,double>& p) { return p.first == 3; });
+
+            // If didn't find a ping from robot 3 already, add one (with made up timestamp of 1.0)
+            if (it == new_pings.end()) {
+                new_pings.push_back({3, 1.0});
+                std::cout << "ADDING 3 TO ROBOT 1 PING TRACKER VECTOR" << std::endl;
+                _robot.printWorldPingTracker(world_ping_tracker);
             }
-        } else {
-            std::cout << "threshold_met has no value, outputting normal count" << std::endl;
-            setOutput("cumulative_convergence_count", cumulative_convergence_count);
-        }*/
 
-        // For testing, given we currently only have 2 robots, let's pseudo add 3 as if a third robot came into comms range for once of the robots (id 1)
-        // This should cause cbba to run twice for robot 1, and only once for robot 2
-        // Prevent duplicates of this id 3, since this node will be executed once per cbba round and there will be multiple rounds to reach convergence
-        std::unordered_map<int, std::vector<int>>& world_ping_tracker = _world.getPingTracker();
-        std::vector<int>& new_pings = world_ping_tracker[1];
-        if (std::find(new_pings.begin(), new_pings.end(), 3) == new_pings.end()) {
-            new_pings.push_back(3);  // Mimicking robot 1 hearing a ping from robot 3 that is newly in range
-            std::cout << "ADDING 3 TO ROBOT 1 PING TRACKER VECTOR" << std::endl;
-            _robot.printWorldPingTracker(world_ping_tracker);
+        }
+
+        // If any changes to bundle, path, winners list, or winning bids list -> update timestamp of last self-update for pinging purposes
+        if (_robot.foundBeliefUpdate()) {
+            double timestamp_now = _robot.getCurrentTime();
+            _robot.updateLastSelfUpdateTime(timestamp_now);
         }
         
         return NodeStatus::SUCCESS;

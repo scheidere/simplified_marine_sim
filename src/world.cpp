@@ -36,6 +36,7 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types);
         utils::printCapabilities(all_agent_capabilities);
         initMessageTracker();
+        //initPingIDTracker();
         initPingTracker();
         //std::cout << "end world init print" << std::endl;
         //print2DVector(agent_capabilities);
@@ -322,7 +323,7 @@ std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
     return message_tracker;
 }
 
-std::unordered_map<int,std::vector<int>>& World::getPingTracker() {
+std::unordered_map<int,std::vector<std::pair<int,double>>>& World::getPingTracker() {
     std::lock_guard<std::mutex> lock(world_mutex);
     return ping_tracker;
 }
@@ -499,7 +500,7 @@ std::vector<int> World::getNeighborsInComms(int robot_id) {
 
     return neighbor_ids;
 
-    //return ping_tracker[robot_id]; // old way, but want to avoid pinging for now
+    //return ping_id_tracker[robot_id]; // old way, but want to avoid pinging for now
 }
 
 double World::getMaxNeighborTimestamp(int id_i, int id_k) {

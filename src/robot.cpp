@@ -86,6 +86,7 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     cbba_rounds = 0;
     last_pings = {}; // Initializing last tracked pings with empty vector of ints
+    time_of_last_self_update = -1.0; // Just to avoid issues when it has no value
 
 }
 
@@ -229,7 +230,7 @@ void Robot::receiveMessages() {
         if (!messages.empty()) {
             Msg msg = messages.front();
             messages.erase(messages.begin());  // Remove the message after reading
-            //timestamps[msg.id] = getMessageReceptionTime(); this is done in updateTimestamps
+            //timestamps[msg.id] = getCurrentTime(); this is done in updateTimestamps
             // log_info("in receiveMessages!!!!");
             // log_info("Size of world messages queue for current robot: ");
             // log_info(std::to_string(messages.size()));
@@ -247,37 +248,11 @@ void Robot::receiveMessages() {
     }
 }
 
-double Robot::getMessageReceptionTime() {
+double Robot::getCurrentTime() {
 
     return world->getElapsedTime();
 }
-/*
-bool Robot::checkIfNewInfoAvailable() {
 
-    log_info("In checkIfNewInfoAvailable...");
-
-    bool info_available = false;
-
-    std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
-    int receiverID = getID(); // can we just do id?
-
-    // just for print >>>
-    printWorldPingTracker(world_ping_tracker);
-    // <<< just for print
-
-    if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) { // Find current robot's ping vector
-        //log_info("Found current robot in ping tracker");
-        std::vector<int>& pings = world_ping_tracker[receiverID];
-        if (!pings.empty()) {
-            info_available = true;
-            log_info("New info available");
-        }
-    }
-
-    log_info("end checkIfNewInfoAvailable");
-
-    return info_available;
-}*/
 
 bool Robot::checkIfNewInfoAvailable() {
 
@@ -285,7 +260,7 @@ bool Robot::checkIfNewInfoAvailable() {
 
     bool info_available = false;
 
-    std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
+    std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
     int receiverID = getID(); // can we just do id?
 
     // just for print >>>
@@ -296,17 +271,51 @@ bool Robot::checkIfNewInfoAvailable() {
 
     // Find current robot's ping vector
     if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
-        std::vector<int>& new_pings = world_ping_tracker[receiverID];
+        std::vector<std::pair<int,double>>& new_pings = world_ping_tracker[receiverID];
         log_info("new_pings: ");
         utils::log1DVector(new_pings, *this);
         log_info("last_pings: ");
         utils::log1DVector(last_pings, *this);
 
-        for (const auto& other_robot_id : new_pings) {
+        // Check 1: if a new robot has entered comms - this would qualify as new info
+        // Check 2: if a robot was already in comms but has made changes to its belief via cbba since last check - new info here too
+        for (const auto& ping : new_pings) {
+            int other_robot_id = ping.first; // For check 1
+            double other_robot_new_timestamp = ping.second; // For check 2 (note timestamp may be the same - denotes last cbba variable update)
+
             // Check if the robot that sent the received ping had already been heard during the last check
-            if (std::find(last_pings.begin(), last_pings.end(), other_robot_id) == last_pings.end()) {
+            auto it = std::find_if(last_pings.begin(), last_pings.end(), 
+                      [&other_robot_id](const std::pair<int,double>& p) { 
+                          return p.first == other_robot_id; });
+
+            // Check 1
+            if (it == last_pings.end()) {
                 // other robot id not found in last_pings, meaning the robot has newly been heard via ping!
                 info_available = true;
+                log_info("NEW INFO FOUND DUE TO NEW ROBOT IN COMMS");
+
+                /*// Update last_pings with new_pings
+                log_info("New info available");
+                last_pings = new_pings;
+                log_info("last_pings updated to: ");
+                utils::log1DVector(last_pings, *this);
+
+                break; // Stop checking because already found at least one instance of new info*/
+
+            // Check 2    
+            } else { // Other robot id was found, meaning it was already in comms at last check
+
+                // Let's check if timestamp has changed (i.e., is now higher), indicating other robot has made belief changes via CBBA since last check
+                double other_robot_prev_timestamp = it->second; // iterator found the id, timestamp pair, accessing timestamp
+                if ( other_robot_prev_timestamp < other_robot_new_timestamp ) {
+                    // New timestamp is different (larger) than previous meaning more recent update was made to this other robot's bundle/path/winners list or winning bids list
+                    info_available = true;
+                    log_info("NEW INFO FOUND DUE TO IN-COMMS ROBOT CBBA SELF-UPDATE");
+                }
+
+            }
+
+            if (info_available) {
 
                 // Update last_pings with new_pings
                 log_info("New info available");
@@ -316,6 +325,7 @@ bool Robot::checkIfNewInfoAvailable() {
 
                 break; // Stop checking because already found at least one instance of new info
             }
+
         }
 
     }
@@ -325,11 +335,11 @@ bool Robot::checkIfNewInfoAvailable() {
     return info_available;
 }
 
-void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<int>>& world_ping_tracker) {
+void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker) {
 
    for (const auto& pair : world_ping_tracker) {
         int temp_id = pair.first;
-        const std::vector<int>& pings = pair.second;
+        const std::vector<std::pair<int,double>>& pings = pair.second; // pings, which are pairs: sender ID, timestamp of sender's last CBBA bundle/path update
 
         std::string bla = "Receiver ID: " + std::to_string(temp_id) + " received pings from: ";
         log_info(bla);
@@ -342,7 +352,7 @@ void Robot::receivePings() {
     // I don't think we really need this, it is just accessing world ping tracker and print/logging
 
     //std::cout << "in receivePings........" << std::endl;
-    std::unordered_map<int, std::vector<int>>& world_ping_tracker = world->getPingTracker();
+    std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
 
     int receiverID = id;
     //std::cout << "receiverID: " << receiverID << std::endl;
@@ -351,11 +361,11 @@ void Robot::receivePings() {
     
     if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
         //log_info("Found id in world ping tracker");
-        std::vector<int>& pings = world_ping_tracker[receiverID];
+        std::vector<std::pair<int,double>>& pings = world_ping_tracker[receiverID];
         //utils::log1DVector(pings, *this);
    
         if (!pings.empty()) {
-            int first_heard_robot_ID = pings.front();
+            int first_heard_robot_ID = pings.front().first;
             //std::cout << "Robot " << receiverID << " received a ping from Robot " << first_heard_robot_ID << std::endl;
             std::string log_msg = "Robot " + std::to_string(receiverID) + " received ping from Robot " + std::to_string(first_heard_robot_ID);
             log_info(log_msg);
@@ -382,7 +392,7 @@ void Robot::updateTimestamps() {
         for (Msg& msg : message_queue) {
             if (msg.id == id_k) {
                 // Found message from robot k
-                timestamps[id_k] = getMessageReceptionTime(); //msg.timestamp;
+                timestamps[id_k] = getCurrentTime(); //msg.timestamp;
                 if (timestamps[id_k] < 0.0001) {
                     std::string blop = "Found timestamp of < 0.0001 for id k " + std::to_string(id_k); 
                 }
@@ -443,6 +453,38 @@ void Robot::countConvergedIterations() {
 
     // This must be called before updateBeliefs() at the end of a CBBA round
 
+    bool found_difference = foundBeliefUpdate();
+
+   /* // std::vector and std::unordered_map<int,int> support !=
+    if (bundle != prev_bundle) {  found_difference = true; }
+    if (path != prev_path) { found_difference = true; }
+    if (winners != prev_winners) { found_difference = true; }
+
+    // std::unordered_map<int,double> does not
+    for (const auto& [task_id, bid] : winning_bids) {
+        auto it = prev_winning_bids.find(task_id);
+        if (it == prev_winning_bids.end() || std::abs(it->second - bid) > 1e-6) {
+            found_difference = true;
+        }
+    }*/
+
+    if (found_difference) {
+        num_converged_iterations = 0;
+        //return false;
+    } else {     // If get here, no changes found, so system has converged at least temporarily (for the group in comms with current robot now)
+        log_info("At convergence for this round!!!!!");
+        num_converged_iterations += 1;
+        std::string bla = "Converged for " + std::to_string(num_converged_iterations) + " iterations...";
+        log_info(bla);
+        //return true;
+    }
+
+}
+
+bool Robot::foundBeliefUpdate() {
+
+    // Return true if bundle or path or winners or winning bids list have changed in the most recent round of CBBA 
+
     bool found_difference = false;
 
     // std::vector and std::unordered_map<int,int> support !=
@@ -458,17 +500,7 @@ void Robot::countConvergedIterations() {
         }
     }
 
-    if (found_difference) {
-        num_converged_iterations = 0;
-        //return false;
-    } else {     // If get here, no changes found, so system has converged at least temporarily (for the group in comms with current robot now)
-        log_info("At convergence for this round!!!!!");
-        num_converged_iterations += 1;
-        std::string bla = "Converged for " + std::to_string(num_converged_iterations) + " iterations...";
-        log_info(bla);
-        //return true;
-    }
-
+    return found_difference;
 }
 
 void Robot::updateBeliefs() {
@@ -493,4 +525,11 @@ void Robot::resetNumCBBARounds() {
 
     cbba_rounds = 0;
 
+}
+
+void Robot::updateLastSelfUpdateTime(double new_update_timestamp) {
+
+    // Track time that this robot last updated its bundle and/or path
+
+    time_of_last_self_update = new_update_timestamp;
 }

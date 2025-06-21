@@ -28,7 +28,8 @@ protected:
     mutable std::mutex world_mutex; // mutex for MR access to robot tracker (and downstream), mutable for access of consts
     double comms_range;
     std::unordered_map<int,std::vector<Msg>> message_tracker; // receiving robot ID, vector of message structs
-    std::unordered_map<int, std::vector<int>> ping_tracker; // receiving robot ID, vector of pinging robot IDs (if in this, are newly in range and haven't messaged yet)
+    //std::unordered_map<int, std::vector<int>> ping_id_tracker; // receiving robot ID, vector of pinging robot IDs (if in this, are newly in range and haven't messaged yet)
+    std::unordered_map<int, std::vector<std::pair<int,double>>> ping_tracker; // receiving robot ID, vector of pairs: pinging robot ID (sender ID), timestamp of sender's last self-update of bundle/path
     std::vector<Pose2D> areaACoords; std::vector<Pose2D> areaBCoords; std::vector<Pose2D> areaCCoords; std::vector<Pose2D> areaDCoords;
     //std::vector<Task> allTasks; // struct stuff, ignoring for now
 
@@ -74,7 +75,9 @@ public:
 
     std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
 
-    std::unordered_map<int, std::vector<int>>& getPingTracker();
+    //std::unordered_map<int, std::vector<int>>& getPingIDTracker();
+
+    std::unordered_map<int, std::vector<std::pair<int,double>>>& getPingTracker();
 
     int getNumAgents() {return num_agents; }
 
@@ -132,6 +135,8 @@ public:
     std::vector<int> getRobotCapabilities(Robot* robot);
 
     void initMessageTracker();
+
+    //void initPingIDTracker();
 
     void initPingTracker();
 

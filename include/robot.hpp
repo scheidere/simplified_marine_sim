@@ -57,7 +57,8 @@ private:
     int num_converged_iterations;
 
     int cbba_rounds;
-    std::vector<int> last_pings; // Pings when last check for new info occurred
+    std::vector<std::pair<int,double>> last_pings; // Pings when last check for new info occurred
+    double time_of_last_self_update; // Timestamp at which robot updated its own bundle/path/winners/winning bids (to be passed with id in pings)
 
     std::ofstream robot_log; // Init file for each robot to log in
 
@@ -96,13 +97,14 @@ public:
     void init(Pose2D initial_pose);
     //void printTasksVector();
     void move(Pose2D waypoint);
-    void printWorldPingTracker(std::unordered_map<int, std::vector<int>>& world_ping_tracker);
+    //void printWorldPingIDTracker(std::unordered_map<int, std::vector<int>>& world_ping_id_tracker);
+    void printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
     //void printMessageQueue(std::vector<Msg>&  message_queue);
     //void printMessage(Msg msg);
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
-    double getMessageReceptionTime();
+    double getCurrentTime();
     void receivePings();
     void updateTimestamps();
     bool needRegroup();
@@ -120,6 +122,8 @@ public:
     int& getNumCBBARounds() {return cbba_rounds; }
     void resetConvergenceCount();
     void resetNumCBBARounds();
+    void updateLastSelfUpdateTime(double timestamp);
+    bool foundBeliefUpdate();
 
     //void resurfaceToCharge();
 
