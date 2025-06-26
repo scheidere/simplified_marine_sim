@@ -43,7 +43,6 @@ void Message::broadcastMessage(World& world) {
         // }
 
 
-        //start here and below emily - you got this :)
         if (receiver->getID() != msg.id) { // msg.id is the sender robot's ID
             //std::cout << "got receiver ID that is not sender ID duh" << std::endl;
             //std::cout << msg.id << " is sender ID" << std::endl;
@@ -76,7 +75,7 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID,
 
     if (receiverID == senderID) { 
         std::cerr << "ERROR: Robot " << senderID << " is adding itself to ping tracker! Fix this!" << std::endl;
-        return; 
+        return;
     }
 
     // Search for senderID in the first element of pairs
@@ -90,10 +89,15 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID,
     if (it == receiver_pings.end()) {
         receiver_pings.push_back({senderID, senderTimestamp}); // Add ping
 
-    } else if (sender.foundBeliefUpdate()) { // Already have a ping from sender, so just update the timestamp IFF cbba has changed bundle/path/winners/winning bids
+    } else { // Ping from robot already heard so just update timestamp to represent new ping
+        it->second = senderTimestamp; 
+    }
+
+    // COMMENTED OUT because using timestamps as a way to track when a robot last updated it's beliefs catches too many updates and CBBA runs extra unnecessary rounds
+    /*else if (sender.foundBeliefUpdate()) { // Already have a ping from sender, so just update the timestamp IFF cbba has changed bundle/path/winners/winning bids
         it->second = senderTimestamp;
-    } // Otherwise had already received a ping from sender but no changes were caused by CBBA since last check so no update to report by updating timestamp
-    
+    } // Otherwise had already received a ping from sender but no changes were caused by CBBA since last check so no update to report by updating timestamp 
+    */
 
 }
 
@@ -103,7 +107,7 @@ void Message::ping(World& world) {
     
     int senderID = sender.getID();
     //sender.log_info("In ping");
-    double senderTimestamp = sender.getCurrentTime();
+    double senderTimestamp = sender.getCurrentTime(); // NOTE: this timestamp just represents the time a ping is broadcasted (not anything to do with last CBBA belief update now)
 
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;

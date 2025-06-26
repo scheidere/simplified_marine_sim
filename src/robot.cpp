@@ -88,6 +88,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     last_pings = {}; // Initializing last tracked pings with empty vector of ints
     time_of_last_self_update = -1.0; // Just to avoid issues when it has no value
 
+    comms_timeout_threshold = 5.0;
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -201,9 +203,24 @@ void Robot::move(Pose2D waypoint) {
 }
 
 void Robot::updateRobotMessageQueue(Msg msg) {
+
     //std::cout << "IN updateRobotMessageQueue len message_queue: " << message_queue.size() << std::endl;
     try {
-        message_queue.push_back(msg);
+        // message_queue.push_back(msg); // using only this line, we have old and new messages from same senders, only want to keep newest
+
+        // First, we search for message already in queue with same sender id as given new msg
+        auto it = std::find_if(message_queue.begin(), message_queue.end(),
+                              [&msg](const Msg& existing_msg) {
+                                  return existing_msg.id == msg.id;});
+
+        // If did not find a message from the sender, just add it
+        if (it == message_queue.end()) {
+            message_queue.push_back(msg);
+        } else {
+            *it = msg; // Replace with msg because it was more recently received (we assume that these messages are received in order of broadcast)
+        }
+
+
     } catch (const std::exception& e) {
         std::cerr << "Exception caught while updating message queue: " << e.what() << std::endl;
         throw;
@@ -258,6 +275,9 @@ bool Robot::checkIfNewInfoAvailable() {
 
     log_info("In checkIfNewInfoAvailable...");
 
+    // Before checking for new info, get rid of any pings that are older than the comms timeout threshold (robot either offline or out of comms)
+    clearStalePings(); // Not fully tested yet
+
     bool info_available = false;
 
     std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
@@ -279,6 +299,7 @@ bool Robot::checkIfNewInfoAvailable() {
 
         // Check 1: if a new robot has entered comms - this would qualify as new info
         // Check 2: if a robot was already in comms but has made changes to its belief via cbba since last check - new info here too
+        // CHECK 2 IS FLAWED (scope too broad) SO COMMENTED OUT
         for (const auto& ping : new_pings) {
             int other_robot_id = ping.first; // For check 1
             double other_robot_new_timestamp = ping.second; // For check 2 (note timestamp may be the same - denotes last cbba variable update)
@@ -302,8 +323,11 @@ bool Robot::checkIfNewInfoAvailable() {
 
                 break; // Stop checking because already found at least one instance of new info*/
 
-            // Check 2    
-            } else { // Other robot id was found, meaning it was already in comms at last check
+            // Check 2 // COMMENTED OUT FOR NOW BECAUSE IT CATCHES INTERNAL CHANGE, NOT JUST EXTERNAL 
+            // (causes redundant runs of CBBA since internal belief changes are more common) 
+            // Internal meaning CBBA-induced changes between robot i and neighbor robot k
+            // External meaning CBBA-induced changes between robot k and neighbors of k, j, where j not a neighbor of i
+            } /*else { // Other robot id was found, meaning it was already in comms at last check
 
                 // Let's check if timestamp has changed (i.e., is now higher), indicating other robot has made belief changes via CBBA since last check
                 double other_robot_prev_timestamp = it->second; // iterator found the id, timestamp pair, accessing timestamp
@@ -313,7 +337,7 @@ bool Robot::checkIfNewInfoAvailable() {
                     log_info("NEW INFO FOUND DUE TO IN-COMMS ROBOT CBBA SELF-UPDATE");
                 }
 
-            }
+            }*/
 
             if (info_available) {
 
@@ -347,7 +371,7 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<
     }
 }
 
-void Robot::receivePings() {
+/*void Robot::receivePings() {
 
     // I don't think we really need this, it is just accessing world ping tracker and print/logging
 
@@ -372,7 +396,7 @@ void Robot::receivePings() {
         }
     }
 
-}
+}*/
 
 void Robot::updateTimestamps() {
 
@@ -532,4 +556,37 @@ void Robot::updateLastSelfUpdateTime(double new_update_timestamp) {
     // Track time that this robot last updated its bundle and/or path
 
     time_of_last_self_update = new_update_timestamp;
+}
+
+void Robot::clearStalePings() {
+
+    double current_time = getCurrentTime();
+
+    std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
+
+    // Find current robot's ping vector
+    if (world_ping_tracker.find(id) != world_ping_tracker.end()) {
+        std::vector<std::pair<int,double>>& new_pings = world_ping_tracker[id];
+
+        log_info("current pings vector before clearing any stale pings: ");
+        utils::log1DVector(new_pings, *this);
+
+        for (int i = new_pings.size() - 1; i >= 0; i--) { // Backward iteration of pings to prevent issues if/when pings removed
+
+            // Check each ping's timestamp against current time
+            double ping_age = current_time - new_pings[i].second;
+            if (ping_age > comms_timeout_threshold) {
+                int id_of_offline_robot = new_pings[i].first;
+                new_pings.erase(new_pings.begin() + i);
+                std::string bla = "ERASING A PING THAT IS OLDER THAN THRESHOLD (id of offline robot is " + std::to_string(id_of_offline_robot) + ")";
+                log_info(bla);
+            }
+        }
+
+        log_info("pings vector after removing stale pings: ");
+        utils::log1DVector(new_pings, *this);
+
+    }
+
+
 }

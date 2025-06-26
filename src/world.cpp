@@ -37,9 +37,10 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         utils::printCapabilities(all_agent_capabilities);
         initMessageTracker();
         //initPingIDTracker();
-        initPingTracker();
+        initPingTracker(); // Note: Pings contain sender id and time sender last updated its own beliefs via CBBA
         //std::cout << "end world init print" << std::endl;
         //print2DVector(agent_capabilities);
+
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception

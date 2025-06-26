@@ -970,7 +970,7 @@ void CBBA::resolveConflicts(bool do_test) {
     utils::logUnorderedMap(winning_bids_i, robot);
     utils::logUnorderedMap(timestamps_i, robot);
 
-    for (auto& msg : message_queue_i) {
+    for (auto& msg : message_queue_i) { // resolve Conflicts with all other robots in comms that have sent messages
         int id_k = msg.id;
         std::unordered_map<int, int>& winners_k = msg.winners;
         std::unordered_map<int, double>& winning_bids_k = msg.winning_bids;

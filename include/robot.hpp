@@ -60,6 +60,8 @@ private:
     std::vector<std::pair<int,double>> last_pings; // Pings when last check for new info occurred
     double time_of_last_self_update; // Timestamp at which robot updated its own bundle/path/winners/winning bids (to be passed with id in pings)
 
+    double comms_timeout_threshold;
+
     std::ofstream robot_log; // Init file for each robot to log in
 
 
@@ -105,7 +107,7 @@ public:
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
     double getCurrentTime();
-    void receivePings();
+    //void receivePings();
     void updateTimestamps();
     bool needRegroup();
     double getBatteryLevel() const { return battery_level; }
@@ -124,6 +126,7 @@ public:
     void resetNumCBBARounds();
     void updateLastSelfUpdateTime(double timestamp);
     bool foundBeliefUpdate();
+    void clearStalePings(); // Get rid of pings in ping tracker that are older than timeout threshold - sender robots are offline or out of range
 
     //void resurfaceToCharge();
 

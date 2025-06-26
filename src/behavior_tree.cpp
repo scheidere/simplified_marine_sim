@@ -241,7 +241,6 @@ NodeStatus Ping::onRunning() {
         Message msg(_robot);
         msg.ping(_world);
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Allowing for time for all robots to ping before listening (can prolly remove once ongoing pinging happening)
-        //_robot.receivePings();
         //std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " receiving pings(s)...";
         //std::cout << log_msg << std::endl;
         //std::cout << "Ping: Completed" << std::endl;
@@ -552,10 +551,12 @@ NodeStatus CheckConvergence::tick()
         }
 
         // If any changes to bundle, path, winners list, or winning bids list -> update timestamp of last self-update for pinging purposes
-        if (_robot.foundBeliefUpdate()) {
+        // Commented out because it catches changes made redundantly (e.g., between robot i and k, not just between k and j where k is neighbor of i but j isn't)
+        // Causes CBBA to run redundant rounds more often than it probably would catch the external case
+        /*if (_robot.foundBeliefUpdate()) {
             double timestamp_now = _robot.getCurrentTime();
             _robot.updateLastSelfUpdateTime(timestamp_now);
-        }
+        }*/
         
         return NodeStatus::SUCCESS;
 
