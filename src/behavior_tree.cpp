@@ -10,6 +10,7 @@
 #include "behaviortree_cpp/blackboard.h"
 #include "parser.hpp"
 #include "utils.hpp"
+#include "greedy.hpp"
 
 
 using namespace BT;
@@ -17,8 +18,8 @@ using namespace BT;
 // Note sync action nodes can't return running so need to update all of the following to be stateful action nodes instead 
 // (threaded actions are not compatible with our threading)
 
-// Will likely need to update to StatefulActionNode
-PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
+// Will likely need to update to StatefulActionNode (making a whole new one)
+/*PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
     : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp) {}
 
 NodeStatus PlanShortestPath::tick()
@@ -33,6 +34,7 @@ NodeStatus PlanShortestPath::tick()
         }
 
         std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, goal_pose, _world.getX(), _world.getY());
+
         setOutput("path", plan);
 
         return NodeStatus::SUCCESS;
@@ -49,10 +51,10 @@ PortsList PlanShortestPath::providedPorts()
         InputPort<Pose2D>("goal"),
         OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path")
     };
-}
+}*/
 
-// Will likely need to update to StatefulActionNode (see cbba nodes defined elsewhere in this file for how)
-PlanCoveragePath::PlanCoveragePath(const std::string& name, const NodeConfig& config, World& w, Robot& r, CoveragePath& cp)
+// Will likely need to update to StatefulActionNode (see cbba nodes defined elsewhere in this file for how) WILL DO BELOW
+/*PlanCoveragePath::PlanCoveragePath(const std::string& name, const NodeConfig& config, World& w, Robot& r, CoveragePath& cp)
     : SyncActionNode(name, config), _world(w), _robot(r), _coverage_path(cp) {}
 
 NodeStatus PlanCoveragePath::tick()
@@ -81,10 +83,10 @@ PortsList PlanCoveragePath::providedPorts()
     return { 
         OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path")
     };
-}
+}*/
 
 // Will likely need to update to StatefulActionNode
-PlanRegroupPath::PlanRegroupPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
+/*PlanRegroupPath::PlanRegroupPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
     : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp) {}
 
 NodeStatus PlanRegroupPath::tick()
@@ -109,10 +111,10 @@ PortsList PlanRegroupPath::providedPorts()
     return { 
         OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path")
     };
-}
+}*/
 
 // Will likely need to update to StatefulActionNode (if this is used alone - probably not)
-UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r)
+/*UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r)
     : ThreadedAction(name, config), _world(w), _robot(r) {}
 
 NodeStatus UseWaypoint::tick()
@@ -139,7 +141,7 @@ NodeStatus UseWaypoint::tick()
 PortsList UseWaypoint::providedPorts()
 {
     return { InputPort<Pose2D>("waypoint") };
-}
+}*/
 
 /*SendMessage::SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender)
     : SyncActionNode(name, config), _world(world), _sender(sender) {}
@@ -571,4 +573,157 @@ PortsList CheckConvergence::providedPorts()
     return { InputPort<int>("cumulative_convergence_count_in"),
             OutputPort<int>("cumulative_convergence_count_out") }; //,
              //InputPort<bool>("threshold_met", "Check if threshold was reached")};
+}
+
+GreedyTaskAllocator::GreedyTaskAllocator(const std::string& name, const NodeConfig& config, Robot& r, World& w)
+    : StatefulActionNode(name, config), _robot(r), _world(w) {}
+
+NodeStatus GreedyTaskAllocator::onStart()
+{
+
+    return BT::NodeStatus::RUNNING;
+}
+
+NodeStatus GreedyTaskAllocator::onRunning()
+{
+    try {
+
+        std::cout << "Building greedy path for robot " << _robot.getID() << "..." << std::endl;
+        Greedy greedy2(_robot, _world);
+        greedy2.run();
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in Greedy::onRunning: " << e.what() << std::endl;
+        _robot.log_info("Greedy node FAILURE");
+        return NodeStatus::FAILURE;
+    }
+
+}
+
+void GreedyTaskAllocator::onHalted()
+{
+    
+}
+
+PortsList GreedyTaskAllocator::providedPorts()
+{
+    return { };
+}
+
+// Below I am re-implementing the path planning logic as single stateful action nodes
+// as opposed to sync action nodes that require QueueSize and PopFromQueue (both sync action nodes)
+// as well as use waypoint defined here as a threaded action node
+// It is better to just call one node in the tree
+
+// Starting with simplest logic, shortest path
+FollowShortestPath::FollowShortestPath(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w, ShortestPath& sp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _shortest_path_planner(sp)
+    , _current_waypoint_index(0) {}
+
+NodeStatus FollowShortestPath::onStart()
+{
+    try {
+        std::cout << "Planning shortest path for robot " << _robot.getID() << "..." << std::endl;
+        
+        Pose2D current_pose = _robot.getPose();
+        Pose2D goal_pose;
+        std::pair<int,int> goal_loc;
+        // Check for location input, and if found, convert to pose by adding 0 for theta
+        if (getInput<std::pair<int,int>>("goal_loc", goal_loc)) {
+            goal_pose = {goal_loc.first, goal_loc.second,0};
+        } else {
+            _robot.log_info("Using default goal pose, so input not found");
+            goal_pose = _robot.getGoalPose();
+        }
+
+        std::string bla = "Goal pose for shortest path is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);
+        _robot.log_info(bla);
+        
+        // Init vector of waypoints, the plan
+        _waypoints = _shortest_path_planner.plan(current_pose, goal_pose,
+                                                _world.getX(), _world.getY());
+        
+        if (_waypoints.empty()) {
+            std::cout << "No path found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::cout << "Planned path with " << _waypoints.size() << " waypoints" << std::endl;
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus FollowShortestPath::onRunning()
+{
+    try {
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "All waypoints completed!" << std::endl;
+            return NodeStatus::SUCCESS;
+        }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
+                  << ": " << waypoint.x << "/" << waypoint.y << std::endl;
+        
+        _robot.move(waypoint);
+        
+        _current_waypoint_index ++;
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void FollowShortestPath::onHalted()
+{
+    std::cout << "FollowShortestPath halted at waypoint " << _current_waypoint_index
+              << "/" << _waypoints.size() << std::endl;
+    _current_waypoint_index = 0;
+    _waypoints.clear();
+}
+
+PortsList FollowShortestPath::providedPorts()
+{
+    return { InputPort<std::pair<int,int>>("goal_loc") };
+}
+
+ExploreA::ExploreA(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus ExploreA::tick()
+{
+    try {
+
+
+        if (_robot.ExploreA()) {
+            // will need to add logic to actually give output port a value
+            // location of task (or start for coverage planner for example)
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is ExploreA)
+            std::string bla = "start_loc in ExploreA tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreA::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ExploreA::providedPorts()
+{
+    return { OutputPort<std::pair<int,int>>("start_loc") };
 }

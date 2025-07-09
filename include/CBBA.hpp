@@ -133,17 +133,6 @@ public:
                                 std::unordered_map<int, double>& winning_bids_k, 
                                 std::unordered_map<int,double>& timestamps_k);
 
-    //std::tuple<const Task&, int, int, double> findTaskForMaxScoreImprovement(Robot* robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
-    //std::tuple<Task, int, double> findTaskForMaxScoreImprovement(World& world, Robot& robot, std::vector<Task>& allTasks, Bundle& b_i, Path& p_i, NewWinIndicator& h_i, WinningBids& y_i);
-
-    //std::tuple<double, int> calculateMaxScoreImprovement(Robot& robot, Path path, double path_score_before, Task task);
-
-    //bool TaskInBundle(Bundle& bundle, Task& task);
-
-    //void printBundle();
-
-    //void obtainConsensus();
-
     template <typename T>
     void print1DVector(const std::vector<T>& vec);
 

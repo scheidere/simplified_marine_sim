@@ -142,120 +142,199 @@ std::vector<bool> Planner::initializeVisits(int V) {
     return visit_tracker;
 }
 
-void Planner::printPlan(const std::shared_ptr<BT::ProtectedQueue<Pose2D>>& plan) {
+/*void Planner::printPlan(const std::shared_ptr<BT::ProtectedQueue<Pose2D>>& plan) {
     std::cout << "Plan contents:" << std::endl;
     for (const auto& pose : plan->items) {
         std::cout << "Pose2D(x: " << pose.x << ", y: " << pose.y << ", theta: " << pose.theta << ")" << std::endl;
     }
-}
+}*/
 
 
 ShortestPath::ShortestPath(int step_size) : Planner(step_size, obs_radius) {
 
-}
+}  
 
-//std::make_shared<BT::ProtectedQueue<Pose2D>> ShortestPath::getPlan()
+// //std::make_shared<BT::ProtectedQueue<Pose2D>> ShortestPath::getPlan()
 
-std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
+// std::shared_ptr<BT::ProtectedQueue<Pose2D>> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
+
+//     std::cout << "IN PLAN ######################" << std::endl;
+
+//     // Inits
+//     int start_idx = getIndex(start_pose.x,start_pose.y,Y); // Idx of robot current location
+//     int goal_idx = getIndex(waypoint.x, waypoint.y, Y); // Goal idx
+//     std::cout << "Goal idx: " << goal_idx << std::endl;
+//     auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue that will hold the shortest path
+//     adjacency_vector graph = convertImageToAdjacencyVector(X, Y);
+//     //printAdjacencyVector(graph, Y);
+//     int V = X*Y; // Number of vertices
+//     std::vector<double> distance_tracker = initializeDistances(V, start_idx, Y);
+//     std::vector<bool> visit_tracker = initializeVisits(V);
+//     //printVector(distance_tracker);
+//     //printVector(visit_tracker);
+//     // Priority queue, top being vertex with minimum distance to start
+//     std::priority_queue<P, std::vector<P>, std::greater<P>> priority_queue; //min heap (distance to start, vertex idx) (double,int)
+//     priority_queue.push({0, start_idx});
+
+//     // Track previous points in shortest path
+//     std::vector<int> predecessor(V, -1);
+    
+//     int count = 0;
+//     while (!priority_queue.empty()) {
+//         //count += 1;
+//         //std::cout << "Iteration count: " << count << std::endl;
+//         int min_idx = priority_queue.top().second; // Get unvisited vertex with minimum distance to start (do we have to explicitly check that its unvisted?)
+//         priority_queue.pop(); // Remove that distance, vertex pair from priority_queue (maybe this is all the visit tracking needed?)
+//         // Check if the node has already been visited
+//         if (visit_tracker[min_idx]) {
+//             continue; // Skip if you have already visited the node you just chose (why not removed from the priority queue then?)
+//         }
+
+//         // Mark the current node as visited
+//         visit_tracker[min_idx] = true;
+
+//         // Update path with current point (THIS IS WRONG)
+//         /*std::pair<int,int> c = getCoords(min_idx,Y); // Current
+//         Pose2D next_point{c.first,c.second,0}; //x,y,theta
+//         plan->items.push_back(next_point); // Add to path*/
+
+//         // Check if current is goal waypoint
+//         if (min_idx == goal_idx) {
+//             std::cout << "Goal reached at node " << min_idx << "!" << std::endl;
+//             break;
+//         }
+
+//         // Get distances to neighbors, where neighbors have not yet been visited
+//         //std::vector<std::pair<int,int>> neighbors = getNeighbors(c.first, c.second, X, Y);
+//         std::vector<P> neighbors = graph[min_idx]; // pair (double,int)
+//         for (const P &np : neighbors) { // For each dist,idx_neighbor pair, i.e. std::pair<double,int>
+//             double nc_dist = np.first; // Get distance to neighbor from current
+//             int n_idx = np.second;
+//             //std::pair<int,int> n = getCoords(idx,Y); // Don't need this?
+//             if (!visit_tracker[n_idx]) { // Neighbor has not been visited (??)
+                
+//                 // Update distance vector
+//                 double new_dist =  nc_dist + distance_tracker[min_idx]; // Neighbor distance to start, neighbor-current dist + start-current dist
+//                 if (new_dist < distance_tracker[n_idx]) {
+//                     distance_tracker[n_idx] = new_dist;
+//                     predecessor[n_idx] = min_idx;
+
+//                     // Update priority queue (i.e., add neighbor)
+//                     P new_p(new_dist,n_idx);
+//                     priority_queue.push(new_p);
+//                 }
+
+
+//                 // Do I need to check if visited? Where?
+//             }
+
+//             // Need goal check handling
+
+//         }
+
+//         if (priority_queue.empty()) {
+//             std::cout << "ALERT: PQ is empty!" << std::endl;
+//         }
+
+//     }
+
+//     // Reconstruct the path from start to goal using the predecessor map
+//     std::vector<int> path;
+//     for (int at = goal_idx; at != -1; at = predecessor[at]) { // **Path reconstruction using predecessor**
+//         path.push_back(at);
+//     }
+//     std::reverse(path.begin(), path.end());
+
+//     for (int idx : path) {
+//         std::pair<int, int> c = getCoords(idx, Y); // Current coordinates
+//         Pose2D next_waypoint{c.first, c.second, 0}; // x, y, theta
+//         plan->items.push_back(next_waypoint); // **Add reconstructed path to plan**
+//     }
+
+//     printPlan(plan);
+//     std::cout << "END PLAN ######################" << std::endl;
+//     //std::cin.get();
+//     return plan;
+
+// }
+
+std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
 
     std::cout << "IN PLAN ######################" << std::endl;
 
     // Inits
-    int start_idx = getIndex(start_pose.x,start_pose.y,Y); // Idx of robot current location
-    int goal_idx = getIndex(waypoint.x, waypoint.y, Y); // Goal idx
+    int start_idx = getIndex(start_pose.x,start_pose.y,Y);
+    int goal_idx = getIndex(waypoint.x, waypoint.y, Y);
     std::cout << "Goal idx: " << goal_idx << std::endl;
-    auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue that will hold the shortest path
+    
+    // Init plan (of poses)
+    std::vector<Pose2D> plan;
+    
     adjacency_vector graph = convertImageToAdjacencyVector(X, Y);
-    //printAdjacencyVector(graph, Y);
-    int V = X*Y; // Number of vertices
+    int V = X*Y;
     std::vector<double> distance_tracker = initializeDistances(V, start_idx, Y);
     std::vector<bool> visit_tracker = initializeVisits(V);
-    //printVector(distance_tracker);
-    //printVector(visit_tracker);
-    // Priority queue, top being vertex with minimum distance to start
-    std::priority_queue<P, std::vector<P>, std::greater<P>> priority_queue; //min heap (distance to start, vertex idx) (double,int)
+    
+    std::priority_queue<P, std::vector<P>, std::greater<P>> priority_queue;
     priority_queue.push({0, start_idx});
 
-    // Track previous points in shortest path
     std::vector<int> predecessor(V, -1);
     
     int count = 0;
     while (!priority_queue.empty()) {
-        //count += 1;
-        //std::cout << "Iteration count: " << count << std::endl;
-        int min_idx = priority_queue.top().second; // Get unvisited vertex with minimum distance to start (do we have to explicitly check that its unvisted?)
-        priority_queue.pop(); // Remove that distance, vertex pair from priority_queue (maybe this is all the visit tracking needed?)
-        // Check if the node has already been visited
+        int min_idx = priority_queue.top().second;
+        priority_queue.pop();
+        
         if (visit_tracker[min_idx]) {
-            continue; // Skip if you have already visited the node you just chose (why not removed from the priority queue then?)
+            continue;
         }
 
-        // Mark the current node as visited
         visit_tracker[min_idx] = true;
 
-        // Update path with current point (THIS IS WRONG)
-        /*std::pair<int,int> c = getCoords(min_idx,Y); // Current
-        Pose2D next_point{c.first,c.second,0}; //x,y,theta
-        plan->items.push_back(next_point); // Add to path*/
-
-        // Check if current is goal waypoint
         if (min_idx == goal_idx) {
             std::cout << "Goal reached at node " << min_idx << "!" << std::endl;
             break;
         }
 
-        // Get distances to neighbors, where neighbors have not yet been visited
-        //std::vector<std::pair<int,int>> neighbors = getNeighbors(c.first, c.second, X, Y);
-        std::vector<P> neighbors = graph[min_idx]; // pair (double,int)
-        for (const P &np : neighbors) { // For each dist,idx_neighbor pair, i.e. std::pair<double,int>
-            double nc_dist = np.first; // Get distance to neighbor from current
+        std::vector<P> neighbors = graph[min_idx];
+        for (const P &np : neighbors) {
+            double nc_dist = np.first;
             int n_idx = np.second;
-            //std::pair<int,int> n = getCoords(idx,Y); // Don't need this?
-            if (!visit_tracker[n_idx]) { // Neighbor has not been visited (??)
-                
-                // Update distance vector
-                double new_dist =  nc_dist + distance_tracker[min_idx]; // Neighbor distance to start, neighbor-current dist + start-current dist
+            
+            if (!visit_tracker[n_idx]) {
+                double new_dist = nc_dist + distance_tracker[min_idx];
                 if (new_dist < distance_tracker[n_idx]) {
                     distance_tracker[n_idx] = new_dist;
                     predecessor[n_idx] = min_idx;
-
-                    // Update priority queue (i.e., add neighbor)
                     P new_p(new_dist,n_idx);
                     priority_queue.push(new_p);
                 }
-
-
-                // Do I need to check if visited? Where?
             }
-
-            // Need goal check handling
-
         }
 
         if (priority_queue.empty()) {
             std::cout << "ALERT: PQ is empty!" << std::endl;
         }
-
     }
 
     // Reconstruct the path from start to goal using the predecessor map
     std::vector<int> path;
-    for (int at = goal_idx; at != -1; at = predecessor[at]) { // **Path reconstruction using predecessor**
+    for (int at = goal_idx; at != -1; at = predecessor[at]) {
         path.push_back(at);
     }
     std::reverse(path.begin(), path.end());
 
+    // Change: Add directly to vector instead of plan->items
     for (int idx : path) {
-        std::pair<int, int> c = getCoords(idx, Y); // Current coordinates
-        Pose2D next_waypoint{c.first, c.second, 0}; // x, y, theta
-        plan->items.push_back(next_waypoint); // **Add reconstructed path to plan**
+        std::pair<int, int> c = getCoords(idx, Y);
+        Pose2D next_waypoint{c.first, c.second, 0};
+        plan.push_back(next_waypoint);  // Direct push_back
     }
 
-    printPlan(plan);
     std::cout << "END PLAN ######################" << std::endl;
-    //std::cin.get();
+    
+    // Change: Return vector directly
     return plan;
-
 }
 
 
@@ -264,7 +343,9 @@ CoveragePath::CoveragePath(int step_size, int obs_radius) : ShortestPath(step_si
 
 }
 
-std::shared_ptr<BT::ProtectedQueue<Pose2D>> CoveragePath::plan(Pose2D start_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y) {
+//std::shared_ptr<BT::ProtectedQueue<Pose2D>> CoveragePath::plan(Pose2D start_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y) {
+std::vector<Pose2D> CoveragePath::plan(Pose2D start_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y) {
+
 
     /*int start_idx = getIndex(start_pose.x,start_pose.y,Y); // Idx of robot current location
     auto plan = std::make_shared<BT::ProtectedQueue<Pose2D>>(); //shared queue that will hold the shortest path

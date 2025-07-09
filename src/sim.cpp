@@ -380,7 +380,8 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-static const char* xml_text = R"(
+// Current best tree
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="2">
@@ -397,6 +398,30 @@ static const char* xml_text = R"(
                 </RepeatSequence>
             </RepeatSequence>
         </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Greedy version (Sequence instead of parallel root node because no replanning during execution) [Seems to work as expected! Creates path of tasks]
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <GreedyTaskAllocator/>
+        </Sequence>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Now testing local task execution subtree
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <GreedyTaskAllocator/>
+            <ExploreA start_loc = "{stl}" />
+            <FollowShortestPath goal_loc = "{stl}" />
+        </Sequence>
      </BehaviorTree>
 </root>
 )";
@@ -429,13 +454,13 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
             BehaviorTreeFactory factory;
 
             try {
-                factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
-                factory.registerNodeType<PlanCoveragePath>("PlanCoveragePath", std::ref(world), std::ref(robot), std::ref(coverage_path));
-                factory.registerNodeType<PlanRegroupPath>("PlanRegroupPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
-                factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
-                factory.registerNodeType<RepeatNode>("RepeatNode");
-                factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
-                factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
+                //factory.registerNodeType<PlanShortestPath>("PlanShortestPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
+                //factory.registerNodeType<PlanCoveragePath>("PlanCoveragePath", std::ref(world), std::ref(robot), std::ref(coverage_path));
+                //factory.registerNodeType<PlanRegroupPath>("PlanRegroupPath", std::ref(world), std::ref(robot), std::ref(shortest_path));
+                //factory.registerNodeType<QueueSize<Pose2D>>("QueueSize");
+                //factory.registerNodeType<RepeatNode>("RepeatNode");
+                //factory.registerNodeType<PopFromQueue<Pose2D>>("PopFromQueue");
+                //factory.registerNodeType<UseWaypoint>("UseWaypoint", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<SendMessage>("SendMessage", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<ReceiveMessage>("ReceiveMessage", std::ref(world), std::ref(robot));
                 factory.registerNodeType<Communicate>("Communicate", std::ref(world), std::ref(robot));
@@ -444,13 +469,16 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 //factory.registerNodeType<TestCond>("TestCond", std::ref(robot));
                 //factory.registerNodeType<RunTest>("RunTest");
                 //factory.registerNodeType<RunTest2>("RunTest2");
-                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(world), std::ref(parser)); // Threaded action with args
-                factory.registerNodeType<ResolveConflicts>("ResolveConflicts", std::ref(robot), std::ref(world), std::ref(parser)); // Threaded action with args
+                factory.registerNodeType<BuildBundle>("BuildBundle", std::ref(robot), std::ref(world), std::ref(parser));
+                factory.registerNodeType<ResolveConflicts>("ResolveConflicts", std::ref(robot), std::ref(world), std::ref(parser));
                 factory.registerNodeType<Ping>("Ping", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));
                 factory.registerNodeType<RepeatSequence>("RepeatSequence");
                 factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot));
+                factory.registerNodeType<GreedyTaskAllocator>("GreedyTaskAllocator", std::ref(robot), std::ref(world));
+                factory.registerNodeType<FollowShortestPath>("FollowShortestPath", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                factory.registerNodeType<ExploreA>("ExploreA", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
@@ -520,7 +548,7 @@ int main(int argc, char** argv) {
         //JSONParser parser(path);
         //parser.parseJSON(path);
 
-        const int X = 400;
+        /*const int X = 400;
         const int Y = 400;
         const int step_size = 1;
         if (step_size != 1) {
@@ -528,10 +556,25 @@ int main(int argc, char** argv) {
             std::cin.get();
         }
         const double comms_range = 50.0; //310.0
-        const int obs_radius = 4;
+        const int obs_radius = 4;*/
 
         std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
         JSONParser parser(path);
+
+        // Get world attributes
+        auto world_attributes = parser.j["world_attributes"];
+        const int X = world_attributes["size_x"];
+        const int Y = world_attributes["size_y"];
+        const int step_size = world_attributes["step_size"];
+        if (step_size != 1) {
+            std::cout << "Your step size is larger than 1! Have you made changes in planners for smaller final step/neighbors etc.?" << std::endl;
+            std::cin.get();
+        }
+
+        // Get robot attributes
+        auto robot_attributes = parser.j["robot_attributes"];
+        const double comms_range = robot_attributes["comms_range"];
+        const int obs_radius = robot_attributes["observation_radius"];
 
         Distance distance;
         SensorModel sensor_model(&distance);

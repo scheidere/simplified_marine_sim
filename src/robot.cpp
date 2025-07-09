@@ -590,3 +590,30 @@ void Robot::clearStalePings() {
 
 
 }
+
+bool Robot::ExploreA() {
+    // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (path.empty()) {
+        return false;
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Explore_A") {
+        log_info("Next task to execute is Explore_A!");
+        return true;
+    }
+
+    return false; // It's not explore A
+
+}
+
+std::pair<int,int> Robot::getNextStartLocation() {
+
+    // Location robot should go to start the current (first) task in the path
+
+    return world->getTaskLocation(path[0]); // Either location directly or via area
+
+}

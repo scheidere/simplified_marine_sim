@@ -35,7 +35,7 @@ public:
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> getPlan() const { return current_plan; }
     int getStepSize() const { return step_size; }
     int getObsRadius() const { return obs_radius; }
-    void updatePlan(std::shared_ptr<BT::ProtectedQueue<Pose2D>> new_plan) { current_plan = new_plan; }
+    //void updatePlan(std::shared_ptr<BT::ProtectedQueue<Pose2D>> new_plan) { current_plan = new_plan; }
     void updateStepSize(double new_step_size) { step_size = new_step_size; }   
 
 
@@ -47,7 +47,7 @@ public:
     std::vector<double> initializeDistances(int V, int robot_start_loc_idx, int Y);
     std::vector<bool> initializeVisits(int V);
 
-    void printPlan(const std::shared_ptr<BT::ProtectedQueue<Pose2D>>& plan);
+    //void printPlan(const std::shared_ptr<BT::ProtectedQueue<Pose2D>>& plan); // deprecated
 
     int getIndex(int x, int y, int Y);
     std::pair<int,int> getCoords(int idx, int Y);
@@ -61,7 +61,8 @@ public:
     ShortestPath(int step_size);
 
     // This function generates shortest path to waypoint (does not change sim state)
-    std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y);
+    //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // This was original way
+    std::vector<Pose2D> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // new way, for single FollowShortestPath call in BT
 
     // Update distance from start node to current node (given) with respect to its neighbor node
     //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);
@@ -74,7 +75,8 @@ public:
     CoveragePath(int step_size, int obs_radius);
 
     // This function generates shortest path to waypoint (does not change sim state)
-    std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y);
+    //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y); // Old way
+    std::vector<Pose2D> plan(Pose2D current_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y); // new way, for single FollowCoveragePath call in BT
 
     // Update distance from start node to current node (given) with respect to its neighbor node
     //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);

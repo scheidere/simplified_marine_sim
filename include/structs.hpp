@@ -18,6 +18,7 @@ struct AgentInfo {
 
 struct TaskInfo {
     int id;
+    std::string name;
     std::string type;
     std::pair<int,int> location;
     std::unordered_map<std::string,int> area;

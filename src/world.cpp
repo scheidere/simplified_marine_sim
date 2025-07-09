@@ -172,6 +172,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
     auto parsed_tasks = parser->j["local_tasks"]; // Assume parser extracts JSON info
     for (const auto& task : parsed_tasks) {
         int id = task["id"].get<int>();
+        std::string name = task["name"];
         std::string type = task["type"];
         double reward = task["reward"];
 
@@ -191,6 +192,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
 
         TaskInfo task_struct = {
             id,
+            name,
             type,
             location,
             area,

@@ -14,7 +14,7 @@
 using namespace BT;
 
 // Will likely need to update to StatefulActionNode
-class PlanShortestPath : public SyncActionNode {
+/*class PlanShortestPath : public SyncActionNode {
 private:
 	World& _world;
 	Robot& _robot;
@@ -27,10 +27,10 @@ public:
 
     static PortsList providedPorts();
 
-};
+};*/
 
 // Will likely need to update to StatefulActionNode
-class PlanCoveragePath : public SyncActionNode {
+/*class PlanCoveragePath : public SyncActionNode {
 private:
     World& _world;
     Robot& _robot;
@@ -59,10 +59,10 @@ public:
 
     static PortsList providedPorts();
 
-};
+};*/
 
 // Will likely need to update to StatefulActionNode (if used - prob not)
-class UseWaypoint : public ThreadedAction {
+/*class UseWaypoint : public ThreadedAction {
 private:
 	World& _world;
 	Robot& _robot;
@@ -74,7 +74,7 @@ public:
 
     static PortsList providedPorts();
 };
-
+*/
 class Ping : public StatefulActionNode {
 private:
     World& _world;
@@ -170,6 +170,52 @@ private:
 
 public:
     CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class GreedyTaskAllocator : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+
+public:
+    GreedyTaskAllocator(const std::string& name, const NodeConfig& config, Robot& r, World& w);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
+class FollowShortestPath : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+
+public:
+    FollowShortestPath(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
+class ExploreA : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    ExploreA(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
     NodeStatus tick() override;
 
     static PortsList providedPorts();

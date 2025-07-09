@@ -127,6 +127,8 @@ public:
     void updateLastSelfUpdateTime(double timestamp);
     bool foundBeliefUpdate();
     void clearStalePings(); // Get rid of pings in ping tracker that are older than timeout threshold - sender robots are offline or out of range
+    bool ExploreA();
+    std::pair<int,int> getNextStartLocation(); // Location robot should go to start the current (first) task in the path
 
     //void resurfaceToCharge();
 
