@@ -24,17 +24,15 @@ class Planner {
 protected:
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> current_plan;
     int step_size; // In pixels
-    int obs_radius; // Observation radius in pixels
 
 public:
-    Planner(int step_size, int obs_radius);
+    Planner(int step_size);
 
     void test();
 
     // Getter/setter functions for private variables
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> getPlan() const { return current_plan; }
     int getStepSize() const { return step_size; }
-    int getObsRadius() const { return obs_radius; }
     //void updatePlan(std::shared_ptr<BT::ProtectedQueue<Pose2D>> new_plan) { current_plan = new_plan; }
     void updateStepSize(double new_step_size) { step_size = new_step_size; }   
 
@@ -71,12 +69,18 @@ public:
 };
 
 class CoveragePath : public ShortestPath {
+protected:
+    int obs_radius; // Observation radius in pixels
+
 public:
     CoveragePath(int step_size, int obs_radius);
 
+    int getObsRadius() const { return obs_radius; }
+
     // This function generates shortest path to waypoint (does not change sim state)
-    //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y); // Old way
-    std::vector<Pose2D> plan(Pose2D current_pose, Pose2D corner1, Pose2D corner2, Pose2D corner3, Pose2D corner4, int X, int Y); // new way, for single FollowCoveragePath call in BT
+
+    std::vector<Pose2D> generateBoustrophedonWaypoints(std::unordered_map<std::string,int> area);
+    std::vector<Pose2D> plan(Pose2D current_pose, std::unordered_map<std::string,int> area, int X, int Y); // new way, for single FollowCoveragePath call in BT
 
     // Update distance from start node to current node (given) with respect to its neighbor node
     //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);

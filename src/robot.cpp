@@ -613,6 +613,8 @@ bool Robot::ExploreA() {
 std::pair<int,int> Robot::getNextStartLocation() {
 
     // Location robot should go to start the current (first) task in the path
+    // THIS SHOULD ONLY BE USED FOR SHORTEST PATH DIRECTLY
+    // Function below is for getting area if applicable (for coverage tasks)
 
     return world->getTaskLocation(path[0]); // Either location directly or via area
 

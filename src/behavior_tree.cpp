@@ -725,5 +725,108 @@ NodeStatus ExploreA::tick()
 
 PortsList ExploreA::providedPorts()
 {
-    return { OutputPort<std::pair<int,int>>("start_loc") };
+    //return { OutputPort<std::pair<int,int>>("start_loc") }; // deprecated, was used to test shortest path alone
+    return {};
+}
+
+FollowCoveragePath::FollowCoveragePath(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w, CoveragePath& cp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp)
+    , _current_waypoint_index(0) {
+    }
+
+NodeStatus FollowCoveragePath::onStart()
+{
+    try {
+        std::cout << "Planning coverage path for robot " << _robot.getID() << "..." << std::endl;
+
+        // Cleaner to not pass info in via trigger condition since it is possible to access here
+        // Although it may be redundant, this provides more flexibility to use different planners
+        // Otherwise shortest path requires the port to pass a std::pair<int,int> location
+        // whereas coverage path requires it to pass an unordered map of string,ints defining the x min/max + y min/max defining the quadrant area
+
+        std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+        int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
+        TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+        std::unordered_map<std::string,int> area = current_task.area;
+        
+        Pose2D current_pose = _robot.getPose();
+        // Pose2D goal_pose;
+        // std::pair<int,int> goal_loc;
+        // Check for location input, and if found, convert to pose by adding 0 for theta
+        /*if (getInput<std::pair<int,int>>("area", goal_loc)) {
+            goal_pose = {goal_loc.first, goal_loc.second,0};
+        } else {
+            _robot.log_info("Using default goal pose, so input not found");
+            goal_pose = _robot.getGoalPose();
+        }*/
+
+        // std::string bla = "Goal pose for coverage path is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);
+        // _robot.log_info(bla);
+        
+        // Init vector of waypoints, the plan
+        _waypoints = _coverage_path_planner.plan(current_pose, area,
+                                                _world.getX(), _world.getY());
+
+        // for testing
+        std::cout << "Generated waypoints:" << std::endl;
+        for (size_t i = 0; i < _waypoints.size(); i++) {
+            std::string waypoint_str = "Waypoint " + std::to_string(i) + ": (" + 
+                                      std::to_string(_waypoints[i].x) + ", " + 
+                                      std::to_string(_waypoints[i].y) + ", " + 
+                                      std::to_string(_waypoints[i].theta) + ")";
+            _robot.log_info(waypoint_str);
+        }
+        
+        if (_waypoints.empty()) {
+            std::cout << "No path found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::cout << "Planned path with " << _waypoints.size() << " waypoints" << std::endl;
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus FollowCoveragePath::onRunning()
+{
+    try {
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "All waypoints completed!" << std::endl;
+            return NodeStatus::SUCCESS;
+        }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
+                  << ": " << waypoint.x << "/" << waypoint.y << std::endl;
+        
+        _robot.move(waypoint);
+        
+        _current_waypoint_index ++;
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void FollowCoveragePath::onHalted()
+{
+    std::cout << "FollowCoveragePath halted at waypoint " << _current_waypoint_index
+              << "/" << _waypoints.size() << std::endl;
+    _current_waypoint_index = 0;
+    _waypoints.clear();
+}
+
+PortsList FollowCoveragePath::providedPorts()
+{
+    return {};
 }

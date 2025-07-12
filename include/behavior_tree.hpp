@@ -221,4 +221,24 @@ public:
     static PortsList providedPorts();
 };
 
+class FollowCoveragePath : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    CoveragePath& _coverage_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+
+public:
+    FollowCoveragePath(const std::string& name, const NodeConfig& config, Robot& r, World& w, CoveragePath& cp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 #endif
