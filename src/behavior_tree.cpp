@@ -729,6 +729,37 @@ PortsList ExploreA::providedPorts()
     return {};
 }
 
+ExploreB::ExploreB(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus ExploreB::tick()
+{
+    try {
+
+
+        if (_robot.ExploreB()) {
+            // will need to add logic to actually give output port a value
+            // location of task (or start for coverage planner for example)
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is ExploreA)
+            std::string bla = "start_loc in ExploreB tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreB::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ExploreB::providedPorts()
+{
+    return {};
+}
+
 FollowCoveragePath::FollowCoveragePath(const std::string& name, const NodeConfig& config,
                                        Robot& r, World& w, CoveragePath& cp)
     : StatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp)
@@ -798,6 +829,11 @@ NodeStatus FollowCoveragePath::onRunning()
     try {
         if (_current_waypoint_index >= _waypoints.size()) {
             std::cout << "All waypoints completed!" << std::endl;
+
+            // Movement is done!
+            // Remove current first task from path since it has been completed
+            _robot.removeCompletedTaskFromPath(); // Removes first task
+        
             return NodeStatus::SUCCESS;
         }
         
@@ -808,7 +844,7 @@ NodeStatus FollowCoveragePath::onRunning()
                   << ": " << waypoint.x << "/" << waypoint.y << std::endl;
         
         _robot.move(waypoint);
-        
+
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;
         

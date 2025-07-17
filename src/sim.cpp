@@ -433,6 +433,7 @@ static const char* xml_text = R"(
             <GreedyTaskAllocator/>
             <ExploreA/>
             <FollowCoveragePath/>
+            <ExploreB/>
         </Sequence>
      </BehaviorTree>
 </root>
@@ -505,6 +506,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 factory.registerNodeType<GreedyTaskAllocator>("GreedyTaskAllocator", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowShortestPath>("FollowShortestPath", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<ExploreA>("ExploreA", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ExploreB>("ExploreB", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));

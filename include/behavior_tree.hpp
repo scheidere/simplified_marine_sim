@@ -221,6 +221,17 @@ public:
     static PortsList providedPorts();
 };
 
+class ExploreB : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    ExploreB(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 class FollowCoveragePath : public StatefulActionNode {
 private:
     Robot& _robot;
