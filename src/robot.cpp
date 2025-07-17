@@ -598,6 +598,10 @@ bool Robot::ExploreA() {
         return false;
     }
 
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
     // Get info for first task in path (i.e., task that has been allocated to occur next)
     TaskInfo& next_task = world->getTaskInfo(path[0]);
 
@@ -615,6 +619,10 @@ bool Robot::ExploreB() {
 
     if (path.empty()) {
         return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
     }
 
     // Get info for first task in path (i.e., task that has been allocated to occur next)

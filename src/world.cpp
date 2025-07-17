@@ -206,6 +206,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
 }
 
 TaskInfo& World::getTaskInfo(int task_id) {
+    std::lock_guard<std::mutex> lock(world_mutex);
 
     if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
         return all_tasks_info.at(task_id);
@@ -215,13 +216,15 @@ TaskInfo& World::getTaskInfo(int task_id) {
 }
 
 double& World::getTaskReward(int task_id) {
-
+    // No mutex to avoid deadlock because getTaskInfo covers it
+    
     TaskInfo& task_info = getTaskInfo(task_id);
     return task_info.reward;
 }
 
 //std::pair<int, int> World::getTaskLocation(int task_id, Robot* robot) { // Robot passed in for TESTING ONLY
 std::pair<int, int> World::getTaskLocation(int task_id) {
+    // No mutex to avoid deadlock because getTaskInfo covers it
 
     TaskInfo& task_info = getTaskInfo(task_id);
 
@@ -251,6 +254,7 @@ std::pair<int, int> World::getTaskLocation(int task_id) {
 }
 
 std::pair<int,int> World::getTaskLocationFromArea(std::unordered_map<std::string, int>& area) {
+    // No mutex to avoid deadlock because getTaskInfo covers it
 
     int xmin = area.at("xmin");; int xmax = area.at("xmax");; int ymin = area.at("ymin");; int ymax = area.at("ymax");
     int xcenter = (xmin + xmax) / 2; int ycenter = (ymin + ymax) / 2; 
@@ -548,6 +552,10 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
     utils::logUnorderedMap(robot->getTimestamps(),*robot);
 
     return max_timestamp;
+}
+
+bool World::hasTaskInfo(int task_id) {
+    return all_tasks_info.find(task_id) != all_tasks_info.end();
 }
 
 /*double World::calculateConvergenceCount(Robot* robot){

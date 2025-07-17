@@ -833,7 +833,7 @@ NodeStatus FollowCoveragePath::onRunning()
             // Movement is done!
             // Remove current first task from path since it has been completed
             _robot.removeCompletedTaskFromPath(); // Removes first task
-        
+
             return NodeStatus::SUCCESS;
         }
         

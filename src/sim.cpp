@@ -426,7 +426,7 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence>
@@ -435,6 +435,25 @@ static const char* xml_text = R"(
             <FollowCoveragePath/>
             <ExploreB/>
         </Sequence>
+     </BehaviorTree>
+</root>
+)";
+*/
+
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="3">
+            <GreedyTaskAllocator/>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+        </ParallelAll>
      </BehaviorTree>
 </root>
 )";
