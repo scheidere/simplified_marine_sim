@@ -28,6 +28,7 @@ private:
     //int num_agents; // Number of agents (including all types)
     //int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     int max_depth; // Maximum number of tasks an agent can hold in its bundle
+    bool convergence_threshold;
 
     const double epsilon = std::numeric_limits<double>::epsilon();
 
@@ -65,6 +66,8 @@ public:
     //double createBid(Robot * robot, Task& task); // I don't think this is explicitly needed
 
     //double calculatePathUtility(Robot& robot, Path path);
+
+    int getConvergenceThreshold() const { return convergence_threshold; }
 
     int getTaskIndex(int task_id, std::vector<int>& vec);
 

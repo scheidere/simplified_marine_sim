@@ -380,7 +380,7 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-// Current best tree
+// Current best tree (CBBA only)
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
@@ -440,7 +440,8 @@ static const char* xml_text = R"(
 )";
 */
 
-static const char* xml_text = R"(
+// Working greedy and exploration tree
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="3">
@@ -453,10 +454,50 @@ static const char* xml_text = R"(
                 <ExploreB/>
                 <FollowCoveragePath/>
             </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="3">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable/>
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle/>
+                    <Communicate/>
+                    <ResolveConflicts/>
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
 )";
+
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+// Needed in input file as well because of access in cbba for at_consensus robot flag
+// Can't easily pull that value into the xml, can do this later
 
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
@@ -521,11 +562,13 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 //factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));
                 factory.registerNodeType<RepeatSequence>("RepeatSequence");
-                factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot));
+                factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot), std::ref(parser));
                 factory.registerNodeType<GreedyTaskAllocator>("GreedyTaskAllocator", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowShortestPath>("FollowShortestPath", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<ExploreA>("ExploreA", std::ref(robot), std::ref(world));
                 factory.registerNodeType<ExploreB>("ExploreB", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ExploreC>("ExploreC", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ExploreD>("ExploreD", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));

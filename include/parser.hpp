@@ -22,6 +22,8 @@ public:
 
 	int getMaxDepth();
 
+	int getConvergenceThreshold();
+
 	std::vector<int> getAgentIndices();
 
 	std::vector<std::string> getAgentTypes();

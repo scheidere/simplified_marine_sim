@@ -90,6 +90,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     comms_timeout_threshold = 5.0;
 
+    at_consensus = false; // Used to stop executing a path not yet at consensus (relevant for CBBA, not greedy)
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -594,6 +596,12 @@ void Robot::clearStalePings() {
 bool Robot::ExploreA() {
     // Condition that should return true when first task in path is Explore_A (will check by ID)
 
+    // Can combine these false ifs later if kept
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
     if (path.empty()) {
         return false;
     }
@@ -630,6 +638,52 @@ bool Robot::ExploreB() {
 
     if (next_task.name == "Explore_B") {
         log_info("Next task to execute is Explore_B!");
+        return true;
+    }
+
+    return false; // It's not explore B
+
+}
+
+bool Robot::ExploreC() {
+    // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Explore_C") {
+        log_info("Next task to execute is Explore_C!");
+        return true;
+    }
+
+    return false; // It's not explore B
+
+}
+
+bool Robot::ExploreD() {
+    // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Explore_D") {
+        log_info("Next task to execute is Explore_D!");
         return true;
     }
 

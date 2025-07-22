@@ -19,6 +19,7 @@ CBBA::CBBA(Robot& r, World& w, JSONParser& p) : robot(r), world(w), parser(p) {
 void CBBA::init() {
 
     max_depth = parser.getMaxDepth(); // Currently, this is only thing CBBA parses directly (the rest robot should have)
+    convergence_threshold = parser.getConvergenceThreshold();
     //std::cout << max_depth << std::endl;
 
 }
@@ -58,6 +59,11 @@ void CBBA::testGetTaskIndex() {
 void CBBA::buildBundle() {
     try {
         std::cout << "in CBBA::buildBundle..." << std::endl;
+
+        // Set at_consensus to false for given robot regardless of if build bundle ultimately changes path, we don't know yet
+        robot.setAtConsensus(false); // Stops iterative path execution while potential path changes occur (current executing action should complete)
+        robot.log_info("Setting at_consensus to FALSE at start of buildBundle");
+        // This is only set to true in checkConvergence when convergence threshold met
 
         // Let's test the individual functions used in bundleRemove()
         //testGetTaskIndex(); // Passed
@@ -1420,19 +1426,3 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
     utils::logUnorderedMap(timestamps_k, robot);
 
 }
-
-/*void CBBA::printBundle() {
-    try {
-        // Implement printBundle logic here
-    } catch (const std::exception& e) {
-        std::cerr << "Error in printBundle: " << e.what() << std::endl;
-    }
-}
-
-void CBBA::obtainConsensus() {
-    try {
-        // Implement obtainConsensus logic here
-    } catch (const std::exception& e) {
-        std::cerr << "Error in obtainConsensus: " << e.what() << std::endl;
-    }
-}*/
