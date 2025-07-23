@@ -74,14 +74,14 @@ int JSONParser::getMaxDepth() {
     return max_depth;
 }
 
-int JSONParser::getConvergenceThreshold() {
+/*int JSONParser::getConvergenceThreshold() {
 
-    int max_depth;
+    int convergence_threshold;
 
     if (j.contains("cbba") && j["cbba"].is_object()) {
         if (j["cbba"].contains("convergence_threshold") && j["cbba"]["convergence_threshold"].is_number_integer()) {
             //std::cout << j["cbba"]["max_depth"] << std::endl;
-            max_depth = j["cbba"]["convergence_threshold"];
+            convergence_threshold = j["cbba"]["convergence_threshold"];
         } else {
             std::cerr << "Error: convergence_threshold not found or invalid in JSON." << std::endl;
         }
@@ -90,7 +90,28 @@ int JSONParser::getConvergenceThreshold() {
         std::cerr << "Error: cbba section not found in JSON." << std::endl;
     }
 
-    return max_depth;
+    return convergence_threshold;
+}*/
+
+int JSONParser::getConvergenceThreshold() {
+    int convergence_threshold;
+    if (j.contains("cbba") && j["cbba"].is_object()) {
+        std::cout << "DEBUG: cbba section found" << std::endl;
+        if (j["cbba"].contains("convergence_threshold")) {
+            std::cout << "DEBUG: convergence_threshold key found" << std::endl;
+            std::cout << "DEBUG: value is: " << j["cbba"]["convergence_threshold"] << std::endl;
+            std::cout << "DEBUG: is_number_integer: " << j["cbba"]["convergence_threshold"].is_number_integer() << std::endl;
+            if (j["cbba"]["convergence_threshold"].is_number_integer()) {
+                convergence_threshold = j["cbba"]["convergence_threshold"];
+            } else {
+                std::cerr << "Error: convergence_threshold not found or invalid in JSON." << std::endl;
+            }
+        } else {
+            std::cerr << "DEBUG: convergence_threshold key NOT found" << std::endl;
+        }
+    }
+    std::cout << "convergence threshold inside parser function: " << convergence_threshold << std::endl;
+    return convergence_threshold;
 }
 
 std::vector<int> JSONParser::getAgentIndices() {

@@ -20,6 +20,10 @@ void CBBA::init() {
 
     max_depth = parser.getMaxDepth(); // Currently, this is only thing CBBA parses directly (the rest robot should have)
     convergence_threshold = parser.getConvergenceThreshold();
+    std::string blorg = "cbba init convergence_threshold: " + std::to_string(convergence_threshold);
+    robot.log_info(blorg);
+    std::string blorgl = "max depth: " + std::to_string(max_depth);
+    robot.log_info(blorgl);
     //std::cout << max_depth << std::endl;
 
 }

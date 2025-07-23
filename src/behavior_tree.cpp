@@ -564,7 +564,11 @@ NodeStatus CheckConvergence::tick()
         // if cumulative convergence count is newly at threshold (which will also be checked inside repeat sequence node)
         // then set trigger flag to true (this will only be used in the local task execution subtree to protect against concurrent path changes + execution)
         CBBA cbba(_robot, _world, _parser);
-        bool convergence_threshold = cbba.getConvergenceThreshold();
+        int convergence_threshold = cbba.getConvergenceThreshold();
+        std::string blorb1 = "convergence_threshold: " + std::to_string(convergence_threshold);
+        _robot.log_info(blorb1);
+        std::string blorb2 = "cumulative_convergence_count: " + std::to_string(cumulative_convergence_count);
+        _robot.log_info(blorb2);
         if (cumulative_convergence_count >= convergence_threshold) {
             _robot.setAtConsensus(true);
             _robot.log_info("Setting at_consensus to TRUE (at end of checkConvergence)");

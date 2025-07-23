@@ -28,7 +28,7 @@ private:
     //int num_agents; // Number of agents (including all types)
     //int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     int max_depth; // Maximum number of tasks an agent can hold in its bundle
-    bool convergence_threshold;
+    int convergence_threshold;
 
     const double epsilon = std::numeric_limits<double>::epsilon();
 

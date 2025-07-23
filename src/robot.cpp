@@ -625,6 +625,10 @@ bool Robot::ExploreA() {
 bool Robot::ExploreB() {
     // Condition that should return true when first task in path is Explore_A (will check by ID)
 
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
     if (path.empty()) {
         return false;
     }
@@ -648,6 +652,10 @@ bool Robot::ExploreB() {
 bool Robot::ExploreC() {
     // Condition that should return true when first task in path is Explore_A (will check by ID)
 
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
     if (path.empty()) {
         return false;
     }
@@ -670,6 +678,10 @@ bool Robot::ExploreC() {
 
 bool Robot::ExploreD() {
     // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
 
     if (path.empty()) {
         return false;
