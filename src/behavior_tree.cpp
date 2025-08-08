@@ -272,7 +272,7 @@ NodeStatus NewInfoAvailable::tick()
 
         bool info_available = _robot.checkIfNewInfoAvailable();
 
-        std::cout << "[Robot " << _robot.getID() << "] info_available is " << (info_available ? "TRUE" : "FALSE") << std::endl;
+        //std::cout << "[Robot " << _robot.getID() << "] info_available is " << (info_available ? "TRUE" : "FALSE") << std::endl;
 
         if (info_available) {
             std::string bla = "info_available is TRUE";
@@ -487,8 +487,8 @@ PortsList ResolveConflicts::providedPorts()
     return { };
 }
 
-CheckConvergence::CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
-    : ConditionNode(name, config), _world(world), _robot(robot) {}
+CheckConvergence::CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot, JSONParser& parser)
+    : ConditionNode(name, config), _world(world), _robot(robot), _parser(parser) {}
 
 NodeStatus CheckConvergence::tick()
 {
@@ -530,7 +530,7 @@ NodeStatus CheckConvergence::tick()
         setOutput("cumulative_convergence_count_out", cumulative_convergence_count); // original
 
         _robot.log_info("RIGHT BEFORE SET TO 3 IF STATEMENT");
-        bool test = true;
+        bool test = false;
         if (test and _robot.getID() == 1) { // Only have robot 1 add it otherwise might create race condition
             _robot.log_info("JUST INSIDE SET TO 3 IF STATEMENT (should only happen for robot id 1)");
             // For testing, given we currently only have 2 robots, let's pseudo add 3 as if a third robot came into comms range for once of the robots (id 1)
@@ -560,6 +560,20 @@ NodeStatus CheckConvergence::tick()
             _robot.updateLastSelfUpdateTime(timestamp_now);
         }*/
         
+
+        // if cumulative convergence count is newly at threshold (which will also be checked inside repeat sequence node)
+        // then set trigger flag to true (this will only be used in the local task execution subtree to protect against concurrent path changes + execution)
+        CBBA cbba(_robot, _world, _parser);
+        int convergence_threshold = cbba.getConvergenceThreshold();
+        std::string blorb1 = "convergence_threshold: " + std::to_string(convergence_threshold);
+        _robot.log_info(blorb1);
+        std::string blorb2 = "cumulative_convergence_count: " + std::to_string(cumulative_convergence_count);
+        _robot.log_info(blorb2);
+        if (cumulative_convergence_count >= convergence_threshold) {
+            _robot.setAtConsensus(true);
+            _robot.log_info("Setting at_consensus to TRUE (at end of checkConvergence)");
+        }
+
         return NodeStatus::SUCCESS;
 
     } catch (const std::exception& e) {
@@ -729,6 +743,99 @@ PortsList ExploreA::providedPorts()
     return {};
 }
 
+ExploreB::ExploreB(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus ExploreB::tick()
+{
+    try {
+
+
+        if (_robot.ExploreB()) {
+            // will need to add logic to actually give output port a value
+            // location of task (or start for coverage planner for example)
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is ExploreA)
+            std::string bla = "start_loc in ExploreB tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreB::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ExploreB::providedPorts()
+{
+    return {};
+}
+
+ExploreC::ExploreC(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus ExploreC::tick()
+{
+    try {
+
+
+        if (_robot.ExploreC()) {
+            // will need to add logic to actually give output port a value
+            // location of task (or start for coverage planner for example)
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is ExploreA)
+            std::string bla = "start_loc in ExploreC tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreC::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ExploreC::providedPorts()
+{
+    return {};
+}
+
+ExploreD::ExploreD(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus ExploreD::tick()
+{
+    try {
+
+
+        if (_robot.ExploreD()) {
+            // will need to add logic to actually give output port a value
+            // location of task (or start for coverage planner for example)
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is ExploreA)
+            std::string bla = "start_loc in ExploreD tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreD::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList ExploreD::providedPorts()
+{
+    return {};
+}
+
 FollowCoveragePath::FollowCoveragePath(const std::string& name, const NodeConfig& config,
                                        Robot& r, World& w, CoveragePath& cp)
     : StatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp)
@@ -798,6 +905,11 @@ NodeStatus FollowCoveragePath::onRunning()
     try {
         if (_current_waypoint_index >= _waypoints.size()) {
             std::cout << "All waypoints completed!" << std::endl;
+
+            // Movement is done!
+            // Remove current first task from path since it has been completed
+            _robot.removeCompletedTaskFromPath(); // Removes first task
+
             return NodeStatus::SUCCESS;
         }
         
@@ -808,7 +920,7 @@ NodeStatus FollowCoveragePath::onRunning()
                   << ": " << waypoint.x << "/" << waypoint.y << std::endl;
         
         _robot.move(waypoint);
-        
+
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;
         

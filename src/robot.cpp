@@ -90,6 +90,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     comms_timeout_threshold = 5.0;
 
+    at_consensus = false; // Used to stop executing a path not yet at consensus (relevant for CBBA, not greedy)
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -594,8 +596,18 @@ void Robot::clearStalePings() {
 bool Robot::ExploreA() {
     // Condition that should return true when first task in path is Explore_A (will check by ID)
 
+    // Can combine these false ifs later if kept
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
     if (path.empty()) {
         return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
     }
 
     // Get info for first task in path (i.e., task that has been allocated to occur next)
@@ -610,6 +622,87 @@ bool Robot::ExploreA() {
 
 }
 
+bool Robot::ExploreB() {
+    // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Explore_B") {
+        log_info("Next task to execute is Explore_B!");
+        return true;
+    }
+
+    return false; // It's not explore B
+
+}
+
+bool Robot::ExploreC() {
+    // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Explore_C") {
+        log_info("Next task to execute is Explore_C!");
+        return true;
+    }
+
+    return false; // It's not explore B
+
+}
+
+bool Robot::ExploreD() {
+    // Condition that should return true when first task in path is Explore_A (will check by ID)
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Explore_D") {
+        log_info("Next task to execute is Explore_D!");
+        return true;
+    }
+
+    return false; // It's not explore B
+
+}
+
 std::pair<int,int> Robot::getNextStartLocation() {
 
     // Location robot should go to start the current (first) task in the path
@@ -618,4 +711,23 @@ std::pair<int,int> Robot::getNextStartLocation() {
 
     return world->getTaskLocation(path[0]); // Either location directly or via area
 
+}
+
+/*void Robot::removeCompletedTaskFromPath() {
+
+    path.erase(path.begin());
+    log_info("Path is now: ");
+    utils::log1DVector(path, *this);
+
+}*/
+
+void Robot::removeCompletedTaskFromPath() {
+    if (path.empty()) {
+        log_info("Warning: Attempted to remove from empty path");
+        return;
+    }
+    
+    path.erase(path.begin());
+    log_info("Path is now: ");
+    utils::log1DVector(path, *this);
 }

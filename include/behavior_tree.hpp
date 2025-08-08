@@ -167,9 +167,10 @@ class CheckConvergence : public ConditionNode {
 private:
     World& _world;
     Robot& _robot;
+    JSONParser& _parser;
 
 public:
-    CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot, JSONParser& p);
     NodeStatus tick() override;
 
     static PortsList providedPorts();
@@ -216,6 +217,39 @@ private:
 
 public:
     ExploreA(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ExploreB : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    ExploreB(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ExploreC : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    ExploreC(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ExploreD : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    ExploreD(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
     NodeStatus tick() override;
 
     static PortsList providedPorts();

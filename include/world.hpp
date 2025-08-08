@@ -144,6 +144,8 @@ public:
 
     double getMaxNeighborTimestamp(int robot_id_i, int out_of_range_robot_id_k);
 
+    bool hasTaskInfo(int task_id);
+
     //double calculateConvergenceCount();
 
 };

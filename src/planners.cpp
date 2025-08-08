@@ -272,9 +272,9 @@ std::vector<Pose2D> CoveragePath::generateBoustrophedonWaypoints(std::unordered_
     std::vector<Pose2D> waypoints;
 
     int x_min = area["xmin"]; //std::min({corner1.x, corner2.x, corner3.x, corner4.x});
-    int x_max = area["xmax"]; //std::max({corner1.x, corner2.x, corner3.x, corner4.x});
+    int x_max = area["xmax"]-1; //std::max({corner1.x, corner2.x, corner3.x, corner4.x});
     int y_min = area["ymin"]; //std::min({corner1.y, corner2.y, corner3.y, corner4.y});
-    int y_max = area["ymax"]; //std::max({corner1.y, corner2.y, corner3.y, corner4.y});
+    int y_max = area["ymax"]-1; //std::max({corner1.y, corner2.y, corner3.y, corner4.y});
 
     // 10% overlap between parallel across and back
     int distance_between_parallel_paths = static_cast<int>(std::round(obs_radius * 1.8));

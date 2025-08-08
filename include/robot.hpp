@@ -62,6 +62,8 @@ private:
 
     double comms_timeout_threshold;
 
+    bool at_consensus;
+
     std::ofstream robot_log; // Init file for each robot to log in
 
 
@@ -128,7 +130,15 @@ public:
     bool foundBeliefUpdate();
     void clearStalePings(); // Get rid of pings in ping tracker that are older than timeout threshold - sender robots are offline or out of range
     bool ExploreA();
+    bool ExploreB();
+    bool ExploreC();
+    bool ExploreD();
     std::pair<int,int> getNextStartLocation(); // Location robot should go to start the current (first) task in the path
+
+    void removeCompletedTaskFromPath();
+
+    bool getAtConsensus() const { return at_consensus; }
+    void setAtConsensus(bool value) { at_consensus = value; }
 
     //void resurfaceToCharge();
 

@@ -17,370 +17,8 @@
 #include "parser.hpp"
 #include "utils.hpp"
 
-// Run to show robots traversing to different waypoints
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <PlanShortestPath path="{path}" goal="{goal}" />
-            <QueueSize queue="{path}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}">
-                <Sequence>
-                    <PopFromQueue queue="{path}" popped_item="{wp}" />
-                    <UseWaypoint waypoint="{wp}" />
-                </Sequence>
-            </Repeat>
-            <RunTest waypoint="{wp}"/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
 
-// Run to test message broadcasting and receipt
-// RunTest helps prints organization
-// Issue is that broadcast only happens once and receive only happens once (not per robot, so only one sends, and one receives instead of both)
-// Adding shortestpath block beneath sequence before the message testing, in case issue is initialization timing
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <SendMessage/>
-            <PlanShortestPath path="{path}" goal="{goal}" />
-            <QueueSize queue="{path}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}">
-                <Sequence>
-                    <PopFromQueue queue="{path}" popped_item="{wp}" />
-                    <UseWaypoint waypoint="{wp}" />
-                </Sequence>
-            </Repeat>
-            <ReceiveMessage/>
-            <NeedRegroup/>
-            <RunTest waypoint="{wp}"/> 
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Test path traversal triggered by a condition, which relates to robots sending and having received messages
-// First let's test a delay function (threaded action so more than one tick, and just have it wait for 5 seconds between send and receive)
-// HERE NEXT
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <SendMessage/>
-            <PlanShortestPath path="{path}" goal="{goal}" />
-            <QueueSize queue="{path}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}">
-                <Sequence>
-                    <PopFromQueue queue="{path}" popped_item="{wp}" />
-                    <UseWaypoint waypoint="{wp}" />
-                </Sequence>
-            </Repeat>
-            <ReceiveMessage/>
-            <NeedRegroup/>
-            <RunTest waypoint="{wp}"/> 
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <SendMessage/>
-            <ReceiveMessage/>
-            <Sequence name="regroup_sequence">
-                <NeedRegroup/>
-                <PlanRegroupPath path="{path}" />
-                <QueueSize queue="{path}" size="{wp_size}" />
-                <Repeat num_cycles="{wp_size}">
-                <Sequence>
-                    <PopFromQueue queue="{path}" popped_item="{wp}" />
-                    <UseWaypoint waypoint="{wp}" />
-                </Sequence>
-            </Repeat>
-            </Sequence>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <PlanCoveragePath path="{path}" />
-            <QueueSize queue="{path}" size="{wp_size}" />
-            <Repeat num_cycles="{wp_size}">
-            <Sequence>
-                <PopFromQueue queue="{path}" popped_item="{wp}" />
-                <UseWaypoint waypoint="{wp}" />
-            </Sequence>
-            </Repeat>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// <RunTest waypoint="{wp}"/> 
-
-/*// Run to test BuildBundle only
-static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <BuildBundle/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Pinging works, if tested like this needs little delay between sending and listening to allow all robots to hear
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <Ping/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// parallel node testing
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-  <BehaviorTree ID="MainTree">
-    <Parallel name="parallel" success_count="2" failure_count="2">
-        <Ping/> 
-        <RunTest waypoint="{wp}"/>
-    </Parallel>
-  </BehaviorTree>
-</root>  )";*/
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-  <BehaviorTree ID="MainTree">
-    <Parallel name="parallel" success_count="2" failure_count="2">
-        <Ping/>
-        <Fallback> 
-            <NewInfoAvailable waypoint="{wp}"/>
-        </Fallback>
-    </Parallel>
-  </BehaviorTree>
-</root>  )";*/
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-  <BehaviorTree ID="MainTree">
-    <Sequence>
-        <Ping/>
-        <Fallback> 
-            <NewInfoAvailable/>
-        </Fallback>
-    </Sequence>
-  </BehaviorTree>
-</root>  )";*/
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-  <BehaviorTree ID="MainTree">
-    <Fallback>
-        <Fallback> 
-            <NewInfoAvailable/>
-        </Fallback>
-        <Ping/>
-    </Fallback>
-  </BehaviorTree>
-</root>  )";*/
-
-// Run to test BuildBundle, Communicate, and ResolveConflicts (without repetition until consensus) only
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Testing bundle building only
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <BuildBundle/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Run to test BuildBundle, Communicate, and ResolveConflicts (with a second BuildBundle to test bundleRemove logic)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-            <BuildBundle/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Ping node after repeat sequence, has issue with getNeighbors function in world that accesses ping tracker due to fallback logic limitation
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Fallback>
-        <RepeatSequence name="repeat" convergence_threshold="3">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-            <CheckConvergence/>
-        </RepeatSequence>
-        <Ping/>
-        </Fallback>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Ping node before repeat sequence (highlights issue where it stops after ping because returns SUCCESS)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Fallback>
-        <Ping/>
-        <RepeatSequence name="repeat" convergence_threshold="3">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-            <CheckConvergence/>
-        </RepeatSequence>
-        </Fallback>
-     </BehaviorTree>
-</root>
-)";*/
-
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Parallel name="parallel" success_count="2" failure_count="2">
-        <RepeatSequence name="repeat" convergence_threshold="3">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-            <CheckConvergence/>
-        </RepeatSequence>
-        <Ping/>
-        </Parallel>
-     </BehaviorTree>
-</root>
-)";*/
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <BuildBundle/>
-            <Communicate/>
-            <ResolveConflicts/>
-            <CheckConvergence/>
-            <BuildBundle/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Even more basic test, tracking issue with ticking not being concurrent/in parallel (alternating tick counter)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <Communicate/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Outdated, but was testing of a cbba subtree idea under parallel node (has issues, missing repeat logic for ping)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Parallel name="parallel" success_count="2" failure_count="2">
-            <Ping/>
-            <Sequence name="cbba_root_sequence">
-                <NewInfoAvailable/>
-                <RepeatSequence name="repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}">
-                    <BuildBundle/>
-                    <Communicate/>
-                    <ResolveConflicts/>
-                    <CheckConvergence cumulative_convergence_count="{ccc}" />
-                </RepeatSequence>
-            </Sequence>
-        </Parallel>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Testing whether pinging continues repeating as expected given it is under a repeat decorator node with -1 for cycles which means infinite
-// This does work, and would work in this case indentically without the parallel node
-// To test this again, you will need to uncomment prints. I commented them out because it happens every tick and that is... too much.
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="1">
-            <Repeat num_cycles="-1">
-            <Ping/>
-            </Repeat>
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Testing unlimited version/use of repeat sequence, works now (had to remove default and make sure it never fails even if a child fails)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="1">
-            <RepeatSequence>
-            <Ping/>
-            <NewInfoAvailable/>
-            </RepeatSequence>
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Main tree (unlimited repeat sequence not working here yet)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="2">
-            <Repeat num_cycles="-1">
-            <Ping/>
-            </Repeat>
-            <RepeatSequence name="unlimited_repeat">
-                <NewInfoAvailable/>
-                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count="{ccc}" threshold_met="{threshold_met}">
-                    <BuildBundle/>
-                    <Communicate/>
-                    <ResolveConflicts/>
-                    <CheckConvergence cumulative_convergence_count="{ccc}" threshold_met="{threshold_met}" />
-                </RepeatSequence>
-            </RepeatSequence>
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Current best tree
+// Current best tree (CBBA only)
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
@@ -426,17 +64,90 @@ static const char* xml_text = R"(
 </root>
 )";*/
 
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence>
             <GreedyTaskAllocator/>
             <ExploreA/>
             <FollowCoveragePath/>
+            <ExploreB/>
         </Sequence>
      </BehaviorTree>
 </root>
 )";
+*/
+
+// Working greedy and exploration tree
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="3">
+            <GreedyTaskAllocator/>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="6">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable/>
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle/>
+                    <Communicate/>
+                    <ResolveConflicts/>
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
+
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+// Needed in input file as well because of access in cbba for at_consensus robot flag
+// Can't easily pull that value into the xml, can do this later
 
 double getCurrentTime() {
     auto now = std::chrono::system_clock::now();
@@ -501,10 +212,13 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
                 //factory.registerNodeType<DummySuccessAction>("DummySuccessAction");
                 factory.registerNodeType<NewInfoAvailable>("NewInfoAvailable", std::ref(world), std::ref(robot));
                 factory.registerNodeType<RepeatSequence>("RepeatSequence");
-                factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot));
+                factory.registerNodeType<CheckConvergence>("CheckConvergence", std::ref(world), std::ref(robot), std::ref(parser));
                 factory.registerNodeType<GreedyTaskAllocator>("GreedyTaskAllocator", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowShortestPath>("FollowShortestPath", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<ExploreA>("ExploreA", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ExploreB>("ExploreB", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ExploreC>("ExploreC", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ExploreD>("ExploreD", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
