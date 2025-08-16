@@ -37,7 +37,7 @@ protected:
     std::unordered_map<int,AgentInfo> all_agents_info;
     int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     std::unordered_map<int,TaskInfo> all_tasks_info;
-    std::vector<int> agent_indices; // is this really needed
+    //std::vector<int> agent_indices; // is this really needed
     std::vector<std::string> agent_types;
     std::vector<std::string> task_types;
     std::unordered_map<std::string, std::vector<int>> all_agent_capabilities; // Denotes which agents can do which tasks by agent type (0: can't; 1: can by self; 2: can co-op; 3: TBD)

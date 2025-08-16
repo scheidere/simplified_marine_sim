@@ -5,22 +5,22 @@
 #include <vector>
 #include "world.hpp"
 #include "robot.hpp"
-#include "CBBA.hpp"
+#include "CBGA.hpp"
 #include "parser.hpp"
 #include "distance.hpp"
 #include <utils.hpp>
 
 class Robot;
 
-CBBA::CBBA(Robot& r, World& w, JSONParser& p) : robot(r), world(w), parser(p) {
+CBGA::CBGA(Robot& r, World& w, JSONParser& p) : robot(r), world(w), parser(p) {
     init();
 }
 
-void CBBA::init() {
+void CBGA::init() {
 
-    max_depth = parser.getMaxDepth(); // Currently, this is only thing CBBA parses directly (the rest robot should have)
+    max_depth = parser.getMaxDepth(); // Currently, this is only thing CBGA parses directly (the rest robot should have)
     convergence_threshold = parser.getConvergenceThreshold();
-    std::string blorg = "cbba init convergence_threshold: " + std::to_string(convergence_threshold);
+    std::string blorg = "CBGA init convergence_threshold: " + std::to_string(convergence_threshold);
     robot.log_info(blorg);
     std::string blorgl = "max depth: " + std::to_string(max_depth);
     robot.log_info(blorgl);
@@ -29,7 +29,7 @@ void CBBA::init() {
 }
 
 template <typename T>
-void CBBA::print1DVector(const std::vector<T>& vec) {
+void CBGA::print1DVector(const std::vector<T>& vec) {
     for (const auto& elem : vec) {
         std::cout << elem << " ";  // Print each element
     }
@@ -38,7 +38,7 @@ void CBBA::print1DVector(const std::vector<T>& vec) {
 }
 
 template <typename T>
-void CBBA::print2DVector(const std::vector<std::vector<T>>& vec) {
+void CBGA::print2DVector(const std::vector<std::vector<T>>& vec) {
     for (const auto& row : vec) {
         for (const auto& elem : row) {
             std::cout << elem << " ";  // Print each element
@@ -47,7 +47,7 @@ void CBBA::print2DVector(const std::vector<std::vector<T>>& vec) {
     }
 }
 
-void CBBA::testGetTaskIndex() {
+void CBGA::testGetTaskIndex() {
 
     // Passed (idx of 2 is 1)
 
@@ -60,9 +60,9 @@ void CBBA::testGetTaskIndex() {
 }
 
 
-void CBBA::buildBundle() {
+void CBGA::buildBundle() {
     try {
-        std::cout << "in CBBA::buildBundle..." << std::endl;
+        std::cout << "in CBGA::buildBundle..." << std::endl;
 
         // Set at_consensus to false for given robot regardless of if build bundle ultimately changes path, we don't know yet
         robot.setAtConsensus(false); // Stops iterative path execution while potential path changes occur (current executing action should complete)
@@ -74,7 +74,7 @@ void CBBA::buildBundle() {
         //testRemovePathGaps();
         //testBundleRemove();
 
-        robot.log_info("Timestamps BEFORE change in CBBA::buildBundle:");
+        robot.log_info("Timestamps BEFORE change in CBGA::buildBundle:");
         utils::logUnorderedMap(robot.getTimestamps(),robot);
 
         std::vector<int>& bundle = robot.getBundle();
@@ -109,7 +109,7 @@ void CBBA::buildBundle() {
         robot.log_info(p);
         utils::log1DVector(robot.getPath(), robot);
 
-        robot.log_info("Timestamps AFTER change in CBBA::buildBundle:");
+        robot.log_info("Timestamps AFTER change in CBGA::buildBundle:");
         utils::logUnorderedMap(robot.getTimestamps(),robot);
 
         /*
@@ -122,13 +122,13 @@ void CBBA::buildBundle() {
         the first test path to win is chosen: 2 3 1.
         */
 
-        /*std::cout << "at end of CBBA::buildBundle..." << std::endl;*/
+        /*std::cout << "at end of CBGA::buildBundle..." << std::endl;*/
     } catch (const std::exception& e) {
         std::cerr << "Error in buildBundle: " << e.what() << std::endl;
     }
 }
 
-int CBBA::getTaskIndex(int task_id, std::vector<int>& vec) {
+int CBGA::getTaskIndex(int task_id, std::vector<int>& vec) {
     // Note, this is index as in location in the bundle or path (or other relevant vector)
     // This is not task ID
 
@@ -142,7 +142,7 @@ int CBBA::getTaskIndex(int task_id, std::vector<int>& vec) {
     return -1; // Valid int but invalid index to denote error: task_id not found
 }
 
-void CBBA::removeGaps(std::vector<int>& vec) {
+void CBGA::removeGaps(std::vector<int>& vec) {
     // Remove gaps (-1) in the given vector so they only appear at the end
 
     int write_idx = 0;  // Position to write the first non-empty value
@@ -162,7 +162,7 @@ void CBBA::removeGaps(std::vector<int>& vec) {
     std::fill(vec.begin() + write_idx, vec.end(), -1);
 }
 
-void CBBA::testRemoveGaps() {
+void CBGA::testRemoveGaps() {
 
     // In progress 
     // Passed (result should be {3,-1,-1} for {-1,-1,3})
@@ -184,7 +184,7 @@ void CBBA::testRemoveGaps() {
     utils::log1DVector(path3, robot);
 }
 
-bool CBBA::isFeasible(int task_id, bool do_test_3) {
+bool CBGA::isFeasible(int task_id, bool do_test_3) {
 
     if (do_test_3) {
         // Without changes it's {1,2,3,4} for the other tests
@@ -197,8 +197,8 @@ bool CBBA::isFeasible(int task_id, bool do_test_3) {
     return std::find(doable_task_ids.begin(), doable_task_ids.end(), task_id) != doable_task_ids.end();
 }
 
-//void CBBA::bundleRemove() {
-void CBBA::bundleRemove(std::vector<int>& bundle, 
+//void CBGA::bundleRemove() {
+void CBGA::bundleRemove(std::vector<int>& bundle, 
                         std::vector<int>& path, 
                         std::unordered_map<int, int>& winners, 
                         std::unordered_map<int, double>& winning_bids,
@@ -257,7 +257,7 @@ void CBBA::bundleRemove(std::vector<int>& bundle,
 
 }
 
-void CBBA::testBundleRemove() {
+void CBGA::testBundleRemove() {
 
     // Test 1: Passes with the below (robot 2 ends up with empty bundle and path, robot 1 has no changes)
     /*std::vector<int> bundle = {1,2,3};
@@ -323,7 +323,7 @@ void CBBA::testBundleRemove() {
 
 }
 
-std::unordered_map<int,int> CBBA::initLocalWinIndicatorH() {
+std::unordered_map<int,int> CBGA::initLocalWinIndicatorH() {
 
     std::unordered_map<int,int> local_win_indicator_h;
 
@@ -337,7 +337,7 @@ std::unordered_map<int,int> CBBA::initLocalWinIndicatorH() {
 
 
 
-/*std::pair<int,int> CBBA::getTaskLocation(int task_id) {
+/*std::pair<int,int> CBGA::getTaskLocation(int task_id) {
 
     std::pair<int,int> location;
 
@@ -349,8 +349,76 @@ std::unordered_map<int,int> CBBA::initLocalWinIndicatorH() {
 
 }*/
 
-double CBBA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
+double CBGA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
 
+/*    // UPDATING FOR CBGA
+    // For each cooperative task considered, use distance of furthest agent assigned to it
+
+    // Get distance along path to location of given task_id
+
+    robot.log_info("in cumulative distance function");
+
+    if (std::find(path.begin(), path.end(), task_id) == path.end()) {
+        throw std::runtime_error("Task ID " + std::to_string(task_id) + " not found in path.");
+    }
+
+    double distance = 0;
+
+    // Init previous known locations of each agent in group (for current robot will obviously be current location)
+
+
+    // Get robot location to init "prev" location
+    Pose2D current_pose = robot.getPose();
+    int prev_x = current_pose.x;
+    int prev_y = current_pose.y;
+    std::string bla = "init prev loc: " + std::to_string(prev_x) + ", " + std::to_string(prev_y);
+    robot.log_info(bla);
+
+    // For each task in bundle/path (by definition the same tasks), in order of appearance in path
+    for (int i = 0; i < getBundleOrPathSize(path); i++) {
+
+        int task_id = path[i];
+
+        // Get assignment group for task j, task_id
+        std::vector<int> assigned_agent_ids = getAssignedAgents(task_id);
+
+        // Get location of task (or approx./start location if a task involves exploration of an area)
+        std::pair<int,int> location = world.getTaskLocation(task_id); // path[i] is a task id
+        int current_x = location.first;
+        int current_y = location.second;
+        std::string bla2 = "task loc: " + std::to_string(current_x) + ", " + std::to_string(current_y);
+        robot.log_info(bla2);
+
+
+        // If task is co-op (multi-agent, group size > 1)
+
+
+        // If task is solo (single-agent, group size = 1)
+
+        // or we could just walk through each nonzero winning bid and for each agent id for this task j
+
+
+
+        double new_dist = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
+        robot.log_info(std::to_string(new_dist));
+
+        distance += new_dist;
+
+        if (path[i] == task_id) {
+            return distance;
+        } else {
+            prev_x = current_x;
+            prev_y = current_y;
+        }
+    }
+
+    robot.log_info("end cumulative distance function");
+
+    // Should never reach here due to check above
+    throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
+
+}*/
+    // OLD VERSION BELOW TO PREVENT ERRORS WHILE ADDING pose update to messaging and neighbor distance tracker to robot
     // Get distance along path to location of given task_id
 
     robot.log_info("in cumulative distance function");
@@ -397,7 +465,7 @@ double CBBA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
 
 }
 
-double CBBA::getPathScore(std::vector<int> path, bool do_test) {
+double CBGA::getPathScore(std::vector<int> path, bool do_test) {
 
     double discount_factor = 0.999; // % future reward loses value
     double score = 0.0;
@@ -445,7 +513,7 @@ double CBBA::getPathScore(std::vector<int> path, bool do_test) {
     return score;
 }
 
-std::vector<int> CBBA::addTaskToPath(int task_id, std::vector<int> test_path, int position_n) {
+std::vector<int> CBGA::addTaskToPath(int task_id, std::vector<int> test_path, int position_n) {
  
     // Pass in path that has a valid empty slot (assume that position n is valid)
 
@@ -462,7 +530,7 @@ std::vector<int> CBBA::addTaskToPath(int task_id, std::vector<int> test_path, in
     return test_path;
 }
 
-std::vector<int> CBBA::shiftTaskInPath(int i, std::vector<int> path) {
+std::vector<int> CBGA::shiftTaskInPath(int i, std::vector<int> path) {
 
     // TODO: double check catches all cases!
 
@@ -482,7 +550,7 @@ std::vector<int> CBBA::shiftTaskInPath(int i, std::vector<int> path) {
     return shifted;
 }
 
-int CBBA::findFirstEmptyElement(std::vector<int> path) {
+int CBGA::findFirstEmptyElement(std::vector<int> path) {
 
     for (int i=0; i<path.size(); i++) {
         if (path[i]==-1) {
@@ -493,7 +561,7 @@ int CBBA::findFirstEmptyElement(std::vector<int> path) {
     return -1; // Path is full (should not get here because bundle would be full and stop it)
 }
 
-std::unordered_map<int, std::vector<int>> CBBA::getTestPaths(int new_task_id) {
+std::unordered_map<int, std::vector<int>> CBGA::getTestPaths(int new_task_id) {
 
     // Returns unordered map where keys denote index where new task inserted in new path to be tested
     // New test path is value of each key (with the new task id at n)
@@ -545,7 +613,7 @@ std::unordered_map<int, std::vector<int>> CBBA::getTestPaths(int new_task_id) {
 
 }
 
-std::pair<double, int> CBBA::computeBid(int task_id) {
+std::pair<double, int> CBGA::computeBid(int task_id) {
     // Calculate maximum score improvement (will use as bid)
     double max_score_improvement = 0.0;
     double marginal_score_improvement_c = 0.0;
@@ -596,8 +664,8 @@ std::pair<double, int> CBBA::computeBid(int task_id) {
     //return 1.0; // For now just a num to test
 }
 
-//int CBBA::getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h) {
-int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h, std::vector<int>& bundle) {
+//int CBGA::getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h) {
+int CBGA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h, std::vector<int>& bundle) {
     // Get the task id for the task that has the max new winning bid, J
     // h is local win indicator with elements 0 or 1
 
@@ -623,20 +691,20 @@ int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_
 
 }
 
-void CBBA::addTaskToBundleEnd(std::vector<int>& bundle, int task_id) {
+void CBGA::addTaskToBundleEnd(std::vector<int>& bundle, int task_id) {
     auto it = std::find(bundle.begin(), bundle.end(), -1); // Find first occurrence of -1
     if (it != bundle.end()) {
         *it = task_id; // Replace -1 with the new task ID
     }
 }
 
-int CBBA::getBundleOrPathSize(const std::vector<int>& vec) {
+int CBGA::getBundleOrPathSize(const std::vector<int>& vec) {
     return std::count_if(vec.begin(), vec.end(), [](int task_id) {
         return task_id != -1;
     });
 }
 
-void CBBA::updatePath(std::vector<int>& path, int n, int new_task_id) {
+void CBGA::updatePath(std::vector<int>& path, int n, int new_task_id) {
 
     if (new_task_id==-1) { // only if the new task exists
         robot.log_info("FOUND new task id of -1 in updatePath");
@@ -657,7 +725,7 @@ void CBBA::updatePath(std::vector<int>& path, int n, int new_task_id) {
 
 }
 
-void CBBA::bundleAdd(std::vector<int>& bundle, 
+void CBGA::bundleAdd(std::vector<int>& bundle, 
                         std::vector<int>& path, 
                         //std::vector<double>& scores,
                         std::map<int, double>& bids,
@@ -777,7 +845,7 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
     };
 }
 
-void CBBA::update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
+void CBGA::update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
     std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k) {
 
     // Precedence given to k, which is determined to have more recent info than i
@@ -786,12 +854,12 @@ void CBBA::update(int j, std::unordered_map<int, int>& winners_i, std::unordered
 
 }
 
-void CBBA::reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, double>& winning_bids_i) {
+void CBGA::reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, double>& winning_bids_i) {
 
     winners_i[j] = -1; winning_bids_i[j] = 0.0;
 }
 
-void CBBA::resolveConflicts(bool do_test) {
+void CBGA::resolveConflicts(bool do_test) {
 
     // Should be identical to previous resolveConflicts but without direct timestamps[bla] accessing 
     // to avoid default 0 creation for non-existence keys (i.e., self id i)
@@ -803,7 +871,7 @@ void CBBA::resolveConflicts(bool do_test) {
     std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
     std::unordered_map<int, double>& timestamps_i = robot.getTimestamps();
 
-    /*robot.log_info("Timestamps BEFORE change in CBBA::resolveConflicts:");
+    /*robot.log_info("Timestamps BEFORE change in CBGA::resolveConflicts:");
     utils::logUnorderedMap(timestamps_i, robot);*/
 
     std::string blorpl = "id_i in resolveConflicts: " + std::to_string(id_i);
@@ -933,13 +1001,13 @@ void CBBA::resolveConflicts(bool do_test) {
         }
     }
 
-    /*robot.log_info("Timestamps AFTER change in CBBA::resolveConflicts:");
+    /*robot.log_info("Timestamps AFTER change in CBGA::resolveConflicts:");
     utils::logUnorderedMap(timestamps_i, robot);
 */
     message_queue_i.clear();
 }
 
-/*void CBBA::resolveConflicts(bool do_test) {
+/*void CBGA::resolveConflicts(bool do_test) {
 
     // THIS SHOULD BE IDENTICAL FUNCTIONALLY TO THE ABOVE UNCOMMENTED VERSION EXCEPT:
     // above we do not directly access timestamps[bla] becaues it will default give a value of 0 for keys that don't exist (aka self id i)
@@ -958,7 +1026,7 @@ void CBBA::resolveConflicts(bool do_test) {
     std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
     std::unordered_map<int,double>& timestamps_i = robot.getTimestamps();
 
-    robot.log_info("Timestamps BEFORE change in CBBA::resolveConflicts:");
+    robot.log_info("Timestamps BEFORE change in CBGA::resolveConflicts:");
     utils::logUnorderedMap(timestamps_i,robot);
 
     std::string blorp = "Size of message queue: " + std::to_string(message_queue_i.size());
@@ -1090,7 +1158,7 @@ void CBBA::resolveConflicts(bool do_test) {
 
     }
 
-    robot.log_info("Timestamps AFTER change in CBBA::resolveConflicts:");
+    robot.log_info("Timestamps AFTER change in CBGA::resolveConflicts:");
     utils::logUnorderedMap(timestamps_i,robot);
 
     message_queue_i.clear(); // Remove messages from robot i's queue because they have been processed (info is no longer new)
@@ -1098,7 +1166,7 @@ void CBBA::resolveConflicts(bool do_test) {
 }*/
 
 // inputs: robot i winners, winning_bids, message_queue (to get msg's from each k), timestamps
-void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::unordered_map<int, int>& winners_i, 
+void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::unordered_map<int, int>& winners_i, 
     std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int,double>& timestamps_i,
     int id_k, std::unordered_map<int, int>& winners_k, 
     std::unordered_map<int, double>& winning_bids_k, std::unordered_map<int,double>& timestamps_k) {

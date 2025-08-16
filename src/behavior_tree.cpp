@@ -350,7 +350,7 @@ NodeStatus Communicate::onRunning()
             
 
         _robot.updateTimestamps();
-
+        _robot.updateLocations(); // CBGA
 
         _robot.log_info("Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:");
         utils::logUnorderedMap(_robot.getTimestamps(),_robot);
@@ -647,8 +647,16 @@ NodeStatus FollowShortestPath::onStart()
         if (getInput<std::pair<int,int>>("goal_loc", goal_loc)) {
             goal_pose = {goal_loc.first, goal_loc.second,0};
         } else {
-            _robot.log_info("Using default goal pose, so input not found");
-            goal_pose = _robot.getGoalPose();
+            _robot.log_info("No input given");
+        }
+
+        // for testing updateLocations()
+        if (_robot.getID() == 1) {
+            goal_pose = {10,10,0}; // same as starting location for test 1
+        } else if (_robot.getID() == 2) {
+            goal_pose = {20,10,0}; // same as starting location for test 1
+        } else if (_robot.getID() == 3) {
+            goal_pose = {65,10,0}; // starting location will {large, 10,0} so will stop in comms with k but not yet with i 
         }
 
         std::string bla = "Goal pose for shortest path is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);

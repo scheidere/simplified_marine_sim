@@ -29,7 +29,7 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         all_agents_info = initAllAgentsInfo(); // pairs of agent id: struct
         num_tasks = parser->getNumLocalTasks();
         all_tasks_info = initAllTasksInfo();
-        agent_indices = parser->getAgentIndices();
+        //agent_indices = parser->getAgentIndices();
         agent_types = parser->getAgentTypes();
         task_types = parser->getTaskTypes();
         //std::cout << "start world init print" << std::endl;
@@ -126,7 +126,7 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
             id,
             agent["type"],
             Pose2D{agent["start_x"].get<int>(), agent["start_y"].get<int>(), 0}, // Note we ignore the orientation theta for now
-            Pose2D{agent["goal_x"].get<int>(), agent["goal_y"].get<int>(), 0}, // here too
+            //Pose2D{agent["goal_x"].get<int>(), agent["goal_y"].get<int>(), 0}, // here too
             colors[id % colors.size()]  // Assign color cyclically
         };
         all_agents_info[id] = agent_struct;

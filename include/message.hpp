@@ -14,13 +14,11 @@ struct Msg {
     //Pose2D location; // Current location of sender
     std::unordered_map<int,int> winners;
     std::unordered_map<int,double> winning_bids;
-    std::unordered_map<int,double> timestamps;
-    // double timestamp;
+    std::unordered_map<int,double> timestamps; // When sender last received message from each neighboring agent (no key for self ID, no message sending to self)
+    std::unordered_map<int,Pose2D> locations; // Added for CBGA! For flexibility, using Pose2D x and y to denote location, ignoring theta. Includes key for self location value.
 
-    // add more robot/cbba info here later
-
-    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::unordered_map<int,double> timestamps)
-        : id(id), winners(winners), winning_bids(winning_bids), timestamps(timestamps) {} 
+    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::unordered_map<int,double> timestamps, std::unordered_map<int,Pose2D> locations)
+        : id(id), winners(winners), winning_bids(winning_bids), timestamps(timestamps), locations(locations) {} 
 
 };
 

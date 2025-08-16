@@ -12,7 +12,7 @@ struct AgentInfo {
     int id;
     std::string type;
     Pose2D initial_pose;
-    Pose2D goal_pose;
+    //Pose2D goal_pose; // Not used
     cv::Scalar color;
 };
 

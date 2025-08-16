@@ -22,7 +22,6 @@ private:
     std::string type;
     int task_id;
     Pose2D pose;
-    Pose2D goal;
     Planner* planner;
     ShortestPath* shortest_path;
     CoveragePath* coverage_path;
@@ -37,23 +36,22 @@ private:
     int max_depth;
 
     // We initialize bundle if needed at the beginning of CBBA's BuildBundle() (where init path and scores?)
-    /*so bundle will have assigned task IDs in order of time added, 
-    scores will have the score for each assigned task in that same order, 
-    and the path will have the same IDs but in the order they should be attempted*/
-    std::vector<int> bundle; // Assigned tasks for this agent
-    std::vector<int> path;  // Task execution order for this agent's assigned tasks
-    //std::vector<double> scores; // Scores for this agent's assigned tasks
+    std::vector<int> bundle; // Assigned tasks (by ID) for this agent, in order of time added
+    std::vector<int> path;  // Task execution order for this agent's assigned tasks (by ID)
+    std::map<int, double> bids; // Values are bids // changed to map from unordered map for tie priority to lower int task IDs
     //The following three maps are indexed (unordered map keys) by task IDs
-    std::map<int, double> bids; // Values are bids // changed to map from unordered for tie priority to lower int task IDs
-    std::unordered_map<int, int> winners; // Values are agent IDs
-    std::unordered_map<int, double> winning_bids; // Values are bids obviously
-    std::unordered_map<int, double> timestamps; // Time of last info update from each of other agents
+    std::unordered_map<int, int> winners; // Values are agent IDs (vector for CBBA)
+    std::unordered_map<int, double> winning_bids; // Values are bids obviously (vector for CBBA)
+    std::vector<std::vector<double>> winning_bids_matrix; // Values are bids, rows denote task j by idx r = j-1, columns denote agent k by idx c = k-1 (matrix for CBGA, combines winners/winning bids info)
+    std::unordered_map<int, double> timestamps; // Time of last info update from each of other agents (does not include own id, because doesn't need to message self)
+    std::unordered_map<int,Pose2D> locations; // Last known location of all robots including self (before comms only knows own location)
 
     // The follow are the previous bundle, path, winners and winning_bids, tracked to check for convergence between iterations
     std::vector<int> prev_bundle;
     std::vector<int> prev_path;
-    std::unordered_map<int, int> prev_winners;
-    std::unordered_map<int, double> prev_winning_bids;
+    std::unordered_map<int, int> prev_winners; // CBBA
+    std::unordered_map<int, double> prev_winning_bids; // CBBA
+    std::vector<std::vector<double>> prev_winning_bids_matrix; // CBGA
     int num_converged_iterations;
 
     int cbba_rounds;
@@ -69,7 +67,7 @@ private:
 
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
+    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
     int getID() const { return id; }
     std::string getType() const { return type; }
@@ -77,7 +75,7 @@ public:
     int getX() const { return pose.x; }
     int getY() const { return pose.y; }
     Pose2D getPose() const { return pose; }
-    Pose2D getGoalPose() const { return goal; }
+    //Pose2D getGoalPose() const { return goal; }
     cv::Scalar getColor() const {return color; }
     std::vector<int>& getDoableTaskIDs() { return doable_task_ids; }
     std::vector<int>& getBundle() { return bundle; }
@@ -88,13 +86,17 @@ public:
     //std::unordered_map<int,double> initBids();  
     std::map<int,double> initBids();  
     std::unordered_map<int,int> initWinners();
-    std::unordered_map<int,double> initWinningBids();
+    std::unordered_map<int,double> initWinningBids(); // CBBA
+    std::vector<std::vector<double>> initWinningBidsMatrix(); // CBGA
     std::unordered_map<int,double> initTimestamps();
+    std::unordered_map<int,Pose2D> initLocations(); // CBGA
+    std::pair<int, Pose2D> getMostUpToDateNeighborInfo(int id_k);
     //std::unordered_map<int, double>& getBids() { return bids; }
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
     std::unordered_map<int, double>& getTimestamps() { return timestamps; }
+    std::unordered_map<int, Pose2D>& getLocations() { return locations; }
     std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
     std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
     //std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
@@ -111,6 +113,7 @@ public:
     double getCurrentTime();
     //void receivePings();
     void updateTimestamps();
+    void updateLocations(); // CBGA
     bool needRegroup();
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);

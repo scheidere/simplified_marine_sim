@@ -12,7 +12,7 @@
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
-Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParser* psr, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
+Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
 : planner(p), shortest_path(sp), coverage_path(cp), world(w), parser(psr), id(robot_id), type(robot_type) {
     
     // Get filename for logging and then open it
@@ -22,7 +22,7 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     robot_log.open(filename, std::ios::app); // Allow appending
 
     pose = {0, 0, 0};
-    goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
+    //goal = goal_pose; // Like return to home or drop off item loc, specific to each robot
     color = dot_color;
     id = robot_id;
     type = robot_type;
@@ -52,19 +52,24 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     log_info("Bids (task id: double): ");
     //utils::logUnorderedMap(bids, *this);
     utils::logMap(bids, *this);
-    winners = initWinners();
+    winners = initWinners(); // CBBA
     log_info("Winners (task id: int): ");
     utils::logUnorderedMap(winners, *this);
-    winning_bids = initWinningBids();
+    winning_bids = initWinningBids(); // CBBA
     log_info("Winning bids (task id: double): ");
     utils::logUnorderedMap(winning_bids, *this);
+    winning_bids_matrix = initWinningBidsMatrix(); // CBGA
+    log_info("Winning bids matrix: ");
+    utils::log2DVector(winning_bids_matrix, *this);
     timestamps = initTimestamps();
+    locations = initLocations();
 
     // Inits for tracking of previous info for convergence checks between iterations
     prev_bundle.resize(max_depth, -1);
     prev_path.resize(max_depth, -1);
-    prev_winners = initWinners();
-    prev_winning_bids = initWinningBids();
+    prev_winners = initWinners(); // CBBA
+    prev_winning_bids = initWinningBids(); // CBBA
+    prev_winning_bids_matrix = initWinningBidsMatrix(); // CBGA
     num_converged_iterations = 0;
 
     // Can robot do task i at j idx in bundle
@@ -153,11 +158,33 @@ std::unordered_map<int,double> Robot::initWinningBids() {
 
 }
 
+std::vector<std::vector<double>> Robot::initWinningBidsMatrix() {
+
+    // Given the number of tasks J and the number of agents N
+    // Not every robot can do every task j in J, relevant elements will reflect this by staying 0.0 forever
+    // Create winning bids matrix of size row x column = J x N where J is the number of local tasks
+
+    std::string blor = "Num local tasks: " + std::to_string(world->getNumLocalTasks());
+    log_info(blor);
+    std::string blor2 = "Num agents: " + std::to_string(world->getNumAgents());
+    log_info(blor2);
+
+    int J = world->getNumLocalTasks();
+    int N = world->getNumAgents();
+
+    std::vector<std::vector<double>> winning_bids_matrix(world->getNumLocalTasks(), std::vector<double>(world->getNumAgents(), 0.0));
+    //std::vector<std::vector<double>> winning_bids_matrix(J, std::vector<double>(N, 0.0));
+
+    return winning_bids_matrix;
+}
+
+
+
 std::unordered_map<int,double> Robot::initTimestamps() {
 
     std::unordered_map<int,double> timestamps;
 
-    // Get agentinfo from world
+    // Get agentinfo from world, just to loop through IDs
     std::unordered_map<int,AgentInfo> all_agents_info = world->getAllAgentsInfo();
 
     for (const auto& [id_k, agent] : all_agents_info) {
@@ -170,6 +197,32 @@ std::unordered_map<int,double> Robot::initTimestamps() {
     return timestamps; 
 
 }
+
+std::unordered_map<int,Pose2D> Robot::initLocations() {
+
+    std::unordered_map<int,Pose2D> locations;
+
+    // Get agentinfo from world
+    std::unordered_map<int,AgentInfo> all_agents_info = world->getAllAgentsInfo();
+
+    // Using world agentinfo just to loop through all other robot IDs
+    for (const auto& [id_k, agent] : all_agents_info) {
+        
+        Pose2D unknown = {-1,-1,0};  // Unknown location, orientation theta irrelevant so 0
+        locations[id_k] = unknown; // Robot does not know where other robots are until comms
+
+        if (id_k == id) { 
+            // Robot knows where it starts
+            locations[id_k] = pose;
+        }
+    }
+
+    log_info("after initLocations");
+    utils::logUnorderedMap(locations, *this);
+
+    return locations;
+}
+
 
 void Robot::init (Pose2D initial_pose) {
     std::cout << "Initializing robot pose..." << std::endl;
@@ -265,6 +318,8 @@ void Robot::receiveMessages() {
             log_info(log_msg);
         }
     }
+
+    std::cout << "end receiveMessages" << std::endl;
 }
 
 double Robot::getCurrentTime() {
@@ -278,7 +333,7 @@ bool Robot::checkIfNewInfoAvailable() {
     log_info("In checkIfNewInfoAvailable...");
 
     // Before checking for new info, get rid of any pings that are older than the comms timeout threshold (robot either offline or out of comms)
-    clearStalePings(); // Not fully tested yet
+    clearStalePings();
 
     bool info_available = false;
 
@@ -402,7 +457,6 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<
 
 void Robot::updateTimestamps() {
 
-    // Not yet tested
     // Timestamps map for current robot i maintains time of last message from each other robot by ID k
     // Sometimes a message won't have been received from another robot k, and this is handled by the indirect timestamp case below
     // The indirect timestamp case checks if a neighbor of robot i has received a message from robot k and if so, updates with that time
@@ -443,6 +497,94 @@ void Robot::updateTimestamps() {
 
     log_info("Timestamps AFTER change in robot::updateTimestamps:");
     utils::logUnorderedMap(timestamps,*this);
+}
+
+void Robot::updateLocations() {
+
+    log_info("locations update start");
+    std::string blopr = "number of msgs in queue: " + std::to_string(message_queue.size());
+    log_info(blopr);
+
+    for (auto& [id_k, location] : locations) { // int, Pose2D
+
+        std::string b = "k: " + std::to_string(id_k);
+        log_info(b);
+
+        if (id_k == id) { // Defer to self for own location
+            locations[id] = pose; // Check that pose is actually updating correctly
+            std::string blorg = "Defer to own location: " + std::to_string(pose.x) + "," 
+                + std::to_string(pose.y) + "," + std::to_string(pose.theta);
+            log_info(blorg);
+        } else { 
+            std::string bla = "k is not i, k is: " + std::to_string(id_k);
+            log_info(bla);
+            // Find id and locations vector from msg of robot that has most recent timestamp for robot k
+            std::pair<int, Pose2D> best_info = getMostUpToDateNeighborInfo(id_k);
+            int id_m = best_info.first;
+            Pose2D most_recent_k_location_from_m = best_info.second; // According to m
+            std::string blarg = "best id m: " + std::to_string(id_m);
+            log_info(blarg);
+            std::string blurg = "Defer to m belief of k location: " + std::to_string(most_recent_k_location_from_m.x) + "," 
+                + std::to_string(most_recent_k_location_from_m.y) + "," + std::to_string(most_recent_k_location_from_m.theta);
+            log_info(blurg);
+
+            // Defer to m (if m = id of self, defering to self means no changes)
+            if (id_m != id) {
+                log_info("in update for m (m != i) with best info on k loc");
+                locations[id_k] = most_recent_k_location_from_m;
+            }
+
+        }
+    }
+
+    log_info("After locations update");
+    utils::logUnorderedMap(locations, *this);
+
+}
+
+std::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo(int id_k) {
+
+    // Find which neighbor has communicated with k most recently, and thus has most recent k location
+
+    std::pair<int, Pose2D> best_info;
+
+    // Init winner, aka robot with most up-to-date info on robot k, assume it is self
+    int defer_to_id = id;
+    double max_k_timestamp = timestamps[id_k];
+    Pose2D most_recent_k_location = locations[id_k];
+    std::string blorg = "k loc according to i: " + std::to_string(most_recent_k_location.x) + "," 
+                + std::to_string(most_recent_k_location.y) + "," + std::to_string(most_recent_k_location.theta);
+    log_info(blorg);
+
+    for (Msg& msg : message_queue) {
+        int id_m = msg.id; // Will never be self id because self doesn't send msg to self
+
+        if (id_m == id_k) {
+            best_info.first = id_m;
+            best_info.second = msg.locations[id_k]; // k location according to itself
+            log_info("msg.locations where m=k: ");
+            utils::logUnorderedMap(msg.locations, *this);
+            std::string blorg2 = "k loc according to k: " + std::to_string(best_info.second.x) + "," 
+                + std::to_string(best_info.second.y) + "," + std::to_string(best_info.second.theta);
+            log_info(blorg2);
+            return best_info; // Always defer to k about its own location
+
+        } else if (msg.timestamps[id_k] > max_k_timestamp) { // Found robot m (where m != k) with more recent info on k than current winner
+            // Update winner
+            defer_to_id = id_m;
+            max_k_timestamp = msg.timestamps[id_k];
+            most_recent_k_location = msg.locations[id_k];
+            std::string blorg3 = "k loc according to best m: " + std::to_string(most_recent_k_location.x) + "," 
+                + std::to_string(most_recent_k_location.y) + "," + std::to_string(most_recent_k_location.theta);
+            log_info(blorg3);
+
+        }
+    }
+
+    best_info.first = defer_to_id;
+    best_info.second = most_recent_k_location;
+
+    return best_info;
 }
 
 /*void Robot::printMessageQueue(std::vector<Msg>& message_queue) {

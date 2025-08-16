@@ -70,6 +70,17 @@ void logUnorderedMap(const std::unordered_map<K, V>& my_map, Robot& robot) {
     robot.log_info(log_msg.str()); // robot function
 }
 
+// Log unordered_map with Pose2D values  
+template <>
+inline void logUnorderedMap<int, Pose2D>(const std::unordered_map<int, Pose2D>& my_map, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& pair : my_map) {
+        log_msg << pair.first << " : (" << pair.second.x << "," 
+                << pair.second.y << "," << pair.second.theta << ")\n";
+    }
+    robot.log_info(log_msg.str());
+}
+
 // Log a 1D vector
 template <typename T>
 void log1DVector(const std::vector<T>& vec, Robot& robot) {
@@ -86,6 +97,29 @@ inline void log1DVector<std::pair<int,double>>(const std::vector<std::pair<int,d
     std::ostringstream log_msg;
     for (const auto& elem : vec) {
         log_msg << "(" << elem.first << "," << elem.second << ") ";
+    }
+    robot.log_info(log_msg.str());
+}
+
+// Log 1D vector of std::pair<int,Pose2D> elements
+template <>
+inline void log1DVector<std::pair<int,Pose2D>>(const std::vector<std::pair<int,Pose2D>>& vec, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& elem : vec) {
+        log_msg << "(" << elem.first << ",(" << elem.second.x << "," << elem.second.y << "," << elem.second.theta << ")) ";
+    }
+    robot.log_info(log_msg.str());
+}
+
+// Log a 2D vector with rows on separate lines
+template <typename T>
+void log2DVector(const std::vector<std::vector<T>>& vec, Robot& robot) {
+    std::ostringstream log_msg;
+    for (size_t i = 0; i < vec.size(); ++i) {
+        for (const auto& elem : vec[i]) {
+            log_msg << elem << " ";
+        }
+        log_msg << "\n";
     }
     robot.log_info(log_msg.str());
 }

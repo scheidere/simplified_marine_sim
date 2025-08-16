@@ -106,7 +106,7 @@
 )";*/
 
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="6">
@@ -141,6 +141,33 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
+)";*/
+
+// For CBGA testing
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="2">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            <Communicate/>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Testing updateLocations()
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="2">
+            <FollowShortestPath/>
+            <RepeatSequence name="unlimited_repeat">
+                <Communicate/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
 )";
 
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
@@ -157,7 +184,7 @@ double getCurrentTime() {
 
 
 //void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, Planner& planner, ShortestPath& shortest_path, CoveragePath& coverage_path, World& world, JSONParser& parser) {
-void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D goal_pose, cv::Scalar color, int step_size, World& world) {
+void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Scalar color, int step_size, World& world) {
     std::cout << "Entering run_robot for robot " << robot_id << std::endl;
 
     try {
@@ -177,7 +204,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, Pose2D
             ShortestPath shortest_path(step_size);
             CoveragePath coverage_path(step_size, obs_radius);
 
-            Robot robot(&planner, &shortest_path, &coverage_path, &world, &parser, initial_pose, goal_pose, robot_id, robot_type, color);
+            Robot robot(&planner, &shortest_path, &coverage_path, &world, &parser, initial_pose, robot_id, robot_type, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
 
             {
@@ -342,7 +369,7 @@ int main(int argc, char** argv) {
             for (const auto& pair : agents_info) {
                 const auto& agent = pair.second;
                 robot_threads.emplace_back(
-                    run_robot, agent.id, agent.type, agent.initial_pose, agent.goal_pose, agent.color,
+                    run_robot, agent.id, agent.type, agent.initial_pose, agent.color,
                     step_size, std::ref(world)
                 );
             }
