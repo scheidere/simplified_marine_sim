@@ -55,6 +55,7 @@ private:
     int num_converged_iterations;
 
     int cbba_rounds;
+    int cbga_rounds;
     std::vector<std::pair<int,double>> last_pings; // Pings when last check for new info occurred
     double time_of_last_self_update; // Timestamp at which robot updated its own bundle/path/winners/winning bids (to be passed with id in pings)
 
@@ -95,6 +96,7 @@ public:
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
+    std::vector<std::vector<double>>& getWinningBidsMatrix() { return winning_bids_matrix; }
     std::unordered_map<int, double>& getTimestamps() { return timestamps; }
     std::unordered_map<int, Pose2D>& getLocations() { return locations; }
     std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
@@ -127,8 +129,10 @@ public:
     int getConvergenceCount() { return num_converged_iterations; }
     void updateBeliefs();
     int& getNumCBBARounds() {return cbba_rounds; }
+    int& getNumCBGARounds() {return cbga_rounds; }
     void resetConvergenceCount();
     void resetNumCBBARounds();
+    void resetNumCBGARounds();
     void updateLastSelfUpdateTime(double timestamp);
     bool foundBeliefUpdate();
     void clearStalePings(); // Get rid of pings in ping tracker that are older than timeout threshold - sender robots are offline or out of range

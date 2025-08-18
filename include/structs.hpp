@@ -20,6 +20,7 @@ struct TaskInfo {
     int id;
     std::string name;
     std::string type;
+    std::unordered_map<std::string, int> group_size;
     std::pair<int,int> location;
     std::unordered_map<std::string,int> area;
     double reward;

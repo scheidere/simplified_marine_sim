@@ -174,6 +174,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         int id = task["id"].get<int>();
         std::string name = task["name"];
         std::string type = task["type"];
+        std::unordered_map<std::string, int> group_size = task["group_size"].get<std::unordered_map<std::string, int>>();
         double reward = task["reward"];
 
         std::unordered_map<std::string, int> area; // This will remain empty if no area defined in input json
@@ -191,12 +192,14 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         }
 
         TaskInfo task_struct = {
-            id,
-            name,
-            type,
-            location,
-            area,
-            reward
+            id, // int
+            name, // string
+            type, // string
+            group_size, // <std::unordered_map<std::string, int>>
+            //prerequisute_task_failures, // will figure out later
+            location, // std::pair<int,int>
+            area, // <std::unordered_map<std::string, int>>
+            reward // double
         };
 
         all_tasks_info[id] = task_struct;

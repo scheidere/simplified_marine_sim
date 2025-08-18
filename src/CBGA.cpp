@@ -349,12 +349,94 @@ std::unordered_map<int,int> CBGA::initLocalWinIndicatorH() {
 
 }*/
 
+std::vector<int> CBGA::getAssignedAgents(int task_id) {
+
+    // Gets any robots assigned to task current robot is considering assigning to itself (SO NOT INCLUDING CURRENT)
+    // not yet tested
+
+    std::vector<int> assigned_agent_ids;
+
+    // CONVERT TO INDEX: To accomodate winning bid matrix row 0 being for task 1, etc. (same reason we use a and not a+1 for indexing below)
+    int task_idx = task_id-1; 
+
+    // For each agent with nonzero winning bid for given task
+    for (int a = 0; a < world.getNumAgents()-1; a++) {
+        int agent_id = a+1; // CONVERT TO AGENT ID, assumed to be +1 since never agent 0, starts at agent 1
+
+        std::vector<std::vector<double>> winning_bids_matrix = robot.getWinningBidsMatrix();
+
+        if (winning_bids_matrix[task_idx][a] != 0) { // if task_id, agent_id has nonzero winning bid, then that agent is assigned to that task
+
+            assigned_agent_ids.push_back(agent_id);
+        }
+
+    }
+
+
+    return assigned_agent_ids;
+}
+
+std::pair<double, std::unordered_map<int,Pose2D>> CBGA::getFurthestPossibleDistanceInGroup(int task_id, std::unordered_map<int,Pose2D> prev_locations) {
+
+    // not yet tested
+
+    // Allows for determination of "time" it takes for group assigned to task to fully arrive, estimated by distance
+    // Requires id of task to consider and robot's tracking of locations (that are updated as getDistanceAlongPathToTask() runs)
+    // Returns distance the furthest group member must travel to get to task location
+    // This works for solo "groups" as well (group size = 1), it will automatically be the max
+
+    robot.log_info("in getFurthestPossibleDistanceInGroup()");
+
+    // Largest distance an agent assigned to given task must travel before group can start task
+    double max_dist = 0;
+
+    // Get location of task (or approx./start location if a task involves exploration of an area)
+    std::pair<int,int> task_location = world.getTaskLocation(task_id); // path[i] is a task id
+    int task_x = task_location.first;
+    int task_y = task_location.second;
+    std::string bla2 = "task loc: " + std::to_string(task_x) + ", " + std::to_string(task_y);
+    robot.log_info(bla2);
+
+    // Get assignment group for task (agents already assigned so not including current which is considering assigning itself)
+    std::vector<int> assigned_agent_ids = getAssignedAgents(task_id);
+    robot.log_info("assigned_agent_ids: ");
+    utils::log1DVector(assigned_agent_ids, robot);
+
+    std::vector<int> potential_new_group_ids = assigned_agent_ids;
+    potential_new_group_ids.push_back(robot.getID()); // Adding current robot's id, as if it were assigned (order doesn't matter)
+    robot.log_info("potential_new_group_ids: ");
+    utils::log1DVector(potential_new_group_ids, robot);
+
+    for (auto& assigned_agent_id : potential_new_group_ids) { // for agent in group for task
+
+        // Get location from locations vector (current robot's belief on where all robots are)
+        Pose2D agent_loc = prev_locations[assigned_agent_id];
+
+        // Get distance between agent location and task location
+        double dist = Distance::getEuclideanDistance(agent_loc.x,agent_loc.y,task_x,task_y);
+        robot.log_info(std::to_string(dist));
+
+        // Update agents tracked location (for calculation only, not in world)
+        prev_locations[assigned_agent_id] = {task_x,task_y,0}; // Agent is now counted as having arrived at this task
+
+        if (dist > max_dist) {
+            max_dist = dist;
+        }
+    }
+
+    robot.log_info("end getFurthestPossibleDistanceInGroup()");
+    std::pair<double, std::unordered_map<int,Pose2D>> max_dist_and_new_locs = {max_dist, prev_locations};
+
+    return max_dist_and_new_locs;
+}
+
 double CBGA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
 
-/*    // UPDATING FOR CBGA
+    // UPDATING FOR CBGA
     // For each cooperative task considered, use distance of furthest agent assigned to it
+    // not yet tested
 
-    // Get distance along path to location of given task_id
+    // Get *maximum* distance along path to location of given task_id
 
     robot.log_info("in cumulative distance function");
 
@@ -363,62 +445,39 @@ double CBGA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
     }
 
     double distance = 0;
-
-    // Init previous known locations of each agent in group (for current robot will obviously be current location)
-
-
-    // Get robot location to init "prev" location
-    Pose2D current_pose = robot.getPose();
-    int prev_x = current_pose.x;
-    int prev_y = current_pose.y;
-    std::string bla = "init prev loc: " + std::to_string(prev_x) + ", " + std::to_string(prev_y);
-    robot.log_info(bla);
+    std::unordered_map<int,Pose2D> prev_locations = robot.getLocations();
 
     // For each task in bundle/path (by definition the same tasks), in order of appearance in path
     for (int i = 0; i < getBundleOrPathSize(path); i++) {
 
-        int task_id = path[i];
+        int task_id_itr = path[i];
 
-        // Get assignment group for task j, task_id
-        std::vector<int> assigned_agent_ids = getAssignedAgents(task_id);
+       std::pair<double, std::unordered_map<int,Pose2D>> max_dist_and_new_locs = getFurthestPossibleDistanceInGroup(task_id_itr, prev_locations);
 
-        // Get location of task (or approx./start location if a task involves exploration of an area)
-        std::pair<int,int> location = world.getTaskLocation(task_id); // path[i] is a task id
-        int current_x = location.first;
-        int current_y = location.second;
-        std::string bla2 = "task loc: " + std::to_string(current_x) + ", " + std::to_string(current_y);
-        robot.log_info(bla2);
+       double max_distance = max_dist_and_new_locs.first;
+       std::string s = "max_dist: " + std::to_string(max_distance);
+       robot.log_info(s);
+       std::unordered_map<int,Pose2D> new_locations = max_dist_and_new_locs.second;
+       robot.log_info("new_locations: ");
+       utils::logUnorderedMap(new_locations, robot);
 
+        distance += max_distance;
 
-        // If task is co-op (multi-agent, group size > 1)
-
-
-        // If task is solo (single-agent, group size = 1)
-
-        // or we could just walk through each nonzero winning bid and for each agent id for this task j
-
-
-
-        double new_dist = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
-        robot.log_info(std::to_string(new_dist));
-
-        distance += new_dist;
-
-        if (path[i] == task_id) {
-            return distance;
+        if (task_id_itr == task_id) {
+            std::string s2 = "distance at end: " + std::to_string(distance);
+            robot.log_info(s2);
+            robot.log_info("end cumulative distance function");
+            return distance; // return distance once you have calculated distance to the given task via the path
         } else {
-            prev_x = current_x;
-            prev_y = current_y;
+            prev_locations = new_locations;
         }
     }
-
-    robot.log_info("end cumulative distance function");
 
     // Should never reach here due to check above
     throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
 
-}*/
-    // OLD VERSION BELOW TO PREVENT ERRORS WHILE ADDING pose update to messaging and neighbor distance tracker to robot
+}
+/*    // OLD VERSION BELOW TO PREVENT ERRORS WHILE ADDING pose update to messaging and neighbor distance tracker to robot
     // Get distance along path to location of given task_id
 
     robot.log_info("in cumulative distance function");
@@ -463,7 +522,7 @@ double CBGA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
     // Should never reach here due to check above
     throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
 
-}
+}*/
 
 double CBGA::getPathScore(std::vector<int> path, bool do_test) {
 

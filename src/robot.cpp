@@ -695,6 +695,12 @@ void Robot::resetNumCBBARounds() {
 
 }
 
+void Robot::resetNumCBGARounds() {
+
+    cbga_rounds = 0;
+
+}
+
 void Robot::updateLastSelfUpdateTime(double new_update_timestamp) {
 
     // Track time that this robot last updated its bundle and/or path

@@ -383,14 +383,15 @@ double CBBA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
         distance += new_dist;
 
         if (path[i] == task_id) {
+            std::string s2 = "distance at end: " + std::to_string(distance);
+            robot.log_info(s2);
+            robot.log_info("end cumulative distance function");
             return distance;
         } else {
             prev_x = current_x;
             prev_y = current_y;
         }
     }
-
-    robot.log_info("end cumulative distance function");
 
     // Should never reach here due to check above
     throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");

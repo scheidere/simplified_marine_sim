@@ -5,6 +5,7 @@
 #include "world.hpp"
 #include "robot.hpp"
 #include "CBBA.hpp"
+#include "CBGA.hpp"
 #include "planners.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 #include "behaviortree_cpp/blackboard.h"
@@ -15,214 +16,6 @@
 
 using namespace BT;
 
-// Note sync action nodes can't return running so need to update all of the following to be stateful action nodes instead 
-// (threaded actions are not compatible with our threading)
-
-// Will likely need to update to StatefulActionNode (making a whole new one)
-/*PlanShortestPath::PlanShortestPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
-    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp) {}
-
-NodeStatus PlanShortestPath::tick()
-{
-    try {
-        Pose2D current_pose = _robot.getPose();
-        Pose2D goal_pose;
-
-        if (!getInput<Pose2D>("goal", goal_pose)) {
-            goal_pose = _robot.getGoalPose();
-            std::cout << goal_pose.x << " " << goal_pose.y << std::endl;
-        }
-
-        std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, goal_pose, _world.getX(), _world.getY());
-
-        setOutput("path", plan);
-
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in PlanShortestPath::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList PlanShortestPath::providedPorts()
-{
-    std::cout << "Shortest path is outputted..." << std::endl;
-    return { 
-        InputPort<Pose2D>("goal"),
-        OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path")
-    };
-}*/
-
-// Will likely need to update to StatefulActionNode (see cbba nodes defined elsewhere in this file for how) WILL DO BELOW
-/*PlanCoveragePath::PlanCoveragePath(const std::string& name, const NodeConfig& config, World& w, Robot& r, CoveragePath& cp)
-    : SyncActionNode(name, config), _world(w), _robot(r), _coverage_path(cp) {}
-
-NodeStatus PlanCoveragePath::tick()
-{
-    try {
-        Pose2D current_pose = _robot.getPose();
-        Pose2D goal_pose = {0,0,0};
-        Pose2D corner1 = {0,0,0}; 
-        Pose2D corner2 = {15,15,0}; 
-        Pose2D corner3 = {0,0,0}; 
-        Pose2D corner4 = {0,0,0};
-
-        std::shared_ptr<ProtectedQueue<Pose2D>> plan = _coverage_path.plan(current_pose, corner1, corner2, corner3, corner4, _world.getX(), _world.getY());
-        setOutput("path", plan);
-
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in PlanCoveragePath::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList PlanCoveragePath::providedPorts()
-{
-    std::cout << "Coverage path is outputted..." << std::endl;
-    return { 
-        OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path")
-    };
-}*/
-
-// Will likely need to update to StatefulActionNode
-/*PlanRegroupPath::PlanRegroupPath(const std::string& name, const NodeConfig& config, World& w, Robot& r, ShortestPath& sp)
-    : SyncActionNode(name, config), _world(w), _robot(r), _shortest_path(sp) {}
-
-NodeStatus PlanRegroupPath::tick()
-{
-    try {
-        Pose2D current_pose = _robot.getPose();
-        Pose2D goal_pose = {110,110,0}; // {200,200,0} make this a part of world class if to be used longterm
-
-        std::shared_ptr<ProtectedQueue<Pose2D>> plan = _shortest_path.plan(current_pose, goal_pose, _world.getX(), _world.getY());
-        setOutput("path", plan);
-
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in PlanRegroupPath::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList PlanRegroupPath::providedPorts()
-{
-    std::cout << "Shortest path to regroup location is outputted..." << std::endl;
-    return { 
-        OutputPort<std::shared_ptr<ProtectedQueue<Pose2D>>>("path")
-    };
-}*/
-
-// Will likely need to update to StatefulActionNode (if this is used alone - probably not)
-/*UseWaypoint::UseWaypoint(const std::string& name, const NodeConfig& config, World& w, Robot& r)
-    : ThreadedAction(name, config), _world(w), _robot(r) {}
-
-NodeStatus UseWaypoint::tick()
-{
-    try {
-        Pose2D wp;
-        if (getInput("waypoint", wp)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            std::cout << "Using waypoint: " << wp.x << "/" << wp.y << std::endl;
-            std::cout << "Robot prev loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
-            _robot.move(wp); // Publish new waypoint to image, i.e. move robot
-            std::cout << "Robot new loc: " << _robot.getX() << "/" << _robot.getY() << std::endl;
-            return NodeStatus::SUCCESS;
-        } else {
-            std::cout << "no input in use_wp" << std::endl;
-            return NodeStatus::FAILURE;
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in UseWaypoint::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList UseWaypoint::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}*/
-
-/*SendMessage::SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender)
-    : SyncActionNode(name, config), _world(world), _sender(sender) {}
-
-NodeStatus SendMessage::tick()
-{
-    try {
-        std::cout << "SendMessage: Broadcasting message" << std::endl;
-        std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting message...";
-        _sender.log_info(log_msg);
-        Message msg(_sender);
-        msg.broadcastMessage(_world);
-        std::cout << "SendMessage: Completed" << std::endl;
-        // The following test works
-        //std::cout << "Testing sent message by printing world message tracker" << std::endl;
-        //_world.printMessageTracker();
-        //std::cout << "SendMessage Test Completed" << std::endl;
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in SendMessage::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList SendMessage::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}
-
-ReceiveMessage::ReceiveMessage(const std::string& name, const NodeConfig& config, World& world, Robot& receiver)
-    : SyncActionNode(name, config), _world(world), _receiver(receiver) {}
-
-NodeStatus ReceiveMessage::tick()
-{
-    try {
-        //std::cout << "ReceiveMessage: Receiving message" << std::endl;
-        _receiver.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        //std::cout << "ReceiveMessage: Completed" << std::endl;
-        std::string log_msg = "Robot " + std::to_string(_receiver.getID()) + " receiving message(s)...";
-        _receiver.log_info(log_msg);
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in ReceiveMessage::tick: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList ReceiveMessage::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}*/
-
-/*SendMessage::SendMessage(const std::string& name, const NodeConfig& config, World& world, Robot& sender)
-    : ThreadedAction(name, config), _world(world), _sender(sender) {}
-
-NodeStatus SendMessage::tick()
-{
-    try {
-        std::cout << "SendMessage: Broadcasting message" << std::endl;
-        std::string log_msg = "Robot " + std::to_string(_sender.getID()) + " broadcasting message...";
-        _sender.log_info(log_msg);
-        Message msg(_sender);
-        msg.broadcastMessage(_world);
-        std::cout << "SendMessage: Completed" << std::endl;
-        // The following test works
-        //std::cout << "Testing sent message by printing world message tracker" << std::endl;
-        //_world.printMessageTracker();
-        //std::cout << "SendMessage Test Completed" << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
-        return NodeStatus::SUCCESS;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception caught in SendMessage::tick: " << e.what() << std::endl;
-        _sender.log_info("SendMessage node FAILURE");
-        return NodeStatus::FAILURE;
-    }
-}
-
-PortsList SendMessage::providedPorts()
-{
-    return { InputPort<Pose2D>("waypoint") };
-}*/
 
 Ping::Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
     : StatefulActionNode(name, config), _world(world), _robot(robot) {}
@@ -274,10 +67,16 @@ NodeStatus NewInfoAvailable::tick()
 
         //std::cout << "[Robot " << _robot.getID() << "] info_available is " << (info_available ? "TRUE" : "FALSE") << std::endl;
 
+        auto do_cbga = getInput<bool>("do_cbga").value_or(false);
+
         if (info_available) {
             std::string bla = "info_available is TRUE";
             //std::cout << bla << std::endl;
-            _robot.resetNumCBBARounds(); // Clear rounds counted from last time CBBA ran
+            if (do_cbga) {
+                 _robot.resetNumCBGARounds(); // Clear rounds counted from last time CBGA ran
+            } else {
+                _robot.resetNumCBBARounds(); // Clear rounds counted from last time CBBA ran
+            }
             _robot.log_info(bla);
             return NodeStatus::SUCCESS;
         } else {
@@ -295,7 +94,7 @@ NodeStatus NewInfoAvailable::tick()
 
 PortsList NewInfoAvailable::providedPorts()
 {
-    return {};
+    return {InputPort<bool>("do_cbga")};
 }
 
 Communicate::Communicate(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
@@ -421,8 +220,17 @@ NodeStatus BuildBundle::onRunning()
         _robot.log_info(bla);*/
 
         std::cout << "Building bundle for robot " << _robot.getID() << "..." << std::endl;
-        CBBA cbba(_robot, _world, _parser);
-        cbba.buildBundle();
+
+        auto do_cbga = getInput<bool>("do_cbga").value_or(false);
+
+        if (do_cbga) {
+            CBGA cbga(_robot, _world, _parser);
+            cbga.buildBundle();
+        } else {
+            CBBA cbba(_robot, _world, _parser);
+            cbba.buildBundle();
+        }
+
         //return NodeStatus::RUNNING; // was there a purpose for this other than testing?
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
@@ -440,7 +248,7 @@ void BuildBundle::onHalted()
 
 PortsList BuildBundle::providedPorts()
 {
-    return { };
+    return {InputPort<bool>("do_cbga")};
 }
 
 ResolveConflicts::ResolveConflicts(const std::string& name, const NodeConfig& config, Robot& r, World& w, JSONParser& p)
@@ -464,10 +272,21 @@ NodeStatus ResolveConflicts::onRunning()
         _robot.log_info(bla);*/
 
         std::cout << "Resolving conflicts for robot " << _robot.getID() << "..." << std::endl;
-        CBBA cbba(_robot, _world, _parser);
-        cbba.resolveConflicts();
-        //cbba.resolveConflicts(true); // for testing
-        int& rounds = _robot.getNumCBBARounds();
+
+        auto do_cbga = getInput<bool>("do_cbga").value_or(false);
+
+        int rounds;
+        if (do_cbga) {
+            CBGA cbga(_robot, _world, _parser);
+            cbga.resolveConflicts();
+            //cbba.resolveConflicts(true); // for testing
+            int& rounds = _robot.getNumCBGARounds();
+        } else {
+            CBBA cbba(_robot, _world, _parser);
+            cbba.resolveConflicts();
+            //cbba.resolveConflicts(true); // for testing
+            int& rounds = _robot.getNumCBBARounds();
+        }
         rounds++;
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
@@ -484,7 +303,7 @@ void ResolveConflicts::onHalted()
 
 PortsList ResolveConflicts::providedPorts()
 {
-    return { };
+    return {InputPort<bool>("do_cbga")};
 }
 
 CheckConvergence::CheckConvergence(const std::string& name, const NodeConfig& config, World& world, Robot& robot, JSONParser& parser)
@@ -507,10 +326,17 @@ NodeStatus CheckConvergence::tick()
             std::cout << "cumulative_convergence_count_in has no value!" << std::endl;
         }
 
-        std::cout << "Checking whether the CBBA has resulted in local convergence and how this has been maintained by number of iterations..." << std::endl;
-
-        int& rounds = _robot.getNumCBBARounds();
-        std::string bloo = "CBBA Round " + std::to_string(rounds) + " complete";
+        auto do_cbga = getInput<bool>("do_cbga").value_or(false);
+        std::string bloo;
+        if (do_cbga) {
+            std::cout << "Checking whether the CBGA has resulted in local convergence and how this has been maintained by number of iterations..." << std::endl;
+            int& rounds = _robot.getNumCBGARounds();
+            bloo = "CBGA Round " + std::to_string(rounds) + " complete";
+        } else {
+            std::cout << "Checking whether the CBBA has resulted in local convergence and how this has been maintained by number of iterations..." << std::endl;
+            int& rounds = _robot.getNumCBBARounds();
+            bloo = "CBBA Round " + std::to_string(rounds) + " complete";
+        }
         _robot.log_info(bloo);
 
         _robot.countConvergedIterations(); // Compare robot beliefs to beliefs at previous iteration (stored in)
@@ -519,7 +345,8 @@ NodeStatus CheckConvergence::tick()
 
         _robot.updateBeliefs();
 
-        _robot.log_info("After convergence check at end of CBBA round, bundle and path are the following:");
+
+        _robot.log_info("After convergence check at end of CBBA/CBGA round, bundle and path are the following:");
         std::vector<int> bundle = _robot.getBundle();
         _robot.log_info("Bundle:");
         utils::log1DVector(bundle, _robot);
@@ -563,8 +390,14 @@ NodeStatus CheckConvergence::tick()
 
         // if cumulative convergence count is newly at threshold (which will also be checked inside repeat sequence node)
         // then set trigger flag to true (this will only be used in the local task execution subtree to protect against concurrent path changes + execution)
-        CBBA cbba(_robot, _world, _parser);
-        int convergence_threshold = cbba.getConvergenceThreshold();
+        int convergence_threshold;
+        if (do_cbga) {
+            CBGA cbga(_robot, _world, _parser);
+            convergence_threshold = cbga.getConvergenceThreshold();
+        } else {
+            CBBA cbba(_robot, _world, _parser);
+            convergence_threshold = cbba.getConvergenceThreshold();
+        }
         std::string blorb1 = "convergence_threshold: " + std::to_string(convergence_threshold);
         _robot.log_info(blorb1);
         std::string blorb2 = "cumulative_convergence_count: " + std::to_string(cumulative_convergence_count);
@@ -585,7 +418,8 @@ NodeStatus CheckConvergence::tick()
 PortsList CheckConvergence::providedPorts()
 {
     return { InputPort<int>("cumulative_convergence_count_in"),
-            OutputPort<int>("cumulative_convergence_count_out") }; //,
+            OutputPort<int>("cumulative_convergence_count_out"),
+            InputPort<bool>("do_cbga") }; //,
              //InputPort<bool>("threshold_met", "Check if threshold was reached")};
 }
 
@@ -651,13 +485,13 @@ NodeStatus FollowShortestPath::onStart()
         }
 
         // for testing updateLocations()
-        if (_robot.getID() == 1) {
+        /*if (_robot.getID() == 1) {
             goal_pose = {10,10,0}; // same as starting location for test 1
         } else if (_robot.getID() == 2) {
             goal_pose = {20,10,0}; // same as starting location for test 1
         } else if (_robot.getID() == 3) {
             goal_pose = {65,10,0}; // starting location will {large, 10,0} so will stop in comms with k but not yet with i 
-        }
+        }*/
 
         std::string bla = "Goal pose for shortest path is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);
         _robot.log_info(bla);

@@ -157,13 +157,53 @@
 )";*/
 
 // Testing updateLocations()
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="2">
             <FollowShortestPath/>
             <RepeatSequence name="unlimited_repeat">
                 <Communicate/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Testing switch to CBGA from CBBA while allowing switch back/between task allocation methods (CBBA vs CBGA, as greedy has a different BT)
+// Denoted by do_cbga = true or do_cbga = false for CBBA
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="6">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="false" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="false" />
+                    <Communicate/>
+                    <ResolveConflicts do_cbga="false" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="false" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
             </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
