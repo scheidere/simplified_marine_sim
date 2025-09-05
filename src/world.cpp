@@ -91,29 +91,6 @@ std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
     return all_agent_capabilities;
 }
 
-/*void initAllRobots(whattype run_robot) {
-
-    if (parser.j.contains("agents") && parser.j["agents"].is_array()) {
-        for (const auto& agent : j["agents"]) {
-            agent_indices.push_back(agent["id"]);
-            std::cout << agent["id"] << std::endl;
-            std::thread robot1(run_robot, initial_pose1, goal_pose1, color1, step_size, std::ref(planner), std::ref(shortest_path), std::ref(coverage_path), std::ref(scorer), std::ref(world), std::ref(parser));
-
-        }
-    }
-    else {
-        std::cerr << "Error: agent info not found or invalid in JSON." << std::endl;
-    }
-
-}*/
-
-// moved to structs.hpp
-/*struct AgentInfo {
-    int id;
-    Pose2D initial_pose;
-    cv::Scalar color;
-};*/
-
 //std::vector<AgentInfo> World::getAgents() {
 std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     std::unordered_map<int,AgentInfo> all_agents_info;
@@ -133,37 +110,6 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     }
     return all_agents_info;
 }
-
-/*std::unordered_map<int,TaskInfo> World::initAllTasksInfo() {
-    std::unordered_map<int,TaskInfo> all_tasks_info;
-
-    auto parsed_tasks = parser->j["local_tasks"]; // Assume parser extracts JSON info
-    for (const auto& task : parsed_tasks) {
-        int id = task["id"].get<int>();
-
-        std::unordered_map<std::string, int> area;
-        std::unordered_map<std::string, int> location;
-
-        if (task.contains("area")) {
-            area = task["area"].get<std::unordered_map<std::string, int>>();
-        }
-
-        if (task.contains("location")) {
-            location = task["location"].get<std::unordered_map<std::string, int>>();
-        }
-
-        TaskInfo task_struct = { // later will need to add checks to catch different types of task components that are or aren't present
-            id,
-            task["type"], // maybe can set up checks by type
-            task["location"].get<std::pair<int,int>>,
-            task["area"].get<std::unordered_map<std::string, int>>(),
-            task["reward"]   
-        };
-        all_tasks_info[id] = task_struct;
-
-    }
-    return all_tasks_info;
-}*/
 
 int World::getGroupSize(std::unordered_map<std::string, int> group_info) {
 
@@ -394,24 +340,6 @@ std::unordered_map<int,std::vector<std::pair<int,double>>>& World::getPingTracke
     return ping_tracker;
 }
 
-/*std::vector<Task>& World::getAllTasks() {
-    std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "Returning all tasks. Number of tasks: " << allTasks.size() << std::endl;
-    return allTasks;
-}
-
-int World::getTaskIndex(Task task_j) {
-    std::lock_guard<std::mutex> lock(world_mutex);
-
-    auto it = std::find_if(allTasks.begin(), allTasks.end(), [&](const Task& task) {
-        return task.id == task_j.id;
-    });
-
-    int j = std::distance(allTasks.begin(), it);
-
-    return j;
-}*/
-
 void World::clear(Pose2D pose) {
     std::lock_guard<std::mutex> lock(world_mutex);
     std::cout << "Clearing world..." << std::endl;
@@ -442,48 +370,6 @@ void World::trackRobot(Robot* robot) {
     //std::cout << "Tracking Robot ID: " << robot->getID() << std::endl;
     robot_tracker[robot->getID()] = robot;
 }
-
-/*void World::printTrackedRobots() {
-    std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "Tracked Robots:" << std::endl;
-    for (const auto& ID_robo_pair : robot_tracker) {
-        std::cout << " Raw Robot ID: " << ID_robo_pair.first << std::endl;
-        if (ID_robo_pair.second != nullptr) {
-            std::cout << " From Instance Robot ID: " << ID_robo_pair.second->getID() << std::endl;
-            std::cout << " Pose: " << ID_robo_pair.second->getPose().x << ", " << ID_robo_pair.second->getPose().y << std::endl;
-        } else {
-            std::cout << " Null Robot instance" << std::endl;
-        }
-    }
-}*/
-
-/*void World::printMessageTracker() {
-    std::lock_guard<std::mutex> lock(world_mutex);
-    std::cout << "World message tracker:" << std::endl;
-    for (auto& pair : message_tracker) {
-        int receiverID = pair.first;
-        std::vector<Msg>& messages = pair.second;
-
-        std::cout << "Receiver ID: " << receiverID << std::endl;
-        std::cout << "Number of messages for receiver: " << messages.size() << std::endl;
-        for (auto& msg : messages) {
-            //std::cout << "  From ID: " << msg.id << std::endl;
-            std::cout << "Printing message..." << std::endl;
-            printMessage(msg);
-        }
-    }
-    std::cout << "End of printMessageTracker" << std::endl;
-}*/
-
-/*void World::printMessage(Msg msg) { // no mutex because used within the function above
-    std::cout << "Message ID:" << msg.id << "\n";
-    //std::cout << "Task ID: " << msg.task_id << "\n";
-    //std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
-   /* std::cout << "Bundle: [";
-    for (const auto& task : msg.bundle.tasks) {
-        std::cout << task << " "; // Assuming tasks can be printed this way
-    }
-    std::cout << "]\n";}*/
 
 bool World::inComms(int id1, int id2) {
     std::lock_guard<std::mutex> lock(world_mutex);
@@ -549,7 +435,7 @@ std::vector<Pose2D> World::getQuadrantCenters() {
 
 std::vector<int> World::getNeighborsInComms(int robot_id) {
 
-    // Not yet tested
+    // Tested
 
     // Return vector of robot IDs, one for each robot in comms with given robot ID
 
@@ -571,7 +457,7 @@ std::vector<int> World::getNeighborsInComms(int robot_id) {
 
 double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 
-    // Not yet tested
+    // Tested
 
     // Given k, the id of a robot not within comms with current robot with id i
     // Return the maximum (latest) timestamp that a neighbor of (in comms with) i received a message from k
@@ -616,17 +502,3 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 bool World::hasTaskInfo(int task_id) {
     return all_tasks_info.find(task_id) != all_tasks_info.end();
 }
-
-/*double World::calculateConvergenceCount(Robot* robot){
-
-    int cumulative_convergence_count = robot->getNumConvergedIterations(); // 0 if no match this iteration
-
-    if not first iteration
-        // Update belief tracking
-        prev_bundle = bundle;
-        prev_path = path;
-        prev_winners = winners;
-        prev_winning_bids = winning_bids;
-
-    return cumulative_convergence_count;
-}*/

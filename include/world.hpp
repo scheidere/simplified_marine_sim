@@ -75,19 +75,11 @@ public:
 
     std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
 
-    //std::unordered_map<int, std::vector<int>>& getPingIDTracker();
-
     std::unordered_map<int, std::vector<std::pair<int,double>>>& getPingTracker();
 
     int getNumAgents() {return num_agents; }
 
     int getNumLocalTasks() {return num_tasks; }
-
-    //void initAllTasks();
-
-    //std::vector<Task>& getAllTasks();
-
-    //int getTaskIndex(Task task); // std::pair<Task, int>
 
     void clear(Pose2D pose);
 
@@ -110,8 +102,6 @@ public:
     std::vector<Pose2D> getQuadrantCenters();
 
     void printMessage(Msg msg);
-
-    //std::vector<AgentInfo> getAgents(); //AgentInfo is a struct
 
     std::vector<std::string> getAgentTypes() { return agent_types; }
 
@@ -148,8 +138,6 @@ public:
 
     void initMessageTracker();
 
-    //void initPingIDTracker();
-
     void initPingTracker();
 
     std::vector<int> getNeighborsInComms(int robot_id_i);
@@ -157,8 +145,6 @@ public:
     double getMaxNeighborTimestamp(int robot_id_i, int out_of_range_robot_id_k);
 
     bool hasTaskInfo(int task_id);
-
-    //double calculateConvergenceCount();
 
 };
 

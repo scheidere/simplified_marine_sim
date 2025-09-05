@@ -90,12 +90,10 @@ void CBBA::buildBundle() {
 
         bundleRemove(bundle, path, winners, winning_bids); // Update bundle if new info reveals mistakes
 
-        //std::vector<double>& scores = robot.getScores();
-        //scores.resize(max_depth, 0.0);
-        // TODO: update this to match new reset in CBGA if it avoids seg fault for CBGA
+        // Clear bids
+        robot.resetBids();
         std::map<int, double>& bids = robot.getBids();
-        bids = robot.initBids();
-
+        
         robot.log_info("Bids before bundle add should be reset, here they are:");
         utils::logMap(bids, robot);
         //bundleAdd(bundle, path, scores, bids, winners, winning_bids); // Populate bundle if any empty slots
@@ -741,6 +739,12 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
             }
             // Get the task id for the task that has the max new winning bid, J
             int J = getBestTaskID(bids, local_win_indicator_h, bundle);
+
+            if (J == -1) {
+                robot.log_info("No valid task found to add to bundle. Exiting loop.");
+                break;
+            }
+
             std::string blob = "Best task ID is " + std::to_string(J);
             robot.log_info(blob);
             int n = best_position_n_tracker[J];
@@ -757,11 +761,6 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
             winning_bids[J] = bids[J]; // Add bid associated with J to winning bid list
             winners[J] = robot.getID(); // Add current agent ID since it just won
             bids.erase(J); // Remove task now in bundle from future consideration
-
-            if (J == -1) {
-                robot.log_info("No valid task found to add to bundle. Exiting loop.");
-                break;
-            }
 
         }
     

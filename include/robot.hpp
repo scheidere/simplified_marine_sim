@@ -76,15 +76,12 @@ public:
     int getX() const { return pose.x; }
     int getY() const { return pose.y; }
     Pose2D getPose() const { return pose; }
-    //Pose2D getGoalPose() const { return goal; }
     cv::Scalar getColor() const {return color; }
     std::vector<int>& getDoableTaskIDs() { return doable_task_ids; }
     std::vector<int>& getBundle() { return bundle; }
     std::vector<int>& getPreviousBundle() { return prev_bundle; }
     std::vector<int>& getPath() { return path; }
-    std::vector<int>& getPreviousPath() { return prev_path; }
-    //std::vector<double>& getScores() { return scores; }
-    //std::unordered_map<int,double> initBids();  
+    std::vector<int>& getPreviousPath() { return prev_path; } 
     std::map<int,double> initBids();  
     void resetBids();
     std::unordered_map<int,int> initWinners();
@@ -93,7 +90,6 @@ public:
     std::unordered_map<int,double> initTimestamps();
     std::unordered_map<int,Pose2D> initLocations(); // CBGA
     std::pair<int, Pose2D> getMostUpToDateNeighborInfo(int id_k);
-    //std::unordered_map<int, double>& getBids() { return bids; }
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
@@ -102,11 +98,8 @@ public:
     std::unordered_map<int, Pose2D>& getLocations() { return locations; }
     std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
     std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
-    //std::vector<std::vector<int>>& getFeasibleTasks() { return feasible_tasks; }
     void init(Pose2D initial_pose);
-    //void printTasksVector();
     void move(Pose2D waypoint);
-    //void printWorldPingIDTracker(std::unordered_map<int, std::vector<int>>& world_ping_id_tracker);
     void printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
     //void printMessageQueue(std::vector<Msg>&  message_queue);
@@ -114,15 +107,12 @@ public:
     void updateRobotMessageQueue(Msg msg);
     void receiveMessages();
     double getCurrentTime();
-    //void receivePings();
     void updateTimestamps();
     void updateLocations(); // CBGA
     bool needRegroup();
     double getBatteryLevel() const { return battery_level; }
     void updateBatteryLevel(double drain_percent);
     bool batteryLow();
-    //WinningBids& getWinningBids() { return winning_bids; }
-    //WinningAgentIndices& getWinningAgentIndices() { return winning_agent_indices; }
     std::string generateLogFilename();
     void log_info(std::string log_msg);
     bool checkIfNewInfoAvailable();

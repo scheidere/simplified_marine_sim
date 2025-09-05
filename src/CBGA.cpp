@@ -99,7 +99,8 @@ void CBGA::testBundleAdd(std::map<int, double>& bids) {
 
 void CBGA::buildBundle() {
 
-    // not yet tested
+    // Baseline initial testing done
+
     try {
 
         std::cout << "in CBGA::buildBundle..." << std::endl;
@@ -109,9 +110,6 @@ void CBGA::buildBundle() {
         robot.log_info("Setting at_consensus to FALSE at start of buildBundle");
         // This is only set to true in checkConvergence when convergence threshold met
 
-        // Let's test the individual functions used in bundleRemove()
-        //testGetTaskIndex(); // Passed
-        //testRemovePathGaps();
         //testBundleRemove();
 
         robot.log_info("Timestamps BEFORE change in CBGA::buildBundle:");
@@ -128,10 +126,7 @@ void CBGA::buildBundle() {
 
         bundleRemove(bundle, path, winning_bids_matrix); // Update bundle if new info reveals mistakes
 
-        // Initialize bids map to track current robot's bids for this round of CBGA
-        // This should accomodate for changes that will occur with faults or other newly available co-op tasks
-        // std::map<int, double>& bids = robot.getBids();
-        // bids = robot.initBids();
+        // Clear bids same as done in CBBA
         robot.resetBids(); // this and below line are new way to resetBids that should avoid seg fault (actually don't think it was related)
         std::map<int, double>& bids = robot.getBids();
         
@@ -139,26 +134,10 @@ void CBGA::buildBundle() {
         utils::logMap(bids, robot);
 
         // Testing bundleAdd group_size > 1 but task fully assigned case where "group_info": {"any_agent_type": 2} for task 5
-        testBundleAdd(bids);
+        //testBundleAdd(bids);
 
-        // BUNDLE ADD CAUSING SEG FAULT
-        //bundleAdd(bundle, path, bids, winning_bids_matrix); // Populate bundle if any empty slots
+        bundleAdd(bundle, path, bids, winning_bids_matrix); // Populate bundle if any empty slots
 
-
-
-        /*
-        std::string log_msg = "Building bundle for robot " + std::to_string(robot.getID()) + "...";
-        robot.log_info(log_msg);
-        std::string b = "Bundle: ";
-        robot.log_info(b);
-        utils::log1DVector(robot.getBundle(), robot);
-        std::string p = "Path: ";
-        robot.log_info(p);
-        utils::log1DVector(robot.getPath(), robot);
-
-        robot.log_info("Timestamps AFTER change in CBGA::buildBundle:");
-        utils::logUnorderedMap(robot.getTimestamps(),robot);
-*/
         /*
         Notes:
         1. Path order logic for ties: Since getTestPaths() inserts in a certain way (the new task ID first at left, then each between element, then the end/right),
@@ -382,47 +361,6 @@ std::unordered_map<int,int> CBGA::initLocalWinIndicatorH() {
     return local_win_indicator_h;
 }
 
-// Moved this function to robot class
-// std::vector<int> CBGA::getAssignedAgents(int task_id) {
-
-//     // Gets any robots assigned to task current robot is considering assigning to itself (SO NOT INCLUDING CURRENT)
-//     // Basic testing done
-
-//     robot.log_info("start getAssignedAgents()");
-
-//     std::vector<int> assigned_agent_ids;
-
-//     // CONVERT TO INDEX: To accomodate winning bid matrix row 0 being for task 1, etc. (same reason we use a and not a+1 for indexing below)
-//     int task_idx = task_id-1; 
-
-//     std::vector<std::vector<double>> winning_bids_matrix = robot.getWinningBidsMatrix();
-//     robot.log_info("winning_bids_matrix: ");
-//     utils::log2DVector(winning_bids_matrix, robot);
-
-//     // BELOW COMMENTED OUT BIT IS FOR TEST ONLY
-//     /*robot.log_info("ADDING agent assignment to co-op task, id 5 (idx 4), for TEST (see robot 1 logs only)");
-//     winning_bids_matrix[4][1] = 2.0; // assigning agent 2 (at idx 1)
-//     utils::log2DVector(winning_bids_matrix, robot);*/
-
-//     // For each agent with nonzero winning bid for given task
-//     for (int a = 0; a < world.getNumAgents(); a++) {
-//         int agent_id = a+1; // CONVERT TO AGENT ID, assumed to be +1 since never agent 0, starts at agent 1
-
-//         //robot.log_info(std::to_string(a));
-//         std::string blop = "winning bid element for (" + std::to_string(task_idx) + "," + std::to_string(a) + "): " + std::to_string(winning_bids_matrix[task_idx][a]);
-//         robot.log_info(blop);
-        
-//         if (winning_bids_matrix[task_idx][a] != 0) { // if task_id, agent_id has nonzero winning bid, then that agent is assigned to that task
-
-//             assigned_agent_ids.push_back(agent_id);
-//         }
-
-//     }
-
-//     robot.log_info("end getAssignedAgents()");
-//     return assigned_agent_ids;
-// }
-
 std::pair<double, std::unordered_map<int,Pose2D>> CBGA::getFurthestPossibleDistanceInGroup(int task_id, std::unordered_map<int,Pose2D> prev_locations) {
 
     // Basic testing done
@@ -548,52 +486,6 @@ double CBGA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
     throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
 
 }
-/*    // OLD VERSION BELOW TO PREVENT ERRORS WHILE ADDING pose update to messaging and neighbor distance tracker to robot
-    // Get distance along path to location of given task_id
-
-    robot.log_info("in cumulative distance function");
-
-    if (std::find(path.begin(), path.end(), task_id) == path.end()) {
-        throw std::runtime_error("Task ID " + std::to_string(task_id) + " not found in path.");
-    }
-
-    double distance = 0;
-
-    // Get robot location to init "prev" location
-    Pose2D current_pose = robot.getPose();
-    int prev_x = current_pose.x;
-    int prev_y = current_pose.y;
-    std::string bla = "init prev loc: " + std::to_string(prev_x) + ", " + std::to_string(prev_y);
-    robot.log_info(bla);
-
-    for (int i = 0; i < getBundleOrPathSize(path); i++) {
-
-        std::pair<int,int> location = world.getTaskLocation(path[i]); //&robot); // robot only for testing, path[i] is a task id
-        int current_x = location.first;
-        int current_y = location.second;
-        std::string bla2 = "task loc: " + std::to_string(current_x) + ", " + std::to_string(current_y);
-        robot.log_info(bla2);
-
-
-        double new_dist = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
-        robot.log_info(std::to_string(new_dist));
-
-        distance += new_dist;
-
-        if (path[i] == task_id) {
-            return distance;
-        } else {
-            prev_x = current_x;
-            prev_y = current_y;
-        }
-    }
-
-    robot.log_info("end cumulative distance function");
-
-    // Should never reach here due to check above
-    throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
-
-}*/
 
 double CBGA::getPathScore(std::vector<int> path, bool do_test) {
 
@@ -891,33 +783,9 @@ double CBGA::getSoloWinningBid(std::vector<std::vector<double>>& winning_bids_ma
     return solo_winning_bid;
 }
 
-
-/*bool CBGA::isGroupEffectivelyFull(std::unordered_map<std::string, int> task_group_fullness) {
-
-    // not yet tested
-    // set up to work with getTaskGroupFullnessbyType
-
-    bool full_for_current_robot_type = false;
-
-    std::string current_type = robot.getType(); // Current robot type
-
-    std::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo(task_id);
-
-    if (task_group_fullness[current_type] == task_group_max_size[current_type] &&
-        task_group_fullness["any_agent_type"] == task_group_max_size["any_agent_type"]) {
-        // Both potential options for assigning robot of current type are full
-        full_for_current_robot_type = true;
-    } else if (task_group_fullness[current_type] > task_group_max_size[current_type] ||
-        task_group_fullness["any_agent_type"] > task_group_max_size["any_agent_type"]) {
-        robot.log_info("ERROR found in CBGA.isGroupEffectivelyFull: over-assignment");
-    }
-
-    return full_for_current_robot_type;
-}*/
-
 bool CBGA::isGroupEffectivelyFull(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments, std::unordered_map<std::string, int>& task_group_max_size, std::string current_robot_type) {
 
-    // not yet tested
+    // Tested
 
     robot.log_info("in isGroupEffectivelyFull()...");
 
@@ -961,43 +829,13 @@ std::vector<int> CBGA::getRelevantAssignedIDs(std::unordered_map<std::string, st
     return relevant_assigned_ids;
 }
 
-/*below feels redundant, maybe should just populate relevant_assigned_ids in robot.getTaskGroupFullnessbyType??
-what do we want relevant_assigned_ids to contain, does it change if type sub-group full vs not?
-std::pair<bool, std::vector<int>> CBGA::getRelevantGroupFullnessInfo(td::unordered_map<std::string, int> task_group_fullness, int task_id) {
-
-    std::pair<bool, std::vector<int>> relevant_fullness_info;
-    std::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo(task_id);
-    winning_bids_matrix
-
-    bool full_wrt_current_robot_type = false;
-    std::vector<int> relevant_assigned_ids;
-
-    for id of each agent 
-
-    std::pair<bool, std::vector<int>> relevant_fullness_info = std::make_pair(full_wrt_current_robot_type, relevant_assigned_ids);
-    return relevant_fullness_info
-}*/
-
-/*std::vector<int> getAssignedAgentsFromFullGroup(std::vector<std::vector<double>>& winning_bids_matrix) {
-
-    // This group may not be 100% full, but it is full wrt the current robot's ability to assign itself
-    // This function returns the ids of the agents already filling the sub-groups the current robot *could* assign itself to
-    // I.e., same type sub-group and "any" type sub-group
-
-    std:vector<int> agent_ids;
-
-
-
-    return agent_ids;
-}*/
-
 void CBGA::bundleAdd(std::vector<int>& bundle, 
                         std::vector<int>& path, 
                         std::map<int, double>& bids,
                         std::vector<std::vector<double>>& winning_bids_matrix) {
     try {
 
-        // not yet tested with matrix updates for CBGA etc.
+        // Tested with matrix updates for CBGA etc.
 
         robot.log_info("++++++++++in bundleAdd START++++++++++");
         robot.log_info("Bundle:");
@@ -1013,8 +851,6 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
         std::vector<int> test = robot.getDoableTaskIDs();
 
         std::string current_robot_type = robot.getType();
-
-        //std::unordered_map<int, int> local_win_indicator_h = initLocalWinIndicatorH(); // Initialize here once, don't need to create keys
     
         // Check if bundle is full (i.e., at max_depth) 
         while (getBundleOrPathSize(bundle) < max_depth) { // continues until full or stops via check that no new task found to add
@@ -1027,12 +863,6 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             robot.log_info("Bids:");
             utils::logMap(bids, robot); // bids is map, not unordered
             robot.log_info("++++  ++  ++++");*/
-
-            // Re-init with new method
-            /*local_win_indicator_h.clear();
-            for (const auto& pair : bids) {
-                local_win_indicator_h[pair.first] = 0;
-            }*/
 
             std::unordered_map<int, int> local_win_indicator_h = initLocalWinIndicatorH();
 
@@ -1098,9 +928,6 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                         std::string bop2 = "Task " + std::to_string(task_id) + " is co-op";
                         robot.log_info(bop2);
 
-                        // Count how many robots of each type are assigned (prioritizing explicit type sub-groups of "any_agent_type" sub-group)
-                        // std::unordered_map<std::string, int> task_group_fullness = robot.getTaskGroupFullnessbyType(task_id);
-
                         // Divide assigned robots by type, filling their type subgroups before "any_agent_type" sub-group
                         std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments =  robot.trackAssignedRobotsbySubGroup(task_id);
 
@@ -1113,26 +940,6 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                         std::string hep = "Group full? " + std::to_string(full_wrt_current_robot_type);
                         robot.log_info(hep);
 
-                        /*bool full_wrt_current_robot_type = false;
-                        if type sub-group full:
-                            // Check if any type sub-group also full, and if so
-                            full_wrt_current_robot_type = true;
-                            // Also get l
-                        */
-                        // // Examine group fullness wrt current robot's type 
-                        // std::pair<bool, std::vector<int>> relevant_fullness_info = getRelevantGroupFullnessInfo(td::unordered_map<std::string, int> task_group_fullness, int task_id);
-
-                        // // Given the current robot's type, is there room to assign it to this group 
-                        // // first wrt own type, and if full then wrt "any_agent_type" sub-group?
-                        // bool full_wrt_current_robot_type = relevant_fullness_info.first;
-
-                        // // IDs of robots assigned to current robot type sub-group and "any_agent_type" sub-group
-                        // std::vector<int> relevant_assigned_ids = relevant_fullness_info.second;
-
-                        // Given the current robot's type, is there room to assign it to this group 
-                        // first wrt own type, and if full then wrt "any_agent_type" sub-group? If not, below is true.
-                        // bool full_wrt_current_robot_type = isGroupEffectivelyFull(task_group_fullness);
-
                         // group not full wrt current robot type (either by type OR any-type sub-group)
                         if (!full_wrt_current_robot_type) {
                             std::string current_robot_type = robot.getType();
@@ -1142,9 +949,6 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                             // There is space, so assign (automatically win)
                             local_win_indicator_h[task_id] = 1;
                         } else { // full for current robot (type sub-group and any-type sub-group)
-                            // Only assign if it has a higher bid than another robot of the same type of or robot type counted toward any-type group
-                            // need to figure out how to differentiate between agents assigned as part of their type sub-group and part of the any-type
-                            // need to count for the type sub-groups and *fill* those before counting any-type fullness
 
                             std::string glorp = "Group full, so checking for replacement given higher bid than lowest assigned";
                             robot.log_info(glorp);
@@ -1181,21 +985,6 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                             }
                         }
 
-                           /* // For each ID of agent assigned to task in same type sub-group as current robot or in "any_agent_type" sub-group if former full
-                            for (auto& assigned_agent_id : relevant_assigned_ids) {
-                                int task_idx = task_id-1; int agent_idx = assigned_agent_id-1; // Accounts for task ids starting at 1, not 0 like vector indices
-
-                                if (bids[task_id] - winning_bids_matrix[task_idx][agent_idx] > epsilon) {
-                                    // then found new winner in current bid
-                                    local_win_indicator_h[task_id] = 1;
-                                } else { // no win for group with room for robot of current type or group that's full wrt bids
-                                    std::string log_msg1 = "For task " + std::to_string(task_id) + "bid (" + std::to_string(bids[task_id]) + ") NOT > winning bid(" + std::to_string(winning_bids_matrix[task_idx][agent_idx]) + ") for relevant sub-groups";
-                                    robot.log_info(log_msg1);
-                                }
-
-                            }
-
-                        }*/
                     }
 
                 }
@@ -1204,14 +993,10 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
 
             // At the very end of the for loop (after all task processing):
             robot.log_info("Finished processing all tasks in this iteration");
-            //std::cout << "CHECKPOINT 3: End of for loop" << std::endl;
 
             // Right before getBestTaskID:
             //robot.log_info("About to call getBestTaskID");
-            //std::cout << "CHECKPOINT 4: Before getBestTaskID" << std::endl;
-            int J = getBestTaskID(bids, local_win_indicator_h, bundle); // Does commenting this out prevent seg fault?
-            //std::cout << "CHECKPOINT 5: After getBestTaskID, J = " << J << std::endl;
-
+            int J = getBestTaskID(bids, local_win_indicator_h, bundle);
 
             // // Get the task id for the task that has the max new winning bid, J
             // int J = getBestTaskID(bids, local_win_indicator_h, bundle);
@@ -1221,7 +1006,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                 break;
             }
 
-            std::cout << "Best task ID is " << J << std::endl;
+            // std::cout << "Best task ID is " << J << std::endl;
             std::string blob = "Best task ID is " + std::to_string(J);
             robot.log_info(blob);
             int n = best_position_n_tracker[J];
@@ -1252,10 +1037,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             // robot.log_info("after wb matrix update");
             bids.erase(J); // Remove task now in bundle from future consideration
 
-            robot.log_info("haayyyy");
-
         }
-        robot.log_info("hey");
     
         //std::string log_msg2 = "Bundle is this after bundleAdd:";
         //robot.log_info(log_msg2);

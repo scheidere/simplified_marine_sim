@@ -63,10 +63,6 @@ public:
 
     void init();
 
-    //double createBid(Robot * robot, Task& task); // I don't think this is explicitly needed
-
-    //double calculatePathUtility(Robot& robot, Path path);
-
     int getConvergenceThreshold() const { return convergence_threshold; }
 
     int getTaskIndex(int task_id, std::vector<int>& vec);
@@ -108,7 +104,6 @@ public:
 
     std::pair<double,int> computeBid(int task_id);
 
-    //int getBestTaskID(const std::unordered_map<int, double>& bids, const std::unordered_map<int, int>& h);
     int getBestTaskID(const std::map<int, double>& bids, const std::unordered_map<int, int>& h, std::vector<int>& bundle);
 
     void addTaskToBundleEnd(std::vector<int>& bundle, int task_id);

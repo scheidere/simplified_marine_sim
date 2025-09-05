@@ -436,33 +436,6 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<
     }
 }
 
-/*void Robot::receivePings() {
-
-    // I don't think we really need this, it is just accessing world ping tracker and print/logging
-
-    //std::cout << "in receivePings........" << std::endl;
-    std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
-
-    int receiverID = id;
-    //std::cout << "receiverID: " << receiverID << std::endl;
-
-    printWorldPingTracker(world_ping_tracker);
-    
-    if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
-        //log_info("Found id in world ping tracker");
-        std::vector<std::pair<int,double>>& pings = world_ping_tracker[receiverID];
-        //utils::log1DVector(pings, *this);
-   
-        if (!pings.empty()) {
-            int first_heard_robot_ID = pings.front().first;
-            //std::cout << "Robot " << receiverID << " received a ping from Robot " << first_heard_robot_ID << std::endl;
-            std::string log_msg = "Robot " + std::to_string(receiverID) + " received ping from Robot " + std::to_string(first_heard_robot_ID);
-            log_info(log_msg);
-        }
-    }
-
-}*/
-
 void Robot::updateTimestamps() {
 
     // Timestamps map for current robot i maintains time of last message from each other robot by ID k
@@ -595,21 +568,6 @@ std::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo(int id_k) {
     return best_info;
 }
 
-/*void Robot::printMessageQueue(std::vector<Msg>& message_queue) {
-    for (const auto& msg : message_queue) {
-        printMessage(msg);
-    }
-}*/
-
-/*void Robot::printMessage(Msg msg) { // no mutex because used within the function above
-    std::cout << "Message ID:" << msg.id << "\n";
-    //std::cout << "Task ID: " << msg.task_id << "\n";
-    //std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
-   /* std::cout << "Bundle: [";
-    for (const auto& task : msg.bundle.tasks) {
-        std::cout << task << " "; // Assuming tasks can be printed this way
-    }
-    std::cout << "]\n";}*/
 
 bool Robot::needRegroup() {
     //std::cout << " IN REGROUP" << std::endl;
@@ -869,14 +827,6 @@ std::pair<int,int> Robot::getNextStartLocation() {
 
 }
 
-/*void Robot::removeCompletedTaskFromPath() {
-
-    path.erase(path.begin());
-    log_info("Path is now: ");
-    utils::log1DVector(path, *this);
-
-}*/
-
 void Robot::removeCompletedTaskFromPath() {
     if (path.empty()) {
         log_info("Warning: Attempted to remove from empty path");
@@ -994,38 +944,9 @@ std::vector<int> Robot::getAssignedAgents(int task_id) {
     return assigned_agent_ids;
 }
 
-// probably change this or not use now that have trackAssignedRobotsbySubGroup below
-/*std::unordered_map<std::string, int> Robot::getTaskGroupFullnessbyType(int task_id) {
-
-    // not yet tested
-
-    std::unordered_map<std::string, int> task_group_fullness = initTaskGroupFullnessMap();
-
-    std::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo(task_id);
-
-    int task_idx = task_id-1;
-
-    // for each agent assigned to task, get type and count 
-    std::vector<int> assigned_agent_ids = getAssignedAgents(task_id);
-    for ( auto& assigned_agent_id : assigned_agent_ids ) {
-        std::string agent_type = world->getAgentType(assigned_agent_id);
-
-        // First count agents toward their own type group
-        if (task_group_fullness[agent_type] < task_group_max_size[agent_type]) {
-            task_group_fullness[agent_type] += 1;
-
-        } else if (task_group_max_size["any_agent_type"] > 0 && task_group_fullness["any_agent_type"] < task_group_max_size["any_agent_type"]) {
-            // if already reached limit of required agents of current type, and "any_agent_type" group is assignable to (max > 0 and not full)
-            task_group_fullness["any_agent_type"] += 1;
-        }
-    }
-
-    return task_group_fullness;
-}*/
-
 std::unordered_map<std::string, std::vector<int>> Robot::initTaskSubGroupMap() {
 
-    // not yet tested
+    // Tested
 
     // Assume empty, init with vectors
 
@@ -1044,7 +965,7 @@ std::unordered_map<std::string, std::vector<int>> Robot::trackAssignedRobotsbySu
 
     // Checks types of all assigned robots and divides them by sub-group
     // Allows for the explicit tracking of robots that should legit be in the "any_agent_type" sub-group
-    // not yet tested
+    // Tested
 
     std::unordered_map<std::string, std::vector<int>> task_sub_groups = initTaskSubGroupMap();
 
