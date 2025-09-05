@@ -92,6 +92,7 @@ void CBBA::buildBundle() {
 
         //std::vector<double>& scores = robot.getScores();
         //scores.resize(max_depth, 0.0);
+        // TODO: update this to match new reset in CBGA if it avoids seg fault for CBGA
         std::map<int, double>& bids = robot.getBids();
         bids = robot.initBids();
 
@@ -602,9 +603,9 @@ int CBBA::getBestTaskID(const std::map<int, double>& bids, const std::unordered_
     // Get the task id for the task that has the max new winning bid, J
     // h is local win indicator with elements 0 or 1
 
-    //robot.log_info("in getBestTaskID");
-    //robot.log_info("indicator h:");
-    //utils::logUnorderedMap(h, robot);
+    robot.log_info("in getBestTaskID");
+    robot.log_info("indicator h:");
+    utils::logUnorderedMap(h, robot);
 
     double max_product = 0.0;
     int ID_of_max = -1;
@@ -707,12 +708,18 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
                     std::string str1 = "Looking at the following doable task not in bundle:" + std::to_string(task_id);
                     //std::string str1 = "-----Potential next task: " + std::to_string(task_id);
                     robot.log_info(str1);
+
                     std::pair<double,int> bid_and_best_path_position = computeBid(task_id);
                     bids[task_id] = bid_and_best_path_position.first; best_position_n_tracker[task_id] = bid_and_best_path_position.second;
-                    //robot.log_info("After computeBid update, bids: ");
-                    //utils::logMap(bids, robot);
+
+                    robot.log_info("After computeBid update, bids: ");
+                    utils::logMap(bids, robot);
                     robot.log_info("and best position tracker: ");
                     utils::logUnorderedMap(best_position_n_tracker, robot);
+
+
+                    std::string ack = "current_winning_bid: " + std::to_string(winning_bids[task_id]);
+                    robot.log_info(ack);
                     if ( bids[task_id] - winning_bids[task_id] > epsilon ) {
                         // Found better bid so track in local win indicator h
                         std::string log_msg1 = "For task " + std::to_string(task_id) + " bid (" + std::to_string(bids[task_id]) + ") > winning bid(" + std::to_string(winning_bids[task_id]) + ")";

@@ -135,6 +135,14 @@ std::map<int,double> Robot::initBids() {
     return bids; 
 }
 
+void Robot::resetBids() {
+
+    // Needed in buildBundle, avoids seg fault when done here?
+
+    bids.clear();
+    bids = initBids();
+}
+
 std::unordered_map<int,int> Robot::initWinners() {
 
     std::unordered_map<int,int> winners;
@@ -878,4 +886,188 @@ void Robot::removeCompletedTaskFromPath() {
     path.erase(path.begin());
     log_info("Path is now: ");
     utils::log1DVector(path, *this);
+}
+
+std::unordered_map<std::string, int> Robot::initTaskGroupFullnessMap() {
+
+    // Assume empty, init with zeros
+
+    std::unordered_map<std::string, int> task_group_fullness;
+
+    std::vector<std::string> agent_types = world->getAgentTypes();
+
+    for (auto& type : agent_types) {
+        task_group_fullness[type] = 0;
+    }
+
+    return task_group_fullness;
+}
+
+// testing
+// std::vector<int> Robot::getAssignedAgents(int task_id) {
+//     log_info("start getAssignedAgents()");
+
+//     std::vector<int> assigned_agent_ids;
+    
+//     // Get matrix reference once
+//     const std::vector<std::vector<double>>& winning_bids_matrix = getWinningBidsMatrix();
+    
+//     // Validate dimensions
+//     int current_tasks = world->getNumLocalTasks();
+//     int current_agents = world->getNumAgents();
+//     int task_idx = task_id - 1;
+    
+//     std::cout << "Matrix check: " << winning_bids_matrix.size() << "x" 
+//               << (winning_bids_matrix.empty() ? 0 : winning_bids_matrix[0].size())
+//               << " vs World: " << current_tasks << "x" << current_agents << std::endl;
+    
+//     // Bounds checking
+//     if (task_idx < 0 || task_idx >= winning_bids_matrix.size()) {
+//         std::cout << "ERROR: task_idx=" << task_idx << " out of bounds!" << std::endl;
+//         return assigned_agent_ids;
+//     }
+    
+//     if (current_agents > winning_bids_matrix[task_idx].size()) {
+//         std::cout << "ERROR: num_agents=" << current_agents 
+//                   << " > matrix columns=" << winning_bids_matrix[task_idx].size() << std::endl;
+//         return assigned_agent_ids;
+//     }
+    
+//     // Check for assignments
+//     std::cout << "Checking task " << task_id << " (idx=" << task_idx << ")" << std::endl;
+//     for (int a = 0; a < current_agents; a++) {
+//         if (winning_bids_matrix[task_idx][a] != 0) {
+//             int agent_id = a + 1;
+//             assigned_agent_ids.push_back(agent_id);
+//             std::cout << "Found assigned agent: " << agent_id << std::endl;
+//         }
+//     }
+    
+//     std::cout << "Found " << assigned_agent_ids.size() << " assigned agents" << std::endl;
+//     log_info("end getAssignedAgents()");
+//     return assigned_agent_ids;
+// }
+
+// original
+std::vector<int> Robot::getAssignedAgents(int task_id) {
+
+    // Gets any robots assigned to task current robot is considering assigning to itself (SO NOT INCLUDING CURRENT)
+    // Basic testing done (in cbga, will double check still working when called from here with minor changes (equivalent logic))
+    // When new testing done, say so here
+
+    log_info("start getAssignedAgents()");
+
+    std::vector<int> assigned_agent_ids;
+
+    // CONVERT TO INDEX: To accomodate winning bid matrix row 0 being for task 1, etc. (same reason we use a and not a+1 for indexing below)
+    int task_idx = task_id-1; 
+
+    std::vector<std::vector<double>>& winning_bids_matrix = getWinningBidsMatrix();
+    log_info("winning_bids_matrix: ");
+    utils::log2DVector(winning_bids_matrix, *this);
+
+    // BELOW COMMENTED OUT BIT IS FOR TEST ONLY (this was tested with function in cbga class)
+    /*log_info("ADDING agent assignment to co-op task, id 5 (idx 4), for TEST (see robot 1 logs only)");
+    winning_bids_matrix[4][1] = 2.0; // assigning agent 2 (at idx 1)
+    utils::log2DVector(winning_bids_matrix, this);*/
+
+    // For each agent with nonzero winning bid for given task
+    int num_agents = world->getNumAgents();
+    for (int a = 0; a < num_agents; a++) {
+
+        std::string ap = "a: " + std::to_string(a);
+        log_info(ap);
+
+        //robot.log_info(std::to_string(a));
+        std::string blop = "winning bid element for (" + std::to_string(task_idx) + "," + std::to_string(a) + "): " + std::to_string(winning_bids_matrix[task_idx][a]);
+        log_info(blop);
+        
+        if (winning_bids_matrix[task_idx][a] != 0) { // if task_id, agent_id has nonzero winning bid, then that agent is assigned to that task
+
+            int agent_id = a+1; // CONVERT TO AGENT ID, assumed to be +1 since never agent 0, starts at agent 1
+            assigned_agent_ids.push_back(agent_id);
+        }
+
+    }
+
+    log_info("end getAssignedAgents()");
+    return assigned_agent_ids;
+}
+
+// probably change this or not use now that have trackAssignedRobotsbySubGroup below
+/*std::unordered_map<std::string, int> Robot::getTaskGroupFullnessbyType(int task_id) {
+
+    // not yet tested
+
+    std::unordered_map<std::string, int> task_group_fullness = initTaskGroupFullnessMap();
+
+    std::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo(task_id);
+
+    int task_idx = task_id-1;
+
+    // for each agent assigned to task, get type and count 
+    std::vector<int> assigned_agent_ids = getAssignedAgents(task_id);
+    for ( auto& assigned_agent_id : assigned_agent_ids ) {
+        std::string agent_type = world->getAgentType(assigned_agent_id);
+
+        // First count agents toward their own type group
+        if (task_group_fullness[agent_type] < task_group_max_size[agent_type]) {
+            task_group_fullness[agent_type] += 1;
+
+        } else if (task_group_max_size["any_agent_type"] > 0 && task_group_fullness["any_agent_type"] < task_group_max_size["any_agent_type"]) {
+            // if already reached limit of required agents of current type, and "any_agent_type" group is assignable to (max > 0 and not full)
+            task_group_fullness["any_agent_type"] += 1;
+        }
+    }
+
+    return task_group_fullness;
+}*/
+
+std::unordered_map<std::string, std::vector<int>> Robot::initTaskSubGroupMap() {
+
+    // not yet tested
+
+    // Assume empty, init with vectors
+
+    std::unordered_map<std::string, std::vector<int>> task_sub_groups;
+
+    std::vector<std::string> agent_types = world->getAgentTypes();
+
+    for (auto& type : agent_types) {
+        task_sub_groups[type] = {};
+    }
+
+    return task_sub_groups;
+}
+
+std::unordered_map<std::string, std::vector<int>> Robot::trackAssignedRobotsbySubGroup(int task_id) {
+
+    // Checks types of all assigned robots and divides them by sub-group
+    // Allows for the explicit tracking of robots that should legit be in the "any_agent_type" sub-group
+    // not yet tested
+
+    std::unordered_map<std::string, std::vector<int>> task_sub_groups = initTaskSubGroupMap();
+
+    std::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo(task_id);
+
+    int task_idx = task_id-1;
+
+    // for each agent assigned to task, get type and count 
+    std::vector<int> assigned_agent_ids = getAssignedAgents(task_id);
+    log_info("Assigned agent ids (in trackAssignedRobotsbySubGroup):");
+    utils::log1DVector(assigned_agent_ids, *this);
+    for ( auto& assigned_agent_id : assigned_agent_ids ) {
+        std::string agent_type = world->getAgentType(assigned_agent_id);
+
+        // First count agents toward their own type group
+        if (task_sub_groups[agent_type].size() < task_group_max_size[agent_type]) {
+            task_sub_groups[agent_type].push_back(assigned_agent_id); // Add agent to its type sub-group since there is still room
+
+        } else if (task_group_max_size["any_agent_type"] > 0 && task_sub_groups["any_agent_type"].size() < task_group_max_size["any_agent_type"]) {
+            // if already reached limit of required agents of current type, and "any_agent_type" group is assignable to (max > 0 and not full)
+            task_sub_groups["any_agent_type"].push_back(assigned_agent_id);
+        }
+    }
+
+    return task_sub_groups;
 }

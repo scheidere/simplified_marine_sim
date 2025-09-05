@@ -52,17 +52,18 @@ public:
     //void bundleRemove();
     void bundleRemove(std::vector<int>& bundle, 
                         std::vector<int>& path, 
-                        std::unordered_map<int, int>& winners, 
-                        std::unordered_map<int, double>& winning_bids,
+                        std::vector<std::vector<double>>& winning_bids_matrix,
                         bool do_test_3 = false);
 
     void testBundleRemove();
+
+    void testBundleAdd(std::map<int, double>& bids);
 
     void buildBundle();
 
     std::unordered_map<int,int> initLocalWinIndicatorH();
 
-    std::vector<int> getAssignedAgents(int task_id);
+    //std::vector<int> getAssignedAgents(int task_id); // moved to robot class
 
     std::pair<double, std::unordered_map<int,Pose2D>> getFurthestPossibleDistanceInGroup(int task_id, std::unordered_map<int,Pose2D> prev_locations);
 
@@ -89,12 +90,19 @@ public:
 
     int getBundleOrPathSize(const std::vector<int>& vec);
 
+    double getSoloWinningBid(std::vector<std::vector<double>>& winning_bids_matrix, int task_id);
+
+    //bool isGroupEffectivelyFull(std::unordered_map<std::string, int> task_group_fullness);
+    bool isGroupEffectivelyFull(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments, std::unordered_map<std::string, int>& task_group_max_size, std::string current_robot_type);
+
+    std::vector<int> getRelevantAssignedIDs(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments, std::string current_robot_type);
+
+    //std::pair<bool, std::vector<int>> getRelevantGroupFullnessInfo(td::unordered_map<std::string, int> task_group_fullness);
+
     void bundleAdd(std::vector<int>& bundle, 
                         std::vector<int>& path, 
-                        //std::vector<double>& scores,
                         std::map<int, double>& bids,
-                        std::unordered_map<int, int>& winners, 
-                        std::unordered_map<int, double>& winning_bids);
+                        std::vector<std::vector<double>>& winning_bids_matrix);
 
     void update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
     std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k); 

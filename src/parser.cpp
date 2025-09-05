@@ -211,10 +211,14 @@ int JSONParser::getCompatibility(std::string agent_type, std::string task_type) 
         //std::cout << agent_type << std::endl;
         //std::cout << task_type << std::endl;
         //std::cin.get();
+
+        // Now check each individual agents doable task types, and add if not covered in the "all" case already
         for (const auto& t : j["agent_capabilities"][1][agent_type]) {
             //std::cout << t << " " << task_type << std::endl;
             //std::cin.get();
-            if (t == task_type) {
+            if (t=="co-op") {
+                return 2;
+            } else if (t == task_type) {
                 //std::cout << "agent type for found match: " << agent_type << " 1" << std::endl;
                 return 1;
             }

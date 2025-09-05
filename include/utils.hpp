@@ -42,6 +42,24 @@ void printCapabilities(const std::unordered_map<std::string, std::vector<T>>& al
 }
 
 
+// Replaced printCapabilities
+template <typename T>
+void logMapOfVectors(const std::unordered_map<std::string, std::vector<T>>& map_data, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& pair : map_data) {
+        log_msg << pair.first << " : [";
+        for (size_t i = 0; i < pair.second.size(); ++i) {
+            log_msg << pair.second[i];
+            if (i < pair.second.size() - 1) {
+                log_msg << ", ";
+            }
+        }
+        log_msg << "]\n";
+    }
+    robot.log_info(log_msg.str());
+}
+
+
 // Template function to print an unordered_map with any value type
 template <typename K, typename V>
 void printUnorderedMap(const std::unordered_map<K, V>& my_map) {

@@ -113,15 +113,27 @@ public:
 
     //std::vector<AgentInfo> getAgents(); //AgentInfo is a struct
 
+    std::vector<std::string> getAgentTypes() { return agent_types; }
+
     std::unordered_map<int,AgentInfo> initAllAgentsInfo();
 
     std::unordered_map<int,AgentInfo>& getAllAgentsInfo() { return all_agents_info; }
+
+    AgentInfo& getAgentInfo(int agent_id);
+
+    std::string& getAgentType(int agent_id);
+
+    int getGroupSize(std::unordered_map<std::string, int> group_info);
 
     std::unordered_map<int,TaskInfo> initAllTasksInfo();
 
     std::unordered_map<int,TaskInfo>& getAllTasksInfo() { return all_tasks_info; }
 
     TaskInfo& getTaskInfo(int task_id);
+
+    int& getTaskGroupSize(int task_id);
+
+    std::unordered_map<std::string, int>& getTaskGroupInfo(int task_id);
 
     double& getTaskReward(int task_id);
 

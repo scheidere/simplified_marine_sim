@@ -34,7 +34,6 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         task_types = parser->getTaskTypes();
         //std::cout << "start world init print" << std::endl;
         all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types);
-        utils::printCapabilities(all_agent_capabilities);
         initMessageTracker();
         //initPingIDTracker();
         initPingTracker(); // Note: Pings contain sender id and time sender last updated its own beliefs via CBBA
@@ -87,7 +86,7 @@ void World::initPingTracker() {
 std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
 
     //std::cout << "start world getter cap" << std::endl;
-    utils::printCapabilities(all_agent_capabilities);
+    //utils::printCapabilities(all_agent_capabilities);
     //std::cout << "end world getter cap" << std::endl;
     return all_agent_capabilities;
 }
@@ -166,6 +165,17 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     return all_tasks_info;
 }*/
 
+int World::getGroupSize(std::unordered_map<std::string, int> group_info) {
+
+    int group_size = 0;
+
+    for (const auto& robot_type_num_pair : group_info) { // for each robot type, count how many required for group and sum
+        group_size += robot_type_num_pair.second;  // add num of robots for current robot type
+    }
+
+    return group_size;
+}
+
 std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
     std::unordered_map<int, TaskInfo> all_tasks_info;
 
@@ -174,7 +184,8 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         int id = task["id"].get<int>();
         std::string name = task["name"];
         std::string type = task["type"];
-        std::unordered_map<std::string, int> group_size = task["group_size"].get<std::unordered_map<std::string, int>>();
+        std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
+        int group_size = getGroupSize(group_info); // sum of all the sub groups in group_info, by agent type
         double reward = task["reward"];
 
         std::unordered_map<std::string, int> area; // This will remain empty if no area defined in input json
@@ -195,7 +206,8 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
             id, // int
             name, // string
             type, // string
-            group_size, // <std::unordered_map<std::string, int>>
+            group_size, // int
+            group_info, // <std::unordered_map<std::string, int>>
             //prerequisute_task_failures, // will figure out later
             location, // std::pair<int,int>
             area, // <std::unordered_map<std::string, int>>
@@ -211,11 +223,46 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
 TaskInfo& World::getTaskInfo(int task_id) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
-    if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
+    return all_tasks_info.at(task_id);
+
+    /*if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
         return all_tasks_info.at(task_id);
     } else {
         throw std::runtime_error("Task ID not found in all_tasks_info");
-    }
+    }*/
+}
+
+AgentInfo& World::getAgentInfo(int agent_id) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    return all_agents_info.at(agent_id); // Simpler way
+
+    /*if (all_agents_info.find(agent_id) != all_agents_info.end()) {
+        return all_agents_info.at(agent_id);
+    } else {
+        throw std::runtime_error("Agent ID not found in all_agents_info");
+    }*/
+}
+
+std::string& World::getAgentType(int agent_id) {
+    // No mutex to avoid deadlock because getAgentInfo covers it
+    
+    AgentInfo& agent_info = getAgentInfo(agent_id);
+    return agent_info.type;
+}
+
+int& World::getTaskGroupSize(int task_id) {
+    // No mutex to avoid deadlock because getTaskInfo covers it
+    
+    TaskInfo& task_info = getTaskInfo(task_id);
+    return task_info.group_size;
+}
+
+std::unordered_map<std::string, int>& World::getTaskGroupInfo(int task_id) {
+    // No mutex to avoid deadlock because getTaskInfo covers it
+    
+    TaskInfo& task_info = getTaskInfo(task_id);
+    return task_info.group_info;
 }
 
 double& World::getTaskReward(int task_id) {
@@ -283,10 +330,17 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
         return {};  // Return an empty vector
     }
 
+    // utils::log1DVector(task_types, *robot);
+
     std::string log_msg = "Robot " + std::to_string(robot->getID()) + " is capable of the following tasks by id: ";
     //robot->log_info(log_msg);
     //for (const auto& elem : vec) {
+    robot->log_info("all_agent_capabilities: ");
+    utils::logMapOfVectors(all_agent_capabilities, *robot);
     std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
+
+    robot->log_info("robot_capabilities_by_type: ");
+    utils::log1DVector(robot_capabilities_by_type, *robot);
 
     for (int i=0; i<task_types.size(); i++) {
         //robot->log("test2");
@@ -296,13 +350,15 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
             TaskInfo& local_task = pair.second;
             std::string log_msg3 = local_task.type;
             //robot->log_info(log_msg3);
-            if (robot_capabilities_by_type[i]==1 && task_types[i]==local_task.type) {
+            
+            // Check if robot can do specific task (solo or co-op) and task type must match by definition
+            if ((robot_capabilities_by_type[i]==1 || robot_capabilities_by_type[i] == 2) && task_types[i]==local_task.type) {
                 // Found doable task 
                 std::string log_msg1 = "Found task of type " + local_task.type + " saving " + std::to_string(pair.first);  
-                //robot->log_info(log_msg1);
+                robot->log_info(log_msg1);
                 doable_local_tasks.push_back(pair.first); // pair.first is local task id (int)
                 std::string log_msg2 = std::to_string(pair.first);
-                //robot->log_info(log_msg2);
+                robot->log_info(log_msg2);
             }
         }
 

@@ -86,6 +86,7 @@ public:
     //std::vector<double>& getScores() { return scores; }
     //std::unordered_map<int,double> initBids();  
     std::map<int,double> initBids();  
+    void resetBids();
     std::unordered_map<int,int> initWinners();
     std::unordered_map<int,double> initWinningBids(); // CBBA
     std::vector<std::vector<double>> initWinningBidsMatrix(); // CBGA
@@ -146,6 +147,13 @@ public:
 
     bool getAtConsensus() const { return at_consensus; }
     void setAtConsensus(bool value) { at_consensus = value; }
+
+    std::unordered_map<std::string, int> initTaskGroupFullnessMap();
+    std::vector<int> getAssignedAgents(int task_id);
+    std::unordered_map<std::string, int> getTaskGroupFullnessbyType(int task_id);
+
+    std::unordered_map<std::string, std::vector<int>> initTaskSubGroupMap();
+    std::unordered_map<std::string, std::vector<int>> trackAssignedRobotsbySubGroup(int task_id);
 
     //void resurfaceToCharge();
 
