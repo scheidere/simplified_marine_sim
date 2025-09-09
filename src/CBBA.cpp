@@ -844,10 +844,12 @@ void CBBA::resolveConflicts(bool do_test) {
         for (auto& [j, winner_ij] : winners_i) {
             int winner_kj = winners_k[j];
 
+            // Define k timestamp lambda function for easy access below
             auto ts_k_m = [&](int m) {
                 return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
             };
 
+            // Define i timestamp lambda function for easy access below
             auto ts_i_m = [&](int m) {
                 return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
             };
@@ -878,7 +880,8 @@ void CBBA::resolveConflicts(bool do_test) {
                     std::string blorpl2 = "id_m in resolveConflicts: " + std::to_string(m);
                     robot.log_info(blorpl2);
                     if (ts_k_m(m) > ts_i_m(m) || winning_bids_k[j] > winning_bids_i[j]) {
-                        robot.log_info("k thinks k, i thinks m, k timestamp more recent and k bid higher, so update");
+                        // robot.log_info("k thinks k, i thinks m, k timestamp more recent and k bid higher, so update");
+                        robot.log_info("k thinks k, i thinks m, km timestamp more recent or k bid higher, so update");
                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
                     }
                 }
@@ -1165,15 +1168,15 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
 
     //  // Test 2.A
     // i thinks i and k thinks k - Result depends on winning bids
-    winners_i[task_j] = id_i;
+    //winners_i[task_j] = id_i;
 
     // 2.A.1 - Should result in update because k winning bid higher than i winning bid - PASSED
     /*winning_bids_i[task_j] = 5;
     winning_bids_k[task_j] = 10;*/
 
     // 2.A.2 - Should result in no change because i winning bid higher than k winning bid - PASSED
-    winning_bids_i[task_j] = 4.37521; // 10;
-    winning_bids_k[task_j] =  4.36367; // 5;
+    //winning_bids_i[task_j] = 4.37521; // 10;
+    //winning_bids_k[task_j] =  4.36367; // 5;
 
     //  // Test 2.B
     // i is unsure - Should result in update (winners, winning bids) in every case
@@ -1184,8 +1187,8 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
     //  // Test 2.C 
     // UNCOMMENT part 2/3 (example)
     // i thinks another robot m
-    /*int id_m = 3;
-    winners_i[task_j] = id_m;*/
+    int id_m = 3;
+    winners_i[task_j] = id_m;
 
     // 2.C.1 - Should result in update because k has higher timestamp from m (even though lower bid for j) - PASSED
     /*timestamps_i[id_m] = 2;
@@ -1207,10 +1210,10 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
 
     // 2.C.4 - Should result in update because k has higher bid for j (even though lower timestamp) - PASSED
     // UNCOMMENT part 3/3 (example)
-    /*timestamps_i[id_m] = 3;
+    timestamps_i[id_m] = 3;
     timestamps_k[id_m] = 2;
     winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
+    winning_bids_k[task_j] = 10;
 
     // ***** Test 3: If robot i and robot k don't agree and k thinks i is winner of task j
     //winners_k[task_j] = id_i; // UNCOMMENT part 1/3

@@ -97,18 +97,20 @@ public:
                         std::map<int, double>& bids,
                         std::vector<std::vector<double>>& winning_bids_matrix);
 
-    void update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
-    std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k); 
+    void update(int j, std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k);
 
-    void reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, double>& winning_bids_i);
+    void reset(int j, std::vector<std::vector<double>>& winning_bids_matrix_i);
+
+    void runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int winner_kj, double winning_bid_ij, double winning_bid_kj,
+                                    std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k,
+                                    std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k);
+
     void resolveConflicts(bool do_test = false);
 
     void testResolveConflicts(int id_i, std::vector<Msg>& message_queue, 
-                                std::unordered_map<int, int>& winners_i, 
-                                std::unordered_map<int, double>& winning_bids_i, 
+                                std::vector<std::vector<double>>& winning_bids_matrix_i, 
                                 std::unordered_map<int,double>& timestamps_i,
-                                int id_k, std::unordered_map<int, int>& winners_k, 
-                                std::unordered_map<int, double>& winning_bids_k, 
+                                int id_k, std::vector<std::vector<double>>& winning_bids_matrix_k, 
                                 std::unordered_map<int,double>& timestamps_k);
 
     template <typename T>

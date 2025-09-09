@@ -278,13 +278,14 @@ NodeStatus ResolveConflicts::onRunning()
         int rounds;
         if (do_cbga) {
             CBGA cbga(_robot, _world, _parser);
-            cbga.resolveConflicts();
-            //cbba.resolveConflicts(true); // for testing
+            //cbga.resolveConflicts();
+            _robot.log_info("right before running cbga with test = true");
+            cbga.resolveConflicts(true); // for testing
             int& rounds = _robot.getNumCBGARounds();
         } else {
             CBBA cbba(_robot, _world, _parser);
-            cbba.resolveConflicts();
-            //cbba.resolveConflicts(true); // for testing
+            //cbba.resolveConflicts();
+            cbba.resolveConflicts(true); // for testing
             int& rounds = _robot.getNumCBBARounds();
         }
         rounds++;

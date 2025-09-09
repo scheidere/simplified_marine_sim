@@ -1057,347 +1057,518 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
     };
 }
 
-void CBGA::update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
-    std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k) {
+// void CBGA::update(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, int> winners_k,
+//     std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int, double> winning_bids_k) {
+void CBGA::update(int task_id_j, std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k) {
+
+    // not yet updated for CBGA
+    // not yet tested for CBGA
+    // j is task_id so will subtract 1 to index matrix correctly
 
     // Precedence given to k, which is determined to have more recent info than i
     // Winners update z_ij = z_kj and winning bids update y_ij = y_kj
-    winners_i[j] = winners_k[j]; winning_bids_i[j] = winning_bids_k[j];
+    //winners_i[j] = winners_k[j]; winning_bids_i[j] = winning_bids_k[j];
+    
+    // First attempt at new way, but needs winner_ij and winner_kj passed in and not as fast as row copy below
+    // winning_bids_matrix[task_id_j-1][winner_ij-1] = 0.0; // Clear old info, needed if winner_ij != winner_kj
+    // winning_bids_matrix_i[task_id_j-1][winner_kj-1] = winning_bids_matrix_k[j-1][winner_id-1]; // Update per k's info
+
+    winning_bids_matrix_i[task_id_j-1] = winning_bids_matrix_k[task_id_j-1];
 
 }
 
-void CBGA::reset(int j, std::unordered_map<int, int>& winners_i, std::unordered_map<int, double>& winning_bids_i) {
+void CBGA::reset(int task_id_j, std::vector<std::vector<double>>& winning_bids_matrix_i) {
 
-    winners_i[j] = -1; winning_bids_i[j] = 0.0;
+    // not yet updated for CBGA
+    // not yet tested for CBGA
+
+    //winners_i[j] = -1; winning_bids_i[j] = 0.0;
+    std::fill(winning_bids_matrix_i[task_id_j-1].begin(), 
+              winning_bids_matrix_i[task_id_j-1].end(), 0.0); // Clear row to reset
+}
+
+void CBGA::runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int winner_kj, double winning_bid_ij, double winning_bid_kj, 
+                                    std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k, 
+                                    std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k) {
+
+    // For all solo tasks, resolveConflicts is identical to CBBA
+    // The only difference is access to the winning bids matrix
+        // 1. Extracting the winners and winning bids (inputs to this function)
+        // 2. Updating winning bid matrix instead of winners and winning bids maps
+
+    // j is task id
+
+    // Define k timestamp lambda function for easy access below
+    auto ts_k_m = [&](int m) {
+        return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
+    };
+
+    // Define i timestamp lambda function for easy access below
+    auto ts_i_m = [&](int m) {
+        return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
+    };
+
+    if (winner_ij == winner_kj) {
+        if (winner_ij == id_k) {
+            update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+        } else if (winner_ij != -1 && winner_ij != id_i) {
+            int m = winner_ij;
+            if (ts_k_m(m) > ts_i_m(m)) {
+                robot.log_info("both think m, compare timestamps");
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+        }
+
+    } else if (winner_kj == id_k) {
+        robot.log_info("winner_kj == id_k: ");
+        robot.log_info(std::to_string(id_k));
+        if (winner_ij == id_i) {
+            if (winning_bid_kj > winning_bid_ij) {
+                robot.log_info("k thinks k, i thinks i, k has higher bid so update");
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+        } else if (winner_ij == -1) {
+            robot.log_info("k thinks k, i does not know (-1), so update");
+            update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+        } else {
+            int m = winner_ij;
+            std::string blorpl2 = "id_m in resolveConflicts: " + std::to_string(m);
+            robot.log_info(blorpl2);
+            if (ts_k_m(m) > ts_i_m(m) || winning_bid_kj > winning_bid_ij) {
+                robot.log_info("k thinks k, i thinks m, km timestamp more recent or k bid higher, so update");
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+        }
+
+    } else if (winner_kj == id_i) {
+        if (winner_ij == id_k) {
+            reset(j, winning_bids_matrix_i);
+        } else if (winner_ij != -1) {
+            int m = winner_ij;
+            if (ts_k_m(m) > ts_i_m(m)) {
+                reset(j, winning_bids_matrix_i);
+            }
+        }
+
+    } else if (winner_kj != -1) {
+        int m = winner_kj;
+
+        if (winner_ij == id_i) {
+            if (ts_k_m(m) > ts_i_m(m) && winning_bid_kj > winning_bid_ij) {
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+        } else if (winner_ij == id_k) {
+            if (ts_k_m(m) > ts_i_m(m)) {
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            } else {
+                reset(j, winning_bids_matrix_i);
+            }
+        } else if (winner_ij == -1) {
+            if (ts_k_m(m) > ts_i_m(m)) {
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+        } else {
+            int n = winner_ij;
+            if (ts_k_m(m) > ts_i_m(m) &&
+                (ts_k_m(n) > ts_i_m(n) || winning_bid_kj > winning_bid_ij)) {
+                robot.log_info("here");
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            } else if (ts_k_m(n) > ts_i_m(n) && ts_i_m(m) > ts_k_m(m)) {
+                robot.log_info("here2");
+                reset(j, winning_bids_matrix_i);
+            }
+        }
+
+    } else if (winner_kj == -1) {
+        if (winner_ij == id_k) {
+            update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+        } else if (winner_ij != id_i && winner_ij != -1) {
+            int m = winner_ij;
+            if (ts_k_m(m) > ts_i_m(m)) {
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+        }
+    }
+
 }
 
 void CBGA::resolveConflicts(bool do_test) {
 
-    // Should be identical to previous resolveConflicts but without direct timestamps[bla] accessing 
-    // to avoid default 0 creation for non-existence keys (i.e., self id i)
-    // Have not confirmed it being identical by rerunning all the tests in testResolveConflicts
+    /*
+    Objective: 
+        Compare neighbors' winning bid matrices with robot's own winning bid matrix
+        Update own matrix per deferment hierarchy
+    */
 
     int id_i = robot.getID(); 
+    int i_idx = id_i-1;
     std::vector<Msg>& message_queue_i = robot.getMessageQueue();
-    std::unordered_map<int, int>& winners_i = robot.getWinners();
-    std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
+    std::vector<std::vector<double>>& winning_bids_matrix_i = robot.getWinningBidsMatrix();
     std::unordered_map<int, double>& timestamps_i = robot.getTimestamps();
-
-    /*robot.log_info("Timestamps BEFORE change in CBGA::resolveConflicts:");
-    utils::logUnorderedMap(timestamps_i, robot);*/
 
     std::string blorpl = "id_i in resolveConflicts: " + std::to_string(id_i);
     robot.log_info(blorpl);
 
-    robot.log_info("Current robot's winners, winning_bids and timestamps before resolveConflicts...");
-    utils::logUnorderedMap(winners_i, robot);
-    utils::logUnorderedMap(winning_bids_i, robot);
+    robot.log_info("Current robot's winning bids matrix and timestamps before resolveConflicts...");
+    utils::log2DVector(winning_bids_matrix_i, robot);
     utils::logUnorderedMap(timestamps_i, robot);
+
+    int num_tasks = world.getNumLocalTasks();
+    int num_agents = world.getNumAgents();
 
     for (auto& msg : message_queue_i) { // resolve Conflicts with all other robots in comms that have sent messages
         int id_k = msg.id;
-        std::unordered_map<int, int>& winners_k = msg.winners;
-        std::unordered_map<int, double>& winning_bids_k = msg.winning_bids;
+        std::vector<std::vector<double>>& winning_bids_matrix_k = msg.winning_bids_matrix;
         std::unordered_map<int, double>& timestamps_k = msg.timestamps;
 
         std::string bla = "Message from robot " + std::to_string(id_k) + ":";
         robot.log_info(bla);
-        robot.log_info("Winners: ");
-        utils::logUnorderedMap(winners_k, robot);
-        robot.log_info("Winning bids: ");
-        utils::logUnorderedMap(winning_bids_k, robot);
+        robot.log_info("Winning bids matrix: ");
+        utils::log2DVector(winning_bids_matrix_k, robot);
         robot.log_info("Timestamps: ");
         utils::logUnorderedMap(timestamps_k, robot);
 
+        robot.log_info("before test");
         if (do_test) {
-            testResolveConflicts(id_i, message_queue_i, winners_i, winning_bids_i, timestamps_i,
-                                 id_k, winners_k, winning_bids_k, timestamps_k);
+            robot.log_info("Testing resolveConflicts...");
+            testResolveConflicts(id_i, message_queue_i, winning_bids_matrix_i, timestamps_i,
+                                 id_k, winning_bids_matrix_k, timestamps_k);
         }
+        
+        for (int task_id = 1; task_id <= num_tasks; ++task_id) { // For each task
+            std::string t1 = "Task_j: " + std::to_string(task_id);
+            robot.log_info(t1);
+            int task_idx = task_id - 1;
+            int full_group_size = world.getTaskGroupSize(task_id);
 
-        for (auto& [j, winner_ij] : winners_i) {
-            int winner_kj = winners_k[j];
+            if (full_group_size == 1) { // if task is solo
+                // Do CBBA like before, but access winning_bids_matrix instead of winners and winning_bids maps
 
-            auto ts_k_m = [&](int m) {
-                return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
-            };
-
-            auto ts_i_m = [&](int m) {
-                return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
-            };
-
-            if (winner_ij == winner_kj) {
-                if (winner_ij == id_k) {
-                    update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                } else if (winner_ij != -1 && winner_ij != id_i) {
-                    int m = winner_ij;
-                    if (ts_k_m(m) > ts_i_m(m)) {
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                // Find winners and winning_bids to compare
+                int winner_ij = -1, winner_kj = -1;
+                double winning_bid_ij = 0.0, winning_bid_kj = 0.0;
+                for (int agent_idx = 0; agent_idx < num_agents; ++agent_idx) { // for each agent
+                    // Check i's matrix
+                    if (winner_ij == -1 && winning_bids_matrix_i[task_idx][agent_idx] > 0) {
+                        winner_ij = agent_idx + 1;
+                        winning_bid_ij = winning_bids_matrix_i[task_idx][agent_idx];
+                    }
+                    
+                    // Check k's matrix
+                    if (winner_kj == -1 && winning_bids_matrix_k[task_idx][agent_idx] > 0) {
+                        winner_kj = agent_idx + 1;
+                        winning_bid_kj = winning_bids_matrix_k[task_idx][agent_idx];
+                    }
+                    
+                    // Once solo task info (winner and winning bid) found for both i and k, stop
+                    if (winner_ij != -1 && winner_kj != -1) {
+                        break;
                     }
                 }
 
-            } else if (winner_kj == id_k) {
-                robot.log_info("winner_kj == id_k: ");
-                robot.log_info(std::to_string(id_k));
-                if (winner_ij == id_i) {
-                    if (winning_bids_k[j] > winning_bids_i[j]) {
-                        robot.log_info("k thinks k, i thinks i, k has higher bid so update");
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    }
-                } else if (winner_ij == -1) {
-                    robot.log_info("k thinks k, i does not know (-1), so update");
-                    update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                } else {
-                    int m = winner_ij;
-                    std::string blorpl2 = "id_m in resolveConflicts: " + std::to_string(m);
-                    robot.log_info(blorpl2);
-                    if (ts_k_m(m) > ts_i_m(m) || winning_bids_k[j] > winning_bids_i[j]) {
-                        robot.log_info("k thinks k, i thinks m, k timestamp more recent and k bid higher, so update");
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    }
-                }
+                // Prints for testing
+                std::string winner_bid_print = "winner_ij: " + std::to_string(winner_ij) 
+                                + "\nwinner_kj: " + std::to_string(winner_kj)
+                                + "\nwinning_bid_ij: " + std::to_string(winning_bid_ij)
+                                + "\nwinning_bid_kj: " + std::to_string(winning_bid_kj);
+                robot.log_info(winner_bid_print);
 
-            } else if (winner_kj == id_i) {
-                if (winner_ij == id_k) {
-                    reset(j, winners_i, winning_bids_i);
-                } else if (winner_ij != -1) {
-                    int m = winner_ij;
-                    if (ts_k_m(m) > ts_i_m(m)) {
-                        reset(j, winners_i, winning_bids_i);
-                    }
-                }
-
-            } else if (winner_kj != -1) {
-                int m = winner_kj;
-
-                if (winner_ij == id_i) {
-                    if (ts_k_m(m) > ts_i_m(m) && winning_bids_k[j] > winning_bids_i[j]) {
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    }
-                } else if (winner_ij == id_k) {
-                    if (ts_k_m(m) > ts_i_m(m)) {
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    } else {
-                        reset(j, winners_i, winning_bids_i);
-                    }
-                } else if (winner_ij == -1) {
-                    if (ts_k_m(m) > ts_i_m(m)) {
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    }
-                } else {
-                    int n = winner_ij;
-                    if (ts_k_m(m) > ts_i_m(m) &&
-                        (ts_k_m(n) > ts_i_m(n) || winning_bids_k[j] > winning_bids_i[j])) {
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    } else if (ts_k_m(n) > ts_i_m(n) && ts_i_m(m) > ts_k_m(m)) {
-                        reset(j, winners_i, winning_bids_i);
-                    }
-                }
-
-            } else if (winner_kj == -1) {
-                if (winner_ij == id_k) {
-                    update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                } else if (winner_ij != id_i && winner_ij != -1) {
-                    int m = winner_ij;
-                    if (ts_k_m(m) > ts_i_m(m)) {
-                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
-                    }
-                }
+                // Run CBBA for given solo task (updating matrix for CBGA)
+                runCBBAresolveConflicts(task_id, id_i, id_k, winner_ij, winner_kj, winning_bid_ij, winning_bid_kj, timestamps_i, timestamps_k, winning_bids_matrix_i, winning_bids_matrix_k);
             }
         }
 
-        if (true) {
-            robot.log_info("Current robot's winners, winning_bids and timestamps after resolveConflicts...");
-            utils::logUnorderedMap(winners_i, robot);
-            utils::logUnorderedMap(winning_bids_i, robot);
-            utils::logUnorderedMap(timestamps_i, robot);
-        }
     }
 
-    /*robot.log_info("Timestamps AFTER change in CBGA::resolveConflicts:");
-    utils::logUnorderedMap(timestamps_i, robot);
-*/
-    message_queue_i.clear();
+    robot.log_info("End resolveConflicts: results following...");
+    std::string bla2 = "Current robot " + std::to_string(id_i) + " (winning_bids_matrix):";
+    robot.log_info(bla2);
+    utils::log2DVector(winning_bids_matrix_i, robot);
+    //utils::logUnorderedMap(timestamps_i, robot);
+
 }
 
-/*void CBGA::resolveConflicts(bool do_test) {
+// void CBGA::resolveConflictsOld(bool do_test) {
 
-    // THIS SHOULD BE IDENTICAL FUNCTIONALLY TO THE ABOVE UNCOMMENTED VERSION EXCEPT:
-    // above we do not directly access timestamps[bla] becaues it will default give a value of 0 for keys that don't exist (aka self id i)
+//     // Should be identical to previous resolveConflicts but without direct timestamps[bla] accessing 
+//     // to avoid default 0 creation for non-existence keys (i.e., self id i)
+//     // Have not confirmed it being identical by rerunning all the tests in testResolveConflicts
 
-    // Given communication between at least two agents, check for conflicts in shared info
-    // Option 1: Update agent i's y (winning bids) and z (winners) with agent k's
-    // Option 2: Reset agent i's y and z's (to empty/0)
-    // Option 3: Leave aka no changes
-    // Following table 1
-    // ACTION RULE FOR AGENT i (receiver, current) BASED ON COMMUNICATION WITH AGENT k (sender, other) REGARDING TASK j
+//     int id_i = robot.getID(); 
+//     std::vector<Msg>& message_queue_i = robot.getMessageQueue();
+//     std::unordered_map<int, int>& winners_i = robot.getWinners();
+//     std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
+//     std::unordered_map<int, double>& timestamps_i = robot.getTimestamps();
 
-    // Current robot i
-    int id_i = robot.getID(); 
-    std::vector<Msg>& message_queue_i = robot.getMessageQueue();
-    std::unordered_map<int, int>& winners_i = robot.getWinners();
-    std::unordered_map<int, double>& winning_bids_i = robot.getWinningBids();
-    std::unordered_map<int,double>& timestamps_i = robot.getTimestamps();
+//     /*robot.log_info("Timestamps BEFORE change in CBGA::resolveConflicts:");
+//     utils::logUnorderedMap(timestamps_i, robot);*/
 
-    robot.log_info("Timestamps BEFORE change in CBGA::resolveConflicts:");
-    utils::logUnorderedMap(timestamps_i,robot);
+//     std::string blorpl = "id_i in resolveConflicts: " + std::to_string(id_i);
+//     robot.log_info(blorpl);
 
-    std::string blorp = "Size of message queue: " + std::to_string(message_queue_i.size());
-    robot.log_info(blorp);
+//     robot.log_info("Current robot's winners, winning_bids and timestamps before resolveConflicts...");
+//     utils::logUnorderedMap(winners_i, robot);
+//     utils::logUnorderedMap(winning_bids_i, robot);
+//     utils::logUnorderedMap(timestamps_i, robot);
 
+//     for (auto& msg : message_queue_i) { // resolve Conflicts with all other robots in comms that have sent messages
+//         int id_k = msg.id;
+//         std::unordered_map<int, int>& winners_k = msg.winners;
+//         std::unordered_map<int, double>& winning_bids_k = msg.winning_bids;
+//         std::unordered_map<int, double>& timestamps_k = msg.timestamps;
 
-    for (auto& msg : message_queue_i) {
-        int id_k = msg.id;
-        std::unordered_map<int, int> winners_k = msg.winners;
-        std::unordered_map<int, double> winning_bids_k = msg.winning_bids;
-        std::unordered_map<int, double> timestamps_k = msg.timestamps;
+//         std::string bla = "Message from robot " + std::to_string(id_k) + ":";
+//         robot.log_info(bla);
+//         robot.log_info("Winners: ");
+//         utils::logUnorderedMap(winners_k, robot);
+//         robot.log_info("Winning bids: ");
+//         utils::logUnorderedMap(winning_bids_k, robot);
+//         robot.log_info("Timestamps: ");
+//         utils::logUnorderedMap(timestamps_k, robot);
 
-        // For reference in log file
-        robot.log_info("Current robot's winners, winning_bids and timestamps after resolveConflicts...");
-        utils::logUnorderedMap(winners_i, robot);
-        utils::logUnorderedMap(winning_bids_i, robot);
-        utils::logUnorderedMap(timestamps_i, robot);
+//         if (do_test) {
+//             testResolveConflicts(id_i, message_queue_i, winners_i, winning_bids_i, timestamps_i,
+//                                  id_k, winners_k, winning_bids_k, timestamps_k);
+//         }
 
-        std::string bla = "Message from robot " + std::to_string(id_k) + ":";
-        robot.log_info(bla);
-        robot.log_info("Winners: ");
-        utils::logUnorderedMap(winners_k,robot);
-        robot.log_info("Winning bids: ");
-        utils::logUnorderedMap(winning_bids_k,robot);
-        robot.log_info("Timestamps: ");
-        utils::logUnorderedMap(timestamps_k,robot);
+//         for (auto& [j, winner_ij] : winners_i) {
+//             int winner_kj = winners_k[j];
 
+//             auto ts_k_m = [&](int m) {
+//                 return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
+//             };
 
-        if (do_test) {
-            // This will change parts of these vectors/unordered maps to test different parts of the conflict resolution logic
-            testResolveConflicts(id_i, message_queue_i, winners_i, winning_bids_i, timestamps_i,
-                                id_k, winners_k, winning_bids_k, timestamps_k);
-        }
+//             auto ts_i_m = [&](int m) {
+//                 return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
+//             };
 
-        for (auto& [j, winner_ij] : winners_i) { // Looping all tasks j
-            if (winner_ij == winners_k[j]) { // CASE 1: If i and k agree about winner of task j
-                if (winner_ij == id_k) { // If winner is k
-                    update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                }
-                else if (winner_ij != -1 and winner_ij != id_i) { // If winner is another, m (not i or k)
-                    int m = winner_ij;
-                    if (timestamps_k[m] > timestamps_i[m]) {
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                    }
-                }
-                // If winner is i or unsure, leave (no change)
+//             if (winner_ij == winner_kj) {
+//                 if (winner_ij == id_k) {
+//                     update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                 } else if (winner_ij != -1 && winner_ij != id_i) {
+//                     int m = winner_ij;
+//                     if (ts_k_m(m) > ts_i_m(m)) {
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     }
+//                 }
 
+//             } else if (winner_kj == id_k) {
+//                 robot.log_info("winner_kj == id_k: ");
+//                 robot.log_info(std::to_string(id_k));
+//                 if (winner_ij == id_i) {
+//                     if (winning_bids_k[j] > winning_bids_i[j]) {
+//                         robot.log_info("k thinks k, i thinks i, k has higher bid so update");
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     }
+//                 } else if (winner_ij == -1) {
+//                     robot.log_info("k thinks k, i does not know (-1), so update");
+//                     update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                 } else {
+//                     int m = winner_ij;
+//                     std::string blorpl2 = "id_m in resolveConflicts: " + std::to_string(m);
+//                     robot.log_info(blorpl2);
+//                     if (ts_k_m(m) > ts_i_m(m) || winning_bids_k[j] > winning_bids_i[j]) {
+//                         robot.log_info("k thinks k, i thinks m, k timestamp more recent and k bid higher, so update");
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     }
+//                 }
 
-            } else if (winners_k[j] == id_k) { // CASE 2: They don't agree and k thinks it is the winner of task j
-                if (winner_ij == id_i && winning_bids_k[j] > winning_bids_i[j]) { // If i thinks i
-                    update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                } else if (winner_ij == -1) { // If i is unsure
-                    update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                } else { // If i thinks m
-                    int m = winner_ij;
-                    if (timestamps_k[m] > timestamps_i[m] || winning_bids_k[j] > winning_bids_i[j]) {
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                    } 
+//             } else if (winner_kj == id_i) {
+//                 if (winner_ij == id_k) {
+//                     reset(j, winners_i, winning_bids_i);
+//                 } else if (winner_ij != -1) {
+//                     int m = winner_ij;
+//                     if (ts_k_m(m) > ts_i_m(m)) {
+//                         reset(j, winners_i, winning_bids_i);
+//                     }
+//                 }
 
-                }
-                
-            } else if (winners_k[j] == id_i) { // CASE 3: They don't agree and k thinks i should be the winner of task j
-                if (winner_ij == id_k) { // If i thinks k
-                    reset(j, winners_i, winning_bids_i);
-                } else if (winner_ij != -1) { // If i thinks m
-                    int m = winner_ij;
-                    if (timestamps_k[m] > timestamps_i[m]) {
-                        reset(j, winners_i, winning_bids_i);
-                    }
-                }
-                // If i is unsure, leave (no change)
+//             } else if (winner_kj != -1) {
+//                 int m = winner_kj;
 
-            } else if (winners_k[j] != -1) { // CASE 4: They don't agree and k thinks another agent m (not i or k) wins task j
-                // Only other option is unsure aka -1, so if not -1, then must be another id m
+//                 if (winner_ij == id_i) {
+//                     if (ts_k_m(m) > ts_i_m(m) && winning_bids_k[j] > winning_bids_i[j]) {
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     }
+//                 } else if (winner_ij == id_k) {
+//                     if (ts_k_m(m) > ts_i_m(m)) {
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     } else {
+//                         reset(j, winners_i, winning_bids_i);
+//                     }
+//                 } else if (winner_ij == -1) {
+//                     if (ts_k_m(m) > ts_i_m(m)) {
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     }
+//                 } else {
+//                     int n = winner_ij;
+//                     if (ts_k_m(m) > ts_i_m(m) &&
+//                         (ts_k_m(n) > ts_i_m(n) || winning_bids_k[j] > winning_bids_i[j])) {
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     } else if (ts_k_m(n) > ts_i_m(n) && ts_i_m(m) > ts_k_m(m)) {
+//                         reset(j, winners_i, winning_bids_i);
+//                     }
+//                 }
 
-                if (do_test) {robot.log_info("in else for k thinks m");}
+//             } else if (winner_kj == -1) {
+//                 if (winner_ij == id_k) {
+//                     update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                 } else if (winner_ij != id_i && winner_ij != -1) {
+//                     int m = winner_ij;
+//                     if (ts_k_m(m) > ts_i_m(m)) {
+//                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+//                     }
+//                 }
+//             }
+//         }
 
-                int m = winners_k[j];
+//         if (true) {
+//             robot.log_info("Current robot's winners, winning_bids and timestamps after resolveConflicts...");
+//             utils::logUnorderedMap(winners_i, robot);
+//             utils::logUnorderedMap(winning_bids_i, robot);
+//             utils::logUnorderedMap(timestamps_i, robot);
+//         }
+//     }
 
-                if (winner_ij == id_i) { // If i thinks i
-                    if (timestamps_k[m] > timestamps_i[m] && winning_bids_k[j] > winning_bids_i[j]) { 
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);   
-                    } 
-                } else if (winner_ij == id_k) { // If i thinks k
-                    if (timestamps_k[m] > timestamps_i[m]) {
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                    } else {
-                        reset(j, winners_i, winning_bids_i);
-                    }
-                } else if (winner_ij == -1) { // If i is unsure
-                    if (timestamps_k[m] > timestamps_i[m]) {
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                    }
+//     /*robot.log_info("Timestamps AFTER change in CBGA::resolveConflicts:");
+//     utils::logUnorderedMap(timestamps_i, robot);
+// */
+//     message_queue_i.clear();
+// }
 
-                } else { // If i thinks another unique robot n (not i k or m)
-                    int n = winner_ij;
-                    if (timestamps_k[m] > timestamps_i[m] && ( timestamps_k[n] > timestamps_i[n] || winning_bids_k[j] > winning_bids_i[j])) {
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                    } else if (timestamps_k[n] > timestamps_i[n] && timestamps_i[m] > timestamps_k[m]) {
-                        reset(j, winners_i, winning_bids_i);
-                    }
-                }
+void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
+    std::vector<std::vector<double>>& winning_bids_matrix_i, std::unordered_map<int,double>& timestamps_i,
+    int id_k, std::vector<std::vector<double>>& winning_bids_matrix_k, std::unordered_map<int,double>& timestamps_k) {
 
-            } else if (winners_k[j] == -1) { // CASE 5: They don't agree and k is unsure
-
-                if (do_test) {robot.log_info("in else for k is unsure");}
-
-                if (winner_ij == id_k) { // If i thinks k
-                    update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                } else if (winner_ij != id_i && winner_ij != -1) { // If i thinks m
-                    int m = winner_ij;
-                    if (timestamps_k[m] > timestamps_i[m]) {
-                        update(j,winners_i,winners_k,winning_bids_i,winning_bids_k);
-                    }
-                }
-                // If i thinks i, leave (no change)
-
-            }
-        }
-
-        // (do_test)
-        if (true) {
-            robot.log_info("Current robot's winners and winning_bids after resolveConflicts...");
-            utils::logUnorderedMap(winners_i, robot);
-            utils::logUnorderedMap(winning_bids_i, robot);
-
-        }
-
-
-    }
-
-    robot.log_info("Timestamps AFTER change in CBGA::resolveConflicts:");
-    utils::logUnorderedMap(timestamps_i,robot);
-
-    message_queue_i.clear(); // Remove messages from robot i's queue because they have been processed (info is no longer new)
-
-}*/
-
-// inputs: robot i winners, winning_bids, message_queue (to get msg's from each k), timestamps
-void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::unordered_map<int, int>& winners_i, 
-    std::unordered_map<int, double>& winning_bids_i, std::unordered_map<int,double>& timestamps_i,
-    int id_k, std::unordered_map<int, int>& winners_k, 
-    std::unordered_map<int, double>& winning_bids_k, std::unordered_map<int,double>& timestamps_k) {
+    // To test BT must at least have comms node before cbga resolveConflicts node in BT xml
 
     robot.log_info("Before testResolveConflicts changes anything for testing...");
     std::string bla = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";
     robot.log_info(bla);
-    utils::logUnorderedMap(winners_i, robot);
-    utils::logUnorderedMap(winning_bids_i, robot);
+    utils::log2DVector(winning_bids_matrix_i, robot);
     utils::logUnorderedMap(timestamps_i, robot);
     std::string bla1 = "Other robot " + std::to_string(id_k) + " (winners, winning_bids, timestamps):";
     robot.log_info(bla1);
-    utils::logUnorderedMap(winners_k, robot);            
-    utils::logUnorderedMap(winning_bids_k, robot);
+    utils::log2DVector(winning_bids_matrix_k, robot);
     utils::logUnorderedMap(timestamps_k, robot);
- 
+
+    // Assume i is 1 and k is 2 //
+
+    int task_j = 2; //1; // This is random
 
     // ***** TEST 1: If robot i and robot k agree on winner of some task j
-    int task_j = 2; //1; // This is random
+
+    // Test 1.A 
+    // They agree on k winning for task j (this should result in update of winners and winning bids for robot i) - CBGA version PASSED
+    // i thinks k wins task task j
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 10.0;
+
+
+    // Test 1.B
+    // They agree on i winning for task j - Should result in no change - CBGA version PASSED
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 10.0;
+
+    // Test 1.C
+    // They are both unsure who should win task j - Should result in no change - CBGA version PASSED
+    // Added irrelevant nums (wrt task 2) to differentiate result, all zeros because unsure for task 2
+   /* winning_bids_matrix_i = {
+        //  R1    R2    R3
+        { 0.0,  0.0,  0.0},  // Task 1, solo
+        { 0.0,  0.0,  0.0},  // Task 2, solo 
+        { 0.0,  0.0,  0.0},  // Task 3, solo
+        { 0.0,  0.0,  0.0},  // Task 4 (no winners), solo
+        { 0.0,  0.0,  0.0}   // Task 5 (no winners), co-op
+    };
+    // k thinks k wins task j
+    winning_bids_matrix_k = {
+        //  R1    R2    R3
+        { 0.0,  0.0,  0.0},  // Task 1, solo
+        { 0.0,  0.0,  0.0},  // Task 2, solo 
+        { 0.0,  0.0,  0.0},  // Task 3, solo
+        { 0.0,  0.0,  0.0},  // Task 4 (no winners), solo
+        { 0.0,  0.0,  0.0}   // Task 5 (no winners), co-op
+    };*/
+
+    // Test 1.D
+    // They agree on another robot m winning for task j (not i or k) (result depends on timestamp - see 2 cases below)
+    // Let's choose m = 3 (technically testing with just 2 robots for simplicity so manufacturing this)
+    // int id_m = 3;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 10.0;
+
+    // 1.D.1 - Should result in update because km timestamp more recent - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+
+    // 1.D.2 - Should result in no change because im timestamp more recent - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+
+    // ***** Test 2: If robot i and robot k don't agree and k thinks k is winner of task j
+    // index k matrix with id_k-1
+
+    //  // Test 2.A
+    // i thinks i and k thinks k - Result depends on winning bids
+    // index i matrix with id_i-1
+
+    // 2.A.1 - Should result in update because k winning bid higher than i winning bid - CBGA version PASSED
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 10.0;
+
+    // 2.A.2 - Should result in no change because i winning bid higher than k winning bid - CBGA version PASSED
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 5.0;
+
+    // Test 2.B
+    // i is unsure - Should result in update (winners, winning bids) in every case - CBGA version PASSED
+    // winning_bids_matrix_i = {
+    //     //  R1    R2    R3
+    //     { 0.0,  0.0,  0.0},  // Task 1, solo
+    //     { 0.0,  0.0,  0.0},  // Task 2, solo 
+    //     { 0.0,  0.0,  0.0},  // Task 3, solo
+    //     { 0.0,  0.0,  0.0},  // Task 4 (no winners), solo
+    //     { 0.0,  0.0,  0.0}   // Task 5 (no winners), co-op
+    // };
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 5.0; // here just to observe update
+
+    // Test 2.C 
+    // i thinks another robot m
+    //int id_m = 3;
+
+    // 2.C.1 - Should result in update because k has higher timestamp from m (even though lower bid for j) - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 5.0;
+
+    // 2.C.2 - Should result in update because k has higher timestamp from m and k has higher bid for j - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 10.0;
+
+    // 2.C.3 - Should result in no change because i has higher timestamp and bid - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 5.0;
+
+    // 2.C.4 - Should result in update because k has higher bid for j (even though lower timestamp) - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 10.0;
+
+     // ***** Test 3: If robot i and robot k don't agree and k thinks i is winner of task j
+    start here
+
+
+    // ********** Rewriting the below tests for CBGA (but solo tasks) above ********** //
+
+    // ***** TEST 1: If robot i and robot k agree on winner of some task j
+    //int task_j = 2; //1; // This is random
 
     //  // Test 1.A 
     // They agree on k winning for task j (this should result in update of winners and winning bids for robot i) - PASSED
@@ -1434,19 +1605,19 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
     timestamps_k[id_m] = 2;*/
 
     // ***** Test 2: If robot i and robot k don't agree and k thinks k is winner of task j
-    winners_k[task_j] = id_k; // UNCOMMENT part 1/3
+    // winners_k[task_j] = id_k; // UNCOMMENT part 1/3
 
     //  // Test 2.A
     // i thinks i and k thinks k - Result depends on winning bids
-    winners_i[task_j] = id_i;
+    // winners_i[task_j] = id_i;
 
     // 2.A.1 - Should result in update because k winning bid higher than i winning bid - PASSED
     /*winning_bids_i[task_j] = 5;
     winning_bids_k[task_j] = 10;*/
 
     // 2.A.2 - Should result in no change because i winning bid higher than k winning bid - PASSED
-    winning_bids_i[task_j] = 4.37521; // 10;
-    winning_bids_k[task_j] =  4.36367; // 5;
+    // winning_bids_i[task_j] = 4.37521; // 10;
+    // winning_bids_k[task_j] =  4.36367; // 5;
 
     //  // Test 2.B
     // i is unsure - Should result in update (winners, winning bids) in every case
@@ -1637,13 +1808,11 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
     robot.log_info("After testResolveConflicts changes things for testing...");
     std::string bla2 = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";
     robot.log_info(bla2);
-    utils::logUnorderedMap(winners_i, robot);
-    utils::logUnorderedMap(winning_bids_i, robot);
+    utils::log2DVector(winning_bids_matrix_i, robot);
     utils::logUnorderedMap(timestamps_i, robot);
     std::string bla3 = "Other robot " + std::to_string(id_k) + " (winners, winning_bids, timestamps):";
     robot.log_info(bla3);
-    utils::logUnorderedMap(winners_k, robot);            
-    utils::logUnorderedMap(winning_bids_k, robot);
+    utils::log2DVector(winning_bids_matrix_k, robot);
     utils::logUnorderedMap(timestamps_k, robot);
 
 }

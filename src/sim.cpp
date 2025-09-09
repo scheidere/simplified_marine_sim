@@ -210,12 +210,13 @@
 </root>
 )";*/
 
-// Debugging CBGA bundleAdd seg fault only
+// Debugging CBGA resolveConflicts
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <Sequence>
-            <BuildBundle do_cbga="true" />
+            <Communicate/>
+            <ResolveConflicts do_cbga="true" />
         </Sequence>
      </BehaviorTree>
 </root>
