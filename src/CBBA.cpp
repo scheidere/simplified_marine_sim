@@ -1304,7 +1304,7 @@ void CBBA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue, std::
     timestamps_k[id_m] = 3;*/
 
     //  // Test 4.D
-    // is thinks another robot n
+    // i thinks another robot n
     /*int id_n = 4;
     winners_i[task_j] = id_n;*/
 

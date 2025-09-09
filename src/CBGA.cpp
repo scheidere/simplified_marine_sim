@@ -1073,6 +1073,8 @@ void CBGA::update(int task_id_j, std::vector<std::vector<double>>& winning_bids_
     // winning_bids_matrix[task_id_j-1][winner_ij-1] = 0.0; // Clear old info, needed if winner_ij != winner_kj
     // winning_bids_matrix_i[task_id_j-1][winner_kj-1] = winning_bids_matrix_k[j-1][winner_id-1]; // Update per k's info
 
+    robot.log_info("in update");
+
     winning_bids_matrix_i[task_id_j-1] = winning_bids_matrix_k[task_id_j-1];
 
 }
@@ -1081,6 +1083,8 @@ void CBGA::reset(int task_id_j, std::vector<std::vector<double>>& winning_bids_m
 
     // not yet updated for CBGA
     // not yet tested for CBGA
+
+    robot.log_info("in reset");
 
     //winners_i[j] = -1; winning_bids_i[j] = 0.0;
     std::fill(winning_bids_matrix_i[task_id_j-1].begin(), 
@@ -1097,6 +1101,12 @@ void CBGA::runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int
         // 2. Updating winning bid matrix instead of winners and winning bids maps
 
     // j is task id
+
+    // std::string hi = "id_i: " + std::to_string(id_i);
+    // robot.log_info(hi);
+    // std::string hi2 = "id_k: " + std::to_string(id_k);
+    // robot.log_info(hi2);
+
 
     // Define k timestamp lambda function for easy access below
     auto ts_k_m = [&](int m) {
@@ -1166,6 +1176,8 @@ void CBGA::runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int
         } else if (winner_ij == -1) {
             if (ts_k_m(m) > ts_i_m(m)) {
                 update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            } else {
+                robot.log_info("here4 - no change");
             }
         } else {
             int n = winner_ij;
@@ -1176,6 +1188,8 @@ void CBGA::runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int
             } else if (ts_k_m(n) > ts_i_m(n) && ts_i_m(m) > ts_k_m(m)) {
                 robot.log_info("here2");
                 reset(j, winning_bids_matrix_i);
+            } else {
+                robot.log_info("here 3 - no change");
             }
         }
 
@@ -1441,6 +1455,8 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     int id_k, std::vector<std::vector<double>>& winning_bids_matrix_k, std::unordered_map<int,double>& timestamps_k) {
 
     // To test BT must at least have comms node before cbga resolveConflicts node in BT xml
+    // Also must have 4 robots defined in input for some tests (i,k,m,n)
+    // Would technically need to add a dimension to explicitly defined matrices below that only go up to R3, but technically can see passes without for most
 
     robot.log_info("Before testResolveConflicts changes anything for testing...");
     std::string bla = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";
@@ -1561,249 +1577,205 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_i[task_j-1][id_m-1] = 5.0;
     // winning_bids_matrix_k[task_j-1][id_k-1] = 10.0;
 
-     // ***** Test 3: If robot i and robot k don't agree and k thinks i is winner of task j
-    start here
-
-
-    // ********** Rewriting the below tests for CBGA (but solo tasks) above ********** //
-
-    // ***** TEST 1: If robot i and robot k agree on winner of some task j
-    //int task_j = 2; //1; // This is random
-
-    //  // Test 1.A 
-    // They agree on k winning for task j (this should result in update of winners and winning bids for robot i) - PASSED
-    /*winners_i[task_j] = id_k;
-    winners_k[task_j] = id_k;
-    winning_bids_k[task_j] = 10;*/ // Making it different so we see an update if it happens (as it should)
-    
-    //  // Test 1.B
-    // They agree on i winning for task j - Should result in no change - PASSED
-    /*winners_i[task_j] = id_i;
-    winners_k[task_j] = id_i;
-    winning_bids_k[task_j] = 10;*/
-
-    //  // Test 1.C
-    // They are both unsure who should win task j - Should result in no change - PASSED
-    /*winners_i[task_j] = -1;
-    winners_k[task_j] = -1;
-    winning_bids_k[task_j] = 10;*/
-
-    //  // Test 1.D
-    // They agree on another robot m winning for task j (not i or k) (result depends on timestamp - see 2 cases below)
-    // Let's choose m = 3 (technically testing with just 2 robots for simplicity so manufacturing this)
-    /*int id_m = 3;
-    winners_i[task_j] = id_m;
-    winners_k[task_j] = id_m;
-    winning_bids_k[task_j] = 10;*/
-
-    // 1.D.1 - Should result in update because km timestamp more recent - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;*/
-
-    // 1.D.2 - Should result in no change because im timestamp more recent - PASSED
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;*/
-
-    // ***** Test 2: If robot i and robot k don't agree and k thinks k is winner of task j
-    // winners_k[task_j] = id_k; // UNCOMMENT part 1/3
-
-    //  // Test 2.A
-    // i thinks i and k thinks k - Result depends on winning bids
-    // winners_i[task_j] = id_i;
-
-    // 2.A.1 - Should result in update because k winning bid higher than i winning bid - PASSED
-    /*winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
-
-    // 2.A.2 - Should result in no change because i winning bid higher than k winning bid - PASSED
-    // winning_bids_i[task_j] = 4.37521; // 10;
-    // winning_bids_k[task_j] =  4.36367; // 5;
-
-    //  // Test 2.B
-    // i is unsure - Should result in update (winners, winning bids) in every case
-    /*winners_i[task_j] = -1;
-    winning_bids_i[task_j] = -1; // Here just to observe update
-    winning_bids_k[task_j] = 5;*/ // Here just to observe update
-
-    //  // Test 2.C 
-    // UNCOMMENT part 2/3 (example)
-    // i thinks another robot m
-    /*int id_m = 3;
-    winners_i[task_j] = id_m;*/
-
-    // 2.C.1 - Should result in update because k has higher timestamp from m (even though lower bid for j) - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;
-    winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 5;*/
-
-    // 2.C.2 - Should result in update because k has higher timestamp from m and k has higher bid for j - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;
-    winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
-
-    // 2.C.3 - Should result in no change because i has higher timestamp and bid - PASSED
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;
-    winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 5;*/
-
-    // 2.C.4 - Should result in update because k has higher bid for j (even though lower timestamp) - PASSED
-    // UNCOMMENT part 3/3 (example)
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;
-    winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
-
     // ***** Test 3: If robot i and robot k don't agree and k thinks i is winner of task j
-    //winners_k[task_j] = id_i; // UNCOMMENT part 1/3
+    // winning_bids_matrix_k[task_j-1][id_i-1]
 
     //  // Test 3.A
-    // i thinks k - Should result in reset - PASSED
-    //winners_i[task_j] = id_k;
+    // i thinks k - Should result in reset - CBGA version PASSED
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 1.0; // num irrelevant in this case
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 1.0; // num irrelevant in this case
 
     //  // Test 3.B
     // i thinks another robot m;
-    // UNCOMMENT part 2/3 (example)
-    /*int id_m = 3;
-    winners_i[task_j] = id_m;*/
+    //int id_m = 3;
 
-    // 3.B.1 - Should not change because i has more recent info from m - PASSED
-    // UNCOMMENT part 3/3 (example)
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;*/
+    // 3.B.1 - Should not change because i has more recent info from m - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 1.0; // num irrelevant in this case
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 1.0; // num irrelevant in this case
 
-    // 3.B.2 - Should reset because k has more recent info from m - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;*/
+    // 3.B.2 - Should reset because k has more recent info from m - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 1.0; // num irrelevant in this case
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 1.0; // num irrelevant in this case
 
     //  // Test 3.C
-    // i is unsure - Should result in no change - PASSED
-    //winners_i[task_j] = -1;
+    // i is unsure - Should result in no change - CBGA version PASSED
+    // winning_bids_matrix_i = {
+    //     //  R1    R2    R3
+    //     { 0.0,  0.0,  0.0},  // Task 1, solo
+    //     { 0.0,  0.0,  0.0},  // Task 2, solo 
+    //     { 0.0,  0.0,  0.0},  // Task 3, solo
+    //     { 0.0,  0.0,  0.0},  // Task 4 (no winners), solo
+    //     { 0.0,  0.0,  0.0}   // Task 5 (no winners), co-op
+    // };
+    // winning_bids_matrix_i[3][id_i-1] = 4.0; // irrelevant (affects task 3 not chosen 2), just adding to differentiate between no change and reset, since no change should occur
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 1.0; // num irrelevant in this case
+
 
     // ***** Test 4: If robot i and robot k don't agree and k thinks another robot m is winner of task j
-    // UNCOMMENT part 1/3
-    /*int id_m = 3;
-    winners_k[task_j] = id_m;*/
+    // int id_m = 3; // ####
 
     //  // Test 4.A
     // i thinks i
-    //winners_i[task_j] = id_i; // UNCOMMENT part 2/3 (example)
 
-    // 4.A.1 - Should result in no change - PASSED
-    // UNCOMMENT part 3/3 (example)
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;
-    winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
+    // 4.A.1 - Should result in no change - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 10.0;
 
 
-    // 4.A.2 - Should result in update - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;
-    winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
+    // 4.A.2 - Should result in update - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 10.0;
 
-    // 4.A.3 - Should result in no change - PASSED
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;
-    winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 5;*/
+    // 4.A.3 - Should result in no change - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 5.0;
 
 
-    // 4.A.4 - Should result in no change - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;
-    winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 5;*/
-
+    // 4.A.4 - Should result in no change - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 5.0;
 
     //  // Test 4.B
     // i thinks k
-    //winners_i[task_j] = id_k;
 
-    // 4.B.1 - Should result in reset - PASSED
-    // UNCOMMENT part 3/3 (example)
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;*/
+    // 4.B.1 - Should result in reset - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 1.0; // num irrelevant in this case
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 1.0; // num irrelevant in this case
 
-    // 4.B.2 - Should result in update - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;*/
+    // 4.B.2 - Should result in update - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 1.0; // num irrelevant in this case
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 1.0; // num irrelevant in this case
 
     //  // Test 4.C
     // i is unsure
-    //winners_i[task_j] = -1;
 
-    // 4.C.1 - Should result in no change - PASSED
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;*/
+    // 4.C.1 - Should result in no change - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+    // winning_bids_matrix_i = {
+    //     //  R1    R2    R3
+    //     { 0.0,  0.0,  0.0},  // Task 1, solo
+    //     { 0.0,  0.0,  0.0},  // Task 2, solo 
+    //     { 0.0,  0.0,  0.0},  // Task 3, solo
+    //     { 0.0,  0.0,  0.0},  // Task 4 (no winners), solo
+    //     { 0.0,  0.0,  0.0}   // Task 5 (no winners), co-op
+    // };
+    // winning_bids_matrix_i[3][id_i-1] = 4.0; // irrelevant (affects task 3 not chosen 2), just adding to differentiate between no change and reset, since no change should occur
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 1.0; // num irrelevant in this case
 
-    // 4.C.2 - Should result in update - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;*/
+
+    // 4.C.2 - Should result in update - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    // winning_bids_matrix_i = {
+    //     //  R1    R2    R3
+    //     { 0.0,  0.0,  0.0},  // Task 1, solo
+    //     { 0.0,  0.0,  0.0},  // Task 2, solo 
+    //     { 0.0,  0.0,  0.0},  // Task 3, solo
+    //     { 0.0,  0.0,  0.0},  // Task 4 (no winners), solo
+    //     { 0.0,  0.0,  0.0}   // Task 5 (no winners), co-op
+    // };
+    // winning_bids_matrix_i[3][id_i-1] = 4.0; // irrelevant (affects task 3 not chosen 2), just adding to differentiate between no change and reset, since no change should occur
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 1.0; // num irrelevant in this case
 
     //  // Test 4.D
-    // is thinks another robot n
-    /*int id_n = 4;
-    winners_i[task_j] = id_n;*/
+    // i thinks another robot n
+    // int id_n = 4; // ####
 
-    // 4.D.1 - Should update since km and kn timestamp win over im and in respectively (k wins both timestamps) - PASSED
-    /*timestamps_i[id_m] = 2; 
-    timestamps_k[id_m] = 3; // k wins this
-    timestamps_i[id_n] = 2; 
-    timestamps_k[id_n] = 3; // and either k wins this
-    winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 5;*/ // or k wins this (but doesn't in this example)
+    // 4.D.1 - Should update since km and kn timestamp win over im and in respectively (k wins both timestamps) - CBGA version PASSED
+    // timestamps_i[id_m] = 2; 
+    // timestamps_k[id_m] = 3; // k wins this
+    // timestamps_i[id_n] = 2; 
+    // timestamps_k[id_n] = 3; // and either k wins this
+    // winning_bids_matrix_i[task_j-1][id_n-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 5.0; // or k wins this (but doesn't in this example)
 
 
-    // 4.D.2 - Should update since timestamp km > im and winning bid kj > ij (k wins m timestamp and winning bids) - PASSED
-    /*timestamps_i[id_m] = 2; 
-    timestamps_k[id_m] = 3; // k wins this
-    timestamps_i[id_n] = 3; 
-    timestamps_k[id_n] = 2; // and either k wins this (but doesn't in this example)
-    winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/ // or k wins this
+    // 4.D.2 - Should update since timestamp km > im and winning bid kj > ij (k wins m timestamp and winning bids) - CBGA version PASSED
+    // timestamps_i[id_m] = 2; 
+    // timestamps_k[id_m] = 3; // k wins this
+    // timestamps_i[id_n] = 3; 
+    // timestamps_k[id_n] = 2; // and either k wins this (but doesn't in this example)
+    // winning_bids_matrix_i[task_j-1][id_n-1] = 5.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 10.0; // or k wins this
 
-    // 4.D.3 - Should reset because i wins timestamp for m (but thinks n), and k wins timestamp for n (but thinks m) - PASSED
-    /*timestamps_i[id_m] = 3; // i wins this 
-    timestamps_k[id_m] = 2;
-    timestamps_i[id_n] = 2; 
-    timestamps_k[id_n] = 3; // and k wins this
-    // winning bids should be irrelevant so making them same
-    winning_bids_i[task_j] = 10;
-    winning_bids_k[task_j] = 10;*/
+    // 4.D.3 - Should reset because i wins timestamp for m (but thinks n), and k wins timestamp for n (but thinks m) - CBGA version PASSED
+    // timestamps_i[id_m] = 3; // i wins this 
+    // timestamps_k[id_m] = 2;
+    // timestamps_i[id_n] = 2; 
+    // timestamps_k[id_n] = 3; // and k wins this
+    // // winning bids should be irrelevant so making them same
+    // winning_bids_matrix_i[task_j-1][id_n-1] = 10.0;
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 10.0;
 
     // ***** Test 5: If robot i and robot k don't agree and k is unsure who should win task j
-    // UNCOMMENT part 1/3
-    //winners_k[task_j] = -1;
-
+    
     //  // Test 5.A
-    // i thinks i - Should be no change - PASSED
-    //winners_i[task_j] = id_i;
+    // i thinks i - Should be no change - CBGA version PASSED
+    //winning_bids_matrix_i[task_j-1][id_i-1] = 5.0;
+    // winning_bids_matrix_k = { // k unsure for task 2
+    //     // R1   R2    R3   R4
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 1, solo
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 2, solo 
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 3, solo
+    //     { 0.0,  0.0,  7.0, 0.0},  // Task 4 (no winners), solo
+    //     { 0.0,  0.0,  0.0, 0.0}   // Task 5 (no winners), co-op
+    // }; // Added 7 to irrelevant task (since we focus on task 2, just to show result if change)
+
 
     //  // Test 5.B
-    // i thinks k - Should update - PASSED
-    /*winners_i[task_j] = id_k;
-    winning_bids_i[task_j] = 5;
-    winning_bids_k[task_j] = 10;*/
-
+    // i thinks k - Should update - CBGA version PASSED
+    // std::string bl = "id_k test: " + std::to_string(id_k);
+    // robot.log_info(bl);
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 5.0;
+    // winning_bids_matrix_k = { // k unsure for task 2
+    //     // R1   R2    R3   R4
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 1, solo
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 2, solo 
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 3, solo
+    //     { 0.0,  0.0,  0.0, 0.0},  // Task 4 (no winners), solo
+    //     { 0.0,  0.0,  0.0, 0.0}   // Task 5 (no winners), co-op
+    // }; // had 7 for task 4 R3 win but it resulted in no update to ended up as zero in wbmatrix i anyway so leaving out, that's tested elsewhere
 
     //  // Test 5.C
     // i thinks m
-    /*int id_m = 3;
-    winners_i[task_j] = id_m; // UNCOMMENT part 2/3 (example)
-*/
-    // 5.C.1 - Should result in no change because i more confident and has more recent info from m - PASSED
-    // UNCOMMENT part 3/3 (example)
-    /*timestamps_i[id_m] = 3;
-    timestamps_k[id_m] = 2;*/
+    int id_m = 3;
+    winning_bids_matrix_i[task_j-1][id_m-1] = 5.0;
+    winning_bids_matrix_k = { // k unsure for task 2
+        // R1   R2    R3   R4
+        { 0.0,  0.0,  0.0, 0.0},  // Task 1, solo
+        { 0.0,  0.0,  0.0, 0.0},  // Task 2, solo 
+        { 0.0,  0.0,  0.0, 0.0},  // Task 3, solo
+        { 0.0,  0.0,  0.0, 0.0},  // Task 4 (no winners), solo
+        { 0.0,  0.0,  0.0, 0.0}   // Task 5 (no winners), co-op
+    };
 
-    // 5.C.2 - Should result in update since k has more recent info - PASSED
-    /*timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3;
-    */
+
+    // 5.C.1 - Should result in no change because i more confident and has more recent info from m - CBGA version PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+
+    // 5.C.2 - Should result in update since k has more recent info - CBGA version PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+    
+    ///////////////////////////////////////////////////////////////////////////////////// All tests passed for CBGA solo task part (CBBA with matrix)
 
     robot.log_info("After testResolveConflicts changes things for testing...");
     std::string bla2 = "Current robot " + std::to_string(id_i) + " (winners, winning_bids, timestamps):";
