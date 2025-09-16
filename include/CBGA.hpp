@@ -105,6 +105,9 @@ public:
                                     std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k,
                                     std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k);
 
+    
+    std::pair<int, double> getMinExistingWinningBid(std::vector<double> winning_bids_ij, int num_agents);
+
     void resolveConflicts(bool do_test = false);
 
     void testResolveConflicts(int id_i, std::vector<Msg>& message_queue, 

@@ -292,8 +292,10 @@ void Robot::updateRobotMessageQueue(Msg msg) {
 }
 
 void Robot::receiveMessages() {
+    //std::lock_guard<std::mutex> lock(world->getWorldMutex()); tested with unsafe (no mutex) func below, didn't help
     //std::cout << "in receiveMessages........" << std::endl;
-    std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = world->getMessageTracker();
+    std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = world->getMessageTracker(); // can't be used with mutex in this function
+    //std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world->getMessageTrackerUnsafe();// testing this with mutex added above, didn't help
 
     int receiverID = getID();
     //std::cout << "receiverID: " << receiverID << std::endl;

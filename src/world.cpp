@@ -21,6 +21,12 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
 {
     try {
 
+        // Get filename for logging and then open it
+        std::string filename = generateLogFilename();
+        std::ofstream clear(filename, std::ios::out); // Clear logging file from previous run
+        clear.close();
+        world_log.open(filename, std::ios::app); // Allow appending
+
         start_time = std::chrono::steady_clock::now();
 
         defineQuadrants();
@@ -48,6 +54,25 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
 
 std::chrono::steady_clock::time_point World::getStartTime() const {
     return start_time;
+}
+
+std::string World::generateLogFilename() {
+    std::ostringstream oss;
+    oss << "world_log.txt";
+    return oss.str();
+}
+
+void World::log_info(std::string log_msg) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    if (world_log.is_open()) {
+
+        world_log << log_msg << std::endl;
+
+    } else {
+        std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Failed to open log file for world..." << std::endl;
+    }
+
 }
 
 double World::getElapsedTime() const {
@@ -325,7 +350,13 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
 
 }
 
-std::unordered_map<int, Robot*>& World::getRobotTracker() { 
+// std::unordered_map<int, Robot*>& World::getRobotTracker() { 
+//     std::lock_guard<std::mutex> lock(world_mutex);
+//     return robot_tracker;
+// }
+
+// updated to map for deterministic order in message broadcasting
+std::map<int, Robot*>& World::getRobotTracker() { 
     std::lock_guard<std::mutex> lock(world_mutex);
     return robot_tracker;
 }
@@ -333,6 +364,10 @@ std::unordered_map<int, Robot*>& World::getRobotTracker() {
 std::unordered_map<int,std::vector<Msg>>& World::getMessageTracker() {
     std::lock_guard<std::mutex> lock(world_mutex);
     return message_tracker;
+}
+
+std::unordered_map<int,std::vector<Msg>>& World::getMessageTrackerUnsafe() {
+    return message_tracker;  // No mutex
 }
 
 std::unordered_map<int,std::vector<std::pair<int,double>>>& World::getPingTracker() {
@@ -380,7 +415,15 @@ bool World::inComms(int id1, int id2) {
     Robot* robot2 = robot_tracker[id2];
     Pose2D p1 = robot1->getPose(); Pose2D p2 = robot2->getPose();
     double distance_between_robots = distance->getEuclideanDistance(p1.x,p1.y,p2.x,p2.y);
-    return distance_between_robots <= comms_range;
+    return distance_between_robots <= comms_range; // before testing below
+
+    // below for testing
+    /*bool result = distance_between_robots <= comms_range;
+    
+    std::cout << "inComms(" << id1 << ", " << id2 << "): distance=" 
+              << distance_between_robots << ", result=" << result << std::endl;
+    
+    return result;*/
 }
 
 bool World::isCollision(int x, int y) {

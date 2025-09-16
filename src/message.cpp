@@ -10,8 +10,11 @@ Message::Message(Robot& sender)
 }
 
 void Message::updateWorldMessageTracker(World& world, int receiverID) {
-    //std::lock_guard<std::mutex> lock(world.getWorldMutex());
-    std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.getMessageTracker();
+    std::lock_guard<std::mutex> lock(world.getWorldMutex());
+    
+    //std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.getMessageTracker(); // must not have mutex above to use this
+    std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.getMessageTrackerUnsafe(); // this does work better, allows helpful mutex above to protect pushback below
+
     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
     world_msg_tracker[receiverID].push_back(msg);
     //std::cout << "in msg update world tracker, world msg tracker after: " << world_msg_tracker.size() << std::endl;
@@ -21,13 +24,30 @@ void Message::broadcastMessage(World& world) {
     //std::cout << "IN BROADCAST" << std::endl;
     //std::lock_guard<std::mutex> lock(world.getWorldMutex()); // Commenting out because redundant with mutex at start of world functions
     //std::cout << "after mutex" << std::endl;
+
+    // std::string log_msg = "Robot " + std::to_string(msg.id) + " starting broadcast";
+    // robot.log_info(log_msg); // dont have access to inividual robot here
     
-    std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
+    //std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
+    std::map<int, Robot*>& world_robot_tracker = world.getRobotTracker();
     //std::cout << "world_robot_tracker size: " << world_robot_tracker.size() << std::endl;
+
+    // testing
+    std::string order_msg = "Robot iteration order: ";
+    for (const auto& pair : world_robot_tracker) {
+        order_msg += std::to_string(pair.first) + " ";
+    }
+    world.log_info(order_msg);
     
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;
         //std::cout << "in loop" << std::endl;
+
+        //std::string plz = "Checking for message to robot id: " + std::to_string(pair.first); 
+        if (pair.first != msg.id) { // only print if from actual sender, excluding receiver id pair.first
+            std::string plz = "Robot " + std::to_string(msg.id) + " checking broadcast to robot " + std::to_string(pair.first);
+            receiver->log_info(plz);
+        }
 
         // TESTING ONLY
         // if (pair.first == msg.id) {
@@ -52,10 +72,19 @@ void Message::broadcastMessage(World& world) {
             bool inComms = world.inComms(msg.id, receiverID);
             //std::cout << "inComms check for receiverID: " << receiverID << " result: " << inComms << std::endl;
             //std::cout << "inComms " << inComms << std::endl;
+
+            receiver->log_info("Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID) + ": inComms = " + (inComms ? "true" : "false")); // for testing
+
             if (inComms) {
                 // Message is within range, so send it to given robot via world
+                std::string log_msg = "Adding message: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID);
+                receiver->log_info(log_msg);
                 //std::cout << "Message is in range, updating world message tracker for receiverID: " << receiverID << std::endl;
+                world.log_info("ATTEMPTING STORAGE: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID));
                 updateWorldMessageTracker(world, receiverID);
+                world.log_info("STORAGE COMPLETE: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID));
+                std::string log_msg2 = "Message added successfully";
+                receiver->log_info(log_msg2);
                 //std::cout << "Message tracker updated for receiverID: " << receiverID << std::endl;
             }
         }
@@ -66,6 +95,8 @@ void Message::broadcastMessage(World& world) {
     
 
     //std::cout << "Finished broadcasting message" << std::endl;
+    std::string log_msg2 = "Robot " + std::to_string(msg.id) + " finished broadcast";
+
 }
 
 void Message::updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp) {
@@ -103,7 +134,8 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID,
 
 void Message::ping(World& world) {
 
-    std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
+    // std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
+    std::map<int, Robot*> world_robot_tracker = world.getRobotTracker(); // want order to be consistent so need map
     
     int senderID = sender.getID();
     //sender.log_info("In ping");

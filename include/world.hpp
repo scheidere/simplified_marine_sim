@@ -24,7 +24,8 @@ protected:
     SensorModel* sensor_model;
     JSONParser* parser;
     cv::Mat image;
-    std::unordered_map<int, Robot*> robot_tracker; // id, instance
+    // std::unordered_map<int, Robot*> robot_tracker; // id, instance
+    std::map<int, Robot*> robot_tracker; // id, instance (updated to map from unordered for consistency is messaging runs)
     mutable std::mutex world_mutex; // mutex for MR access to robot tracker (and downstream), mutable for access of consts
     double comms_range;
     std::unordered_map<int,std::vector<Msg>> message_tracker; // receiving robot ID, vector of message structs
@@ -54,12 +55,18 @@ protected:
 
     std::chrono::steady_clock::time_point start_time;
 
+    std::ofstream world_log; // Init file for world to log to
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
 
     int getX() const { return X; }
     int getY() const { return Y; }
+
+    std::string generateLogFilename();
+
+    void log_info(std::string log_msg);
 
     std::chrono::steady_clock::time_point getStartTime() const;
 
@@ -71,9 +78,12 @@ public:
 
     void initAllRobots();
 
-    std::unordered_map<int, Robot*>& getRobotTracker(); //{ return robot_tracker; }
+    //std::unordered_map<int, Robot*>& getRobotTracker(); //{ return robot_tracker; }
+    std::map<int, Robot*>& getRobotTracker(); // switched to map for order consistency in message broadcasting
 
     std::unordered_map<int,std::vector<Msg>>& getMessageTracker(); //{return message_tracker; }
+
+    std::unordered_map<int,std::vector<Msg>>& getMessageTrackerUnsafe();
 
     std::unordered_map<int, std::vector<std::pair<int,double>>>& getPingTracker();
 

@@ -116,6 +116,14 @@ NodeStatus Communicate::onRunning()
         std::string bla = "Robot " + std::to_string(_robot.getID()) + "'s Communicate - Thread ID: " + std::to_string(thread_hash);
         _robot.log_info(bla);*/
 
+        // for testing for broadcast issue
+        auto elapsed = _world.getElapsedTime();
+        std::string timing_log = "Robot " + std::to_string(_robot.getID()) + " Communicate at time: " + std::to_string(elapsed) + "ms";
+        _world.log_info(timing_log);
+
+        std::string blork1 = "Robot " + std::to_string(_robot.getID()) + " STARTING broadcast";
+        _world.log_info(blork1);  // Use world.log_info
+
         // Send messages
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
         _robot.log_info(log_msg);
@@ -129,12 +137,38 @@ NodeStatus Communicate::onRunning()
         msg.broadcastMessage(_world);
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
 
+        std::string blork2 = "Robot " + std::to_string(_robot.getID()) + " FINISHED broadcast";  
+        _world.log_info(blork2);
+
+        std::string b = "Robot " + std::to_string(_robot.getID()) + "finished broadcasting.";
+        _robot.log_info(b);
+
         //_robot.log_info("in communicate node, before receiveMessages");
 
+        /// testing... ///
+        std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = _world.getMessageTracker();
+        std::string debug_msg = "Robot " + std::to_string(_robot.getID()) + " accessing tracker at address: " + std::to_string((uintptr_t)&world_msg_tracker);
+        _world.log_info(debug_msg);
+
+        _robot.log_info("World message tracker by robot:");
+        for (const auto& pair : world_msg_tracker) {
+            int robot_id = pair.first;
+            const std::vector<Msg>& messages = pair.second;
+            
+            std::string log_msg = "Robot " + std::to_string(robot_id) + " has messages from: ";
+            for (const auto& msg : messages) {
+                log_msg += std::to_string(msg.id) + " ";
+            }
+            log_msg += "(" + std::to_string(messages.size()) + " total)";
+            _robot.log_info(log_msg);
+        }
+        /// testing above... ///
+
         // Receive messages
-        _robot.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";
-        _robot.log_info(log_msg2);
+        // COMMENTING OUT FOR TEST
+        // _robot.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
+        // std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";
+        // _robot.log_info(log_msg2);
 
         for (const auto& msg : _robot.getMessageQueue()) {
             std::string bla = "ID: " + std::to_string(msg.id);
@@ -153,6 +187,8 @@ NodeStatus Communicate::onRunning()
 
         _robot.log_info("Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:");
         utils::logUnorderedMap(_robot.getTimestamps(),_robot);
+        std::string plorp = "Robot " + std::to_string(_robot.getID()) + " Communicate returning SUCCESS";
+        _world.log_info(plorp);
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Communicate::tick: " << e.what() << std::endl;
