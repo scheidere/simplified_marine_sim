@@ -1356,21 +1356,25 @@ void CBGA::resolveConflicts(bool do_test) {
                         // For clarity: m = i so do nothing, defer to i's knowledge of self
                         robot.log_info("m = i so do nothing, defer to i's knowledge of self");
 
+                        // Multiple tests demonstrate this works
+
                     } else if (agent_id_m == id_k) {
                         robot.log_info("m = k so defer to k, considering fullness of task assignment");
 
                         if (winning_bids_matrix_i[task_idx][agent_idx_m] > 0) { // if Y_ijm > 0, if agent i has positive winning bid for agent k for task j
-                            // Defer to k's knowledge of self (fullness irrelevant because group assignment size does not change)
+                            // Defer to k's knowledge of self (fullness irrelevant because group assignment size does not increase, either same or smaller (if Y_kjm = 0))
                             robot.log_info("Defer to k's knowledge of self (fullness irrelevant because group assignment size does not change)");
                             std::string wbi = "wbi: " + std::to_string(winning_bids_matrix_i[task_idx][agent_idx_m]);
                             std::string wbk = "wbk: " + std::to_string(winning_bids_matrix_k[task_idx][agent_idx_m]);
                             robot.log_info(wbi);
                             robot.log_info(wbk);
 
-                            winning_bids_matrix_i[task_idx][agent_idx_m] = winning_bids_matrix_k[task_idx][agent_idx_m]; // Y_ijm = Y_kjm where m = 
+                            winning_bids_matrix_i[task_idx][agent_idx_m] = winning_bids_matrix_k[task_idx][agent_idx_m]; // Y_ijm = Y_kjm where m = k
 
                             std::string wbi2 = "wbi2: " + std::to_string(winning_bids_matrix_i[task_idx][agent_idx_m]);
                             robot.log_info(wbi2);
+
+                            // Get here correctly with tests 3.A.4 (group same size) 3.A.5 (group gets smaller) and 3.A.6 (group gets smaller), for example
 
                         } else if (winning_bids_matrix_i[task_idx][agent_idx_m] == 0 && winning_bids_matrix_k[task_idx][agent_idx_m] > 0) { // Y_ijm = 0 AND Y_kjm > 0
                             // i thinks k not in task j group, k thinks self IS in task j group
@@ -1387,7 +1391,7 @@ void CBGA::resolveConflicts(bool do_test) {
                             } else { // task j group full according to i
                                 robot.log_info("task j group FULL according to i");
 
-                                // Test this section with tests 4.B (no update because Y_kjm <= minY_ijn) and 4.C (update because Y_kjm > minY_ijn))
+                                // Test this section with tests 4.B (no update because Y_kjm <= minY_ijn) and 4.C (update because Y_kjm > minY_ijn)), both pass
 
                                 // Get min Y_ijn for all n (where Y_ijn > 0) (m is included but won't be assesed further since here Yijm = 0 from the if above)
                                 std::pair<int, double> current_min = getMinExistingWinningBid(winning_bids_matrix_i[task_idx], num_agents);
@@ -1663,7 +1667,7 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
 
     // CO-OP TEST 3: i thinks group full, k thinks partially full at least
 
-    // Co-op Test 3.A (in hindsight, fullness irrelevant for these tests since both include k in group so fullness remains unchanged)
+    // Co-op Test 3.A (in hindsight, fullness irrelevant for these tests since both include k in group so fullness remains unchanged or gets smaller if k bid for self is 0)
     // i thinks group full, k thinks at least partially full (including k)
     // Consider k = 4, m = 3 (look for result when id_k = 4, not 2 or 3 or will be different test bc redundant with m1 or m2)
     int id_m = 3;
@@ -1683,11 +1687,11 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_k[task_j-1][id_k-1] = 6.0; // only doesn't appear to change i for k since same num
 
     // 3.A.3 (lowest bid in i's group is k's, and k's wb for i is higher) - should result in update of k wb, same overall group - PASSED
-    winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
-    winning_bids_matrix_i[task_j-1][id_k-1] = 5.0; // lowest in i's group
-    winning_bids_matrix_i[task_j-1][id_m-1] = 7.0;
-    winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
-    winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; // relevant, and higher than lowest already so should update (should update regardless since defer to k always in this case - see 3.A.4)
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 7.0;
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; // relevant, and higher than lowest already so should update (should update regardless since defer to k always in this case - see 3.A.4)
 
     // 3.A.4 (lowest bid in i's group is k's, and k's wb for i is lower) - should result in update of k wb, same overall group - PASSED
     // iteration given this test only reaches id_k = 2, which doesn't overlap with m = 3 so it's ok
@@ -1697,6 +1701,23 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
     // winning_bids_matrix_k[task_j-1][id_k-1] = 4.0; // relevant, defer to k knowledge of self, even though lower than current lowest (which happens to be k)
 
+    // 3.A.5 (lowest bid in i's group is k's, and k's wb for k is lower (zero)) - should result in update of k wb, group gets smaller, loses k - PASSED
+    // iteration given this test only reaches id_k = 2, which doesn't overlap with m = 3 so it's ok
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 7.0;
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 0; // relevant, defer to k knowledge of self, even though lower than current lowest (which happens to be k)
+
+    // 3.A.6 (lowest bid in i's group is i's, k's wb for i is higher, and k's wb for k is lower (zero)) - should result in update of k wb, group gets smaller, loses k - PASSED
+    // iteration given this test only reaches id_k = 2, which doesn't overlap with m = 3 so it's ok
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 6.0; 
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 7.0;
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 0; // relevant, defer to k knowledge of self, even though lower than current lowest (which happens to be k)
+
+
     // Need to work out co-op tests further.....................
 
     // CO-OP TEST 4: i thinks k not in task j group, k thinks self IS in task j group
@@ -1705,6 +1726,7 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // already tested in 1.B - passed
 
     // 4.B: task j group FULL according to i (no k in i's group) - should result in no change since k wb not lower than least in group already - PASSED
+    // Remember to look for the message from robot with id_k = 4 in robot 1's log to see result for this actual test
     // int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
     // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
     // winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
@@ -1712,6 +1734,8 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_k[task_j-1][id_k-1] = 5.0; // k wb not higher than lowest in group, so no update
 
     // 4.C: task j group FULL according to i (no k in i's group) - should result in update since k wb is lower than lowest in group already - PASSED
+    // Should end up with same group size but m1 will be replaced in group by k
+    // Remember to look for the message from robot with id_k = 4 in robot 1's log to see result for this actual test
     // int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
     // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
     // winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
