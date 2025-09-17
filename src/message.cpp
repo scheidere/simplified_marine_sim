@@ -11,9 +11,9 @@ Message::Message(Robot& sender)
 
 void Message::updateWorldMessageTracker(World& world, int receiverID) {
     std::lock_guard<std::mutex> lock(world.getWorldMutex());
+    std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.getMessageTrackerUnsafe(); // this does work better, allows helpful mutex above to protect pushback below
     
     //std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.getMessageTracker(); // must not have mutex above to use this
-    std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.getMessageTrackerUnsafe(); // this does work better, allows helpful mutex above to protect pushback below
 
     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
     world_msg_tracker[receiverID].push_back(msg);

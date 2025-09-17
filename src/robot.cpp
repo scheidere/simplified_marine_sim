@@ -309,24 +309,48 @@ void Robot::receiveMessages() {
         //std::cout << "length of messages from world (should be 1?): " << messages.size() << std::endl;
         //std::cout << "!messages.empty(): " << !messages.empty() << std::endl;
 
-        if (!messages.empty()) {
-            Msg msg = messages.front();
-            messages.erase(messages.begin());  // Remove the message after reading
-            //timestamps[msg.id] = getCurrentTime(); this is done in updateTimestamps
-            // log_info("in receiveMessages!!!!");
-            // log_info("Size of world messages queue for current robot: ");
-            // log_info(std::to_string(messages.size()));
-            // log_info("Winners: ");
-            // utils::logUnorderedMap(msg.winners,*this);
-            // log_info("Winning bids: ");
-            // utils::logUnorderedMap(msg.winning_bids,*this);
-            // log_info("Timestamps: ");
-            // utils::logUnorderedMap(msg.timestamps,*this);
+        log_info("before receiving messages officially, msg tracker for current robot is: ");
+        // utils::log1DVector(messages, *this);
+        utils::logMsgVector(messages, *this);
+
+        // Process all messages for receiver robot queued in world message tracker
+        for (const auto& msg : messages) {
             updateRobotMessageQueue(msg);
-            //std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
             log_info(log_msg);
         }
+
+        // New clearing of messages in world tracker for this robot since fully received by robot
+        messages.clear();
+
+        log_info("after receiving messages officially and clearing, msg tracker for current robot is: ");
+        // utils::log1DVector(messages, *this);
+        utils::logMsgVector(messages, *this);
+
+        // Old way: only processed one message from queue
+        // if (!messages.empty()) {
+        //     Msg msg = messages.front();
+
+
+        //     /////////////messages.erase(messages.begin());  // Remove the message after reading // COMMENTED OUT FOR TEST
+
+
+
+        //     //timestamps[msg.id] = getCurrentTime(); this is done in updateTimestamps
+        //     // log_info("in receiveMessages!!!!");
+        //     // log_info("Size of world messages queue for current robot: ");
+        //     // log_info(std::to_string(messages.size()));
+        //     // log_info("Winners: ");
+        //     // utils::logUnorderedMap(msg.winners,*this);
+        //     // log_info("Winning bids: ");
+        //     // utils::logUnorderedMap(msg.winning_bids,*this);
+        //     // log_info("Timestamps: ");
+        //     // utils::logUnorderedMap(msg.timestamps,*this);
+        //     updateRobotMessageQueue(msg);
+        //     //std::cout << "Robot " << getID() << " received a message from Robot " << msg.id << std::endl;
+        //     std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
+        //     log_info(log_msg);
+        // }
     }
 
     std::cout << "end receiveMessages" << std::endl;

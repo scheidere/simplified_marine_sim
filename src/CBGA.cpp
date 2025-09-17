@@ -1420,12 +1420,28 @@ void CBGA::resolveConflicts(bool do_test) {
             }
         }
 
-    }
-
-    robot.log_info("End resolveConflicts: results following...");
+    robot.log_info("End resolveConflicts test for single message...");
     std::string bla2 = "Current robot " + std::to_string(id_i) + " (winning_bids_matrix):";
     robot.log_info(bla2);
     utils::log2DVector(winning_bids_matrix_i, robot);
+    robot.log_info("after wbm print");
+
+    if (do_test) {
+        // Clear winning_bids_matrix_i and winning_bids_matrix_k for next test (assuming not last message)
+        for (auto& row : winning_bids_matrix_i) {
+            std::fill(row.begin(), row.end(), 0.0);
+        }
+        for (auto& row : winning_bids_matrix_k) {
+            std::fill(row.begin(), row.end(), 0.0);
+        }
+    }
+
+    }
+
+    // robot.log_info("End resolveConflicts: results following...");
+    // std::string bla2 = "Current robot " + std::to_string(id_i) + " (winning_bids_matrix):";
+    // robot.log_info(bla2);
+    // utils::log2DVector(winning_bids_matrix_i, robot);
     //utils::logUnorderedMap(timestamps_i, robot);
 
 }
@@ -1650,8 +1666,6 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // Co-op Test 3.A (in hindsight, fullness irrelevant for these tests since both include k in group so fullness remains unchanged)
     // i thinks group full, k thinks at least partially full (including k)
     // Consider k = 4, m = 3 (look for result when id_k = 4, not 2 or 3 or will be different test bc redundant with m1 or m2)
-    //      - Note k iteration stops at either 2 or 4 for various tests, even the same test, not currently sure why... TODO
-    //      - That is ok for m = 3 for this test, but is still strange and need to look into it
     int id_m = 3;
 
     // 3.A.1 (lowest bid in i's group is i's, and k's wb for i is higher) - should result in no change (since defer to i (even though kji higher than iji) and ijk equal to kjk wb) - PASSED

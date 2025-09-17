@@ -142,6 +142,15 @@ void log2DVector(const std::vector<std::vector<T>>& vec, Robot& robot) {
     robot.log_info(log_msg.str());
 }
 
+inline void logMsgVector(const std::vector<Msg>& msgs, Robot& robot) {
+    std::ostringstream log_msg;
+    log_msg << "Messages: ";
+    for (const auto& msg : msgs) {
+        log_msg << "ID:" << msg.id << " ";
+    }
+    robot.log_info(log_msg.str());
+}
+
 } // namespace end
 
 

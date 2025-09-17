@@ -165,10 +165,9 @@ NodeStatus Communicate::onRunning()
         /// testing above... ///
 
         // Receive messages
-        // COMMENTING OUT FOR TEST
-        // _robot.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
-        // std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";
-        // _robot.log_info(log_msg2);
+        _robot.receiveMessages(); // does correct instance of world get passed to robot class? like only one instance of world should be used
+        std::string log_msg2 = "Robot " + std::to_string(_robot.getID()) + " receiving message(s)...";
+        _robot.log_info(log_msg2);
 
         for (const auto& msg : _robot.getMessageQueue()) {
             std::string bla = "ID: " + std::to_string(msg.id);
