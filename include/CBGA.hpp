@@ -101,12 +101,17 @@ public:
 
     void reset(int j, std::vector<std::vector<double>>& winning_bids_matrix_i);
 
-    void runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int winner_kj, double winning_bid_ij, double winning_bid_kj,
-                                    std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k,
+    void resolveSoloConflicts(int j, int id_i, int id_k, int winner_ij, int winner_kj, double winning_bid_ij, double winning_bid_kj,
+                                    //std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k,
+                                    const std::function<double(int)>& ts_i_m, const std::function<double(int)>& ts_k_m,
                                     std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k);
 
     
     std::pair<int, double> getMinExistingWinningBid(std::vector<double> winning_bids_ij, int num_agents);
+
+    void resolveGroupConflicts(int task_idx, int agent_idx_m,  
+                                    std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k,
+                                    bool full_wrt_current_robot_type, int num_agents);
 
     void resolveConflicts(bool do_test = false);
 

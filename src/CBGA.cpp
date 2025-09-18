@@ -1090,8 +1090,9 @@ void CBGA::reset(int task_id_j, std::vector<std::vector<double>>& winning_bids_m
               winning_bids_matrix_i[task_id_j-1].end(), 0.0); // Clear row to reset
 }
 
-void CBGA::runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int winner_kj, double winning_bid_ij, double winning_bid_kj, 
-                                    std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k, 
+void CBGA::resolveSoloConflicts(int j, int id_i, int id_k, int winner_ij, int winner_kj, double winning_bid_ij, double winning_bid_kj, 
+                                    //std::unordered_map<int, double>& timestamps_i, std::unordered_map<int, double>& timestamps_k, 
+                                    const std::function<double(int)>& ts_i_m, const std::function<double(int)>& ts_k_m,
                                     std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k) {
 
     // For all solo tasks, resolveConflicts is identical to CBBA
@@ -1105,17 +1106,6 @@ void CBGA::runCBBAresolveConflicts(int j, int id_i, int id_k, int winner_ij, int
     // robot.log_info(hi);
     // std::string hi2 = "id_k: " + std::to_string(id_k);
     // robot.log_info(hi2);
-
-
-    // Define k timestamp lambda function for easy access below
-    auto ts_k_m = [&](int m) {
-        return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
-    };
-
-    // Define i timestamp lambda function for easy access below
-    auto ts_i_m = [&](int m) {
-        return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
-    };
 
     if (winner_ij == winner_kj) {
         if (winner_ij == id_k) {
@@ -1229,6 +1219,75 @@ std::pair<int, double> CBGA::getMinExistingWinningBid(std::vector<double> winnin
     return current_min;
 }
 
+void CBGA::resolveGroupConflicts(int task_idx, int agent_idx_m,  
+                                    std::vector<std::vector<double>>& winning_bids_matrix_i, std::vector<std::vector<double>>& winning_bids_matrix_k,
+                                    bool full_wrt_current_robot_type, int num_agents) {
+
+    if (winning_bids_matrix_i[task_idx][agent_idx_m] > 0) { // if Y_ijm > 0, if agent i has positive winning bid for agent k for task j
+        // Defer to k's knowledge of self (fullness irrelevant because group assignment size does not increase, either same or smaller (if Y_kjm = 0))
+        robot.log_info("Defer to k's knowledge of self (fullness irrelevant because group assignment size does not increase, either same or smaller (if Y_kjm = 0))");
+        std::string wbi = "wbi: " + std::to_string(winning_bids_matrix_i[task_idx][agent_idx_m]);
+        std::string wbk = "wbk: " + std::to_string(winning_bids_matrix_k[task_idx][agent_idx_m]);
+        robot.log_info(wbi);
+        robot.log_info(wbk);
+
+        winning_bids_matrix_i[task_idx][agent_idx_m] = winning_bids_matrix_k[task_idx][agent_idx_m]; // Y_ijm = Y_kjm where m = k
+
+        std::string wbi2 = "wbi2: " + std::to_string(winning_bids_matrix_i[task_idx][agent_idx_m]);
+        robot.log_info(wbi2);
+
+        // For m = k: Get here correctly with co-op tests 3.A.4 (group same size) 3.A.5 (group gets smaller) and 3.A.6 (group gets smaller), for example
+        // For m !=k,i: Get here correctly with co-op tests 3.B.1.a (group same size) and 3.B.2.a (group gets smaller)
+
+    } else if (winning_bids_matrix_i[task_idx][agent_idx_m] == 0 && winning_bids_matrix_k[task_idx][agent_idx_m] > 0) { // Y_ijm = 0 AND Y_kjm > 0
+        // i thinks k (or m if m != k,i) not in task j group, k (m) thinks self IS in task j group
+        robot.log_info("i thinks k (or m if m != k,i) not in task j group, k (m) thinks self IS in task j group"); 
+
+        if (!full_wrt_current_robot_type) { // task j group not full according to i
+            // Defer to k directly (will result is group fullness increasing by 1 because new assignment added to i's task j group)
+            robot.log_info("task j group NOT FULL according to i");
+            robot.log_info("Defer to k's info directly (will result is group fullness increasing by 1 because new assignment added to i's task j group)");
+
+            winning_bids_matrix_i[task_idx][agent_idx_m] = winning_bids_matrix_k[task_idx][agent_idx_m]; // Y_ijm = Y_kjm where m = k
+            // For m = k: Co-op Test 1.B confirms this works
+            // for m !=k,i: Co-op Test 1.D.1 confirms this works
+
+        } else { // task j group full according to i
+            robot.log_info("task j group FULL according to i");
+
+            // For m = k: Test this section with tests 4.B (no update because Y_kjm <= minY_ijn) and 4.C (update because Y_kjm > minY_ijn)), both pass
+            // For m !=k,i: Test this section with tests 5.A (no update because Y_kjm <= minY_ijn) and 5.B (update because Y_kjm > minY_ijn)), both pass
+
+            // Get min Y_ijn for all n (where Y_ijn > 0) (m is included but won't be assesed further since here Yijm = 0 from the if above)
+            std::pair<int, double> current_min = getMinExistingWinningBid(winning_bids_matrix_i[task_idx], num_agents);
+            int agent_idx_n = current_min.first;
+            double min_existing_winning_bid_ijn = current_min.second;
+
+            std::string mini = "min_existing_winning_bid_ijn: " + std::to_string(min_existing_winning_bid_ijn);
+            robot.log_info(mini);
+
+            std::string wbk = "wbk: " + std::to_string(winning_bids_matrix_k[task_idx][agent_idx_m]);
+            robot.log_info(wbk);
+
+            // if Y_kjm > minY_ijn for all n (m is included but won't be assesed further since here Yijm = 0 from the if above)
+            if (winning_bids_matrix_k[task_idx][agent_idx_m] > min_existing_winning_bid_ijn) { // if Y_kjm > minY_ijn
+                // Defer to k, replace agent n with m in task group j for i, fullness same or larger since replacing member of group
+                robot.log_info("Defer to k, replace agent n with m in task group j for i, fullness same since replacing member of group");
+
+                // For m = k: Test 4.C gets here correctly
+                // For m !=k,i: Test 5.B gets here correctly
+
+                winning_bids_matrix_i[task_idx][agent_idx_n] = 0; // Y_ijn = 0, clear old winner that was min winning bid
+                winning_bids_matrix_i[task_idx][agent_idx_m] = winning_bids_matrix_k[task_idx][agent_idx_m]; // Y_ijm = Y_kjm, assign new winner by adding winning bid that is higher than min winning bid
+
+            }
+
+            
+        }
+    }
+
+}
+
 void CBGA::resolveConflicts(bool do_test) {
 
     // tested for CBBA equivalent part with CBGA matrix access updates
@@ -1274,6 +1333,16 @@ void CBGA::resolveConflicts(bool do_test) {
             testResolveConflicts(id_i, message_queue_i, winning_bids_matrix_i, timestamps_i,
                                  id_k, winning_bids_matrix_k, timestamps_k);
         }
+
+        // Define k timestamp lambda function for easy access below
+        auto ts_k_m = [&](int m) {
+            return timestamps_k.find(m) != timestamps_k.end() ? timestamps_k.at(m) : -1.0;
+        };
+
+        // Define i timestamp lambda function for easy access below
+        auto ts_i_m = [&](int m) {
+            return timestamps_i.find(m) != timestamps_i.end() ? timestamps_i.at(m) : -1.0;
+        };
         
         for (int task_id = 1; task_id <= num_tasks; ++task_id) { // For each task
             std::string t1 = "Task_j: " + std::to_string(task_id);
@@ -1314,7 +1383,9 @@ void CBGA::resolveConflicts(bool do_test) {
                 robot.log_info(winner_bid_print);
 
                 // Run CBBA for given solo task (updating matrix for CBGA)
-                runCBBAresolveConflicts(task_id, id_i, id_k, winner_ij, winner_kj, winning_bid_ij, winning_bid_kj, timestamps_i, timestamps_k, winning_bids_matrix_i, winning_bids_matrix_k);
+                //resolveSoloConflicts(task_id, id_i, id_k, winner_ij, winner_kj, winning_bid_ij, winning_bid_kj, timestamps_i, timestamps_k, winning_bids_matrix_i, winning_bids_matrix_k);
+                resolveSoloConflicts(task_id, id_i, id_k, winner_ij, winner_kj, winning_bid_ij, winning_bid_kj, ts_i_m, ts_k_m, winning_bids_matrix_i, winning_bids_matrix_k);
+            
             } else if (full_group_size > 1) {
                 robot.log_info("full_group_size > 1");
                 std::string please = "id_k: " + std::to_string(id_k);
@@ -1359,9 +1430,12 @@ void CBGA::resolveConflicts(bool do_test) {
                         // Multiple tests demonstrate this works
 
                     } else if (agent_id_m == id_k) {
-                        robot.log_info("m = k so defer to k, considering fullness of task assignment");
+                        robot.log_info("m = k so defer to k, considering fullness of task assignment, but timestamps are irrelevant");
 
-                        if (winning_bids_matrix_i[task_idx][agent_idx_m] > 0) { // if Y_ijm > 0, if agent i has positive winning bid for agent k for task j
+                        // Simpler function call will be here
+                        resolveGroupConflicts(task_idx, agent_idx_m, winning_bids_matrix_i, winning_bids_matrix_k, full_wrt_current_robot_type, num_agents);
+
+                        /*if (winning_bids_matrix_i[task_idx][agent_idx_m] > 0) { // if Y_ijm > 0, if agent i has positive winning bid for agent k for task j
                             // Defer to k's knowledge of self (fullness irrelevant because group assignment size does not increase, either same or smaller (if Y_kjm = 0))
                             robot.log_info("Defer to k's knowledge of self (fullness irrelevant because group assignment size does not change)");
                             std::string wbi = "wbi: " + std::to_string(winning_bids_matrix_i[task_idx][agent_idx_m]);
@@ -1406,7 +1480,7 @@ void CBGA::resolveConflicts(bool do_test) {
 
                                 // if Y_kjm > minY_ijn for all n (m is included but won't be assesed further since here Yijm = 0 from the if above)
                                 if (winning_bids_matrix_k[task_idx][agent_idx_m] > min_existing_winning_bid_ijn) { // if Y_kjm > minY_ijn
-                                    // Defer to k, replace agent n with m in task group j for i, fullness same since replacing member of group
+                                    // Defer to k, replace agent n with m in task group j for i, fullness same or larger since replacing member of group
                                     robot.log_info("Defer to k, replace agent n with m in task group j for i, fullness same since replacing member of group");
 
                                     // Test 4.C gets here correctly
@@ -1418,6 +1492,18 @@ void CBGA::resolveConflicts(bool do_test) {
 
                                 
                             }
+                        }*/
+                    } else { // agent_id_m != id_i, id_k, all other agents other than receiver i and sender k for given msg
+                        // Must consider timestamps and defer to either i or k, whichever has most recent info on m
+                        // Defering to i means doing nothing to winning_bids_matrix_i so check if k timestamp wins
+                        robot.log_info("m != i,k so defer to k ONLY if k has more recent info from m than i does");
+
+                        // Test 1.D.2 only reaches here as it should - passes
+
+                        // Compare i's time of last contact with m with k's time of last contact with m
+                        if (ts_k_m(agent_id_m) > ts_i_m(agent_id_m)) { // k timestamp more recent, so deferring to k per the following logic
+
+                            resolveGroupConflicts(task_idx, agent_idx_m, winning_bids_matrix_i, winning_bids_matrix_k, full_wrt_current_robot_type, num_agents);
                         }
                     }
                 }
@@ -1629,6 +1715,8 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // Assume 4 agents that all can do co-op task 5
     // Assume task 5 has group size of 3
 
+    /*** Disclaimer: the notes for these tests are messy. I did make sure I tested all the functionality in resolveGroupConflicts() so not cleaning up for now ***/
+
     int task_j = 5; // Must be a co-op task per input, otherwise could be any co-op task id
 
     // CO-OP TEST 1: i thinks group empty, k thinks group partially full
@@ -1649,6 +1737,17 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
 
     // Co-op Test 1.D
     // i thinks group empty, k thinks group is partially full, including m, not i or k - need timestamp logic part implemented to test this
+    // int id_m = 3; // Check k = 4 in robot 1 log file
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 5.0; 
+
+    // 1.D.1: k timestamp > i timestamp so should result in update - PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3;
+
+    // 1.D.2 k timestamp < i timestamp so should result in no change - PASSED
+    // timestamps_i[id_m] = 3;
+    // timestamps_k[id_m] = 2;
+
 
     // unsure about test 2, TBD......................
     // CO-OP TEST 2: i thinks group partially full, k thinks group partially full
@@ -1668,9 +1767,9 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // CO-OP TEST 3: i thinks group full, k thinks partially full at least
 
     // Co-op Test 3.A (in hindsight, fullness irrelevant for these tests since both include k in group so fullness remains unchanged or gets smaller if k bid for self is 0)
-    // i thinks group full, k thinks at least partially full (including k)
+    // i thinks group full, k thinks at least partially full (including k, usually...)
     // Consider k = 4, m = 3 (look for result when id_k = 4, not 2 or 3 or will be different test bc redundant with m1 or m2)
-    int id_m = 3;
+    // int id_m = 3;
 
     // 3.A.1 (lowest bid in i's group is i's, and k's wb for i is higher) - should result in no change (since defer to i (even though kji higher than iji) and ijk equal to kjk wb) - PASSED
     // winning_bids_matrix_i[task_j-1][id_i-1] = 5.0; // lowest in i's group
@@ -1718,7 +1817,44 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_k[task_j-1][id_k-1] = 0; // relevant, defer to k knowledge of self, even though lower than current lowest (which happens to be k)
 
 
-    // Need to work out co-op tests further.....................
+    // Co-op Test 3.B (
+    // i thinks group full, k thinks at least partially full (NOT including k)
+    // Consider k = 4, m = 3 (look for result when id_k = 4, not 2 or 3 or will be different test bc redundant with m1 or m2)
+    int id_m = 3;
+
+    // 3.B.1 (lowest bid in i's group is m's, and k's wb for m is higher)
+    // iteration given this test only reaches id_k = 2, which doesn't overlap with m = 3 so it's ok
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 7.0; 
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 6.0; // relevant, but defer to i or k, depending on timestamp
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; // here so we can ignore, since same for i and k
+
+    // 3.B.1.a: k timestamp wins - should result in update, i's m wb updated in i by k's value due to k timestamp win, group same size - PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3; // will defer to k since this larger
+
+    // 3.B.1.b: i timestamp wins - should result in no change, group clearly same size - PASSED
+    // timestamps_i[id_m] = 3; // will defer to k since this larger
+    // timestamps_k[id_m] = 2; // will defer to k since this larger
+
+    // 3.B.2 (lowest bid in i's group is m's, and k's wb for m is lower)
+    // iteration given this test only reaches id_k = 2, which doesn't overlap with m = 3 so it's ok
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 7.0; 
+    // winning_bids_matrix_i[task_j-1][id_m-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_k[task_j-1][id_i-1] = 7.0; // should be irrelevant because i defers to self
+    // winning_bids_matrix_k[task_j-1][id_m-1] = 0; // relevant, but defer to i or k, depending on timestamp
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; // here so we can ignore, since same for i and k
+
+    // // 3.B.2.a: k timestamp wins - should result in update, m wb becomes 0 in i's, so group smaller - PASSED
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3; // will defer to k since this larger
+
+    // 3.B.2.b: i timestamp wins - should result in no change - PASSED
+    // timestamps_i[id_m] = 3; // will defer to k since this larger
+    // timestamps_k[id_m] = 2; // will defer to k since this larger    
 
     // CO-OP TEST 4: i thinks k not in task j group, k thinks self IS in task j group
 
@@ -1741,6 +1877,28 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
     // winning_bids_matrix_i[task_j-1][id_m2-1] = 7.0;
     // winning_bids_matrix_k[task_j-1][id_k-1] = 6.0; // k wb IS higher than lowest in i's group, so UPDATE
+
+    // CO-OP TEST 5: i thinks m not in group, k wins timestamp
+    timestamps_i[id_m] = 2;
+    timestamps_k[id_m] = 3; // will defer to k since this larger
+
+    // 5.A: task j group full according to i (m2 not in group) - should result in no change - PASSED
+    // int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 7.0;
+    // winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_i[task_j-1][id_m2-1] = 0; // not in group
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; 
+    // winning_bids_matrix_k[task_j-1][id_m2-1] = 5.0; // same as lowest in group so no new win
+
+    // 5.B: task j group full according to i (m2 not in group) - should result in update, m1 removed but m2 added since deferring to k via timestamp - PASSED
+    int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
+    winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    winning_bids_matrix_i[task_j-1][id_k-1] = 7.0;
+    winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
+    winning_bids_matrix_i[task_j-1][id_m2-1] = 0; // not in group
+    winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; 
+    winning_bids_matrix_k[task_j-1][id_m2-1] = 6.0; // higher than lowest so new win
 
 
 
