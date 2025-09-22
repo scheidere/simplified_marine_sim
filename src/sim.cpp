@@ -173,10 +173,7 @@
 // Testing switch to CBGA from CBBA while allowing switch back/between task allocation methods (CBBA vs CBGA, as greedy has a different BT)
 // Denoted by do_cbga = true or do_cbga = false for CBBA
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
-//<CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="true" />
-//<Communicate/>
-//<ResolveConflicts do_cbga="true" />
-/*static const char* xml_text = R"(
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="6">
@@ -187,6 +184,9 @@
                 <NewInfoAvailable do_cbga="true" />
                 <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
                     <BuildBundle do_cbga="true" />
+                    <Communicate/>
+                    <ResolveConflicts do_cbga="true" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="true" />
                 </RepeatSequence>
             </RepeatSequence>
             <RepeatSequence>
@@ -208,19 +208,19 @@
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";*/
-
-// Debugging CBGA resolveConflicts
-static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence>
-            <Communicate/>
-            <ResolveConflicts do_cbga="true" />
-        </Sequence>
-     </BehaviorTree>
-</root>
 )";
+
+// Debugging CBGA resolveConflicts - done testing!
+// static const char* xml_text = R"(
+// <root BTCPP_format="4">
+//     <BehaviorTree ID="MainTree">
+//         <Sequence>
+//             <Communicate/>
+//             <ResolveConflicts do_cbga="true" />
+//         </Sequence>
+//      </BehaviorTree>
+// </root>
+// )";
 
 
 

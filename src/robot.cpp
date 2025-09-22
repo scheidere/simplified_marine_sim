@@ -469,8 +469,8 @@ void Robot::updateTimestamps() {
     // The indirect timestamp case checks if a neighbor of robot i has received a message from robot k and if so, updates with that time
     // What about when i = k? Did we prevent or handle this case?
 
-    log_info("Timestamps BEFORE change in robot::updateTimestamps:");
-    utils::logUnorderedMap(timestamps,*this);
+    // log_info("Timestamps BEFORE change in robot::updateTimestamps:");
+    // utils::logUnorderedMap(timestamps,*this);
 
     bool found_msg_from_k;
     for (auto& [id_k, timestamp] : timestamps) {
@@ -502,7 +502,7 @@ void Robot::updateTimestamps() {
 
     }
 
-    log_info("Timestamps AFTER change in robot::updateTimestamps:");
+    log_info("Updated Timestamps:");
     utils::logUnorderedMap(timestamps,*this);
 }
 

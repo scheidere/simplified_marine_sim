@@ -176,6 +176,8 @@ NodeStatus Communicate::onRunning()
             utils::logUnorderedMap(msg.winners,_robot);
             _robot.log_info("Winning bids: ");
             utils::logUnorderedMap(msg.winning_bids,_robot);
+            _robot.log_info("Winning bids matrix: ");
+            utils::log2DVector(msg.winning_bids_matrix, _robot);
             _robot.log_info("Timestamps: ");
             utils::logUnorderedMap(msg.timestamps,_robot);
         }
@@ -313,14 +315,14 @@ NodeStatus ResolveConflicts::onRunning()
         int rounds;
         if (do_cbga) {
             CBGA cbga(_robot, _world, _parser);
-            //cbga.resolveConflicts();
-            _robot.log_info("right before running cbga with test = true");
-            cbga.resolveConflicts(true); // for testing
+            cbga.resolveConflicts();
+            // _robot.log_info("right before running cbga with test = true");
+            // cbga.resolveConflicts(true); // for testing
             int& rounds = _robot.getNumCBGARounds();
         } else {
             CBBA cbba(_robot, _world, _parser);
-            //cbba.resolveConflicts();
-            cbba.resolveConflicts(true); // for testing
+            cbba.resolveConflicts();
+            //cbba.resolveConflicts(true); // for testing
             int& rounds = _robot.getNumCBBARounds();
         }
         rounds++;

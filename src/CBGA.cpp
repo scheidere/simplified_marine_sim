@@ -388,7 +388,9 @@ std::pair<double, std::unordered_map<int,Pose2D>> CBGA::getFurthestPossibleDista
     utils::log1DVector(assigned_agent_ids, robot);
 
     std::vector<int> potential_new_group_ids = assigned_agent_ids;
-    potential_new_group_ids.push_back(robot.getID()); // Adding current robot's id, as if it were assigned (order doesn't matter)
+    if (potential_new_group_ids.empty()) {
+        potential_new_group_ids.push_back(robot.getID()); // Adding current robot's id, as if it were assigned (order doesn't matter)
+    };
     robot.log_info("potential_new_group_ids: ");
     utils::log1DVector(potential_new_group_ids, robot);
 
@@ -1034,7 +1036,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                 winning_bids_matrix[J-1][winning_agent_idx_to_clear] = 0.0;
             }
             // std::cout << "after wb matrix update" << std::endl;
-            // robot.log_info("after wb matrix update");
+            robot.log_info("after wb matrix update");
             bids.erase(J); // Remove task now in bundle from future consideration
 
         }
@@ -1124,6 +1126,11 @@ void CBGA::resolveSoloConflicts(int j, int id_i, int id_k, int winner_ij, int wi
         if (winner_ij == id_i) {
             if (winning_bid_kj > winning_bid_ij) {
                 robot.log_info("k thinks k, i thinks i, k has higher bid so update");
+                update(j, winning_bids_matrix_i, winning_bids_matrix_k);
+            }
+            // TIE BREAKER USING HIGHER ID, needed due to CBGA causing more ties in winning bids (since distance in score is further robot in group for CBGA)
+            else if (winning_bid_kj == winning_bid_ij && id_k > id_i) {
+                robot.log_info("k thinks k, i thinks i, equal bids but k has higher ID so update");
                 update(j, winning_bids_matrix_i, winning_bids_matrix_k);
             }
         } else if (winner_ij == -1) {
@@ -1299,7 +1306,7 @@ void CBGA::resolveConflicts(bool do_test) {
         Update own matrix per deferment hierarchy
     */
 
-    int id_i = robot.getID(); 
+    int id_i = robot.getID();
     int i_idx = id_i-1;
     std::vector<Msg>& message_queue_i = robot.getMessageQueue();
     std::vector<std::vector<double>>& winning_bids_matrix_i = robot.getWinningBidsMatrix();
@@ -1501,7 +1508,8 @@ void CBGA::resolveConflicts(bool do_test) {
                         // Test 1.D.2 only reaches here as it should - passes
 
                         // Compare i's time of last contact with m with k's time of last contact with m
-                        if (ts_k_m(agent_id_m) > ts_i_m(agent_id_m)) { // k timestamp more recent, so deferring to k per the following logic
+                        // if k timestamp more recent than i's timestamp with m OR timestamps equal but k has higher ID, defer to k and update per usual logic (test higher ID case with co-op test 6)
+                        if (ts_k_m(agent_id_m) > ts_i_m(agent_id_m) || (ts_k_m(agent_id_m) == ts_i_m(agent_id_m) && id_k > id_i)) { // k timestamp more recent, so deferring to k per the following logic
 
                             resolveGroupConflicts(task_idx, agent_idx_m, winning_bids_matrix_i, winning_bids_matrix_k, full_wrt_current_robot_type, num_agents);
                         }
@@ -1879,8 +1887,8 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_k[task_j-1][id_k-1] = 6.0; // k wb IS higher than lowest in i's group, so UPDATE
 
     // CO-OP TEST 5: i thinks m not in group, k wins timestamp
-    timestamps_i[id_m] = 2;
-    timestamps_k[id_m] = 3; // will defer to k since this larger
+    // timestamps_i[id_m] = 2;
+    // timestamps_k[id_m] = 3; // will defer to k since this larger
 
     // 5.A: task j group full according to i (m2 not in group) - should result in no change - PASSED
     // int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
@@ -1892,15 +1900,26 @@ void CBGA::testResolveConflicts(int id_i, std::vector<Msg>& message_queue,
     // winning_bids_matrix_k[task_j-1][id_m2-1] = 5.0; // same as lowest in group so no new win
 
     // 5.B: task j group full according to i (m2 not in group) - should result in update, m1 removed but m2 added since deferring to k via timestamp - PASSED
-    int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
+    // int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
+    // winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
+    // winning_bids_matrix_i[task_j-1][id_k-1] = 7.0;
+    // winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
+    // winning_bids_matrix_i[task_j-1][id_m2-1] = 0; // not in group
+    // winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; 
+    // winning_bids_matrix_k[task_j-1][id_m2-1] = 6.0; // higher than lowest so new win
+
+    // CO-OP TEST 6: i thinks m not in group, timestamp tie between i and k, should defer to k since we look at k=4 and i=1, defer to higher timestamps
+    // TESTING HIGHER ID TIE BREAKER //
+    timestamps_i[id_m] = 3;
+    timestamps_k[id_m] = 3;
+    // should result in update (m1 dropped from i's group and m2 added with wb 6) because of k's higher ID - 
+     int id_m1 = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
     winning_bids_matrix_i[task_j-1][id_i-1] = 6.0;
     winning_bids_matrix_i[task_j-1][id_k-1] = 7.0;
     winning_bids_matrix_i[task_j-1][id_m1-1] = 5.0; // lowest in i's group
     winning_bids_matrix_i[task_j-1][id_m2-1] = 0; // not in group
     winning_bids_matrix_k[task_j-1][id_k-1] = 7.0; 
-    winning_bids_matrix_k[task_j-1][id_m2-1] = 6.0; // higher than lowest so new win
-
-
+    winning_bids_matrix_k[task_j-1][id_m2-1] = 6.0; // higher than lowest so new win IF k has higher ID (we are looking at k = 4 so it does)
 
     ////////////////////////////////////////////////////////////
     ////// 3.A.2??? (lowest bid in group is NOT i)
