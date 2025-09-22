@@ -853,6 +853,8 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
         std::vector<int> test = robot.getDoableTaskIDs();
 
         std::string current_robot_type = robot.getType();
+
+        int num_agents = world.getNumAgents();
     
         // Check if bundle is full (i.e., at max_depth) 
         while (getBundleOrPathSize(bundle) < max_depth) { // continues until full or stops via check that no new task found to add
@@ -874,8 +876,9 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             std::unordered_map<int,int> best_position_n_tracker; // keys are task id's and values are best index n in path
 
             // init flags for full co-op group case where current robot has lower winning bid than lowest current winner
-            bool coop_group_full_and_new_winner = false;
-            int winning_agent_idx_to_clear = -1;
+            bool coop_group_full_and_new_winner;
+            int winning_agent_idx_to_clear;
+            bool task_is_solo;
 
             for (auto task_id : robot.getDoableTaskIDs()) {
                 std::string bla = "Looking at doable task " + std::to_string(task_id);
@@ -911,6 +914,8 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                         std::string bop = "Task " + std::to_string(task_id) + " is solo";
                         robot.log_info(bop);
 
+                        task_is_solo = true;
+
                         // Get winning bid (only one in task row of matrix since group_size = 1 for solo task)
                         double current_winning_bid = getSoloWinningBid(winning_bids_matrix, task_id);
                         std::string ack = "current_winning_bid: " + std::to_string(current_winning_bid);
@@ -929,6 +934,12 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                     } else { // group_size > 1, task is co-op, so do CBGA
                         std::string bop2 = "Task " + std::to_string(task_id) + " is co-op";
                         robot.log_info(bop2);
+
+                        task_is_solo = false;
+
+                        // init flags for full co-op group case where current robot has lower winning bid than lowest current winner
+                        coop_group_full_and_new_winner = false;
+                        winning_agent_idx_to_clear = -1;
 
                         // Divide assigned robots by type, filling their type subgroups before "any_agent_type" sub-group (just for fullness check)
                         std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments =  robot.trackAssignedRobotsbySubGroup(task_id);
@@ -1030,11 +1041,28 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             // std::cout << "Past bundle and path updates..." << std::endl;
             // robot.log_info("Past bundle and path updates...");
 
-            winning_bids_matrix[J-1][robot.getID()-1] = bids[J]; // +1 to convert to index since IDs start at 1 and indices at 0 (bids uses J because it is a map)
-            if (coop_group_full_and_new_winner) {
-                robot.log_info("Clearing lowest winning bid since added new winning bid");
-                winning_bids_matrix[J-1][winning_agent_idx_to_clear] = 0.0;
+            if (task_is_solo) {
+                // Clear entire row for solo task, to ensure only one winner
+                for (int agent_idx = 0; agent_idx < num_agents; ++agent_idx) {
+                    winning_bids_matrix[J-1][agent_idx] = 0.0;
+                }
+                // Save new bid greedily
+                winning_bids_matrix[J-1][robot.getID()-1] = bids[J];
+
+            } else {
+                winning_bids_matrix[J-1][robot.getID()-1] = bids[J]; // +1 to convert to index since IDs start at 1 and indices at 0 (bids uses J because it is a map)
+                if (coop_group_full_and_new_winner) {
+                    robot.log_info("Clearing lowest winning bid since added new winning bid");
+                    winning_bids_matrix[J-1][winning_agent_idx_to_clear] = 0.0;
+                }
+
             }
+
+            // winning_bids_matrix[J-1][robot.getID()-1] = bids[J]; // +1 to convert to index since IDs start at 1 and indices at 0 (bids uses J because it is a map)
+            // if (coop_group_full_and_new_winner) {
+            //     robot.log_info("Clearing lowest winning bid since added new winning bid");
+            //     winning_bids_matrix[J-1][winning_agent_idx_to_clear] = 0.0;
+            // }
             // std::cout << "after wb matrix update" << std::endl;
             robot.log_info("after wb matrix update");
             bids.erase(J); // Remove task now in bundle from future consideration
@@ -1131,6 +1159,10 @@ void CBGA::resolveSoloConflicts(int j, int id_i, int id_k, int winner_ij, int wi
             // TIE BREAKER USING HIGHER ID, needed due to CBGA causing more ties in winning bids (since distance in score is further robot in group for CBGA)
             else if (winning_bid_kj == winning_bid_ij && id_k > id_i) {
                 robot.log_info("k thinks k, i thinks i, equal bids but k has higher ID so update");
+                 robot.log_info("TIE-BREAKER: Robot k's matrix row for task " + std::to_string(j) + ":");
+                // Log robot k's entire row for task j
+                robot.log_info("About to copy this row to robot i's matrix");
+                utils::log1DVector(winning_bids_matrix_k[j-1], robot);
                 update(j, winning_bids_matrix_i, winning_bids_matrix_k);
             }
         } else if (winner_ij == -1) {
