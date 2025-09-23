@@ -878,7 +878,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             // init flags for full co-op group case where current robot has lower winning bid than lowest current winner
             bool coop_group_full_and_new_winner;
             int winning_agent_idx_to_clear;
-            bool task_is_solo;
+            //bool task_is_solo;
 
             for (auto task_id : robot.getDoableTaskIDs()) {
                 std::string bla = "Looking at doable task " + std::to_string(task_id);
@@ -914,7 +914,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                         std::string bop = "Task " + std::to_string(task_id) + " is solo";
                         robot.log_info(bop);
 
-                        task_is_solo = true;
+                        //task_is_solo = true; wrong spot lol
 
                         // Get winning bid (only one in task row of matrix since group_size = 1 for solo task)
                         double current_winning_bid = getSoloWinningBid(winning_bids_matrix, task_id);
@@ -935,7 +935,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                         std::string bop2 = "Task " + std::to_string(task_id) + " is co-op";
                         robot.log_info(bop2);
 
-                        task_is_solo = false;
+                        //task_is_solo = false; wrong spot lol
 
                         // init flags for full co-op group case where current robot has lower winning bid than lowest current winner
                         coop_group_full_and_new_winner = false;
@@ -1041,22 +1041,58 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             // std::cout << "Past bundle and path updates..." << std::endl;
             // robot.log_info("Past bundle and path updates...");
 
-            if (task_is_solo) {
+            robot.log_info("right before matrix update loop in bundleAdd");
+            // std::string heyo = "task_is_solo: " + std::to_string(task_is_solo);
+            // robot.log_info(heyo);
+
+            int selected_task_group_size = world.getTaskGroupSize(J);
+            if (selected_task_group_size == 1) {
+                // Update winning bids matrix for best task, if best task is solo
+                robot.log_info("in task_is_solo loop");
+
                 // Clear entire row for solo task, to ensure only one winner
                 for (int agent_idx = 0; agent_idx < num_agents; ++agent_idx) {
                     winning_bids_matrix[J-1][agent_idx] = 0.0;
                 }
+
+                robot.log_info("after clearing row allegedly: ");
+                utils::log2DVector(winning_bids_matrix, robot);
+
                 // Save new bid greedily
                 winning_bids_matrix[J-1][robot.getID()-1] = bids[J];
 
             } else {
+                // Update winning bids matrix for best task, if best task is co-op
                 winning_bids_matrix[J-1][robot.getID()-1] = bids[J]; // +1 to convert to index since IDs start at 1 and indices at 0 (bids uses J because it is a map)
                 if (coop_group_full_and_new_winner) {
                     robot.log_info("Clearing lowest winning bid since added new winning bid");
                     winning_bids_matrix[J-1][winning_agent_idx_to_clear] = 0.0;
                 }
-
             }
+
+            // if (task_is_solo) {
+
+            //     robot.log_info("in task_is_solo loop");
+
+            //     // Clear entire row for solo task, to ensure only one winner
+            //     for (int agent_idx = 0; agent_idx < num_agents; ++agent_idx) {
+            //         winning_bids_matrix[J-1][agent_idx] = 0.0;
+            //     }
+
+            //     robot.log_info("after clearing row allegedly: ");
+            //     utils::log2DVector(winning_bids_matrix, robot);
+
+            //     // Save new bid greedily
+            //     winning_bids_matrix[J-1][robot.getID()-1] = bids[J];
+
+            // } else {
+            //     winning_bids_matrix[J-1][robot.getID()-1] = bids[J]; // +1 to convert to index since IDs start at 1 and indices at 0 (bids uses J because it is a map)
+            //     if (coop_group_full_and_new_winner) {
+            //         robot.log_info("Clearing lowest winning bid since added new winning bid");
+            //         winning_bids_matrix[J-1][winning_agent_idx_to_clear] = 0.0;
+            //     }
+
+            // }
 
             // winning_bids_matrix[J-1][robot.getID()-1] = bids[J]; // +1 to convert to index since IDs start at 1 and indices at 0 (bids uses J because it is a map)
             // if (coop_group_full_and_new_winner) {
