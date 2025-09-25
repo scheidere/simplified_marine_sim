@@ -18,6 +18,10 @@ Greedy::Greedy(Robot& r, World& w) : robot(r), world(w) {
 
 void Greedy::run() {
 
+    // Start timing
+    auto start_time = std::chrono::high_resolution_clock::now();
+    robot.setTaskAllocStartTime(start_time);
+
     std::vector<int> assigned_task_order;
 
     std::vector<int> doable_task_ids = robot.getDoableTaskIDs();
@@ -32,7 +36,16 @@ void Greedy::run() {
         double max_score = -1.0; // Reset also for the same
 
         for (int task_id : available_tasks) { // Find task that gives highest score
+            // double score = getTaskScore(task_id, current_pose.x, current_pose.y);
+
+            auto start_score = std::chrono::high_resolution_clock::now();
             double score = getTaskScore(task_id, current_pose.x, current_pose.y);
+            auto end_score = std::chrono::high_resolution_clock::now();
+            
+            auto duration = end_score - start_score;
+            double score_time = std::chrono::duration<double>(duration).count();
+            std::string score_log = "getTaskScore for task " + std::to_string(task_id) + " took: " + std::to_string(score_time) + " seconds";
+            robot.log_info(score_log);
 
             if (score > max_score) { // Save max score and id of robot that achieved it
                 max_score = score;
@@ -50,6 +63,17 @@ void Greedy::run() {
                 available_tasks.end()
             );
 
+            // auto start_erase = std::chrono::high_resolution_clock::now();
+            // available_tasks.erase(
+            //     std::remove(available_tasks.begin(), available_tasks.end(), best_task_id),
+            //     available_tasks.end()
+            // );
+            // auto end_erase = std::chrono::high_resolution_clock::now();
+            // auto duration = end_erase - start_erase;
+            // double erase_time = std::chrono::duration<double>(duration).count();
+            // std::string erase_log = "Erase operation took: " + std::to_string(erase_time) + " seconds";
+            // robot.log_info(erase_log);
+
             // Update robot's theoretical location to location of assigned task
             std::pair<int, int> current_position = world.getTaskLocation(best_task_id);
             Pose2D new_pose = {current_position.first, current_position.second,0};
@@ -64,7 +88,16 @@ void Greedy::run() {
     robot.log_info("Path from greedy method: ");
     utils::log1DVector(path, robot);
 
+    // bool& at_consensus = robot.getAtConsensus();
+    // at_consensus = true; // this variable is really for CBBA/CBGA, since there is no communication for greedy method, but needs to be true for action execution
+    robot.setAtConsensus(true);
 
+    // Log time it took to reach convergence, maintained for the threshold number of rounds
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = end_time - robot.getTaskAllocStartTime();
+    double seconds = std::chrono::duration<double>(duration).count();
+    std::string time = "Time to convergence: " + std::to_string(seconds) + " seconds";
+    robot.log_info(time);
 
 }
 
@@ -87,3 +120,50 @@ double Greedy::getTaskScore(int task_id, int prev_x, int prev_y) {
     
     return score;
 }
+
+/*double Greedy::getTaskScore(int task_id, int prev_x, int prev_y) {
+    auto total_start = std::chrono::high_resolution_clock::now();
+        
+    auto world_start = std::chrono::high_resolution_clock::now();
+    int reward = world.getTaskReward(task_id);
+    std::pair<int, int> task_position = world.getTaskLocation(task_id);
+    auto world_end = std::chrono::high_resolution_clock::now();
+    
+    auto calc_start = std::chrono::high_resolution_clock::now();
+    double discount_factor = 0.999;
+    int current_x = task_position.first;
+    int current_y = task_position.second;
+    double distance_to_task = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
+    double score = reward * pow(discount_factor, distance_to_task);
+    auto calc_end = std::chrono::high_resolution_clock::now();
+    
+    double world_time = std::chrono::duration<double>(world_end - world_start).count();
+    double calc_time = std::chrono::duration<double>(calc_end - calc_start).count();
+    
+    robot.log_info("Task " + std::to_string(task_id) + " world: " + std::to_string(world_time) + 
+                   ", calc: " + std::to_string(calc_time));
+    
+    return score;
+}*/
+
+/*double Greedy::getTaskScore(int task_id, int prev_x, int prev_y) {
+    // This should be the SAME score/reward logic as CBBA for fair comparison (see CBBA::getPathScore())
+
+    std::lock_guard<std::mutex> lock(world.getWorldMutex());
+
+    double discount_factor = 0.999;
+    
+    // Reward for completing task
+    int reward = world.getTaskRewardUnsafe(task_id);
+    
+    // Calculate distance from current position to task
+    std::pair<int, int> task_position = world.getTaskLocationUnsafe(task_id);
+    int current_x = task_position.first;
+    int current_y = task_position.second;
+    double distance_to_task = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
+    
+    // Apply SAME discount formula as CBBA
+    double score = reward * pow(discount_factor, distance_to_task);
+    
+    return score;
+}*/

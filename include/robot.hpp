@@ -65,6 +65,8 @@ private:
 
     std::ofstream robot_log; // Init file for each robot to log in
 
+    std::chrono::high_resolution_clock::time_point task_alloc_start_time; // will be used by greedy OR CBBA, or CBGA, never at the same time bc different BTs
+
 
 
 public:
@@ -135,7 +137,7 @@ public:
 
     void removeCompletedTaskFromPath();
 
-    bool getAtConsensus() const { return at_consensus; }
+    bool& getAtConsensus() { return at_consensus; }
     void setAtConsensus(bool value) { at_consensus = value; }
 
     std::unordered_map<std::string, int> initTaskGroupFullnessMap();
@@ -144,6 +146,9 @@ public:
 
     std::unordered_map<std::string, std::vector<int>> initTaskSubGroupMap();
     std::unordered_map<std::string, std::vector<int>> trackAssignedRobotsbySubGroup(int task_id);
+
+    void setTaskAllocStartTime(const std::chrono::high_resolution_clock::time_point& time) { task_alloc_start_time = time; } 
+    std::chrono::high_resolution_clock::time_point getTaskAllocStartTime() const { return task_alloc_start_time; }
 
     //void resurfaceToCharge();
 

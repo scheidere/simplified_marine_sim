@@ -738,20 +738,30 @@ bool Robot::ExploreA() {
 
     // Can combine these false ifs later if kept
 
+    log_info("in robot ExploreA function");
+
     if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
         return false;
     }
+
+    log_info("in robot ExploreA function 2");
 
     if (path.empty()) {
         return false;
     }
 
+    log_info("in robot ExploreA function 3");
+
     if (!world->hasTaskInfo(path[0])) {
+        log_info("world not done initializing...");
         return false;  // World not done initializing task info 
     }
 
     // Get info for first task in path (i.e., task that has been allocated to occur next)
     TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    log_info("next task (in ExploreA): ");
+    log_info(next_task.name);
 
     if (next_task.name == "Explore_A") {
         log_info("Next task to execute is Explore_A!");
@@ -1018,3 +1028,4 @@ std::unordered_map<std::string, std::vector<int>> Robot::trackAssignedRobotsbySu
 
     return task_sub_groups;
 }
+

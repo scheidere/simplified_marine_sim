@@ -130,15 +130,18 @@ public:
     std::unordered_map<int,TaskInfo>& getAllTasksInfo() { return all_tasks_info; }
 
     TaskInfo& getTaskInfo(int task_id);
+    //TaskInfo& getTaskInfoUnsafe(int task_id); // mutex scope test, in greedy
 
     int& getTaskGroupSize(int task_id);
 
     std::unordered_map<std::string, int>& getTaskGroupInfo(int task_id);
 
     double& getTaskReward(int task_id);
+    //double& getTaskRewardUnsafe(int task_id); // mutex scope test, in greedy
 
     //std::pair<int,int> getTaskLocation(int task_id, Robot* robot); // robot passed in for TESTING ONLY
     std::pair<int,int> getTaskLocation(int task_id);
+    //std::pair<int,int> getTaskLocationUnsafe(int task_id); // mutex scope test, in greedy
 
     std::pair<int,int> getTaskLocationFromArea(std::unordered_map<std::string, int>& area);
 
@@ -155,6 +158,8 @@ public:
     double getMaxNeighborTimestamp(int robot_id_i, int out_of_range_robot_id_k);
 
     bool hasTaskInfo(int task_id);
+
+    void debugTaskAccess(int task_id, Robot& robot); // called before greedy class in BT greedy node so timing is consistent
 
 };
 

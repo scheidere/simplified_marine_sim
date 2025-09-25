@@ -241,6 +241,9 @@ BuildBundle::BuildBundle(const std::string& name, const NodeConfig& config, Robo
 
 NodeStatus BuildBundle::onStart()
 {
+    // Start timing
+    auto start_time = std::chrono::high_resolution_clock::now();
+    _robot.setTaskAllocStartTime(start_time);
 
     return BT::NodeStatus::RUNNING;
 }
@@ -440,9 +443,17 @@ NodeStatus CheckConvergence::tick()
         _robot.log_info(blorb1);
         std::string blorb2 = "cumulative_convergence_count: " + std::to_string(cumulative_convergence_count);
         _robot.log_info(blorb2);
+
         if (cumulative_convergence_count >= convergence_threshold) {
             _robot.setAtConsensus(true);
             _robot.log_info("Setting at_consensus to TRUE (at end of checkConvergence)");
+
+            // Log time it took to reach convergence, maintained for the threshold number of rounds
+            auto end_time = std::chrono::high_resolution_clock::now();
+            auto duration = end_time - _robot.getTaskAllocStartTime();
+            double seconds = std::chrono::duration<double>(duration).count();
+            std::string time = "Time to convergence: " + std::to_string(seconds) + " seconds";
+            _robot.log_info(time);
         }
 
         return NodeStatus::SUCCESS;
@@ -473,6 +484,10 @@ NodeStatus GreedyTaskAllocator::onStart()
 NodeStatus GreedyTaskAllocator::onRunning()
 {
     try {
+
+        // Calling this just calls a few world functions and logs them, makes actual greedy timing consistent
+        // Not necessary for function, just wanted consistent runtime for recording (perfectionism ftw - send help)
+        _world.debugTaskAccess(1, _robot);
 
         std::cout << "Building greedy path for robot " << _robot.getID() << "..." << std::endl;
         Greedy greedy2(_robot, _world);
@@ -598,6 +613,8 @@ NodeStatus ExploreA::tick()
 {
     try {
 
+        _robot.log_info("in exploreA before check, path: ");
+        utils::log1DVector(_robot.getPath(),_robot);
 
         if (_robot.ExploreA()) {
             // will need to add logic to actually give output port a value
@@ -789,6 +806,9 @@ NodeStatus FollowCoveragePath::onRunning()
             // Movement is done!
             // Remove current first task from path since it has been completed
             _robot.removeCompletedTaskFromPath(); // Removes first task
+
+            // Get reward for the coverage path task just completed
+            add logic here
 
             return NodeStatus::SUCCESS;
         }

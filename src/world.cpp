@@ -46,6 +46,18 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         //std::cout << "end world init print" << std::endl;
         //print2DVector(agent_capabilities);
 
+        // Adding this so that greedy alg timing is consistent, because unlike CBBA/CBGA BTs, there isn't sufficient time to load world fully before running alg
+        // Want to get consistent estimate of runtime for greedy
+        /*for (const auto& task : all_tasks_info) {
+            getTaskInfo(task.first);  // Force initialization of all tasks
+        }
+        for (const auto& task : all_tasks_info) {
+            int task_id = task.first;
+            // Call the exact same methods that getTaskScore() calls
+            getTaskReward(task_id);
+            getTaskLocation(task_id);
+        }*/
+
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
@@ -203,6 +215,17 @@ TaskInfo& World::getTaskInfo(int task_id) {
     }*/
 }
 
+// TaskInfo& World::getTaskInfoUnsafe(int task_id) {
+
+//     return all_tasks_info.at(task_id);
+
+//     /*if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
+//         return all_tasks_info.at(task_id);
+//     } else {
+//         throw std::runtime_error("Task ID not found in all_tasks_info");
+//     }*/
+// }
+
 AgentInfo& World::getAgentInfo(int agent_id) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
@@ -243,6 +266,13 @@ double& World::getTaskReward(int task_id) {
     return task_info.reward;
 }
 
+// double& World::getTaskRewardUnsafe(int task_id) {
+//     // No mutex to avoid deadlock because getTaskInfo covers it
+    
+//     TaskInfo& task_info = getTaskInfoUnsafe(task_id);
+//     return task_info.reward;
+// }
+
 //std::pair<int, int> World::getTaskLocation(int task_id, Robot* robot) { // Robot passed in for TESTING ONLY
 std::pair<int, int> World::getTaskLocation(int task_id) {
     // No mutex to avoid deadlock because getTaskInfo covers it
@@ -273,6 +303,36 @@ std::pair<int, int> World::getTaskLocation(int task_id) {
         throw std::runtime_error("Task has no location or area defined.");
     }
 }
+
+// std::pair<int, int> World::getTaskLocationUnsafe(int task_id) {
+//     // No mutex to avoid deadlock because getTaskInfo covers it
+
+//     TaskInfo& task_info = getTaskInfoUnsafe(task_id);
+
+//     //robot->log_info("in getTaskLocation"); // TESTING ONLY, needs robot as input
+
+//     std::string bla = "x: " + std::to_string(task_info.location.first) + ", y: " + std::to_string(task_info.location.second);
+//     //robot->log_info(bla); // TESTING ONLY, needs robot as input
+
+//     // If task location is explicitly set
+//     if (task_info.location.first != -1 && task_info.location.second != -1) {
+
+//         //robot->log_info("task location explicitly exists (not quadrant-defined) and found"); // TESTING ONLY, needs robot as input
+
+//         int x = task_info.location.first;
+//         int y = task_info.location.second;
+//         return std::make_pair(x, y);
+//     } 
+//     // If location is defined via quadrant area
+//     else if (!task_info.area.empty()) {
+//         //robot->log_info("task location must be calculated from quadrant given as area"); // TESTING ONLY, needs robot as input
+//         return getTaskLocationFromArea(task_info.area); // pass the area map
+//     } 
+//     // If no location information exists
+//     else {
+//         throw std::runtime_error("Task has no location or area defined.");
+//     }
+// }
 
 std::pair<int,int> World::getTaskLocationFromArea(std::unordered_map<std::string, int>& area) {
     // No mutex to avoid deadlock because getTaskInfo covers it
@@ -544,4 +604,28 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 
 bool World::hasTaskInfo(int task_id) {
     return all_tasks_info.find(task_id) != all_tasks_info.end();
+}
+
+// for debugging greedy inconsistent runtime (was due to world not being "pre-warmed")
+void World::debugTaskAccess(int task_id, Robot& robot) {
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    robot.log_info("Getting task info for task " + std::to_string(task_id) + "...");
+    TaskInfo& info = getTaskInfo(task_id);
+    
+    auto mid = std::chrono::high_resolution_clock::now();
+    
+    robot.log_info("Getting location for task " + std::to_string(task_id) + "...");
+    if (info.location.first == -1) {
+        robot.log_info("Location not set, calculating from area...");
+        auto loc = getTaskLocationFromArea(info.area);
+        robot.log_info("Calculated location: (" + std::to_string(loc.first) + ", " + std::to_string(loc.second) + ")");
+    }
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    
+    double info_time = std::chrono::duration<double>(mid - start).count();
+    double loc_time = std::chrono::duration<double>(end - mid).count();
+    
+    robot.log_info("Task " + std::to_string(task_id) + " - info: " + std::to_string(info_time) + "s, location: " + std::to_string(loc_time) + "s");
 }

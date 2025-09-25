@@ -40,17 +40,6 @@
 </root>
 )";*/
 
-// Greedy version (Sequence instead of parallel root node because no replanning during execution) [Seems to work as expected! Creates path of tasks]
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <Sequence>
-            <GreedyTaskAllocator/>
-        </Sequence>
-     </BehaviorTree>
-</root>
-)";*/
-
 // Now testing local task execution subtree (worked but now deprecated because port info passing removed for flexibility (logic added to functions directly))
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
@@ -170,10 +159,49 @@
 </root>
 )";*/
 
+// Greedy version (Sequence instead of parallel root node because no replanning during execution) [Seems to work as expected! Creates path of tasks]
+// static const char* xml_text = R"(
+// <root BTCPP_format="4">
+//     <BehaviorTree ID="MainTree">
+//         <Sequence>
+//             <GreedyTaskAllocator/>
+//         </Sequence>
+//      </BehaviorTree>
+// </root>
+// )";
+
+// Full greedy version, with executable task subtrees (subtrees not executing even after planning complete for some reason)
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="5">
+            <GreedyTaskAllocator/>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
+
+
 // Testing switch to CBGA from CBBA while allowing switch back/between task allocation methods (CBBA vs CBGA, as greedy has a different BT)
 // Denoted by do_cbga = true or do_cbga = false for CBBA
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="6">
@@ -208,7 +236,46 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
+)";*/
+
+//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
+// CBBA CBBA CBBA CBBA (do_cbga = "false" in all locations below)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="6">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="false" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="false" />
+                    <Communicate/>
+                    <ResolveConflicts do_cbga="false" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="false" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
 
 // Debugging CBGA resolveConflicts - done testing!
 // static const char* xml_text = R"(
