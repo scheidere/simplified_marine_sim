@@ -609,6 +609,7 @@ PortsList FollowShortestPath::providedPorts()
 ExploreA::ExploreA(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
     : ConditionNode(name, config), _robot(robot) {}       
 
+// timing bug not here
 NodeStatus ExploreA::tick()
 {
     try {
@@ -744,6 +745,10 @@ NodeStatus FollowCoveragePath::onStart()
     try {
         std::cout << "Planning coverage path for robot " << _robot.getID() << "..." << std::endl;
 
+        // testing timing
+        _start_time = std::chrono::high_resolution_clock::now();
+        _robot.log_info("FollowCoveragePath onStart() beginning");
+
         // Cleaner to not pass info in via trigger condition since it is possible to access here
         // Although it may be redundant, this provides more flexibility to use different planners
         // Otherwise shortest path requires the port to pass a std::pair<int,int> location
@@ -751,7 +756,15 @@ NodeStatus FollowCoveragePath::onStart()
 
         std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
         int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
-        TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+        ////TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+
+        // testing timing to diagnose delay
+        auto world_start = std::chrono::high_resolution_clock::now();
+        TaskInfo& current_task = _world.getTaskInfo(current_task_id);
+        auto world_end = std::chrono::high_resolution_clock::now();
+        double world_time = std::chrono::duration<double>(world_end - world_start).count();
+        std::cout << "!!!!!!!!!!World access took: " << world_time << "s" << std::endl;
+
         std::unordered_map<std::string,int> area = current_task.area;
         
         Pose2D current_pose = _robot.getPose();
@@ -769,8 +782,15 @@ NodeStatus FollowCoveragePath::onStart()
         // _robot.log_info(bla);
         
         // Init vector of waypoints, the plan
-        _waypoints = _coverage_path_planner.plan(current_pose, area,
-                                                _world.getX(), _world.getY());
+        // _waypoints = _coverage_path_planner.plan(current_pose, area,
+        //                                         _world.getX(), _world.getY());
+        auto planning_start = std::chrono::high_resolution_clock::now();
+        _waypoints = _coverage_path_planner.plan(current_pose, area, _world.getX(), _world.getY());
+        auto planning_end = std::chrono::high_resolution_clock::now();
+
+        double planning_time = std::chrono::duration<double>(planning_end - planning_start).count();
+        std::string b = "Robot " + std::to_string(_robot.getID()) + " path planning took: " + std::to_string(planning_time) + "s";
+        _robot.log_info(b);
 
         // for testing
         std::cout << "Generated waypoints:" << std::endl;
@@ -803,12 +823,25 @@ NodeStatus FollowCoveragePath::onRunning()
         if (_current_waypoint_index >= _waypoints.size()) {
             std::cout << "All waypoints completed!" << std::endl;
 
+            // Get reward for the coverage path task just completed
+            std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+            int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
+            std::string hi = "Current_task_id at end: " + std::to_string(current_task_id);
+            _robot.log_info(hi);
+            TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+            double reward = current_task.reward;
+
+            std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+            _robot.log_info(rew);
+
             // Movement is done!
             // Remove current first task from path since it has been completed
             _robot.removeCompletedTaskFromPath(); // Removes first task
 
-            // Get reward for the coverage path task just completed
-            add logic here
+            auto end_time = std::chrono::high_resolution_clock::now();
+            double total_start_time = std::chrono::duration<double>(end_time - _start_time).count();
+            std::string p = "FollowCoveragePath onStart() total time: " + std::to_string(total_start_time) + "s";
+            _robot.log_info(p);
 
             return NodeStatus::SUCCESS;
         }
@@ -819,7 +852,15 @@ NodeStatus FollowCoveragePath::onRunning()
         std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
                   << ": " << waypoint.x << "/" << waypoint.y << std::endl;
         
+        // testing timing
+        //_robot.move(waypoint);
+        auto move_start = std::chrono::high_resolution_clock::now();
         _robot.move(waypoint);
+        auto move_end = std::chrono::high_resolution_clock::now();
+
+        double move_time = std::chrono::duration<double>(move_end - move_start).count();
+        std::string g = "Robot " + std::to_string(_robot.getID()) + " waypoint " + std::to_string(_current_waypoint_index) + " move took: " +  std::to_string(move_time) + "s";
+        _robot.log_info(g);
 
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;

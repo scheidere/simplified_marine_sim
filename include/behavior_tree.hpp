@@ -263,6 +263,7 @@ private:
 
     std::vector<Pose2D> _waypoints;
     int _current_waypoint_index;
+    std::chrono::high_resolution_clock::time_point _start_time;
 
 
 public:

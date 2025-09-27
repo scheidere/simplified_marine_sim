@@ -154,7 +154,74 @@ ShortestPath::ShortestPath(int step_size) : Planner(step_size) {
 
 }
 
+
+//testing, just added prints of timing to try to diagnose interobot delay at start
 std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
+    auto graph_start = std::chrono::high_resolution_clock::now();
+    adjacency_vector graph = convertImageToAdjacencyVector(X, Y);
+    auto graph_end = std::chrono::high_resolution_clock::now();
+    
+    // Get indices
+    int start_idx = getIndex(start_pose.x, start_pose.y, Y);
+    int goal_idx = getIndex(waypoint.x, waypoint.y, Y);
+    std::vector<Pose2D> plan;
+    
+    auto dijkstra_start = std::chrono::high_resolution_clock::now();
+    int V = X*Y;
+    std::vector<double> distance_tracker = initializeDistances(V, start_idx, Y);
+    std::vector<bool> visit_tracker = initializeVisits(V);
+    
+    std::priority_queue<P, std::vector<P>, std::greater<P>> priority_queue;
+    priority_queue.push({0, start_idx});
+    std::vector<int> predecessor(V, -1);
+    
+    while (!priority_queue.empty()) {
+        int min_idx = priority_queue.top().second;
+        priority_queue.pop();
+        
+        if (visit_tracker[min_idx]) continue;
+        visit_tracker[min_idx] = true;
+        if (min_idx == goal_idx) break;
+        
+        std::vector<P> neighbors = graph[min_idx];
+        for (const P &np : neighbors) {
+            double nc_dist = np.first;
+            int n_idx = np.second;
+            
+            if (!visit_tracker[n_idx]) {
+                double new_dist = nc_dist + distance_tracker[min_idx];
+                if (new_dist < distance_tracker[n_idx]) {
+                    distance_tracker[n_idx] = new_dist;
+                    predecessor[n_idx] = min_idx;
+                    priority_queue.push({new_dist, n_idx});
+                }
+            }
+        }
+    }
+    
+    auto dijkstra_end = std::chrono::high_resolution_clock::now();
+    
+    // Reconstruct path
+    std::vector<int> path;
+    for (int at = goal_idx; at != -1; at = predecessor[at]) {
+        path.push_back(at);
+    }
+    std::reverse(path.begin(), path.end());
+    
+    for (int idx : path) {
+        std::pair<int, int> c = getCoords(idx, Y);
+        plan.push_back({c.first, c.second, 0});
+    }
+    
+    // Only keep timing output - much cleaner
+    double graph_time = std::chrono::duration<double>(graph_end - graph_start).count();
+    double dijkstra_time = std::chrono::duration<double>(dijkstra_end - dijkstra_start).count();
+    std::cout << "ShortestPath timing - Graph: " << graph_time << "s, Dijkstra: " << dijkstra_time << "s" << std::endl;
+    
+    return plan;
+}
+
+/*std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
 
     static std::atomic<int> call_count{0};
     static thread_local bool in_plan = false;
@@ -250,11 +317,9 @@ std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X
 
     in_plan = false;
     std::cout << "=== PLAN CALL #" << my_call << " END ===" << std::endl;
-    return plan;
     
-    // Change: Return vector directly
     return plan;
-}
+}*/
 
 
 

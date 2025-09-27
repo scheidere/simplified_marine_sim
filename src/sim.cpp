@@ -494,11 +494,24 @@ int main(int argc, char** argv) {
                 );
             }
 
+            // Start plotting thread inside try block (didnt work)
+            /*std::atomic<bool> should_plot{true};
+            std::thread plot_thread([&world, &should_plot]() {
+            while (should_plot.load()) {
+                world.plot();
+                std::this_thread::sleep_for(std::chrono::milliseconds(300));
+            }
+            });*/
+
             std::cout << "Threads started..." << std::endl;
 
             for (auto& thread : robot_threads) {
                 thread.join();
             }
+
+            // Stop plot thread (didnt work)
+            // should_plot.store(false);
+            // plot_thread.join();
             
         } catch (const std::exception& e) {
             std::cerr << "Exception caught while starting or joining threads: " << e.what() << std::endl;

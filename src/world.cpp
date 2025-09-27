@@ -441,7 +441,7 @@ void World::clear(Pose2D pose) {
     cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
 }
 
-void World::plot() {
+/*void World::plot() {
     std::lock_guard<std::mutex> lock(world_mutex);
     //std::cout << "Plotting world..." << std::endl;
 
@@ -458,6 +458,32 @@ void World::plot() {
 
     cv::imshow("Quadrant Image", image);
     cv::waitKey(300);
+}*/
+
+void World::plot() {
+    // Mutex used to lock whole function but there were big delays for some of the robots
+
+    std::vector<std::pair<Pose2D, cv::Scalar>> robot_data;
+    
+    {  // Mutex locking getPose, getColor calls but NOT the time-consuming drawing part (circles get left as strays if don't protect at all)
+        std::lock_guard<std::mutex> lock(world_mutex);
+        
+        // Collect all data while holding lock
+        std::vector<Pose2D> quadrant_centers = getQuadrantCenters();
+        
+        for (auto& pair : robot_tracker) {
+            Robot* robot = pair.second;
+            robot_data.push_back({robot->getPose(), robot->getColor()});
+        }
+    }  // Lock released here
+    
+    // Do all the slow drawing/display work without holding lock
+    for (auto& data : robot_data) {
+        cv::circle(image, cv::Point(data.first.x, data.first.y), 5, data.second, -1);
+    }
+    
+    cv::imshow("Quadrant Image", image);
+    cv::waitKey(300);  // No longer blocking other robots!
 }
 
 void World::trackRobot(Robot* robot) {

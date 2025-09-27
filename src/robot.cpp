@@ -258,12 +258,56 @@ void Robot::move(Pose2D waypoint) {
     pose = waypoint; // Update x and y within robot class
     //std::cout << "After: ";
     //world->printTrackedRobots();
-    world->plot(); // Add dots at all robot locations
+    //world->plot(); // Add dots at all robot locations, CAUSES DELAY IF LEFT LIKE THIS (fix below)
+
+    // Robot creates thread just for plotting new position, and detaches to continue with flow of processes other than plotting
+    // This fixes the big delay that was happening for one of the robots, not always the same one
+    // Needed consistent concurrent movement to fairly represent real world (albeit distantly)
+    // and plot wrt time in such a way that delays are due to task allocation choices, not behind the scenes delays
+    std::thread([this]() { world->plot(); }).detach();
 
     double drain_percent = 0.01;
     updateBatteryLevel(drain_percent);
     //std::cout << "New battery level after move: " << battery_level << " for robot ID " << id << std::endl;
 }
+
+// debug version of move with prints below
+/*void Robot::move(Pose2D waypoint) {
+    auto move_start = std::chrono::high_resolution_clock::now();
+    
+    auto clear_start = std::chrono::high_resolution_clock::now();
+    world->clear(pose);
+    auto clear_end = std::chrono::high_resolution_clock::now();
+    
+    auto pose_start = std::chrono::high_resolution_clock::now();
+    pose = waypoint;
+    auto pose_end = std::chrono::high_resolution_clock::now();
+    
+    auto plot_start = std::chrono::high_resolution_clock::now();
+    // world->plot(); // testing with world on its own thread, created and run in main
+    std::thread([this]() { world->plot(); }).detach(); // pt 2 of crucial fix (other part in world.plot mutex scope lessened)
+    auto plot_end = std::chrono::high_resolution_clock::now();
+    
+    auto battery_start = std::chrono::high_resolution_clock::now();
+    double drain_percent = 0.01;
+    updateBatteryLevel(drain_percent);
+    auto battery_end = std::chrono::high_resolution_clock::now();
+    
+    auto move_end = std::chrono::high_resolution_clock::now();
+    
+    // Calculate timings
+    double clear_time = std::chrono::duration<double>(clear_end - clear_start).count();
+    double pose_time = std::chrono::duration<double>(pose_end - pose_start).count();
+    double plot_time = std::chrono::duration<double>(plot_end - plot_start).count();
+    double battery_time = std::chrono::duration<double>(battery_end - battery_start).count();
+    double total_time = std::chrono::duration<double>(move_end - move_start).count();
+    
+    std::string quorp = "Robot " + std::to_string(id) + " move breakdown - Clear: " + 
+             std::to_string(clear_time) + "s, Pose: " + std::to_string(pose_time) + 
+             "s, Plot: " + std::to_string(plot_time) + "s, Battery: " + 
+             std::to_string(battery_time) + "s, Total: " + std::to_string(total_time) + "s";
+    log_info(quorp);
+}*/
 
 void Robot::updateRobotMessageQueue(Msg msg) {
 
