@@ -105,6 +105,9 @@ void CBGA::buildBundle() {
 
         std::cout << "in CBGA::buildBundle..." << std::endl;
 
+        robot.log_info("Task progress tracker at start of buildBundle: ");
+        utils::logUnorderedMap(robot.getTaskProgress(), robot);
+
         // Set at_consensus to false for given robot regardless of if build bundle ultimately changes path, we don't know yet
         robot.setAtConsensus(false); // Stops iterative path execution while potential path changes occur (current executing action should complete)
         robot.log_info("Setting at_consensus to FALSE at start of buildBundle");
@@ -884,6 +887,13 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                 std::string bla = "Looking at doable task " + std::to_string(task_id);
                 robot.log_info(bla);
 
+                // COMMENTING OUT TO SEE IF THIS IS THE SOURCE OF WEIRD CONVERGENCE
+                // if (robot.taskAlreadyStarted(task_id)) {
+                //     robot.log_info("Task " + std::to_string(task_id) + " already started, skipping bundle build for it");
+                //     continue;  // Don't bid on tasks already started
+                // }
+
+
                 std::unordered_map<std::string, int>& task_group_max_size = world.getTaskGroupInfo(task_id);
                 robot.log_info("task_group_max_size: ");
                 utils::logUnorderedMap(task_group_max_size, robot);
@@ -1424,6 +1434,13 @@ void CBGA::resolveConflicts(bool do_test) {
             robot.log_info(t1);
             int task_idx = task_id - 1;
             int full_group_size = world.getTaskGroupSize(task_id);
+
+            // COMMENTING OUT TO SEE IF THIS IS THE SOURCE OF WEIRD CONVERGENCE
+            // Skip tasks that are already started (in progress or completed)
+            // if (robot.taskAlreadyStarted(task_id)) {
+            //     robot.log_info("Task " + std::to_string(task_id) + " already started, skipping conflict resolution");
+            //     continue;  // Skip to next task
+            // }
 
             if (full_group_size == 1) { // if task is solo
                 // Do CBBA like before, but access winning_bids_matrix instead of winners and winning_bids maps

@@ -46,6 +46,8 @@ private:
     std::unordered_map<int, double> timestamps; // Time of last info update from each of other agents (does not include own id, because doesn't need to message self)
     std::unordered_map<int,Pose2D> locations; // Last known location of all robots including self (before comms only knows own location)
 
+    std::unordered_map<int,int> task_progress; // task id: 0 if not started, 1 if started // might add 2 for complete at some point
+
     // The follow are the previous bundle, path, winners and winning_bids, tracked to check for convergence between iterations
     std::vector<int> prev_bundle;
     std::vector<int> prev_path;
@@ -91,12 +93,14 @@ public:
     std::vector<std::vector<double>> initWinningBidsMatrix(); // CBGA
     std::unordered_map<int,double> initTimestamps();
     std::unordered_map<int,Pose2D> initLocations(); // CBGA
+    std::unordered_map<int,int> initTaskProgress(); // CBGA (maybe CBBA as well?)
     std::pair<int, Pose2D> getMostUpToDateNeighborInfo(int id_k);
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
     std::vector<std::vector<double>>& getWinningBidsMatrix() { return winning_bids_matrix; }
     std::unordered_map<int, double>& getTimestamps() { return timestamps; }
+    std::unordered_map<int, int>& getTaskProgress() { return task_progress; }
     std::unordered_map<int, Pose2D>& getLocations() { return locations; }
     std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
     std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
@@ -118,16 +122,16 @@ public:
     std::string generateLogFilename();
     void log_info(std::string log_msg);
     bool checkIfNewInfoAvailable();
-    void countConvergedIterations();
+    void countConvergedIterations(bool do_cbga);
     int getConvergenceCount() { return num_converged_iterations; }
-    void updateBeliefs();
+    void updateBeliefs(bool do_cbga);
     int& getNumCBBARounds() {return cbba_rounds; }
     int& getNumCBGARounds() {return cbga_rounds; }
     void resetConvergenceCount();
     void resetNumCBBARounds();
     void resetNumCBGARounds();
     void updateLastSelfUpdateTime(double timestamp);
-    bool foundBeliefUpdate();
+    bool foundBeliefUpdate(bool do_cbga);
     void clearStalePings(); // Get rid of pings in ping tracker that are older than timeout threshold - sender robots are offline or out of range
     bool ExploreA();
     bool ExploreB();
@@ -149,6 +153,16 @@ public:
 
     void setTaskAllocStartTime(const std::chrono::high_resolution_clock::time_point& time) { task_alloc_start_time = time; } 
     std::chrono::high_resolution_clock::time_point getTaskAllocStartTime() const { return task_alloc_start_time; }
+
+    bool PathClearingNeeded();
+
+    void updateSingleTaskProgress(int task_id, int started);
+    void updateTaskProgress(); // Traverse received messages and update task progress, defering to 1's
+    bool taskAlreadyStarted(int task_id);
+
+    // Testing splitting updateTimestamps() and calling directly in receiveMessages instead of after in comms BT node function
+    void updateTimestampGivenDirectMessage(int id_k);
+    void updateRemainingTimestampsIndirectly();
 
     //void resurfaceToCharge();
 

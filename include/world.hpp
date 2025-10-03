@@ -161,6 +161,8 @@ public:
 
     void debugTaskAccess(int task_id, Robot& robot); // called before greedy class in BT greedy node so timing is consistent
 
+    bool clearPathFullGroupPresent(int current_task_id);
+
 };
 
 #endif

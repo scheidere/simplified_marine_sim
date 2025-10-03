@@ -655,3 +655,34 @@ void World::debugTaskAccess(int task_id, Robot& robot) {
     
     robot.log_info("Task " + std::to_string(task_id) + " - info: " + std::to_string(info_time) + "s, location: " + std::to_string(loc_time) + "s");
 }
+
+bool World::clearPathFullGroupPresent(int current_task_id) {
+
+    // Get task struct
+    TaskInfo& current_task = getTaskInfo(current_task_id); // Get task struct from world 
+    std::pair<int,int> task_location = current_task.location;
+
+    // Since the type requirements for robots in the group is handled in resolveConflicts, robot.trackAssignedRobotsbySubGroup(...) and CBGA.isGroupEffectivelyFull(...)
+    // Here we only check that total number in group required is present (we assume they are the correct types since determined prior to task allocation)
+
+    int count_robots_at_location = 0; // Consider robots doing clear path task that are at location of clearing
+    for (auto& pair : robot_tracker) {
+        int robot_id = pair.first;
+        Robot* robot = pair.second;
+
+        Pose2D current_pose = robot->getPose();
+        std::pair<int,int> current_loc = {current_pose.x, current_pose.y};
+
+        if (current_loc == task_location) {
+            count_robots_at_location += 1;
+        }
+    }
+
+    if (count_robots_at_location == current_task.group_size) {
+        // Full group present to start task
+        return true;
+    }
+
+    // Full group not yet present
+    return false;
+}

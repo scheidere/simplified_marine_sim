@@ -276,4 +276,30 @@ public:
     static PortsList providedPorts();
 };
 
+class PathClearingNeeded : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    PathClearingNeeded(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ClearPath : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+
+public:
+    ClearPath(const std::string& name, const NodeConfig& config, Robot& r, World& w);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

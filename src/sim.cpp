@@ -170,8 +170,8 @@
 // </root>
 // )";
 
-// Full greedy version, with executable task subtrees (subtrees not executing even after planning complete for some reason)
-static const char* xml_text = R"(
+// Full greedy version, with executable task subtrees
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="5">
@@ -195,13 +195,54 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 
 // Testing switch to CBGA from CBBA while allowing switch back/between task allocation methods (CBBA vs CBGA, as greedy has a different BT)
 // Denoted by do_cbga = true or do_cbga = false for CBBA
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
 /*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="7">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="true" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="true" />
+                    <Communicate/>
+                    <ResolveConflicts do_cbga="true" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="true" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreA/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreB/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreC/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <ExploreD/>
+                <FollowCoveragePath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <PathClearingNeeded start_loc="{loc}"/>
+                <FollowShortestPath goal_loc="{loc}"/>
+                <ClearPath/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="6">
@@ -236,7 +277,7 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";*/
+)";
 
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
 // CBBA CBBA CBBA CBBA (do_cbga = "false" in all locations below)
@@ -368,6 +409,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<ExploreC>("ExploreC", std::ref(robot), std::ref(world));
                 factory.registerNodeType<ExploreD>("ExploreD", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref(coverage_path));
+                factory.registerNodeType<PathClearingNeeded>("PathClearingNeeded", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

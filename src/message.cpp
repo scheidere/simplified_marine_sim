@@ -80,11 +80,12 @@ void Message::broadcastMessage(World& world) {
                 std::string log_msg = "Adding message: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID);
                 receiver->log_info(log_msg);
                 //std::cout << "Message is in range, updating world message tracker for receiverID: " << receiverID << std::endl;
-                world.log_info("ATTEMPTING STORAGE: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID));
+                //world.log_info("ATTEMPTING STORAGE: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID));
                 updateWorldMessageTracker(world, receiverID);
                 world.log_info("STORAGE COMPLETE: Robot " + std::to_string(msg.id) + " -> Robot " + std::to_string(receiverID));
                 std::string log_msg2 = "Message added successfully";
                 receiver->log_info(log_msg2);
+
                 //std::cout << "Message tracker updated for receiverID: " << receiverID << std::endl;
             }
         }

@@ -64,6 +64,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     timestamps = initTimestamps();
     locations = initLocations();
 
+    task_progress = initTaskProgress();
+
     // Inits for tracking of previous info for convergence checks between iterations
     prev_bundle.resize(max_depth, -1);
     prev_path.resize(max_depth, -1);
@@ -231,6 +233,21 @@ std::unordered_map<int,Pose2D> Robot::initLocations() {
     return locations;
 }
 
+std::unordered_map<int,int> Robot::initTaskProgress() {
+
+    std::unordered_map<int,int> task_progress;
+
+    // Get ALL tasks from world, not just doable ones per current robot type
+    std::unordered_map<int,TaskInfo>& all_tasks_info = world->getAllTasksInfo();
+
+     for (const auto& task : all_tasks_info) {
+        int task_id = task.first;
+        task_progress[task_id] = 0; // At start, no tasks started
+    }
+
+    return task_progress;
+
+}
 
 void Robot::init (Pose2D initial_pose) {
     std::cout << "Initializing robot pose..." << std::endl;
@@ -357,12 +374,20 @@ void Robot::receiveMessages() {
         // utils::log1DVector(messages, *this);
         utils::logMsgVector(messages, *this);
 
+        // Sort messages to keep same order, more determinism (idk leaving out again because its not technically wrong to have nondeterministic order)
+        // std::sort(messages.begin(), messages.end(), 
+        //           [](const Msg& a, const Msg& b) { return a.id < b.id; });
+
         // Process all messages for receiver robot queued in world message tracker
         for (const auto& msg : messages) {
             updateRobotMessageQueue(msg);
+            int id_k = msg.id;
+            updateTimestampGivenDirectMessage(id_k);
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
             log_info(log_msg);
         }
+
+        updateRemainingTimestampsIndirectly();
 
         // New clearing of messages in world tracker for this robot since fully received by robot
         messages.clear();
@@ -504,6 +529,44 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<
         log_info(bla);
         utils::log1DVector(pings,*this);
     }
+}
+
+// first half of old updateTimestamps(), splitting for testing calls in different places 
+void Robot::updateTimestampGivenDirectMessage(int id_k) {
+    timestamps[id_k] = getCurrentTime(); //msg.timestamp;
+    if (timestamps[id_k] < 0.0001) {
+        std::string blop = "Found timestamp of < 0.0001 for id k " + std::to_string(id_k); 
+    }
+}
+
+// second half of old updateTimestamps(), splitting for testing calls in different places 
+void Robot::updateRemainingTimestampsIndirectly() {
+
+    bool found_msg_from_k;
+    for (auto& [id_k, timestamp] : timestamps) {
+
+        // Determine whether robot i has direct message from k in queue
+        found_msg_from_k = false;
+        for (Msg& msg : message_queue) {
+            if (msg.id == id_k) {
+                // Found message from robot k
+                found_msg_from_k = true;
+            }
+        }
+
+        // Indirect timestamp case, robot i has no message direct from k, so info relayed via some agent m who is in range of i and received a message from k
+        if (!found_msg_from_k) { 
+            // Robot k not in comms with robot i (current) so check robots in range with both i and k for msg from k
+            double new_timestamp = world->getMaxNeighborTimestamp(id,id_k); // latest timestamp of msg from k that a neighbor to i received
+            if (timestamps[id_k] < 0.0001) {
+                    std::string blop = "Found (in indirect case) timestamp of < 0.0001 for id k " + std::to_string(id_k); 
+                }
+            if (new_timestamp != -1.0) { // If actually new info
+                timestamps[id_k] = new_timestamp;
+            }
+        }
+    }
+
 }
 
 void Robot::updateTimestamps() {
@@ -653,11 +716,11 @@ bool Robot::needRegroup() {
     return false;
 }
 
-void Robot::countConvergedIterations() {
+void Robot::countConvergedIterations(bool do_cbga) {
 
     // This must be called before updateBeliefs() at the end of a CBBA round
 
-    bool found_difference = foundBeliefUpdate();
+    bool found_difference = foundBeliefUpdate(do_cbga);
 
    /* // std::vector and std::unordered_map<int,int> support !=
     if (bundle != prev_bundle) {  found_difference = true; }
@@ -685,7 +748,7 @@ void Robot::countConvergedIterations() {
 
 }
 
-bool Robot::foundBeliefUpdate() {
+bool Robot::foundBeliefUpdate(bool do_cbga) {
 
     // Return true if bundle or path or winners or winning bids list have changed in the most recent round of CBBA 
 
@@ -694,28 +757,48 @@ bool Robot::foundBeliefUpdate() {
     // std::vector and std::unordered_map<int,int> support !=
     if (bundle != prev_bundle) {  found_difference = true; }
     if (path != prev_path) { found_difference = true; }
-    if (winners != prev_winners) { found_difference = true; }
 
-    // std::unordered_map<int,double> does not
-    for (const auto& [task_id, bid] : winning_bids) {
-        auto it = prev_winning_bids.find(task_id);
-        if (it == prev_winning_bids.end() || std::abs(it->second - bid) > 1e-6) {
-            found_difference = true;
+    if (do_cbga) {
+
+        for (size_t i = 0; i < winning_bids_matrix.size() && !found_difference; i++) {
+            for (size_t j = 0; j < winning_bids_matrix[i].size(); j++) {
+                if (std::abs(winning_bids_matrix[i][j] - prev_winning_bids_matrix[i][j]) > 1e-6) {
+                    found_difference = true;
+                    break;
+                }
+            }
         }
+
+    } else { // cbba, winners and winning_bids
+        if (winners != prev_winners) { found_difference = true; }
+
+        for (const auto& [task_id, bid] : winning_bids) {
+            auto it = prev_winning_bids.find(task_id);
+            if (it == prev_winning_bids.end() || std::abs(it->second - bid) > 1e-6) {
+                found_difference = true;
+            }
+        }
+
     }
+    
 
     return found_difference;
 }
 
-void Robot::updateBeliefs() {
+void Robot::updateBeliefs(bool do_cbga) {
 
     // This must be called after convergence is checked for a given round of CBBA
 
     // Update belief tracking
     prev_bundle = bundle;
     prev_path = path;
-    prev_winners = winners;
-    prev_winning_bids = winning_bids;
+
+    if (do_cbga) {
+        prev_winning_bids_matrix = winning_bids_matrix;
+    } else {
+        prev_winners = winners;
+        prev_winning_bids = winning_bids;
+    }
 
 }
 
@@ -912,11 +995,15 @@ void Robot::removeCompletedTaskFromPath() {
         log_info("Warning: Attempted to remove from empty path");
         return;
     }
-    
+
+    // Remove from path
     path.erase(path.begin());
+    path.push_back(-1); // Maintain same size as bundle but with -1's for empty
     log_info("Path is now: ");
     utils::log1DVector(path, *this);
 }
+
+
 
 std::unordered_map<std::string, int> Robot::initTaskGroupFullnessMap() {
 
@@ -1073,3 +1160,72 @@ std::unordered_map<std::string, std::vector<int>> Robot::trackAssignedRobotsbySu
     return task_sub_groups;
 }
 
+bool Robot::PathClearingNeeded() {
+    // Condition that should return true when first task in path is Clear_Path (will check by ID)
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.name == "Clear_Path") {
+        log_info("Next task to execute is Clear_Path!");
+        return true;
+    }
+
+    return false; // It's not ClearPath
+
+}
+
+void Robot::updateSingleTaskProgress(int task_id, int started) {
+
+    log_info("in updateSingleTaskProgress");
+
+    // Leaving value as int (not bool) so we can make it 2 as well as 0 and 1 in future to denote complete if needed
+    // For now started = 0 means not started, and 1 is started (could be complete)
+
+    task_progress[task_id] = started;
+
+
+}
+
+void Robot::updateTaskProgress() {
+
+    log_info("in updateTaskProgress");
+
+    for (Msg& msg : message_queue) {
+
+        // started = 1 if started and 0 otherwise (might be 2 for complete later)
+        for (const auto& [task_id, started] : msg.task_progress) {
+            if (started == 1) {
+                // Neighbor knows this task has been started (either by itself or another neighbor)
+                task_progress[task_id] = 1;
+            }
+        }
+
+        // This way we keep local started info (1s), and included knowledge of started tasks that is known by neighbors (updates to 1 above)
+    }
+
+    log_info("Task progress in updateTaskProgress: ");
+    utils::logUnorderedMap(task_progress, *this);
+}
+
+bool Robot::taskAlreadyStarted(int task_id) {
+
+    if (task_progress[task_id] == 1) {
+
+        return true;
+    }
+
+    return false;
+}

@@ -135,7 +135,7 @@ NodeStatus Communicate::onRunning()
         //_robot.log_info("Timestamps test: ");
         //utils::logUnorderedMap(_robot.getTimestamps(), _robot);
         msg.broadcastMessage(_world);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
 
         std::string blork2 = "Robot " + std::to_string(_robot.getID()) + " FINISHED broadcast";  
         _world.log_info(blork2);
@@ -183,8 +183,13 @@ NodeStatus Communicate::onRunning()
         }
             
 
-        _robot.updateTimestamps();
+        //_robot.updateTimestamps(); // testing calling this in more specific spots in receiveMessages(), split into two parts
         _robot.updateLocations(); // CBGA
+        _robot.log_info("task progress b4 update in comms node");
+        utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
+        _robot.updateTaskProgress(); // CBGA (do we need in CBBA too for fairness or no?)
+        _robot.log_info("task progress after update in comms node");
+        utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
 
         _robot.log_info("Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:");
         utils::logUnorderedMap(_robot.getTimestamps(),_robot);
@@ -380,11 +385,11 @@ NodeStatus CheckConvergence::tick()
         }
         _robot.log_info(bloo);
 
-        _robot.countConvergedIterations(); // Compare robot beliefs to beliefs at previous iteration (stored in)
+        _robot.countConvergedIterations(do_cbga); // Compare robot beliefs to beliefs at previous iteration (stored in)
 
         int cumulative_convergence_count = _robot.getConvergenceCount(); // Number of iterations convergence has remained
 
-        _robot.updateBeliefs();
+        _robot.updateBeliefs(do_cbga);
 
 
         _robot.log_info("After convergence check at end of CBBA/CBGA round, bundle and path are the following:");
@@ -454,6 +459,9 @@ NodeStatus CheckConvergence::tick()
             double seconds = std::chrono::duration<double>(duration).count();
             std::string time = "Time to convergence: " + std::to_string(seconds) + " seconds";
             _robot.log_info(time);
+
+            _robot.log_info("Task progress tracker at convergence: ");
+            utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
         }
 
         return NodeStatus::SUCCESS;
@@ -526,6 +534,14 @@ NodeStatus FollowShortestPath::onStart()
 {
     try {
         std::cout << "Planning shortest path for robot " << _robot.getID() << "..." << std::endl;
+
+        std::vector<int> task_path = _robot.getPath(); 
+        int current_task_id = task_path[0];
+
+        // **************************************** //
+        // COUNT TASK (that shortest path is navigating to) AS BEGUN, stops CBGA from assigning to another robot when already being executed and therefore not an option anymore
+        _robot.updateSingleTaskProgress(current_task_id,1);
+        // **************************************** //
         
         Pose2D current_pose = _robot.getPose();
         Pose2D goal_pose;
@@ -758,6 +774,11 @@ NodeStatus FollowCoveragePath::onStart()
         int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
         ////TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
 
+        // **************************************** //
+        // COUNT TASK AS BEGUN, stops CBGA from assigning to another robot when already being executed and therefore not an option anymore
+        _robot.updateSingleTaskProgress(current_task_id,1);
+        // **************************************** //
+
         // testing timing to diagnose delay
         auto world_start = std::chrono::high_resolution_clock::now();
         TaskInfo& current_task = _world.getTaskInfo(current_task_id);
@@ -880,6 +901,96 @@ void FollowCoveragePath::onHalted()
 }
 
 PortsList FollowCoveragePath::providedPorts()
+{
+    return {};
+}
+
+
+PathClearingNeeded::PathClearingNeeded(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus PathClearingNeeded::tick()
+{
+    try {
+
+        if (_robot.PathClearingNeeded()) { //not implemented in robot yet
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is ClearPath)
+            std::string bla = "start_loc in PathClearingNeeded tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreD::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList PathClearingNeeded::providedPorts()
+{
+    return { OutputPort<std::pair<int,int>>("start_loc") };
+}
+
+
+ClearPath::ClearPath(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w)
+    : StatefulActionNode(name, config), _robot(r), _world(w) {
+    }
+
+NodeStatus ClearPath::onStart()
+{
+    try {
+        std::cout << "Robot " << _robot.getID() << " going to clear path..." << std::endl;
+        
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus ClearPath::onRunning()
+{
+    try {
+
+        // If here, ClearPath is current task because condition node returned true to get here in BT
+        // Get location to clear path
+         std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+        int current_task_id = task_path[0]; // This has to be clear_path to be in onRunning per BT
+        // TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+        // std::pair<int,int> location = current_task.location; // Get location of this clear path task
+
+        if (_world.clearPathFullGroupPresent(current_task_id)) {
+
+            // Entire group is present at task vicinity, so after a short delay we count this as path cleared
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            // Remove current first task from path since it has been completed
+            _robot.removeCompletedTaskFromPath(); // Removes first task from path
+
+            return NodeStatus::SUCCESS;
+        }
+        
+        
+     
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void ClearPath::onHalted()
+{
+    std::cout << "Clear path halted." << std::endl;
+}
+
+PortsList ClearPath::providedPorts()
 {
     return {};
 }
