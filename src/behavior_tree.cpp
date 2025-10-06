@@ -16,6 +16,11 @@
 
 using namespace BT;
 
+void saveReward(double time, double reward, const std::string& filename = "reward_data.csv") {
+    std::ofstream file(filename, std::ios::app);  // Allow appending
+    file << time << "," << reward << "\n";
+    file.close();
+}
 
 Ping::Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
     : StatefulActionNode(name, config), _world(world), _robot(robot) {}
@@ -118,11 +123,11 @@ NodeStatus Communicate::onRunning()
 
         // for testing for broadcast issue
         auto elapsed = _world.getElapsedTime();
-        std::string timing_log = "Robot " + std::to_string(_robot.getID()) + " Communicate at time: " + std::to_string(elapsed) + "ms";
-        _world.log_info(timing_log);
+        // std::string timing_log = "Robot " + std::to_string(_robot.getID()) + " Communicate at time: " + std::to_string(elapsed) + "ms";
+        // _world.log_info(timing_log);
 
-        std::string blork1 = "Robot " + std::to_string(_robot.getID()) + " STARTING broadcast";
-        _world.log_info(blork1);  // Use world.log_info
+        // std::string blork1 = "Robot " + std::to_string(_robot.getID()) + " STARTING broadcast";
+        // _world.log_info(blork1);  // Use world.log_info
 
         // Send messages
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
@@ -137,8 +142,8 @@ NodeStatus Communicate::onRunning()
         msg.broadcastMessage(_world);
         //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Delay 
 
-        std::string blork2 = "Robot " + std::to_string(_robot.getID()) + " FINISHED broadcast";  
-        _world.log_info(blork2);
+        // std::string blork2 = "Robot " + std::to_string(_robot.getID()) + " FINISHED broadcast";  
+        // _world.log_info(blork2);
 
         std::string b = "Robot " + std::to_string(_robot.getID()) + "finished broadcasting.";
         _robot.log_info(b);
@@ -146,22 +151,22 @@ NodeStatus Communicate::onRunning()
         //_robot.log_info("in communicate node, before receiveMessages");
 
         /// testing... ///
-        std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = _world.getMessageTracker();
-        std::string debug_msg = "Robot " + std::to_string(_robot.getID()) + " accessing tracker at address: " + std::to_string((uintptr_t)&world_msg_tracker);
-        _world.log_info(debug_msg);
+        // std::unordered_map<int, std::vector<Msg>>& world_msg_tracker = _world.getMessageTracker();
+        // std::string debug_msg = "Robot " + std::to_string(_robot.getID()) + " accessing tracker at address: " + std::to_string((uintptr_t)&world_msg_tracker);
+        // _world.log_info(debug_msg);
 
-        _robot.log_info("World message tracker by robot:");
-        for (const auto& pair : world_msg_tracker) {
-            int robot_id = pair.first;
-            const std::vector<Msg>& messages = pair.second;
+        // _robot.log_info("World message tracker by robot:");
+        // for (const auto& pair : world_msg_tracker) {
+        //     int robot_id = pair.first;
+        //     const std::vector<Msg>& messages = pair.second;
             
-            std::string log_msg = "Robot " + std::to_string(robot_id) + " has messages from: ";
-            for (const auto& msg : messages) {
-                log_msg += std::to_string(msg.id) + " ";
-            }
-            log_msg += "(" + std::to_string(messages.size()) + " total)";
-            _robot.log_info(log_msg);
-        }
+        //     std::string log_msg = "Robot " + std::to_string(robot_id) + " has messages from: ";
+        //     for (const auto& msg : messages) {
+        //         log_msg += std::to_string(msg.id) + " ";
+        //     }
+        //     log_msg += "(" + std::to_string(messages.size()) + " total)";
+        //     _robot.log_info(log_msg);
+        // }
         /// testing above... ///
 
         // Receive messages
@@ -191,10 +196,13 @@ NodeStatus Communicate::onRunning()
         _robot.log_info("task progress after update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
 
+        _world.log_info("Task progress after update via comms:");
+        _world.logCurrentTeamTaskProgress();
+
         _robot.log_info("Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:");
         utils::logUnorderedMap(_robot.getTimestamps(),_robot);
-        std::string plorp = "Robot " + std::to_string(_robot.getID()) + " Communicate returning SUCCESS";
-        _world.log_info(plorp);
+        // std::string plorp = "Robot " + std::to_string(_robot.getID()) + " Communicate returning SUCCESS";
+        // _world.log_info(plorp);
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in Communicate::tick: " << e.what() << std::endl;
@@ -462,6 +470,11 @@ NodeStatus CheckConvergence::tick()
 
             _robot.log_info("Task progress tracker at convergence: ");
             utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
+
+            _world.log_info("Paths at convergence:");
+            _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+
+            //_world.logCurrentTeamTaskProgress(); // Save current task progress vectors
         }
 
         return NodeStatus::SUCCESS;
@@ -542,6 +555,9 @@ NodeStatus FollowShortestPath::onStart()
         // COUNT TASK (that shortest path is navigating to) AS BEGUN, stops CBGA from assigning to another robot when already being executed and therefore not an option anymore
         _robot.updateSingleTaskProgress(current_task_id,1);
         // **************************************** //
+
+        _world.log_info("Task progress after single update in action start function:");
+        _world.logCurrentTeamTaskProgress();
         
         Pose2D current_pose = _robot.getPose();
         Pose2D goal_pose;
@@ -779,6 +795,9 @@ NodeStatus FollowCoveragePath::onStart()
         _robot.updateSingleTaskProgress(current_task_id,1);
         // **************************************** //
 
+        _world.log_info("Task progress after single update in action start function:");
+        _world.logCurrentTeamTaskProgress();
+
         // testing timing to diagnose delay
         auto world_start = std::chrono::high_resolution_clock::now();
         TaskInfo& current_task = _world.getTaskInfo(current_task_id);
@@ -855,6 +874,12 @@ NodeStatus FollowCoveragePath::onRunning()
             std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
             _robot.log_info(rew);
 
+            // Save reward at current time
+            double current_time = _robot.getCurrentTime();
+            saveReward(current_time, reward);
+
+            _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+
             // Movement is done!
             // Remove current first task from path since it has been completed
             _robot.removeCompletedTaskFromPath(); // Removes first task
@@ -863,6 +888,15 @@ NodeStatus FollowCoveragePath::onRunning()
             double total_start_time = std::chrono::duration<double>(end_time - _start_time).count();
             std::string p = "FollowCoveragePath onStart() total time: " + std::to_string(total_start_time) + "s";
             _robot.log_info(p);
+
+            _world.log_info("Paths at task completion:");
+            _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+
+            _world.log_info("Task progress at task completion:");
+            _world.logCurrentTeamTaskProgress();
+
+            _world.log_info("Current tasks completed by each robot: ");
+            _world.logTaskCompletion();
 
             return NodeStatus::SUCCESS;
         }
@@ -969,8 +1003,34 @@ NodeStatus ClearPath::onRunning()
             // Entire group is present at task vicinity, so after a short delay we count this as path cleared
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
+            // Get reward for the coverage path task just completed
+            std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+            int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
+            std::string hi = "Current_task_id at end: " + std::to_string(current_task_id);
+            _robot.log_info(hi);
+            TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+            double reward = current_task.reward;
+
+            std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+            _robot.log_info(rew);
+
+            // Save reward at current time
+            double current_time = _robot.getCurrentTime();
+            saveReward(current_time, reward);
+
+            _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+
             // Remove current first task from path since it has been completed
             _robot.removeCompletedTaskFromPath(); // Removes first task from path
+
+            _world.log_info("Paths at task completion:");
+            _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+
+            _world.log_info("Task progress at task completion:");
+            _world.logCurrentTeamTaskProgress();
+
+            _world.log_info("Current tasks completed by each robot: ");
+            _world.logTaskCompletion();
 
             return NodeStatus::SUCCESS;
         }

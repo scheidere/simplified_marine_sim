@@ -849,6 +849,8 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
         utils::log1DVector(path, robot);
         robot.log_info("Winning bids matrix:");
         utils::log2DVector(winning_bids_matrix, robot);
+        robot.log_info("Task progress:");
+        utils::logUnorderedMap(robot.getTaskProgress(), robot);
         robot.log_info("+++++++++++++++++++++++++++++++++++++");
 
         int size = getBundleOrPathSize(bundle);
@@ -888,11 +890,10 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                 robot.log_info(bla);
 
                 // COMMENTING OUT TO SEE IF THIS IS THE SOURCE OF WEIRD CONVERGENCE
-                // if (robot.taskAlreadyStarted(task_id)) {
-                //     robot.log_info("Task " + std::to_string(task_id) + " already started, skipping bundle build for it");
-                //     continue;  // Don't bid on tasks already started
-                // }
-
+                if (robot.taskAlreadyStarted(task_id)) {
+                    robot.log_info("Task " + std::to_string(task_id) + " already started, skipping bundle build for it");
+                    continue;  // Don't bid on tasks already started
+                }
 
                 std::unordered_map<std::string, int>& task_group_max_size = world.getTaskGroupInfo(task_id);
                 robot.log_info("task_group_max_size: ");
@@ -1437,10 +1438,10 @@ void CBGA::resolveConflicts(bool do_test) {
 
             // COMMENTING OUT TO SEE IF THIS IS THE SOURCE OF WEIRD CONVERGENCE
             // Skip tasks that are already started (in progress or completed)
-            // if (robot.taskAlreadyStarted(task_id)) {
-            //     robot.log_info("Task " + std::to_string(task_id) + " already started, skipping conflict resolution");
-            //     continue;  // Skip to next task
-            // }
+            if (robot.taskAlreadyStarted(task_id)) {
+                robot.log_info("Task " + std::to_string(task_id) + " already started, skipping conflict resolution");
+                continue;  // Skip to next task
+            }
 
             if (full_group_size == 1) { // if task is solo
                 // Do CBBA like before, but access winning_bids_matrix instead of winners and winning_bids maps

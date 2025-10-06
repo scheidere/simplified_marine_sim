@@ -1196,19 +1196,26 @@ void Robot::updateSingleTaskProgress(int task_id, int started) {
 
     task_progress[task_id] = started;
 
-
 }
 
 void Robot::updateTaskProgress() {
 
     log_info("in updateTaskProgress");
+    log_info("Message queue size: " + std::to_string(message_queue.size()));
 
     for (Msg& msg : message_queue) {
 
+        log_info("in msg loop");
+        log_info("msg.task_progress: ");
+        utils::logUnorderedMap(msg.task_progress, *this);
+
         // started = 1 if started and 0 otherwise (might be 2 for complete later)
         for (const auto& [task_id, started] : msg.task_progress) {
+            log_info("in task progress loop");
             if (started == 1) {
                 // Neighbor knows this task has been started (either by itself or another neighbor)
+                std::string bla = "Robot " + std::to_string(id) + " task progress updated (0 to 1 for one element) via robot " + std::to_string(msg.id);
+                log_info(bla);
                 task_progress[task_id] = 1;
             }
         }

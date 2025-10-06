@@ -55,6 +55,9 @@ protected:
 
     std::chrono::steady_clock::time_point start_time;
 
+    std::unordered_map<int,std::vector<int>> task_completion_log; // robot id : vector of task ids it completed
+    std::vector<std::pair<int,int>> task_completion_order; // also for logging but by pair, robot id and task id as completed (more info than above log)
+
     std::ofstream world_log; // Init file for world to log to
 
 
@@ -67,6 +70,10 @@ public:
     std::string generateLogFilename();
 
     void log_info(std::string log_msg);
+
+    void logCurrentTeamAssignment();
+
+    void logCurrentTeamTaskProgress();
 
     std::chrono::steady_clock::time_point getStartTime() const;
 
@@ -162,6 +169,12 @@ public:
     void debugTaskAccess(int task_id, Robot& robot); // called before greedy class in BT greedy node so timing is consistent
 
     bool clearPathFullGroupPresent(int current_task_id);
+
+    std::unordered_map<int,std::vector<int>>& getTaskCompletionLog() { return task_completion_log; }
+
+    void updateTaskCompletionLog(int robot_id, int completed_task_id);
+
+    void logTaskCompletion();
 
 };
 

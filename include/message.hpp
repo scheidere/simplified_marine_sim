@@ -19,8 +19,8 @@ struct Msg {
     std::unordered_map<int,Pose2D> locations; // Added for CBGA! For flexibility, using Pose2D x and y to denote location, ignoring theta. Includes key for self location value.
     std::unordered_map<int,int> task_progress; // CBGA (maybe CBBA as well?)
 
-    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::vector<std::vector<double>> winning_bids_matrix, std::unordered_map<int,double> timestamps, std::unordered_map<int,Pose2D> locations)
-        : id(id), winners(winners), winning_bids(winning_bids), winning_bids_matrix(winning_bids_matrix), timestamps(timestamps), locations(locations) {} 
+    Msg(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::vector<std::vector<double>> winning_bids_matrix, std::unordered_map<int,double> timestamps, std::unordered_map<int,Pose2D> locations, std::unordered_map<int,int> task_progress)
+        : id(id), winners(winners), winning_bids(winning_bids), winning_bids_matrix(winning_bids_matrix), timestamps(timestamps), locations(locations), task_progress(task_progress) {} 
 
 };
 

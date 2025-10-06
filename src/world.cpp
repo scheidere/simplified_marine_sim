@@ -87,6 +87,41 @@ void World::log_info(std::string log_msg) {
 
 }
 
+void World::logCurrentTeamAssignment() {
+
+    log_info("Paths for each agent on the team:");
+
+    for (auto& pair : robot_tracker) {
+        int id = pair.first;
+        Robot* robot = pair.second;
+        std::vector<int>& path = robot->getPath();
+        std::string bla = std::string("Robot ") + std::to_string(id) + ": ";
+        log_info(bla);
+        utils::log1DVectorFromWorld(path, *this);
+
+    }
+}
+
+void World::logCurrentTeamTaskProgress() {
+
+    log_info("Current task progress tracker for each agent on the team:");
+    for (auto& pair : robot_tracker) {
+        int id = pair.first;
+        Robot* robot = pair.second;
+        std::string bla = std::string("Robot ") + std::to_string(id) + ": ";
+        log_info(bla);
+        utils::logUnorderedMapWorld(robot->getTaskProgress(), *this);
+
+        std::cout.flush();
+        std::cout << std::flush;
+        std::cerr << std::flush;
+    }
+
+    log_info("Finished logging task progress");
+    std::cout << std::flush;
+
+}
+
 double World::getElapsedTime() const {
     auto now = std::chrono::steady_clock::now();
     return std::chrono::duration<double>(now - start_time).count();
@@ -685,4 +720,22 @@ bool World::clearPathFullGroupPresent(int current_task_id) {
 
     // Full group not yet present
     return false;
+}
+
+void World::updateTaskCompletionLog(int robot_id, int completed_task_id) {
+
+    task_completion_log[robot_id].push_back(completed_task_id);
+
+    task_completion_order.push_back(std::make_pair(robot_id, completed_task_id));
+}
+
+void World::logTaskCompletion() {
+
+    utils::logMapOfVectorsWorld(task_completion_log, *this);
+
+    // Below for actual order, robot id does task id
+    for (const auto& pair : task_completion_order) {
+        std::string yeup = "Robot " + std::to_string(pair.first) + " did task " + std::to_string(pair.second);
+        log_info(yeup);
+    }
 }

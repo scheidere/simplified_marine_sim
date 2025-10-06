@@ -201,7 +201,7 @@
 // Testing switch to CBGA from CBBA while allowing switch back/between task allocation methods (CBBA vs CBGA, as greedy has a different BT)
 // Denoted by do_cbga = true or do_cbga = false for CBBA
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
-/*static const char* xml_text = R"(
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="7">
@@ -241,8 +241,8 @@
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";*/
-static const char* xml_text = R"(
+)";
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="6">
@@ -277,7 +277,7 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
 // CBBA CBBA CBBA CBBA (do_cbga = "false" in all locations below)
@@ -472,6 +472,12 @@ int main(int argc, char** argv) {
     try {
         double start_time = getCurrentTime();
         std::cout << "Running simulation..." << std::endl;
+
+        // Init file to save reward/time
+        std::string filename = "reward_data.csv";
+        std::ofstream file(filename);  // overwrites existing file
+        file << "time,reward\n";  // write header
+        file.close();
 
         // Testing parsing
         //std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");

@@ -59,6 +59,23 @@ void logMapOfVectors(const std::unordered_map<std::string, std::vector<T>>& map_
     robot.log_info(log_msg.str());
 }
 
+template <typename T>
+void logMapOfVectorsWorld(const std::unordered_map<int, std::vector<T>>& map_data, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& pair : map_data) {
+        log_msg << std::to_string(pair.first) << " : [";
+        for (size_t i = 0; i < pair.second.size(); ++i) {
+            log_msg << pair.second[i];
+            if (i < pair.second.size() - 1) {
+                log_msg << ", ";
+            }
+        }
+        log_msg << "]\n";
+    }
+    world.log_info(log_msg.str());
+}
+
+
 
 // Template function to print an unordered_map with any value type
 template <typename K, typename V>
@@ -87,6 +104,14 @@ void logUnorderedMap(const std::unordered_map<K, V>& my_map, Robot& robot) {
     }
     robot.log_info(log_msg.str()); // robot function
 }
+template <typename K, typename V>
+void logUnorderedMapWorld(const std::unordered_map<K, V>& my_map, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& pair : my_map) {
+        log_msg << pair.first << " : " << pair.second << "\n";
+    }
+    world.log_info(log_msg.str());
+}
 
 // Log unordered_map with Pose2D values  
 template <>
@@ -107,6 +132,16 @@ void log1DVector(const std::vector<T>& vec, Robot& robot) {
         log_msg << elem << " ";
     }
     robot.log_info(log_msg.str()); // robot function
+}
+
+// Log a 1D vector
+template <typename T>
+void log1DVectorFromWorld(const std::vector<T>& vec, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& elem : vec) {
+        log_msg << elem << " ";
+    }
+    world.log_info(log_msg.str());
 }
 
 // Log 1D vector of std::pair<int,double> elements
