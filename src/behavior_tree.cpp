@@ -16,9 +16,17 @@
 
 using namespace BT;
 
+//int logger_robot_id = 1;
+
 void saveReward(double time, double reward, const std::string& filename = "reward_data.csv") {
     std::ofstream file(filename, std::ios::app);  // Allow appending
     file << time << "," << reward << "\n";
+    file.close();
+}
+
+void saveDistance(double time, double distance, const std::string& filename = "distance_data.csv") {
+    std::ofstream file(filename, std::ios::app);  // Allow appending
+    file << time << "," << distance << "\n";
     file.close();
 }
 
@@ -615,6 +623,19 @@ NodeStatus FollowShortestPath::onRunning()
                   << ": " << waypoint.x << "/" << waypoint.y << std::endl;
         
         _robot.move(waypoint);
+
+        if (_robot.getID() == 1) {
+
+            //_world.log_info("in robot 1 logging area - shortest path");
+
+            // Update cumulative team distance for plotting
+            _world.updateCumulativeDistance();
+            double cumulative_team_distance = _world.getCumulativeDistance();
+
+            // Save distance at current time
+            double current_time = _robot.getCurrentTime();
+            saveDistance(current_time, cumulative_team_distance);
+        }
         
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;
@@ -874,9 +895,15 @@ NodeStatus FollowCoveragePath::onRunning()
             std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
             _robot.log_info(rew);
 
+            // Add new reward to cumulative reward for whole team
+            _world.updateCumulativeReward(reward);
+            //cumulative_reward += reward; potentially unsafe update
+
+            double& cumulative_reward = _world.getCumulativeReward();
+
             // Save reward at current time
             double current_time = _robot.getCurrentTime();
-            saveReward(current_time, reward);
+            saveReward(current_time, cumulative_reward);
 
             _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
 
@@ -916,6 +943,20 @@ NodeStatus FollowCoveragePath::onRunning()
         double move_time = std::chrono::duration<double>(move_end - move_start).count();
         std::string g = "Robot " + std::to_string(_robot.getID()) + " waypoint " + std::to_string(_current_waypoint_index) + " move took: " +  std::to_string(move_time) + "s";
         _robot.log_info(g);
+
+
+        // Only log team info once (so only one robot should do it even though it pertains to whole team)
+        if (_robot.getID() == 1) {
+            //_world.log_info("in robot 1 logging area - coverage path");
+
+            // Save cumulative team distance for plotting
+            _world.updateCumulativeDistance();
+            double cumulative_team_distance = _world.getCumulativeDistance();
+
+            // Save distance at current time
+            double current_time = _robot.getCurrentTime();
+            saveDistance(current_time, cumulative_team_distance);
+        }
 
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;
@@ -1014,9 +1055,15 @@ NodeStatus ClearPath::onRunning()
             std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
             _robot.log_info(rew);
 
+            // Add new reward to cumulative reward for whole team
+            _world.updateCumulativeReward(reward);
+            //cumulative_reward += reward; potentially unsafe update
+
+            double& cumulative_reward = _world.getCumulativeReward();
+
             // Save reward at current time
             double current_time = _robot.getCurrentTime();
-            saveReward(current_time, reward);
+            saveReward(current_time, cumulative_reward);
 
             _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
 
@@ -1034,9 +1081,7 @@ NodeStatus ClearPath::onRunning()
 
             return NodeStatus::SUCCESS;
         }
-        
-        
-     
+
         return NodeStatus::RUNNING;
         
     } catch (const std::exception& e) {

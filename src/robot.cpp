@@ -99,6 +99,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     at_consensus = false; // Used to stop executing a path not yet at consensus (relevant for CBBA, not greedy)
 
+    cumulative_distance = 0;
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -269,6 +271,8 @@ bool Robot::batteryLow() {
 void Robot::move(Pose2D waypoint) {
     //std::cout << "In move for robot with ID " << getID() << std::endl;
 
+    Pose2D old_pose = pose;
+
     world->clear(pose); // Clear all robot dots (technically only need to clear moving ones, but this is easier)
     //std::cout << "Before: ";
     //world->printTrackedRobots();
@@ -276,6 +280,17 @@ void Robot::move(Pose2D waypoint) {
     //std::cout << "After: ";
     //world->printTrackedRobots();
     //world->plot(); // Add dots at all robot locations, CAUSES DELAY IF LEFT LIKE THIS (fix below)
+
+    // Track distance traveled
+    std::thread([this, old_pose, waypoint]() { 
+    
+        double distance = Distance::getEuclideanDistance(old_pose.x, old_pose.y, pose.x, pose.y);
+        
+        cumulative_distance += distance;
+
+        std::string d = "Current cumulative distance: " + std::to_string(cumulative_distance);
+        log_info(d);
+    }).detach();
 
     // Robot creates thread just for plotting new position, and detaches to continue with flow of processes other than plotting
     // This fixes the big delay that was happening for one of the robots, not always the same one

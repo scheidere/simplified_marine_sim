@@ -69,6 +69,8 @@ private:
 
     std::chrono::high_resolution_clock::time_point task_alloc_start_time; // will be used by greedy OR CBBA, or CBGA, never at the same time bc different BTs
 
+    double cumulative_distance;
+
 
 
 public:
@@ -163,6 +165,8 @@ public:
     // Testing splitting updateTimestamps() and calling directly in receiveMessages instead of after in comms BT node function
     void updateTimestampGivenDirectMessage(int id_k);
     void updateRemainingTimestampsIndirectly();
+
+    double& getCumulativeDistance() { return cumulative_distance; }
 
     //void resurfaceToCharge();
 

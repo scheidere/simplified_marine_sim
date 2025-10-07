@@ -60,6 +60,9 @@ protected:
 
     std::ofstream world_log; // Init file for world to log to
 
+    double cumulative_distance_traveled; // by the team
+    double cumulative_reward_achieved; // by the team
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
@@ -70,6 +73,10 @@ public:
     std::string generateLogFilename();
 
     void log_info(std::string log_msg);
+
+    double& getCumulativeDistance() { return cumulative_distance_traveled; }
+
+    double& getCumulativeReward() { return cumulative_reward_achieved; }
 
     void logCurrentTeamAssignment();
 
@@ -175,6 +182,10 @@ public:
     void updateTaskCompletionLog(int robot_id, int completed_task_id);
 
     void logTaskCompletion();
+
+    void updateCumulativeReward(double reward);
+
+    void updateCumulativeDistance();
 
 };
 

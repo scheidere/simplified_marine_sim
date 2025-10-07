@@ -739,3 +739,30 @@ void World::logTaskCompletion() {
         log_info(yeup);
     }
 }
+
+void World::updateCumulativeReward(double reward) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    cumulative_reward_achieved += reward;
+}
+
+void World::updateCumulativeDistance() {
+
+    // Each robot cumulatively tracks total distance traveled (in robot.move())
+    // Here we just add those distances for all robots on the team to get the current distance traveled by team thus far
+    // Only robot 1 logs this so no mutex here
+
+    log_info("in world.getCumulativeDistance");
+
+    double new_cumulative_distance;
+    for (auto& pair : robot_tracker) {
+        int id = pair.first;
+        Robot* robot = pair.second;
+        new_cumulative_distance += robot->getCumulativeDistance();
+    }
+
+    // Update team's cumulative distance stored in world
+    cumulative_distance_traveled = new_cumulative_distance;
+    std::string d = "Cumulative distance in world func: " + std::to_string(cumulative_distance_traveled);
+    log_info(d);
+}

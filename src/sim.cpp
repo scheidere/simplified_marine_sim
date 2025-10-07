@@ -479,6 +479,12 @@ int main(int argc, char** argv) {
         file << "time,reward\n";  // write header
         file.close();
 
+        // Init file to save reward/time
+        std::string filename2 = "distance_data.csv";
+        std::ofstream file2(filename2);  // overwrites existing file
+        file2 << "time,distance\n";  // write header
+        file2.close();
+
         // Testing parsing
         //std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
         //std::string path = (std::filesystem::current_path() / "src/simplified_marine_sim/config/input.json").string(); also works
