@@ -444,7 +444,57 @@ std::pair<double, std::unordered_map<int,Pose2D>> CBGA::getFurthestPossibleDista
     return max_dist_and_new_locs;
 }
 
-double CBGA::getDistanceAlongPathToTask(std::vector<int> path, int task_id) {
+double CBGA::getDistanceAlongPathToSoloTask(std::vector<int> path, int task_id) {
+
+    // Get distance along path to location of given task_id
+    // This is for solo tasks from CBBA, ignores distance of already assigned agent (that would be replaced by current agent if it wins)
+
+    robot.log_info("in cumulative distance function");
+
+    if (std::find(path.begin(), path.end(), task_id) == path.end()) {
+        throw std::runtime_error("Task ID " + std::to_string(task_id) + " not found in path.");
+    }
+
+    double distance = 0;
+
+    // Get robot location to init "prev" location
+    Pose2D current_pose = robot.getPose();
+    int prev_x = current_pose.x;
+    int prev_y = current_pose.y;
+    std::string bla = "init prev loc: " + std::to_string(prev_x) + ", " + std::to_string(prev_y);
+    robot.log_info(bla);
+
+    for (int i = 0; i < getBundleOrPathSize(path); i++) {
+
+        std::pair<int,int> location = world.getTaskLocation(path[i]); //&robot); // robot only for testing, path[i] is a task id
+        int current_x = location.first;
+        int current_y = location.second;
+        std::string bla2 = "task loc: " + std::to_string(current_x) + ", " + std::to_string(current_y);
+        robot.log_info(bla2);
+
+
+        double new_dist = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
+        robot.log_info(std::to_string(new_dist));
+
+        distance += new_dist;
+
+        if (path[i] == task_id) {
+            std::string s2 = "distance at end: " + std::to_string(distance);
+            robot.log_info(s2);
+            robot.log_info("end cumulative distance function");
+            return distance;
+        } else {
+            prev_x = current_x;
+            prev_y = current_y;
+        }
+    }
+
+    // Should never reach here due to check above
+    throw std::logic_error("Unexpected error in getDistanceAlongPathToTask");
+
+}
+
+double CBGA::getDistanceAlongPathToCoopTask(std::vector<int> path, int task_id) {
 
     // UPDATING FOR CBGA
     // For each cooperative task considered, use distance of furthest agent assigned to it
@@ -505,13 +555,22 @@ double CBGA::getPathScore(std::vector<int> path, bool do_test) {
     for (int i = 0; i < getBundleOrPathSize(path); i++) {
 
         int task_id = path[i];
+        int full_group_size = world.getTaskGroupSize(task_id);
 
         if (!do_test) {
 
             robot.log_info("in the right if**********");
 
+            if (full_group_size == 1) {
+                robot.log_info("solo task so using cbba reward function");
+                distance = getDistanceAlongPathToSoloTask(path, task_id);
+            } else if (full_group_size > 1) {
+                robot.log_info("coop task so using cbga reward function");
+                distance = getDistanceAlongPathToCoopTask(path, task_id);
+            }
+
             // Get distance along path to given task
-            distance = getDistanceAlongPathToTask(path, path[i]);
+            //distance = getDistanceAlongPathToTask(path, path[i]);
 
             // log for testing
             /*std::string bla = "i: " + std::to_string(i);
@@ -889,7 +948,7 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
                 std::string bla = "Looking at doable task " + std::to_string(task_id);
                 robot.log_info(bla);
 
-                // COMMENTING OUT TO SEE IF THIS IS THE SOURCE OF WEIRD CONVERGENCE
+                // Check if task already started
                 if (robot.taskAlreadyStarted(task_id)) {
                     robot.log_info("Task " + std::to_string(task_id) + " already started, skipping bundle build for it");
                     continue;  // Don't bid on tasks already started
@@ -1184,6 +1243,8 @@ void CBGA::resolveSoloConflicts(int j, int id_i, int id_k, int winner_ij, int wi
     // std::string hi2 = "id_k: " + std::to_string(id_k);
     // robot.log_info(hi2);
 
+    robot.log_info("in resolveSoloConflicts...");
+
     if (winner_ij == winner_kj) {
         if (winner_ij == id_k) {
             update(j, winning_bids_matrix_i, winning_bids_matrix_k);
@@ -1385,6 +1446,8 @@ void CBGA::resolveConflicts(bool do_test) {
         Update own matrix per deferment hierarchy
     */
 
+    robot.log_info("STARTING resolveConflicts");
+
     int id_i = robot.getID();
     int i_idx = id_i-1;
     std::vector<Msg>& message_queue_i = robot.getMessageQueue();
@@ -1436,7 +1499,6 @@ void CBGA::resolveConflicts(bool do_test) {
             int task_idx = task_id - 1;
             int full_group_size = world.getTaskGroupSize(task_id);
 
-            // COMMENTING OUT TO SEE IF THIS IS THE SOURCE OF WEIRD CONVERGENCE
             // Skip tasks that are already started (in progress or completed)
             if (robot.taskAlreadyStarted(task_id)) {
                 robot.log_info("Task " + std::to_string(task_id) + " already started, skipping conflict resolution");
@@ -1445,6 +1507,8 @@ void CBGA::resolveConflicts(bool do_test) {
 
             if (full_group_size == 1) { // if task is solo
                 // Do CBBA like before, but access winning_bids_matrix instead of winners and winning_bids maps
+
+                robot.log_info("full_group_size = 1");
 
                 // Find winners and winning_bids to compare
                 int winner_ij = -1, winner_kj = -1;
@@ -1479,6 +1543,12 @@ void CBGA::resolveConflicts(bool do_test) {
                 //resolveSoloConflicts(task_id, id_i, id_k, winner_ij, winner_kj, winning_bid_ij, winning_bid_kj, timestamps_i, timestamps_k, winning_bids_matrix_i, winning_bids_matrix_k);
                 resolveSoloConflicts(task_id, id_i, id_k, winner_ij, winner_kj, winning_bid_ij, winning_bid_kj, ts_i_m, ts_k_m, winning_bids_matrix_i, winning_bids_matrix_k);
             
+                robot.log_info("results right after resolveSoloConflicts()");
+                std::string bla2 = "Current robot " + std::to_string(id_i) + " (winning_bids_matrix):";
+                robot.log_info(bla2);
+                utils::log2DVector(winning_bids_matrix_i, robot);
+
+
             } else if (full_group_size > 1) {
                 robot.log_info("full_group_size > 1");
                 std::string please = "id_k: " + std::to_string(id_k);
@@ -1627,6 +1697,8 @@ void CBGA::resolveConflicts(bool do_test) {
     // robot.log_info(bla2);
     // utils::log2DVector(winning_bids_matrix_i, robot);
     //utils::logUnorderedMap(timestamps_i, robot);
+
+    robot.log_info("END resolveConflicts");
 
 }
 

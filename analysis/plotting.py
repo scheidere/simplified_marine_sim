@@ -46,14 +46,14 @@ ax1.step(reward_df['time'].values, reward_df['reward'].values, 'b-',
          linewidth=2, where='post')
 ax1.set_xlabel('Time (s)')
 ax1.set_ylabel('Cumulative Reward')
-ax1.set_title('Reward over Time')
+ax1.set_title('Cumulative Reward Achieved by Team')
 ax1.grid(True, alpha=0.3)
 
 # Regular plot for distance
 ax2.plot(distance_df['time'].values, distance_df['distance'].values, 'r-', linewidth=2)
 ax2.set_xlabel('Time (s)')
-ax2.set_ylabel('Cumulative Distance (m)')
-ax2.set_title('Distance over Time')
+ax2.set_ylabel('Cumulative Distance (px)')
+ax2.set_title('Cumulative Team Distance')
 ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()

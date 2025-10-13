@@ -159,6 +159,7 @@ public:
     bool PathClearingNeeded();
 
     void updateSingleTaskProgress(int task_id, int started);
+    void updateTaskProgressFromAssignment();
     void updateTaskProgress(); // Traverse received messages and update task progress, defering to 1's
     bool taskAlreadyStarted(int task_id);
 

@@ -476,13 +476,25 @@ NodeStatus CheckConvergence::tick()
             std::string time = "Time to convergence: " + std::to_string(seconds) + " seconds";
             _robot.log_info(time);
 
+            _robot.log_info("At convergence, so updating task progress tracker to prevent redundant allocation of tasks in later CBBA/CBGA rounds...");
+            _robot.updateTaskProgressFromAssignment();
+
             _robot.log_info("Task progress tracker at convergence: ");
             utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
+
+            _world.logNeighbors();
 
             _world.log_info("Paths at convergence:");
             _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
 
             //_world.logCurrentTeamTaskProgress(); // Save current task progress vectors
+
+            _world.log_info("Messaging log at convergence:");
+            _world.logMessagingLog();
+        } else {
+            // not at convergence, but at end of round
+            _world.log_info("Messaging log at end of round - not at convergence:");
+            _world.logMessagingLog();
         }
 
         return NodeStatus::SUCCESS;
@@ -555,13 +567,15 @@ NodeStatus FollowShortestPath::onStart()
 {
     try {
         std::cout << "Planning shortest path for robot " << _robot.getID() << "..." << std::endl;
+        std::string strt = "Planning shortest path for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
 
         std::vector<int> task_path = _robot.getPath(); 
         int current_task_id = task_path[0];
 
         // **************************************** //
         // COUNT TASK (that shortest path is navigating to) AS BEGUN, stops CBGA from assigning to another robot when already being executed and therefore not an option anymore
-        _robot.updateSingleTaskProgress(current_task_id,1);
+        ////_robot.updateSingleTaskProgress(current_task_id,1); // id, started bool
         // **************************************** //
 
         _world.log_info("Task progress after single update in action start function:");
@@ -613,8 +627,13 @@ NodeStatus FollowShortestPath::onRunning()
     try {
         if (_current_waypoint_index >= _waypoints.size()) {
             std::cout << "All waypoints completed!" << std::endl;
+            std::string strt = "Completed shortest path for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
             return NodeStatus::SUCCESS;
         }
+
+        std::string strt = "Running shortest path for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
         
         Pose2D waypoint = _waypoints[_current_waypoint_index];
         
@@ -624,7 +643,7 @@ NodeStatus FollowShortestPath::onRunning()
         
         _robot.move(waypoint);
 
-        if (_robot.getID() == 1) {
+        if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
 
             //_world.log_info("in robot 1 logging area - shortest path");
 
@@ -797,6 +816,8 @@ NodeStatus FollowCoveragePath::onStart()
 {
     try {
         std::cout << "Planning coverage path for robot " << _robot.getID() << "..." << std::endl;
+        std::string strt = "Planning coverage path for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
 
         // testing timing
         _start_time = std::chrono::high_resolution_clock::now();
@@ -813,7 +834,7 @@ NodeStatus FollowCoveragePath::onStart()
 
         // **************************************** //
         // COUNT TASK AS BEGUN, stops CBGA from assigning to another robot when already being executed and therefore not an option anymore
-        _robot.updateSingleTaskProgress(current_task_id,1);
+        ////_robot.updateSingleTaskProgress(current_task_id,1);
         // **************************************** //
 
         _world.log_info("Task progress after single update in action start function:");
@@ -925,8 +946,14 @@ NodeStatus FollowCoveragePath::onRunning()
             _world.log_info("Current tasks completed by each robot: ");
             _world.logTaskCompletion();
 
+            std::string strt = "Completed coverage path for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+
             return NodeStatus::SUCCESS;
         }
+
+        std::string strt = "Running coverage path for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
         
         Pose2D waypoint = _waypoints[_current_waypoint_index];
         
@@ -946,7 +973,7 @@ NodeStatus FollowCoveragePath::onRunning()
 
 
         // Only log team info once (so only one robot should do it even though it pertains to whole team)
-        if (_robot.getID() == 1) {
+        if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
             //_world.log_info("in robot 1 logging area - coverage path");
 
             // Save cumulative team distance for plotting
@@ -1019,6 +1046,8 @@ NodeStatus ClearPath::onStart()
 {
     try {
         std::cout << "Robot " << _robot.getID() << " going to clear path..." << std::endl;
+        std::string strt = "Starting clear path for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
         
         return NodeStatus::RUNNING;
         
@@ -1079,8 +1108,14 @@ NodeStatus ClearPath::onRunning()
             _world.log_info("Current tasks completed by each robot: ");
             _world.logTaskCompletion();
 
+            std::string strt = "Completed clear path for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+
             return NodeStatus::SUCCESS;
         }
+
+        std::string strt = "Running clear path for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
 
         return NodeStatus::RUNNING;
         

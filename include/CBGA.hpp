@@ -62,9 +62,11 @@ public:
 
     std::unordered_map<int,int> initLocalWinIndicatorH();
 
+    double getDistanceAlongPathToSoloTask(std::vector<int> path, int task_id);
+
     std::pair<double, std::unordered_map<int,Pose2D>> getFurthestPossibleDistanceInGroup(int task_id, std::unordered_map<int,Pose2D> prev_locations);
 
-    double getDistanceAlongPathToTask(std::vector<int> path, int task_id);
+    double getDistanceAlongPathToCoopTask(std::vector<int> path, int task_id);
 
     double getPathScore(std::vector<int> path, bool do_test = false);
 

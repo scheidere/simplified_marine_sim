@@ -64,6 +64,9 @@ void CBBA::buildBundle() {
     try {
         std::cout << "in CBBA::buildBundle..." << std::endl;
 
+        robot.log_info("Task progress tracker at start of buildBundle: ");
+        utils::logUnorderedMap(robot.getTaskProgress(), robot);
+
         // Set at_consensus to false for given robot regardless of if build bundle ultimately changes path, we don't know yet
         robot.setAtConsensus(false); // Stops iterative path execution while potential path changes occur (current executing action should complete)
         robot.log_info("Setting at_consensus to FALSE at start of buildBundle");
@@ -674,6 +677,8 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
         utils::logUnorderedMap(winners,robot);
         robot.log_info("winning_bids:");
         utils::logUnorderedMap(winning_bids,robot);
+        robot.log_info("Task progress:");
+        utils::logUnorderedMap(robot.getTaskProgress(), robot);
         robot.log_info("+++++++++++++++++++++++++++++++++++++");
 
         int size = getBundleOrPathSize(bundle);
@@ -699,6 +704,12 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
             for (auto task_id : robot.getDoableTaskIDs()) {
                 std::string bla = "Looking at doable task " + std::to_string(task_id);
                 robot.log_info(bla);
+
+                // Check if task already started
+                if (robot.taskAlreadyStarted(task_id)) {
+                    robot.log_info("Task " + std::to_string(task_id) + " already started, skipping bundle build for it");
+                    continue;  // Don't bid on tasks already started
+                }
 
                 if ( std::find(bundle.begin(), bundle.end(), task_id) == bundle.end() ) { // for each doable task not in bundle already
                     robot.log_info("Bundle currently is:");
@@ -842,6 +853,14 @@ void CBBA::resolveConflicts(bool do_test) {
         }
 
         for (auto& [j, winner_ij] : winners_i) {
+
+            // Task id is j
+            // Skip tasks that are already started (in progress or completed)
+            if (robot.taskAlreadyStarted(j)) {
+                robot.log_info("Task " + std::to_string(j) + " already started, skipping conflict resolution");
+                continue;  // Skip to next task
+            }
+
             int winner_kj = winners_k[j];
 
             // Define k timestamp lambda function for easy access below
@@ -870,6 +889,10 @@ void CBBA::resolveConflicts(bool do_test) {
                 if (winner_ij == id_i) {
                     if (winning_bids_k[j] > winning_bids_i[j]) {
                         robot.log_info("k thinks k, i thinks i, k has higher bid so update");
+                        update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
+                    } 
+                    else if (winning_bids_k[j] == winning_bids_i[j] && id_k > id_i) { // TIE BREAKER for equal winning bids
+                        robot.log_info("k thinks k, i thinks i, equal bids but k has higher ID so update");
                         update(j, winners_i, winners_k, winning_bids_i, winning_bids_k);
                     }
                 } else if (winner_ij == -1) {

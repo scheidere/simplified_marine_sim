@@ -400,6 +400,8 @@ void Robot::receiveMessages() {
             updateTimestampGivenDirectMessage(id_k);
             std::string log_msg = "Robot " + std::to_string(id) + " received message from Robot " + std::to_string(msg.id);
             log_info(log_msg);
+
+            world->updateMessagingLog(id, msg.id);
         }
 
         updateRemainingTimestampsIndirectly();
@@ -1211,6 +1213,36 @@ void Robot::updateSingleTaskProgress(int task_id, int started) {
 
     task_progress[task_id] = started;
 
+}
+
+void Robot::updateTaskProgressFromAssignment() {
+
+    // This is basically a mini communication function
+    // this will be called at convergence in CBBA/CBGA
+    // Purpose is to mark all tasks allocated at convergence (after stabilized for threshold number of CBBA/CBGA rounds)
+    // Such that they are not reconsidered next time CBBA/CBGA runs
+
+    // Mark the tasks assigned to self as off limits (aka 1 in task progress, denoting assigned/started, to not be reconsidered)
+    for (int task_id : bundle) {
+        if (task_id > 0) { // Exclude -1 for empty slots
+            task_progress[task_id] = 1;
+        }
+    }
+
+    // For all neighbors in comms (which reasonably should be the robots self just came to consensus with via CBBA/CBGA)
+    // Mark the tasks assigned to them as off limits
+    std::map<int, Robot*>& robot_tracker = world->getRobotTracker();
+    std::vector<int> neighbor_ids = world->getNeighborsInComms(id);
+    for (int neighbor_id : neighbor_ids) {
+        Robot* neighbor = robot_tracker[neighbor_id];
+        std::vector<int>& neighbor_bundle = neighbor->getBundle();
+        for (int task_id : neighbor_bundle) {
+            // Update task progress to prevent redundant allocation in subsequent CBBA/CBGA rounds
+            if (task_id > 0) { // Exclude -1 for empty slots
+                task_progress[task_id] = 1;
+            }
+        }
+    }
 }
 
 void Robot::updateTaskProgress() {

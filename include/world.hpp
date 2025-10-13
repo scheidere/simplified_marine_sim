@@ -58,6 +58,9 @@ protected:
     std::unordered_map<int,std::vector<int>> task_completion_log; // robot id : vector of task ids it completed
     std::vector<std::pair<int,int>> task_completion_order; // also for logging but by pair, robot id and task id as completed (more info than above log)
 
+    // Want to check if each robot has heard from all robots at consensus when they all start in comms and reach consensus the first time with no movement
+    std::unordered_map<int,std::vector<int>> messaging_log; // robot id : vector of sender ids (cumulative so can have duplicates, just one for each message received)
+
     std::ofstream world_log; // Init file for world to log to
 
     double cumulative_distance_traveled; // by the team
@@ -169,6 +172,8 @@ public:
 
     std::vector<int> getNeighborsInComms(int robot_id_i);
 
+    void logNeighbors();
+
     double getMaxNeighborTimestamp(int robot_id_i, int out_of_range_robot_id_k);
 
     bool hasTaskInfo(int task_id);
@@ -187,6 +192,9 @@ public:
 
     void updateCumulativeDistance();
 
+    void updateMessagingLog(int robot_id, int msg_id);
+
+    void logMessagingLog();
 };
 
 #endif

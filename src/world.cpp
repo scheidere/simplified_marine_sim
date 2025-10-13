@@ -619,6 +619,18 @@ std::vector<int> World::getNeighborsInComms(int robot_id) {
     //return ping_id_tracker[robot_id]; // old way, but want to avoid pinging for now
 }
 
+void World::logNeighbors() {
+
+    log_info("Neighbors now:");
+    for (auto& pair : robot_tracker) {
+        std::string rbt = "Robot " + std::to_string(pair.first) + ":";
+        log_info(rbt);    
+        std::vector<int> neighbors = getNeighborsInComms(pair.first);
+        utils::log1DVectorFromWorld(neighbors,*this);
+    }
+
+}
+
 double World::getMaxNeighborTimestamp(int id_i, int id_k) {
 
     // Tested
@@ -765,4 +777,23 @@ void World::updateCumulativeDistance() {
     cumulative_distance_traveled = new_cumulative_distance;
     std::string d = "Cumulative distance in world func: " + std::to_string(cumulative_distance_traveled);
     log_info(d);
+}
+
+void World::updateMessagingLog(int robot_id, int msg_id) {
+
+    messaging_log[robot_id].push_back(msg_id);
+}
+
+void World::logMessagingLog() {
+
+    // At time of print to world log, who has heard from whom
+
+    for (auto& pair : robot_tracker) {
+        int robot_id = pair.first;
+        std::string bla = std::string("Robot ") + std::to_string(robot_id) + ": ";
+        log_info(bla);
+        utils::log1DVectorFromWorld(messaging_log[robot_id], *this);
+
+    }
+
 }
