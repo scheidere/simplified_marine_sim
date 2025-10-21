@@ -38,6 +38,7 @@ protected:
     std::unordered_map<int,AgentInfo> all_agents_info;
     int num_tasks;  // Number of local tasks that each agent might be able to do depending on type
     std::unordered_map<int,TaskInfo> all_tasks_info;
+    std::unordered_map<int,TaskInfo> all_subtasks_info; // not initially available for assignment, each one triggered to be available by a certain fault
     //std::vector<int> agent_indices; // is this really needed
     std::vector<std::string> agent_types;
     std::vector<std::string> task_types;
@@ -72,6 +73,8 @@ public:
 
     int getX() const { return X; }
     int getY() const { return Y; }
+
+    void logListofTaskIDs(std::unordered_map<int,TaskInfo> task_list);
 
     std::string generateLogFilename();
 
@@ -144,10 +147,14 @@ public:
 
     std::unordered_map<int,TaskInfo> initAllTasksInfo();
 
+    std::unordered_map<int, TaskInfo> initAllSubTasksInfo();
+
     std::unordered_map<int,TaskInfo>& getAllTasksInfo() { return all_tasks_info; }
 
     TaskInfo& getTaskInfo(int task_id);
     //TaskInfo& getTaskInfoUnsafe(int task_id); // mutex scope test, in greedy
+
+    TaskInfo& getSubTaskInfo(int task_id);
 
     int& getTaskGroupSize(int task_id);
 
@@ -163,6 +170,8 @@ public:
     std::pair<int,int> getTaskLocationFromArea(std::unordered_map<std::string, int>& area);
 
     std::unordered_map<std::string,std::vector<int>> getAllCapabilities(); // { return all_agent_capabilities; }
+
+    std::vector<int> getRobotSubtaskCapabilities(Robot* robot);
 
     std::vector<int> getRobotCapabilities(Robot* robot);
 
@@ -180,7 +189,7 @@ public:
 
     void debugTaskAccess(int task_id, Robot& robot); // called before greedy class in BT greedy node so timing is consistent
 
-    bool clearPathFullGroupPresent(int current_task_id);
+    bool fullGroupPresent(int current_task_id);
 
     std::unordered_map<int,std::vector<int>>& getTaskCompletionLog() { return task_completion_log; }
 
@@ -195,6 +204,8 @@ public:
     void updateMessagingLog(int robot_id, int msg_id);
 
     void logMessagingLog();
+
+    int getPrerequisiteFailureThreshold(std::string subtask_name);
 };
 
 #endif

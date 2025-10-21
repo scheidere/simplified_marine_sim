@@ -20,6 +20,8 @@ struct TaskInfo {
     int id;
     std::string name;
     std::string type;
+    int prerequisute_failures; // only for subtasks
+    std::vector<std::string> sub_tasks; // only for main tasks
     int group_size;
     std::unordered_map<std::string, int> group_info;
     std::pair<int,int> location;

@@ -54,6 +54,43 @@
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"area": {"xmin": 100, "xmax": 200, "ymin": 100, "ymax": 200},
 			"reward": 5
+		},
+		{
+			"id": 5,
+			"name":  "Clear_Path",
+			"type": "co-op",
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 3},
+			"location": {"x": 40, "y": 40},
+			"reward": 5
+		},
+		{
+			"id": 6,
+			"name":  "Collect_Sample",
+			"type": "collect",
+			"sub_tasks": ["Extract_Sample", "Load_Sample"],
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		}
+	],
+	"local_subtasks": [
+		{
+			"id": 7,
+			"name":  "Extract_Sample",
+			"type": "collect",
+			"prerequisite_failures": 3,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		},
+		{
+			"id": 8,
+			"name":  "Load_Sample",
+			"type": "collect",
+			"prerequisite_failures": 3,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
 		}
 	],
 	"agent_capabilities": [
@@ -66,8 +103,8 @@
 			]
 		},
 		{
-			"mapper": ["coverage","co-op"],
-			"analysis": ["coverage", "co-op"]
+			"mapper": ["coverage","collect","co-op"],
+			"analysis": ["coverage","collect","co-op"]
 		}
 	],
 

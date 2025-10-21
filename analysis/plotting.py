@@ -42,6 +42,10 @@ distance_df = pd.read_csv('distance_data.csv')
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
 
 # Step plot for reward
+time_with_zero = [0] + reward_df['time'].tolist()
+reward_with_zero = [0] + reward_df['reward'].tolist()
+ax1.step(time_with_zero, reward_with_zero, 'b-', 
+         linewidth=2, where='post')
 ax1.step(reward_df['time'].values, reward_df['reward'].values, 'b-', 
          linewidth=2, where='post')
 ax1.set_xlabel('Time (s)')

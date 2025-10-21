@@ -36,10 +36,12 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     //std::cout << "Printing capabilities..." << std::endl;
     //utils::print1DVector(capabilities);
     //std::cin.get();
+    doable_subtask_ids = world->getRobotSubtaskCapabilities(this); // doable local subtasks (by id)
 
-    std::string hi = "doable_task_ids: ";
-    log_info(hi);
+    log_info("doable_task_ids: ");
     utils::log1DVector(doable_task_ids, *this);
+    log_info("doable_subtask_ids: ");
+    utils::log1DVector(doable_subtask_ids, *this);
 
     max_depth = parser->getMaxDepth(); // Also in CBBA
 

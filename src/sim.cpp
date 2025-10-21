@@ -242,6 +242,34 @@ static const char* xml_text = R"(
      </BehaviorTree>
 </root>
 )";
+
+/*
+Leaving planned combo task subtree example here for clarity as I implement
+Collect is a condition
+HandleFailures action is followed by subtask actions
+    - Sends counter sequence the failure threshold for each of the subtasks in order 
+    - Order determined by main task subtasks list order and should match order of nodes in subtree
+    - Receives failure tracker from counter sequence (which is reponsible for updating it continuously)
+    - For each subtask that has officially failed (1 in tracker):
+        - Update robot's own doable task ids object, removing any more instances of main task type (that now has a component failure)
+        - Update robot's own winning bids matrix, moving assignment from main task to subtask row (subtask row denotes task being co-op due to fault)
+        - Update robot's subtask failure tracker (dict), so it can be sent in message next time robot newly in comms
+CounterSequence:
+    - Counts return status failures and checks against respective failure count thresholds, maintains vector or dict of counts
+    - Also maintains vector/dict of flags to denote when full failure reached for each subtask
+    - Sends this full (meaning met threshold) failure tracker to HandleFailures node each iteration
+<RepeatSequence>
+    <Collect/>
+    <CounterSequence failure_thresholds = "{thresholds}" failure_tracker = "{tracker}" >
+        <HandleFailures failure_tracker = "{tracker}" failure_thresholds = "{thresholds}" />
+        <ExtractSample/>
+        <LoadSample/>
+    </CounterSequence>
+</RepeatSequence>
+Do we want basic RepeatSequence or unlimited repeat version, is there a difference?
+Note here...
+*/
+
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">

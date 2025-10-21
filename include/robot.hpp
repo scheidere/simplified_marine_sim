@@ -32,6 +32,7 @@ private:
     double battery_level;
 
     std::vector<int> doable_task_ids; // doable local tasks by id
+    std::vector<int> doable_subtask_ids; // doable local subtasks by id
 
     int max_depth;
 

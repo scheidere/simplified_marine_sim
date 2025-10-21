@@ -35,6 +35,13 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         all_agents_info = initAllAgentsInfo(); // pairs of agent id: struct
         num_tasks = parser->getNumLocalTasks();
         all_tasks_info = initAllTasksInfo();
+        all_subtasks_info = initAllSubTasksInfo();
+
+        log_info("all_tasks_info: ");
+        logListofTaskIDs(all_tasks_info);
+        log_info("all_subtasks_info: ");
+        logListofTaskIDs(all_subtasks_info);
+
         //agent_indices = parser->getAgentIndices();
         agent_types = parser->getAgentTypes();
         task_types = parser->getTaskTypes();
@@ -62,6 +69,14 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
     }
+}
+
+void World::logListofTaskIDs(std::unordered_map<int,TaskInfo> task_list) {
+    std::string log_msg = "Task IDs: ";
+    for (const auto& [id, task] : task_list) {
+        log_msg += std::to_string(id) + " ";
+    }
+    log_info(log_msg);
 }
 
 std::chrono::steady_clock::time_point World::getStartTime() const {
@@ -196,14 +211,76 @@ int World::getGroupSize(std::unordered_map<std::string, int> group_info) {
 
 std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
     std::unordered_map<int, TaskInfo> all_tasks_info;
-
-    auto parsed_tasks = parser->j["local_tasks"]; // Assume parser extracts JSON info
+    auto parsed_tasks = parser->j["local_tasks"];
+    
     for (const auto& task : parsed_tasks) {
+        
         int id = task["id"].get<int>();
         std::string name = task["name"];
         std::string type = task["type"];
+        int prerequisite_failures = -1;
+        std::vector<std::string> sub_tasks = {};
+        if (task.contains("sub_tasks")) {
+            sub_tasks = task["sub_tasks"].get<std::vector<std::string>>();
+        }
+        
         std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
-        int group_size = getGroupSize(group_info); // sum of all the sub groups in group_info, by agent type
+        
+        int group_size = getGroupSize(group_info);
+        
+        double reward = task["reward"];
+        
+        std::unordered_map<std::string, int> area; // This will remain empty if no area defined in input json
+        std::pair<int, int> location = {-1, -1};
+
+        if (task.contains("area")) {
+            area = task["area"].get<std::unordered_map<std::string, int>>();
+        }
+
+        if (task.contains("location")) {
+            auto loc_json = task["location"];
+            int x = loc_json.value("x", -1);  // fallback to -1 if missing
+            int y = loc_json.value("y", -1);
+            location = std::make_pair(x, y);
+        }
+
+        TaskInfo task_struct = {
+            id, // int
+            name, // string
+            type, // string
+            prerequisite_failures, // int
+            sub_tasks, // std::vector<std::string>
+            group_size, //int
+            group_info, // <std::unordered_map<std::string, int>>
+            location, // std::pair<int,int>
+            area, // <std::unordered_map<std::string, int>>
+            reward // double
+        };
+
+        all_tasks_info[id] = task_struct;
+    }
+
+    return all_tasks_info;
+
+}
+
+std::unordered_map<int, TaskInfo> World::initAllSubTasksInfo() {
+    std::unordered_map<int, TaskInfo> all_subtasks_info;
+    auto parsed_tasks = parser->j["local_subtasks"];
+    
+    //std::cout << "Starting subtasks initialization..." << std::endl;
+    
+    for (const auto& task : parsed_tasks) {
+        
+        int id = task["id"].get<int>();
+        std::string name = task["name"];
+        std::string type = task["type"];
+        int prerequisite_failures = task["prerequisite_failures"];
+        std::vector<std::string> sub_tasks = {};
+        std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
+        
+        int group_size = getGroupSize(group_info);
+        
         double reward = task["reward"];
 
         std::unordered_map<std::string, int> area; // This will remain empty if no area defined in input json
@@ -224,24 +301,38 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
             id, // int
             name, // string
             type, // string
-            group_size, // int
+            prerequisite_failures, // int
+            sub_tasks, // std::vector<std::string>
+            group_size, //int
             group_info, // <std::unordered_map<std::string, int>>
-            //prerequisute_task_failures, // will figure out later
             location, // std::pair<int,int>
             area, // <std::unordered_map<std::string, int>>
             reward // double
         };
 
-        all_tasks_info[id] = task_struct;
+        all_subtasks_info[id] = task_struct;
     }
 
-    return all_tasks_info;
+    return all_subtasks_info;
+    
 }
 
 TaskInfo& World::getTaskInfo(int task_id) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
     return all_tasks_info.at(task_id);
+
+    /*if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
+        return all_tasks_info.at(task_id);
+    } else {
+        throw std::runtime_error("Task ID not found in all_tasks_info");
+    }*/
+}
+
+TaskInfo& World::getSubTaskInfo(int task_id) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    return all_subtasks_info.at(task_id);
 
     /*if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
         return all_tasks_info.at(task_id);
@@ -379,6 +470,45 @@ std::pair<int,int> World::getTaskLocationFromArea(std::unordered_map<std::string
     return center;
 }
 
+std::vector<int> World::getRobotSubtaskCapabilities(Robot* robot) {
+
+    std::vector<int> doable_local_subtasks;
+
+    std::string agent_type = robot->getType();
+
+    if (all_agent_capabilities.find(agent_type) == all_agent_capabilities.end()) {
+        std::cerr << "Error: Capabilities for type " << agent_type << " not found!" << std::endl;
+        return {};  // Return an empty vector
+    }
+
+    std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
+
+     for (int i=0; i<task_types.size(); i++) {
+
+        for (auto& pair : all_subtasks_info) {
+            TaskInfo& subtask = pair.second;
+            
+            // Check if robot can do specific subtask and task type must match by definition
+            if ((robot_capabilities_by_type[i]==1 || robot_capabilities_by_type[i] == 2) && task_types[i]==subtask.type) {
+                // Found doable subtask 
+                doable_local_subtasks.push_back(pair.first); // pair.first is task id (int)
+            }
+        }
+
+    }
+
+    // Since we traverse all_subtasks_info which is an unordered map, tasks not necessarily traversed in ascending id order
+    // For simplicity, let's sort capabilities so id's are in increasing order
+    std::sort(doable_local_subtasks.begin(), doable_local_subtasks.end());
+    // utils::log1DVector(doable_local_subtasks, *robot);
+
+    //std::cout << "Doable local tasks vector: " << std::endl;
+    // utils::print1DVector(doable_local_subtasks);
+
+    return doable_local_subtasks; // List of specific task indices of all doable types for given robot
+
+}
+
 std::vector<int> World::getRobotCapabilities(Robot* robot) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
@@ -436,10 +566,10 @@ std::vector<int> World::getRobotCapabilities(Robot* robot) {
     // Since we traverse all_tasks_info which is an unordered map, tasks not necessarily traversed from id 1 and increasing
     // For simplicity, let's sort capabilities so id's are in increasing order
     std::sort(doable_local_tasks.begin(), doable_local_tasks.end());
-    utils::log1DVector(doable_local_tasks, *robot);
+    // utils::log1DVector(doable_local_tasks, *robot);
 
     //std::cout << "Doable local tasks vector: " << std::endl;
-    utils::print1DVector(doable_local_tasks);
+    // utils::print1DVector(doable_local_tasks);
 
     return doable_local_tasks; // List of specific task indices of all doable types for given robot
 
@@ -703,7 +833,7 @@ void World::debugTaskAccess(int task_id, Robot& robot) {
     robot.log_info("Task " + std::to_string(task_id) + " - info: " + std::to_string(info_time) + "s, location: " + std::to_string(loc_time) + "s");
 }
 
-bool World::clearPathFullGroupPresent(int current_task_id) {
+bool World::fullGroupPresent(int current_task_id) {
 
     // Get task struct
     TaskInfo& current_task = getTaskInfo(current_task_id); // Get task struct from world 
@@ -796,4 +926,16 @@ void World::logMessagingLog() {
 
     }
 
+}
+
+int World::getPrerequisiteFailureThreshold(std::string subtask_name) {
+
+    for (const auto& task : all_subtasks_info) {
+
+        if (task.name == subtask_name) {
+            return task.prerequisite_failures;
+        }
+    }
+
+    return failure_threshold;
 }
