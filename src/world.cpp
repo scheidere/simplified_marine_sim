@@ -33,9 +33,9 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         //initAllTasks();
         num_agents = parser->getNumAgents();
         all_agents_info = initAllAgentsInfo(); // pairs of agent id: struct
-        num_tasks = parser->getNumLocalTasks();
+        num_tasks = parser->getNumLocalTasks() + parser->getNumSubtasks(); // Adding subtasks because they need to be considered in winning bids matrix for failure handling
         all_tasks_info = initAllTasksInfo();
-        all_subtasks_info = initAllSubTasksInfo();
+        all_subtasks_info = initAllSubtasksInfo();
 
         log_info("all_tasks_info: ");
         logListofTaskIDs(all_tasks_info);
@@ -264,7 +264,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
 
 }
 
-std::unordered_map<int, TaskInfo> World::initAllSubTasksInfo() {
+std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
     std::unordered_map<int, TaskInfo> all_subtasks_info;
     auto parsed_tasks = parser->j["local_subtasks"];
     
@@ -317,16 +317,32 @@ std::unordered_map<int, TaskInfo> World::initAllSubTasksInfo() {
     
 }
 
+// TaskInfo& World::getTaskInfo(int task_id) {
+//     std::lock_guard<std::mutex> lock(world_mutex);
+
+//     return all_tasks_info.at(task_id);
+
+//     /*if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
+//         return all_tasks_info.at(task_id);
+//     } else {
+//         throw std::runtime_error("Task ID not found in all_tasks_info");
+//     }*/
+// }
+
 TaskInfo& World::getTaskInfo(int task_id) {
     std::lock_guard<std::mutex> lock(world_mutex);
-
-    return all_tasks_info.at(task_id);
-
-    /*if (all_tasks_info.find(task_id) != all_tasks_info.end()) {
+    
+    // Check main tasks first
+    if (all_tasks_info.count(task_id)) {
         return all_tasks_info.at(task_id);
-    } else {
-        throw std::runtime_error("Task ID not found in all_tasks_info");
-    }*/
+    }
+    
+    // Then check subtasks
+    if (all_subtasks_info.count(task_id)) {
+        return all_subtasks_info.at(task_id);
+    }
+    
+    throw std::runtime_error("Task ID " + std::to_string(task_id) + " not found in all_tasks_info or all_subtasks_info");
 }
 
 TaskInfo& World::getSubTaskInfo(int task_id) {
@@ -805,8 +821,14 @@ double World::getMaxNeighborTimestamp(int id_i, int id_k) {
     return max_timestamp;
 }
 
+// bool World::hasTaskInfo(int task_id) {
+//     return all_tasks_info.find(task_id) != all_tasks_info.end();
+// }
+
 bool World::hasTaskInfo(int task_id) {
-    return all_tasks_info.find(task_id) != all_tasks_info.end();
+    // Updated to account for subtasks
+    return all_tasks_info.count(task_id) > 0 || 
+           all_subtasks_info.count(task_id) > 0;
 }
 
 // for debugging greedy inconsistent runtime (was due to world not being "pre-warmed")
@@ -930,12 +952,13 @@ void World::logMessagingLog() {
 
 int World::getPrerequisiteFailureThreshold(std::string subtask_name) {
 
-    for (const auto& task : all_subtasks_info) {
+    for (auto& pair : all_subtasks_info) {
+        TaskInfo& subtask = pair.second;
 
-        if (task.name == subtask_name) {
-            return task.prerequisite_failures;
+        if (subtask.name == subtask_name) {
+            return subtask.prerequisite_failures;
         }
     }
 
-    return failure_threshold;
+    return -1; // To denote error, failure threshold not found
 }

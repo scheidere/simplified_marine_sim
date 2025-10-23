@@ -72,6 +72,8 @@ private:
 
     double cumulative_distance;
 
+    std::unordered_map<int, std::unordered_map<int, bool>> subtask_failures; // Values True when robot k fails task j 
+
 
 
 public:
@@ -89,6 +91,9 @@ public:
     std::vector<int>& getPreviousBundle() { return prev_bundle; }
     std::vector<int>& getPath() { return path; }
     std::vector<int>& getPreviousPath() { return prev_path; } 
+    std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Maybe better to use single element functions below
+    bool getSubtaskFailure(int subtask_id, int agent_id);
+    void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     std::map<int,double> initBids();  
     void resetBids();
     std::unordered_map<int,int> initWinners();
@@ -96,7 +101,8 @@ public:
     std::vector<std::vector<double>> initWinningBidsMatrix(); // CBGA
     std::unordered_map<int,double> initTimestamps();
     std::unordered_map<int,Pose2D> initLocations(); // CBGA
-    std::unordered_map<int,int> initTaskProgress(); // CBGA (maybe CBBA as well?)
+    std::unordered_map<int,int> initTaskProgress(); // CBGA and CBBA (both have taskAlreadyStarted calls now)
+    std::unordered_map<int, std::unordered_map<int, bool>> initSubtaskFailures();
     std::pair<int, Pose2D> getMostUpToDateNeighborInfo(int id_k);
     std::map<int, double>& getBids() { return bids; }
     std::unordered_map<int, int>& getWinners() { return winners; }

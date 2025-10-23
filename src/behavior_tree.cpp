@@ -336,20 +336,20 @@ NodeStatus ResolveConflicts::onRunning()
 
         auto do_cbga = getInput<bool>("do_cbga").value_or(false);
 
-        int rounds;
         if (do_cbga) {
             CBGA cbga(_robot, _world, _parser);
             cbga.resolveConflicts();
             // _robot.log_info("right before running cbga with test = true");
             // cbga.resolveConflicts(true); // for testing
             int& rounds = _robot.getNumCBGARounds();
+            rounds++;
         } else {
             CBBA cbba(_robot, _world, _parser);
             cbba.resolveConflicts();
             //cbba.resolveConflicts(true); // for testing
             int& rounds = _robot.getNumCBBARounds();
+            rounds++;
         }
-        rounds++;
         return NodeStatus::SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in ResolveConflicts::tick: " << e.what() << std::endl;
@@ -1135,174 +1135,174 @@ PortsList ClearPath::providedPorts()
     return {};
 }
 
-ExtractSample::ExtractSample(const std::string& name, const NodeConfig& config,
-                                       Robot& r, World& w)
-    : StatefulActionNode(name, config), _robot(r), _world(w) {
-        // THIS IS A SUB TASK OF A COMBO TASK, 
-    }
+// ExtractSample::ExtractSample(const std::string& name, const NodeConfig& config,
+//                                        Robot& r, World& w)
+//     : StatefulActionNode(name, config), _robot(r), _world(w) {
+//         // THIS IS A SUB TASK OF A COMBO TASK, 
+//     }
 
-NodeStatus ExtractSample::onStart()
-{
-    try {
-        std::string strt = "Starting extract sample for robot " + std::to_string(_robot.getID()) + "...";
-        _world.log_info(strt);
+// NodeStatus ExtractSample::onStart()
+// {
+//     try {
+//         std::string strt = "Starting extract sample for robot " + std::to_string(_robot.getID()) + "...";
+//         _world.log_info(strt);
         
-        return NodeStatus::RUNNING;
+//         return NodeStatus::RUNNING;
         
-    } catch (const std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
+//     } catch (const std::exception& e) {
+//         std::cerr << "Exception: " << e.what() << std::endl;
+//         return NodeStatus::FAILURE;
+//     }
+// }
 
-NodeStatus ExtractSample::onRunning()
-{
-    try {
+// NodeStatus ExtractSample::onRunning()
+// {
+//     try {
 
-        // If here, ExtractSample is current task because CollectSample condition node and counter sequence logic parent node
+//         // If here, ExtractSample is current task because CollectSample condition node and counter sequence logic parent node
 
-        // Need a way to differentiate between whether the robot running this is helper or helpee
-        // Will change how long it takes to do, to denote handoff occurring (extract and hand off if helpee can still load)
-        // TODO TODO TODO
+//         // Need a way to differentiate between whether the robot running this is helper or helpee
+//         // Will change how long it takes to do, to denote handoff occurring (extract and hand off if helpee can still load)
+//         // TODO TODO TODO
 
-        // Get location to extract sample
-         std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
-        int current_task_id = task_path[0]; // Should either be main task id (for Collect_Sample) or subtask itself (Extract_Sample)
+//         // Get location to extract sample
+//          std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+//         int current_task_id = task_path[0]; // Should either be main task id (for Collect_Sample) or subtask itself (Extract_Sample)
 
-        // If current task is main task, i.e., Collect Sample, then no fault has occurred
-        // Task is solo, don't need to wait for group (it's just a group of 1)
+//         // If current task is main task, i.e., Collect Sample, then no fault has occurred
+//         // Task is solo, don't need to wait for group (it's just a group of 1)
 
-        // if task_info[current_task_id].name == "Collect_Sample" && cooperate = false:
-        //     // Baseline solo run of main task
-        // else if cooperate =
-
-
-        //*** Once full failure (at threshold) ***//
-        // Remove assignment of current robot from Collect_Sample and add to Extract_Sample
-        // This gives CBGA info about the failure, making x
+//         // if task_info[current_task_id].name == "Collect_Sample" && cooperate = false:
+//         //     // Baseline solo run of main task
+//         // else if cooperate =
 
 
-        // Get prerequisite number of failures before full failure accepted for this subtask
-        int failure_threshold = _world.getPrerequisiteFailureThreshold("Extract_Sample");
-
-        setOutput("failure_threshold", failure_threshold);
-        auto do_cbga = getInput<bool>("cooperate"); // Denotes whether pre (solo task) or post fault (co-op between helper and helpee)
+//         //*** Once full failure (at threshold) ***//
+//         // Remove assignment of current robot from Collect_Sample and add to Extract_Sample
+//         // This gives CBGA info about the failure, making x
 
 
-        if (_world.fullGroupPresent(current_task_id)) {
+//         // Get prerequisite number of failures before full failure accepted for this subtask
+//         int failure_threshold = _world.getPrerequisiteFailureThreshold("Extract_Sample");
 
-            // Don't need to wait for others, since this is a part of a combo task (as opposed to being a co-op task)
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // short delay represents extraction operation
-
-            // Get reward for the extraction task just completed
-            std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
-            int current_task_id = task_path[0];
-
-            TaskInfo& current_task = _world.getSubTaskInfo(current_task_id); // Get task struct from world 
-            double reward = current_task.reward;
-
-            std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
-            _robot.log_info(rew);
-
-            // Add new reward to cumulative reward for whole team
-            _world.updateCumulativeReward(reward);
-            double& cumulative_reward = _world.getCumulativeReward();
-
-            // Save reward at current time
-            double current_time = _robot.getCurrentTime();
-            saveReward(current_time, cumulative_reward);
-
-            _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
-
-            // Remove current first task from path since it has been completed
-            _robot.removeCompletedTaskFromPath(); // Removes first task from path
-
-            _world.log_info("Paths at task completion:");
-            _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
-
-            _world.log_info("Task progress at task completion:");
-            _world.logCurrentTeamTaskProgress();
-
-            _world.log_info("Current tasks completed by each robot: ");
-            _world.logTaskCompletion();
-
-            std::string strt = "Completed ExtractSample for robot " + std::to_string(_robot.getID()) + "...";
-            _world.log_info(strt);
-
-            return NodeStatus::SUCCESS;
-
-        }
-
-        std::string strt = "Running extract sample for robot " + std::to_string(_robot.getID()) + "...";
-        _world.log_info(strt);
-
-        return NodeStatus::RUNNING;
+//         setOutput("failure_threshold", failure_threshold);
+//         auto do_cbga = getInput<bool>("cooperate"); // Denotes whether pre (solo task) or post fault (co-op between helper and helpee)
 
 
-        if (_world.fullGroupPresent(current_task_id)) {
+//         if (_world.fullGroupPresent(current_task_id)) {
 
-            // Entire group is present at task vicinity, so after a short delay we count this as path cleared
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+//             // Don't need to wait for others, since this is a part of a combo task (as opposed to being a co-op task)
+//             std::this_thread::sleep_for(std::chrono::milliseconds(50)); // short delay represents extraction operation
 
-            // Get reward for the coverage path task just completed
-            std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
-            int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
-            std::string hi = "Current_task_id at end: " + std::to_string(current_task_id);
-            _robot.log_info(hi);
-            TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
-            double reward = current_task.reward;
+//             // Get reward for the extraction task just completed
+//             std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+//             int current_task_id = task_path[0];
 
-            std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
-            _robot.log_info(rew);
+//             TaskInfo& current_task = _world.getSubTaskInfo(current_task_id); // Get task struct from world 
+//             double reward = current_task.reward;
 
-            // Add new reward to cumulative reward for whole team
-            _world.updateCumulativeReward(reward);
-            //cumulative_reward += reward; potentially unsafe update
+//             std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+//             _robot.log_info(rew);
 
-            double& cumulative_reward = _world.getCumulativeReward();
+//             // Add new reward to cumulative reward for whole team
+//             _world.updateCumulativeReward(reward);
+//             double& cumulative_reward = _world.getCumulativeReward();
 
-            // Save reward at current time
-            double current_time = _robot.getCurrentTime();
-            saveReward(current_time, cumulative_reward);
+//             // Save reward at current time
+//             double current_time = _robot.getCurrentTime();
+//             saveReward(current_time, cumulative_reward);
 
-            _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+//             _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
 
-            // Remove current first task from path since it has been completed
-            _robot.removeCompletedTaskFromPath(); // Removes first task from path
+//             // Remove current first task from path since it has been completed
+//             _robot.removeCompletedTaskFromPath(); // Removes first task from path
 
-            _world.log_info("Paths at task completion:");
-            _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+//             _world.log_info("Paths at task completion:");
+//             _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
 
-            _world.log_info("Task progress at task completion:");
-            _world.logCurrentTeamTaskProgress();
+//             _world.log_info("Task progress at task completion:");
+//             _world.logCurrentTeamTaskProgress();
 
-            _world.log_info("Current tasks completed by each robot: ");
-            _world.logTaskCompletion();
+//             _world.log_info("Current tasks completed by each robot: ");
+//             _world.logTaskCompletion();
 
-            std::string strt = "Completed clear path for robot " + std::to_string(_robot.getID()) + "...";
-            _world.log_info(strt);
+//             std::string strt = "Completed ExtractSample for robot " + std::to_string(_robot.getID()) + "...";
+//             _world.log_info(strt);
 
-            return NodeStatus::SUCCESS;
-        }
+//             return NodeStatus::SUCCESS;
 
-        std::string strt = "Running extract sample for robot " + std::to_string(_robot.getID()) + "...";
-        _world.log_info(strt);
+//         }
 
-        return NodeStatus::RUNNING;
+//         std::string strt = "Running extract sample for robot " + std::to_string(_robot.getID()) + "...";
+//         _world.log_info(strt);
+
+//         return NodeStatus::RUNNING;
+
+
+//         if (_world.fullGroupPresent(current_task_id)) {
+
+//             // Entire group is present at task vicinity, so after a short delay we count this as path cleared
+//             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+//             // Get reward for the coverage path task just completed
+//             std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+//             int current_task_id = task_path[0]; // This is only called if we already determined the task to be executed is coverage
+//             std::string hi = "Current_task_id at end: " + std::to_string(current_task_id);
+//             _robot.log_info(hi);
+//             TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+//             double reward = current_task.reward;
+
+//             std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+//             _robot.log_info(rew);
+
+//             // Add new reward to cumulative reward for whole team
+//             _world.updateCumulativeReward(reward);
+//             //cumulative_reward += reward; potentially unsafe update
+
+//             double& cumulative_reward = _world.getCumulativeReward();
+
+//             // Save reward at current time
+//             double current_time = _robot.getCurrentTime();
+//             saveReward(current_time, cumulative_reward);
+
+//             _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+
+//             // Remove current first task from path since it has been completed
+//             _robot.removeCompletedTaskFromPath(); // Removes first task from path
+
+//             _world.log_info("Paths at task completion:");
+//             _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+
+//             _world.log_info("Task progress at task completion:");
+//             _world.logCurrentTeamTaskProgress();
+
+//             _world.log_info("Current tasks completed by each robot: ");
+//             _world.logTaskCompletion();
+
+//             std::string strt = "Completed clear path for robot " + std::to_string(_robot.getID()) + "...";
+//             _world.log_info(strt);
+
+//             return NodeStatus::SUCCESS;
+//         }
+
+//         std::string strt = "Running extract sample for robot " + std::to_string(_robot.getID()) + "...";
+//         _world.log_info(strt);
+
+//         return NodeStatus::RUNNING;
         
-    } catch (const std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-        return NodeStatus::FAILURE;
-    }
-}
+//     } catch (const std::exception& e) {
+//         std::cerr << "Exception: " << e.what() << std::endl;
+//         return NodeStatus::FAILURE;
+//     }
+// }
 
-void ExtractSample::onHalted()
-{
-    std::cout << "Extract sample halted." << std::endl;
-}
+// void ExtractSample::onHalted()
+// {
+//     std::cout << "Extract sample halted." << std::endl;
+// }
 
-PortsList ExtractSample::providedPorts()
-{
-    return {OutputPort<int>("failure_threshold"), // Passed to counter sequence parent node (because of world info access here)
-            InputPort<bool>("do_cbga")}; // Passed from parent counter sequence node (since this is a combo action)
-}
+// PortsList ExtractSample::providedPorts()
+// {
+//     return {OutputPort<int>("failure_threshold"), // Passed to counter sequence parent node (because of world info access here)
+//             InputPort<bool>("do_cbga")}; // Passed from parent counter sequence node (since this is a combo action)
+// }

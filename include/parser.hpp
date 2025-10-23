@@ -20,6 +20,8 @@ public:
 
 	int getNumLocalTasks();
 
+	int getNumSubtasks();
+
 	int getMaxDepth();
 
 	int getConvergenceThreshold();

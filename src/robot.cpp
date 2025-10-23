@@ -103,6 +103,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     cumulative_distance = 0;
 
+    subtask_failures = initSubtaskFailures(); // All false at start because no failures
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -178,15 +180,20 @@ std::vector<std::vector<double>> Robot::initWinningBidsMatrix() {
     // Not every robot can do every task j in J, relevant elements will reflect this by staying 0.0 forever
     // Create winning bids matrix of size row x column = J x N where J is the number of local tasks
 
-    std::string blor = "Num local tasks: " + std::to_string(world->getNumLocalTasks());
-    log_info(blor);
-    std::string blor2 = "Num agents: " + std::to_string(world->getNumAgents());
-    log_info(blor2);
+    // std::string blor = "Num local tasks: " + std::to_string(world->getNumLocalTasks());
+    // log_info(blor);
+    // std::string blor2 = "Num agents: " + std::to_string(world->getNumAgents());
+    // log_info(blor2);
 
     int J = world->getNumLocalTasks();
     int N = world->getNumAgents();
 
-    std::vector<std::vector<double>> winning_bids_matrix(world->getNumLocalTasks(), std::vector<double>(world->getNumAgents(), 0.0));
+    std::string blor = "Num local tasks: " + std::to_string(J);
+    log_info(blor);
+    std::string blor2 = "Num agents: " + std::to_string(N);
+    log_info(blor2);
+
+    std::vector<std::vector<double>> winning_bids_matrix(J, std::vector<double>(N, 0.0));
     //std::vector<std::vector<double>> winning_bids_matrix(J, std::vector<double>(N, 0.0));
 
     return winning_bids_matrix;
@@ -251,6 +258,26 @@ std::unordered_map<int,int> Robot::initTaskProgress() {
 
     return task_progress;
 
+}
+
+std::unordered_map<int, std::unordered_map<int, bool>> Robot::initSubtaskFailures() {
+
+    std::unordered_map<int, std::unordered_map<int, bool>> subtask_failures;
+
+    // No failures at start
+    for (const auto& [subtask_id, subtask_info] : world->getAllSubtasksInfo()) {
+        subtask_failures[subtask_id][this->id] = false;
+    }
+
+    return subtask_failures;
+}
+
+bool Robot::getSubtaskFailure(int subtask_id, int agent_id) {
+    return subtask_failures.at(subtask_id).at(agent_id);
+}
+
+void Robot::setSubtaskFailure(int subtask_id, int agent_id, bool failed) {
+    subtask_failures[subtask_id][agent_id] = failed;
 }
 
 void Robot::init (Pose2D initial_pose) {

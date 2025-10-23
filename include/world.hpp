@@ -147,9 +147,11 @@ public:
 
     std::unordered_map<int,TaskInfo> initAllTasksInfo();
 
-    std::unordered_map<int, TaskInfo> initAllSubTasksInfo();
+    std::unordered_map<int, TaskInfo> initAllSubtasksInfo();
 
     std::unordered_map<int,TaskInfo>& getAllTasksInfo() { return all_tasks_info; }
+
+    std::unordered_map<int,TaskInfo>& getAllSubtasksInfo() { return all_subtasks_info; }
 
     TaskInfo& getTaskInfo(int task_id);
     //TaskInfo& getTaskInfoUnsafe(int task_id); // mutex scope test, in greedy

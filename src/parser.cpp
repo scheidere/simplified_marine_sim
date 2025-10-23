@@ -55,6 +55,19 @@ int JSONParser::getNumLocalTasks() {
     return num_local_tasks;
 }
 
+
+int JSONParser::getNumSubtasks() {
+
+    int num_subtasks;
+
+    if (j.contains("local_subtasks") && j["local_subtasks"].is_array()) {
+        num_subtasks = j["local_subtasks"].size();
+        std::cout << "Number of subtasks: " << num_subtasks << std::endl;
+    }
+
+    return num_subtasks;
+}
+
 int JSONParser::getMaxDepth() {
 
     int max_depth;
