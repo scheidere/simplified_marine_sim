@@ -91,7 +91,7 @@ public:
     std::vector<int>& getPreviousBundle() { return prev_bundle; }
     std::vector<int>& getPath() { return path; }
     std::vector<int>& getPreviousPath() { return prev_path; } 
-    std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Maybe better to use single element functions below
+    std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Used for messaging
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     std::map<int,double> initBids();  
@@ -167,7 +167,7 @@ public:
 
     void updateSingleTaskProgress(int task_id, int started);
     void updateTaskProgressFromAssignment();
-    void updateTaskProgress(); // Traverse received messages and update task progress, defering to 1's
+    void updateTaskProgress(); // Traverse received messages and update task progress, deferring to 1's
     bool taskAlreadyStarted(int task_id);
 
     // Testing splitting updateTimestamps() and calling directly in receiveMessages instead of after in comms BT node function
@@ -175,6 +175,8 @@ public:
     void updateRemainingTimestampsIndirectly();
 
     double& getCumulativeDistance() { return cumulative_distance; }
+
+    void updateSubtaskFailures(); // Traverse received messages and subdate subtask failures tracker, deferring to 1's (maining fails), except for self
 
     //void resurfaceToCharge();
 

@@ -200,9 +200,16 @@ NodeStatus Communicate::onRunning()
         _robot.updateLocations(); // CBGA
         _robot.log_info("task progress b4 update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
-        _robot.updateTaskProgress(); // CBGA (do we need in CBBA too for fairness or no?)
+        _robot.updateTaskProgress(); // CBGA and CBBA
         _robot.log_info("task progress after update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
+
+        // Merge subtask failures tracker
+        _robot.log_info("subtask failures b4 update in comms node");
+        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+        _robot.updateSubtaskFailures(); // CBGA
+        _robot.log_info("subtask failures after update in comms node");
+        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
 
         _world.log_info("Task progress after update via comms:");
         _world.logCurrentTeamTaskProgress();
