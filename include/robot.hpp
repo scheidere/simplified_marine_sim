@@ -94,6 +94,7 @@ public:
     std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Used for messaging
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
+    void updateSubtaskFailures(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self
     std::map<int,double> initBids();  
     void resetBids();
     std::unordered_map<int,int> initWinners();
@@ -175,8 +176,6 @@ public:
     void updateRemainingTimestampsIndirectly();
 
     double& getCumulativeDistance() { return cumulative_distance; }
-
-    void updateSubtaskFailures(); // Traverse received messages and subdate subtask failures tracker, deferring to 1's (maining fails), except for self
 
     //void resurfaceToCharge();
 

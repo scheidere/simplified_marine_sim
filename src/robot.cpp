@@ -280,6 +280,32 @@ void Robot::setSubtaskFailure(int subtask_id, int agent_id, bool failed) {
     subtask_failures[subtask_id][agent_id] = failed;
 }
 
+void Robot::updateSubtaskFailures() {
+
+    // Given the subtask failures from another robot in comms, update local subtask tracker
+    // Greedily defer to 1s (meaning tracked fails)
+
+    int agent_id;
+    std::unordered_map<int, std::unordered_map<int, bool>> neighbor_subtask_failures;
+    for (Msg& msg : message_queue) {
+        agent_id = msg.id;
+        neighbor_subtask_failures = msg.subtask_failures;
+
+        for (int subtask_id : world->getSubtaskIDs()) {
+            for (int agent_id : world->getAgentIDs()) {
+
+                // For agent info about all agents except self, update to track if new failure 
+                if (agent_id != id && subtask_failures[subtask_id][agent_id]==0 && neighbor_subtask_failures[subtask_id][agent_id]==1) {
+                    subtask_failures[subtask_id][agent_id] = 1; // Tracking new failure locally given neighbor info
+                }
+            }
+        }
+
+    }
+
+
+}
+
 void Robot::init (Pose2D initial_pose) {
     std::cout << "Initializing robot pose..." << std::endl;
     // Access world for image

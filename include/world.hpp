@@ -44,6 +44,9 @@ protected:
     std::vector<std::string> task_types;
     std::unordered_map<std::string, std::vector<int>> all_agent_capabilities; // Denotes which agents can do which tasks by agent type (0: can't; 1: can by self; 2: can co-op; 3: TBD)
 
+    std::vector<int> agent_ids;
+    std::vector<int> subtask_ids;
+
     std::vector<cv::Scalar> colors = {
         cv::Scalar(255, 0, 0),
         cv::Scalar(0, 255, 0),
@@ -73,6 +76,9 @@ public:
 
     int getX() const { return X; }
     int getY() const { return Y; }
+
+    std::vector<int> getAgentIDs();
+    std::vector<int> getSubtaskIDs();
 
     void logListofTaskIDs(std::unordered_map<int,TaskInfo> task_list);
 

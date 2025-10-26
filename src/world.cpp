@@ -37,6 +37,9 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         all_tasks_info = initAllTasksInfo();
         all_subtasks_info = initAllSubtasksInfo();
 
+        agent_ids = getAgentIDs();
+        subtask_ids = getSubtaskIDs();
+
         log_info("all_tasks_info: ");
         logListofTaskIDs(all_tasks_info);
         log_info("all_subtasks_info: ");
@@ -69,6 +72,31 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
     }
+}
+
+std::vector<int> World::getAgentIDs() {
+
+    std::vector<int> agent_ids;
+
+    for (const auto& [robot_id, _] : all_agents_info) {
+        agent_ids.push_back(robot_id);
+    }
+
+    std::sort(agent_ids.begin(), agent_ids.end());
+    return agent_ids;
+}
+
+std::vector<int> World::getSubtaskIDs() {
+
+    std::vector<int> subtask_ids;
+
+    for (const auto& [subtask_id, _] : all_subtasks_info) {
+        subtask_ids.push_back(subtask_id);
+    }
+
+    std::sort(subtask_ids.begin(), subtask_ids.end());
+
+    return subtask_ids;
 }
 
 void World::logListofTaskIDs(std::unordered_map<int,TaskInfo> task_list) {

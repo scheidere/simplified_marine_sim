@@ -206,10 +206,10 @@ NodeStatus Communicate::onRunning()
 
         // Merge subtask failures tracker
         _robot.log_info("subtask failures b4 update in comms node");
-        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+        //utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
         _robot.updateSubtaskFailures(); // CBGA
         _robot.log_info("subtask failures after update in comms node");
-        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+        //utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot); need 2d
 
         _world.log_info("Task progress after update via comms:");
         _world.logCurrentTeamTaskProgress();
