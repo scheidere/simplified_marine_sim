@@ -302,4 +302,30 @@ public:
     static PortsList providedPorts();
 };
 
+class CollectSample : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    CollectSample(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class HandleFailures : public StatefulActionNode {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    HandleFailures(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    //NodeStatus tick() override;
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

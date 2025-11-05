@@ -193,6 +193,10 @@ NodeStatus Communicate::onRunning()
             utils::log2DVector(msg.winning_bids_matrix, _robot);
             _robot.log_info("Timestamps: ");
             utils::logUnorderedMap(msg.timestamps,_robot);
+            _robot.log_info("Task progress: ");
+            utils::logUnorderedMap(msg.task_progress, _robot);
+            _robot.log_info("Subtask_failures: ");
+            utils::logUnorderedMap(msg.subtask_failures, _robot);
         }
             
 
@@ -204,12 +208,15 @@ NodeStatus Communicate::onRunning()
         _robot.log_info("task progress after update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
 
-        // Merge subtask failures tracker
+        // Merge subtask failures tracker (taking in info about how other robots have failed and need help)
         _robot.log_info("subtask failures b4 update in comms node");
-        //utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
-        _robot.updateSubtaskFailures(); // CBGA
+        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+        _robot.updateSubtaskFailuresPerNeighbors(); // CBGA
         _robot.log_info("subtask failures after update in comms node");
-        //utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot); need 2d
+        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+
+        // _robot.log_info("Testing subtask failures update, setting...");
+        // _robot.testSubtaskFailuresUpdater();
 
         _world.log_info("Task progress after update via comms:");
         _world.logCurrentTeamTaskProgress();
@@ -1142,6 +1149,36 @@ PortsList ClearPath::providedPorts()
     return {};
 }
 
+CollectSample::CollectSample(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus CollectSample::tick()
+{
+    try {
+
+        // if type of first task in path is "Collect" (this covers main task CollectSample and subtasks for helper robots here ExtractSample or LoadSample)
+
+        if (_robot.SampleCollectionNeeded()) {
+            std::pair<int,int> start_loc = _robot.getNextStartLocation(); // Location of first task in path (which here is type "collect")
+            std::string bla = "start_loc in SampleCollectionNeeded tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+            _robot.log_info(bla);
+            setOutput("start_loc", start_loc);
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in ExploreD::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList CollectSample::providedPorts()
+{
+    return { OutputPort<std::pair<int,int>>("start_loc") };
+}
+
 // ExtractSample::ExtractSample(const std::string& name, const NodeConfig& config,
 //                                        Robot& r, World& w)
 //     : StatefulActionNode(name, config), _robot(r), _world(w) {
@@ -1313,3 +1350,32 @@ PortsList ClearPath::providedPorts()
 //     return {OutputPort<int>("failure_threshold"), // Passed to counter sequence parent node (because of world info access here)
 //             InputPort<bool>("do_cbga")}; // Passed from parent counter sequence node (since this is a combo action)
 // }
+
+HandleFailures::HandleFailures(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : StatefulActionNode(name, config), _world(world), _robot(robot) {}
+
+NodeStatus HandleFailures::onStart() {
+
+    _robot.log_info("in HandleFailures node start");
+
+    return NodeStatus::RUNNING;
+}
+
+NodeStatus HandleFailures::onRunning() {
+
+    try {
+      
+        return NodeStatus::SUCCESS;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in HandleFailures::tick: " << e.what() << std::endl;
+        _robot.log_info("HandleFailures node FAILURE");
+        return NodeStatus::FAILURE;
+    }
+}
+
+void HandleFailures::onHalted() {}
+
+PortsList HandleFailures::providedPorts()
+{
+    return {};
+}

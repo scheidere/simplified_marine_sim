@@ -247,9 +247,9 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         std::string name = task["name"];
         std::string type = task["type"];
         int prerequisite_failures = -1;
-        std::vector<std::string> sub_tasks = {};
-        if (task.contains("sub_tasks")) {
-            sub_tasks = task["sub_tasks"].get<std::vector<std::string>>();
+        std::vector<int> subtasks = {}; // Changed from string to int for access ease
+        if (task.contains("subtasks")) {
+            subtasks = task["subtasks"].get<std::vector<int>>();
         }
         
         std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
@@ -277,7 +277,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
             name, // string
             type, // string
             prerequisite_failures, // int
-            sub_tasks, // std::vector<std::string>
+            subtasks, // std::vector<int>
             group_size, //int
             group_info, // <std::unordered_map<std::string, int>>
             location, // std::pair<int,int>
@@ -304,7 +304,7 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
         std::string name = task["name"];
         std::string type = task["type"];
         int prerequisite_failures = task["prerequisite_failures"];
-        std::vector<std::string> sub_tasks = {};
+        std::vector<int> subtasks = {}; // changed from string to int for ease
         std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
         
         int group_size = getGroupSize(group_info);
@@ -330,7 +330,7 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
             name, // string
             type, // string
             prerequisite_failures, // int
-            sub_tasks, // std::vector<std::string>
+            subtasks, // std::vector<int>
             group_size, //int
             group_info, // <std::unordered_map<std::string, int>>
             location, // std::pair<int,int>
@@ -373,7 +373,7 @@ TaskInfo& World::getTaskInfo(int task_id) {
     throw std::runtime_error("Task ID " + std::to_string(task_id) + " not found in all_tasks_info or all_subtasks_info");
 }
 
-TaskInfo& World::getSubTaskInfo(int task_id) {
+TaskInfo& World::getSubtaskInfo(int task_id) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
     return all_subtasks_info.at(task_id);

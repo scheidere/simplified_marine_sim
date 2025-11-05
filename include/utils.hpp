@@ -112,6 +112,36 @@ void logUnorderedMapWorld(const std::unordered_map<K, V>& my_map, World& world) 
     }
     world.log_info(log_msg.str());
 }
+template <typename K1, typename K2, typename V2>
+void logUnorderedMapWorld(const std::unordered_map<K1, std::unordered_map<K2, V2>>& my_map, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& pair : my_map) {
+        log_msg << pair.first << " : {";
+        bool first = true;
+        for (const auto& nested : pair.second) {
+            if (!first) log_msg << ", ";
+            log_msg << nested.first << "=" << nested.second;
+            first = false;
+        }
+        log_msg << "}\n";
+    }
+    world.log_info(log_msg.str());
+}
+template <typename K1, typename K2, typename V2>
+void logUnorderedMap(const std::unordered_map<K1, std::unordered_map<K2, V2>>& my_map, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& pair : my_map) {
+        log_msg << pair.first << " : {";
+        bool first = true;
+        for (const auto& nested : pair.second) {
+            if (!first) log_msg << ", ";
+            log_msg << nested.first << "=" << nested.second;
+            first = false;
+        }
+        log_msg << "}\n";
+    }
+    robot.log_info(log_msg.str());
+}
 
 // Log unordered_map with Pose2D values  
 template <>

@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <stdexcept> // For exception handling
+#include <algorithm>
 #include "planners.hpp"
 #include "world.hpp"
 #include "robot.hpp"
@@ -104,6 +105,9 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     cumulative_distance = 0;
 
     subtask_failures = initSubtaskFailures(); // All false at start because no failures
+    prev_subtask_failures = initSubtaskFailures();
+
+    testNewSelfSubtaskFailures();
 
 }
 
@@ -264,9 +268,10 @@ std::unordered_map<int, std::unordered_map<int, bool>> Robot::initSubtaskFailure
 
     std::unordered_map<int, std::unordered_map<int, bool>> subtask_failures;
 
-    // No failures at start
-    for (const auto& [subtask_id, subtask_info] : world->getAllSubtasksInfo()) {
-        subtask_failures[subtask_id][this->id] = false;
+    for (int subtask_id : world->getSubtaskIDs()) {
+        for (int agent_id : world->getAgentIDs()) {
+            subtask_failures[subtask_id][agent_id] = false;
+        }
     }
 
     return subtask_failures;
@@ -280,10 +285,13 @@ void Robot::setSubtaskFailure(int subtask_id, int agent_id, bool failed) {
     subtask_failures[subtask_id][agent_id] = failed;
 }
 
-void Robot::updateSubtaskFailures() {
+void Robot::updateSubtaskFailuresPerNeighbors() {
 
     // Given the subtask failures from another robot in comms, update local subtask tracker
     // Greedily defer to 1s (meaning tracked fails)
+
+    // First, save current as prev subtask_failures
+    prev_subtask_failures = subtask_failures;
 
     int agent_id;
     std::unordered_map<int, std::unordered_map<int, bool>> neighbor_subtask_failures;
@@ -304,6 +312,253 @@ void Robot::updateSubtaskFailures() {
     }
 
 
+}
+
+void Robot::testNewNeighborSubtaskFailures() {
+
+    // For these tests, consider self to be robot 1 (so look at that log for result)
+
+    // Test 1: one neighbor failure found - PASSED
+    // Leave previous subtask failures object at init, so all false, add changes to robot 2 (e.g., neighbor of robot 1)
+    //setSubtaskFailure(7,2,1); // subtask with id 7, robot 2, failed
+    // Result should be pair that is true and vector that contains id 7 to denote failure found - PASSED
+
+    // Test 2: two failures found, same neighbor - PASSED
+    // Leave previous subtask failures object at init, so all false, add changes to robot 2 (e.g., neighbor of robot 1)
+    setSubtaskFailure(7,2,1); // subtask with id 7, robot 2, failed
+    setSubtaskFailure(8,2,1); // subtask with id 8, robot 2, failed
+    // Result should be pair that is true and vector that contains id 7 and id 8 to denote failures found - PASSED
+
+    // Test 3: two failures found, different neighbors - PASSED
+    // Leave previous subtask failures object at init, so all false, add changes to robot 2 (e.g., neighbor of robot 1)
+    // setSubtaskFailure(7,3,1); // subtask with id 7, robot 3, failed
+    // setSubtaskFailure(8,2,1); // subtask with id 8, robot 2, failed
+    // Result should be pair that is true and vector that contains id 7 and id 8 to denote failure found - PASSED
+
+    // Test 4: no neighbor failures, one for self - PASSED
+    // Leave previous subtask failures object at init, so all false, add changes to robot 2 (e.g., neighbor of robot 1)
+    // setSubtaskFailure(7,1,1); // subtask with id 7, robot 1 self, failed
+    // Result should be false and empty vector (don't count self failures because can't help self) - PASSED
+
+    log_info("Test prev_subtask_failures:");
+    utils::logUnorderedMap(prev_subtask_failures, *this);
+    log_info("Test subtask_failures:");
+    utils::logUnorderedMap(subtask_failures, *this);
+    std::pair<bool,std::vector<int>> result = newNeighborSubtaskFailures();
+    log_info("Results of newNeighborSubtaskFailures test:");
+    log_info("Found neighbor failure?:");
+    std::string fail = std::to_string(result.first);
+    log_info(fail);
+    std::vector<int> failed_ids = result.second;
+    log_info("failed_ids:");
+    utils::log1DVector(failed_ids, *this);
+
+    log_info("before doable tasks update...");
+    log_info("doable_task_ids:");
+    utils::log1DVector(doable_task_ids,*this);
+    log_info("doable_subtask_ids:");
+    utils::log1DVector(doable_subtask_ids,*this);
+
+    updateDoableTasks();
+
+    log_info("AFTER doable tasks update...");
+    log_info("doable_task_ids:");
+    utils::log1DVector(doable_task_ids,*this);
+    log_info("doable_subtask_ids:");
+    utils::log1DVector(doable_subtask_ids,*this);
+
+
+}
+
+std::pair<bool,std::vector<int>> Robot::newNeighborSubtaskFailures() {
+
+    // Check if neighbors (given messages from them) have failed in ways current robot was previously unaware of
+
+    // log_info("in newNeighborSubtaskFailures");
+
+    // We only care about neighbor failures in our update of doable_task_ids
+    // because this update is for helping other robots with their failures (cannot help self with own failures)
+
+    std::vector<int> new_failed_subtask_ids = {}; // To be added to doable_task_ids so current agent can consider assigning self as helper
+    std::pair<bool,std::vector<int>> neighbor_fail_info = std::make_pair(false,new_failed_subtask_ids);
+
+    bool found_neighbor_failure = false;
+
+    // Check if previous matches current 100%
+    if (prev_subtask_failures == subtask_failures) {
+        // log_info("match");
+        // If so, no neighbors are known to have newly failed (and self hasn't failed)
+        return {false, {}}; // could also return neighbor_fail_info which should be same at this point
+    } else {
+        // log_info("in else");
+        // Given they do not match, check if they match except for self failures (i.e., check whether there are new neighbor failures)
+        for (int subtask_id : world->getSubtaskIDs()) {
+            for (int agent_id : world->getAgentIDs()) {
+                if (agent_id != id && prev_subtask_failures[subtask_id][agent_id] != subtask_failures[subtask_id][agent_id]) {
+                    // Found difference for a neighbor, not self
+                    found_neighbor_failure = true;
+                    new_failed_subtask_ids.push_back(subtask_id); // Add id of subtask newly failed by neighbor
+                }
+            }
+        }
+    }
+
+    neighbor_fail_info.first = found_neighbor_failure;
+    neighbor_fail_info.second = new_failed_subtask_ids;
+    return neighbor_fail_info;
+}
+
+std::pair<bool,std::vector<int>> Robot::newSelfSubtaskFailures() {
+
+    // was going to call this in updateSubtaskFailuresPerSelf() but might not need it
+
+    // Check if current robot, i.e., self, has newly failed a subtask
+    // Should only ever be a single new fail since robots do one thing at a time, but have a vector to capture new failed subtask id(s) anyway
+
+    std::vector<int> new_failed_subtask_ids = {};
+    std::pair<bool,std::vector<int>> self_fail_info = std::make_pair(false,new_failed_subtask_ids);
+
+    bool found_self_failure = false;
+
+    // Check if previous matches current 100%
+    if (prev_subtask_failures == subtask_failures) {
+        // log_info("match");
+        // If so, self has no new fails obviously
+        return {false, {}}; // could also return neighbor_fail_info which should be same at this point
+    } else {
+        // Given they do not match, check if they match except for neighbor failures (i.e., check whether there are new self failures)
+        for (int subtask_id : world->getSubtaskIDs()) {
+            for (int agent_id : world->getAgentIDs()) {
+                // Only check if id is own since ignoring neighbor changes here
+                if (agent_id == id && prev_subtask_failures[subtask_id][agent_id] != subtask_failures[subtask_id][agent_id]) {
+                    // Found difference for a neighbor, not self
+                    found_self_failure = true;
+                    new_failed_subtask_ids.push_back(subtask_id); // Add id of subtask newly failed by neighbor
+                }
+            }
+        }
+    }
+
+    self_fail_info.first = found_self_failure;
+    self_fail_info.second = new_failed_subtask_ids;
+    return self_fail_info;
+}
+
+void Robot::testNewSelfSubtaskFailures() {
+
+    log_info("in testNewSelfSubtaskFailures");
+
+    // For these tests, consider self to be robot 1 (so look at that log for result)
+
+    // Test 1: one self failure found - PASSED
+    //setSubtaskFailure(7,1,1); // subtask with id 7, robot 1, failed
+    // Result should be pair that is true and vector that contains id 7
+
+    // Test 2: no self failure found - PASSED
+    // Nothing to do since init with all 0 (meaning no failures)
+    // Result should be pair that is false and empty vector
+
+    // Test 3: two self failures found (this shouldn't happen but want it to work via this function anyway) - PASSED
+    // setSubtaskFailure(7,1,1); // subtask with id 7, robot 1, failed
+    // setSubtaskFailure(8,1,1); // subtask with id 8, robot 1, failed
+    // Result should be pair that is true and vector that contains id 7 and 8
+
+    // Test 4: one neighbor failure that should not be counted - PASSED
+    // setSubtaskFailure(7,2,1);
+    // Result should be false and empty vector
+
+    log_info("Test prev_subtask_failures:");
+    utils::logUnorderedMap(prev_subtask_failures, *this);
+    log_info("Test subtask_failures:");
+    utils::logUnorderedMap(subtask_failures, *this);
+    std::pair<bool,std::vector<int>> result = newSelfSubtaskFailures();
+    log_info("Results of newSelfSubtaskFailures test:");
+    log_info("Found self failure?:");
+    std::string fail = std::to_string(result.first);
+    log_info(fail);
+    std::vector<int> failed_ids = result.second;
+    log_info("failed_ids:");
+    utils::log1DVector(failed_ids, *this);
+
+}
+
+void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures) {
+
+    // not yet tested
+
+    // Update when self newly fails at own tasks
+    // Or when a task was failed but is now done (back to zero as in not failed) - do we want to deal with this or just leave at 1 if failed? i think do it to denote fixed
+    // Basically always trust counter sequence unordered map of subtask failure status
+
+    // need to check that its new first - do we? i think maybe we don't need it here because always update to have accurate data
+
+    prev_subtask_failures = subtask_failures; // save previous for consistency - do we need this here? Do we need mutex?
+
+    for (int subtask_id : world->getSubtaskIDs()) {
+        subtask_failures[subtask_id][id] = new_self_subtask_failures[subtask_id]; // Update own part of main subtask_failures tracker
+    }
+
+    // Note we also change subtask failures in comms, which is node in CBBA/CBGA subtree
+    // Could this ever happen at the same time for a given robot, where it updates from counter sequence here and also updates neighbor parts in comms node?
+    // Do we need robot mutex protection for subtask_failures objects?
+
+}
+
+void Robot::updateWinningBidsMatrixPostFailure() {
+
+    // When current robot fails, add assignment to failing subtask to denote wait for help
+    // Assignment (aka winning bid value) stays on the main task, and infinite value added to subtask for self (so will always remain)
+
+    // This is the only change of winning bids matrix done outside of CBBA/CBGA
+
+    i think we do need to call the new check func here
+    newSelfSubtaskFailures
+    it will compare prev to current subtask_failures so we do need the prev one update above in updateSubtaskFailuresPerSelf
+
+    if (newSelfSubtaskFailures())    
+
+
+}
+
+void Robot::updateDoableTasks() {
+
+    // Add failed subtask ids to doable_task_ids
+
+    // Compare previous to current subtask failure trackers, ignoring changes that represent currrent robot failures (can't help self)
+    std::pair<bool,std::vector<int>> neighbor_fail_info = newNeighborSubtaskFailures();
+    bool neighbor_failed = neighbor_fail_info.first;
+    std::vector<int> newly_failed_subtasks = neighbor_fail_info.second; // subtasks neighbors failed
+
+    if (neighbor_failed) { // If at least one neighbor failed
+        // Add each failed subtask id to doable_task_ids so current robot can consider helping failing neighbor(s)
+        for (int subtask_id : newly_failed_subtasks) {
+            // We add subtasks at the front, so they are considered for assignment before remaining assignable main tasks
+            doable_task_ids.insert(doable_task_ids.begin(), subtask_id);
+            doable_subtask_ids.erase(
+            std::remove(doable_subtask_ids.begin(), doable_subtask_ids.end(), subtask_id),
+            doable_subtask_ids.end()); // We remove subtask from doable subtask list because each is unique, meant to be done once (at least for now)
+        }
+    }
+
+    log_info("AFTER doable tasks update IN FUNCTION...");
+    log_info("doable_task_ids:");
+    utils::log1DVector(doable_task_ids,*this);
+    log_info("doable_subtask_ids:");
+    utils::log1DVector(doable_subtask_ids,*this);
+
+    // note only doable_task_ids is considered for assignement by CBGA
+    // The failing robots will be stalled waiting for helper on failed subtask, once helped, will finish assoiated main task
+    // Hence, the subtask added to doable tasks pool is effectively a main task for the helper robot, while being a subtask for the helpee
+}
+
+void Robot::testSubtaskFailuresUpdater() {
+
+    // Test 1: Robot 2 hears from another robot that 3 failed subtask id 7
+    if (id == 2) {
+        setSubtaskFailure(7,3,1); // subtask with id 7, robot 3, failed
+    }
+
+    // Check that robot 1 updates given this new info when it comms with robot 2
 }
 
 void Robot::init (Pose2D initial_pose) {
@@ -1259,6 +1514,34 @@ bool Robot::PathClearingNeeded() {
 
 }
 
+bool Robot::SampleCollectionNeeded() {
+    // Condition that should reutnr true when first task in path has type "collect" (so CollectSample or ExtractSample or LoadSample)
+
+     if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        return false;
+    }
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        return false;  // World not done initializing task info 
+    }
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    if (next_task.type == "collect") {
+        log_info("Next task to execute has type collect (so CollectSample or ExtractSample or LoadSample)!");
+        return true;
+    }
+
+    return false; // It's not a "collect" type main task or subtask
+
+
+}
+
 void Robot::updateSingleTaskProgress(int task_id, int started) {
 
     log_info("in updateSingleTaskProgress");
@@ -1337,4 +1620,58 @@ bool Robot::taskAlreadyStarted(int task_id) {
     }
 
     return false;
+}
+
+std::unordered_map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info) {
+
+    // Will only be called for main tasks using getCurrentTaskScope() to check main vs subtask
+    // Therefore, subtasks list will have subtask id ints in it (used to be string names but that's less reliable I think)
+    // Returns unordered map with keys being subtask ids and values being prerequisite failure threshold for that subtask
+
+    std::unordered_map<int,int> subtask_failure_thresholds;
+
+    std::vector<int> subtasks = current_task_info.subtasks;
+
+    for (int subtask_id : subtasks) {
+
+        TaskInfo& subtask_info = world->getSubtaskInfo(subtask_id);
+        subtask_failure_thresholds[subtask_id] = subtask_info.prerequisite_failures;
+    }
+
+    return subtask_failure_thresholds;
+}
+
+bool Robot::getCurrentTaskScope(TaskInfo& current_task_info) {
+
+    // Determine whether current task in path is main or subtask
+
+    bool current_task_is_main = true;
+
+    std::vector<int> subtasks = current_task_info.subtasks;
+
+    if (subtasks.size() == 0) { // All main tasks have at least one subtask, so if 0, current task is subtask being executed by helper robot
+        current_task_is_main = false;
+    }
+
+    return current_task_is_main;
+
+}
+
+std::pair<bool,std::unordered_map<int,int>> Robot::HandleFailures() {
+
+    // Action that works in conjunction with parent counter node
+    // This function will be called in HandleFailures action node, which is always first counter sequence child node before subtasks
+
+    std::pair<bool,std::unordered_map<int,int>> scope_and_threshold_info;
+
+    // Get current task info object
+    TaskInfo& current_task = world->getTaskInfo(path[0]);
+
+    bool current_task_is_main = getCurrentTaskScope(current_task);
+
+    std::unordered_map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task);
+    
+    scope_and_threshold_info.first = current_task_is_main;
+    scope_and_threshold_info.second = subtask_failure_thresholds;
+    return scope_and_threshold_info;
 }

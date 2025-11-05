@@ -73,6 +73,7 @@ private:
     double cumulative_distance;
 
     std::unordered_map<int, std::unordered_map<int, bool>> subtask_failures; // Values True when robot k fails task j 
+    std::unordered_map<int, std::unordered_map<int, bool>> prev_subtask_failures; // Used for updating doable tasks when subtasks can newly be considered to aid failing neighboring robots
 
 
 
@@ -94,7 +95,15 @@ public:
     std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Used for messaging
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
-    void updateSubtaskFailures(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self
+    void updateSubtaskFailuresPerNeighbors(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self
+    void updateSubtaskFailuresPerSelf();
+    void updateWinningBidsMatrixPostFailure();
+    void testNewNeighborSubtaskFailures();
+    std::pair<bool,std::vector<int>> newSelfSubtaskFailures();
+    void testNewSelfSubtaskFailures();
+    std::pair<bool,std::vector<int>> newNeighborSubtaskFailures();
+    void updateDoableTasks();
+    void testSubtaskFailuresUpdater();
     std::map<int,double> initBids();  
     void resetBids();
     std::unordered_map<int,int> initWinners();
@@ -176,6 +185,14 @@ public:
     void updateRemainingTimestampsIndirectly();
 
     double& getCumulativeDistance() { return cumulative_distance; }
+
+    bool SampleCollectionNeeded();
+
+    std::unordered_map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info);
+
+    bool getCurrentTaskScope(TaskInfo& current_task_info);
+
+    std::pair<bool,std::unordered_map<int,int>> HandleFailures();
 
     //void resurfaceToCharge();
 

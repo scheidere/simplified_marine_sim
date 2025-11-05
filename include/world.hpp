@@ -162,7 +162,7 @@ public:
     TaskInfo& getTaskInfo(int task_id);
     //TaskInfo& getTaskInfoUnsafe(int task_id); // mutex scope test, in greedy
 
-    TaskInfo& getSubTaskInfo(int task_id);
+    TaskInfo& getSubtaskInfo(int task_id);
 
     int& getTaskGroupSize(int task_id);
 

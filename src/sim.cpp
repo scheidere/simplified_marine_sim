@@ -238,10 +238,17 @@ static const char* xml_text = R"(
                 <FollowShortestPath goal_loc="{loc}"/>
                 <ClearPath/>
             </RepeatSequence>
+            <RepeatSequence>
+                <HandleFailures/>
+            </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
 )";
+/*<RepeatSequence>
+    <CollectSample/>
+    <HandleFailures/>
+</RepeatSequence>*/
 
 /*
 Leaving planned combo task subtree example here for clarity as I implement
@@ -439,6 +446,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 factory.registerNodeType<PathClearingNeeded>("PathClearingNeeded", std::ref(robot), std::ref(world));
                 factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world));
+                factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world));
+                factory.registerNodeType<HandleFailures>("HandleFailures", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
