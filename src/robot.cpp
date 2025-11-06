@@ -506,18 +506,40 @@ void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_su
 
 void Robot::updateWinningBidsMatrixPostFailure() {
 
+    // not yet tested
+
     // When current robot fails, add assignment to failing subtask to denote wait for help
     // Assignment (aka winning bid value) stays on the main task, and infinite value added to subtask for self (so will always remain)
 
     // This is the only change of winning bids matrix done outside of CBBA/CBGA
 
-    i think we do need to call the new check func here
+    /*i think we do need to call the new check func here
     newSelfSubtaskFailures
-    it will compare prev to current subtask_failures so we do need the prev one update above in updateSubtaskFailuresPerSelf
+    it will compare prev to current subtask_failures so we do need the prev one update above in updateSubtaskFailuresPerSelf*/
 
-    if (newSelfSubtaskFailures())    
+    std::pair<bool,std::vector<int>> self_fail_info = newSelfSubtaskFailures();
 
+    if (self_fail_info.first) { // Found that self freshly failed a subtask
+        // To denote wait for help, add assignment to failing subtask element in winning bids matrix
+        for (int failed_subtask_id : self_fail_info.second) { // technically should only be 1, but just in case (for scalability), we loop
+            int failed_subtask_idx = failed_subtask_id - 1; // must convert from id to idx for winning_bids_matrix (since ids start at 1, indexing starts at 0)
+            winning_bids_matrix[failed_subtask_id][id] = std::numeric_limits<double>::infinity(); // So cannot be replaced, must remain 
 
+            // Note we do nothing to the winning bid for the main task (that is subtask is a part of)
+        }
+        
+    }    
+
+}
+
+void Robot::updateWinningBidsMatrixPostResolution() {
+
+    // If there is a change to subtask_failures tracker because a previously failing subtask has been completed via help
+    // Then we may want to denote that by updating winning bids matrix somehow, like by removing assignment to the subtask that is redundant with main task
+    // Not sure if necessary, so let's leave this for now and focus on testing detection of single fault, confirming that CBGA becomes aware of new helper subtask
+    // and assigns accordingly so the help is provided
+
+    // To be continued
 }
 
 void Robot::updateDoableTasks() {

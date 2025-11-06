@@ -96,8 +96,9 @@ public:
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     void updateSubtaskFailuresPerNeighbors(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self
-    void updateSubtaskFailuresPerSelf();
+    void updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures);
     void updateWinningBidsMatrixPostFailure();
+    void updateWinningBidsMatrixPostResolution();
     void testNewNeighborSubtaskFailures();
     std::pair<bool,std::vector<int>> newSelfSubtaskFailures();
     void testNewSelfSubtaskFailures();
