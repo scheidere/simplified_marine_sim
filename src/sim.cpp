@@ -239,7 +239,7 @@ static const char* xml_text = R"(
                 <ClearPath/>
             </RepeatSequence>
             <RepeatSequence>
-                <HandleFailures/>
+                <HandleFailures task_is_main="tim"/>
             </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>

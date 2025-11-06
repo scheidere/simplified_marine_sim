@@ -96,7 +96,7 @@ public:
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     void updateSubtaskFailuresPerNeighbors(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self
-    void updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures);
+    void updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures);
     void updateWinningBidsMatrixPostFailure();
     void updateWinningBidsMatrixPostResolution();
     void testNewNeighborSubtaskFailures();
@@ -193,7 +193,7 @@ public:
 
     bool getCurrentTaskScope(TaskInfo& current_task_info);
 
-    std::pair<bool,std::unordered_map<int,int>> HandleFailures();
+    std::pair<bool,std::unordered_map<int,int>> HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures);
 
     //void resurfaceToCharge();
 
