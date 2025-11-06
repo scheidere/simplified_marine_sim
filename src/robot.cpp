@@ -482,7 +482,7 @@ void Robot::testNewSelfSubtaskFailures() {
 
 }
 
-void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
+void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures) {
 
     // not yet tested
 
@@ -529,7 +529,6 @@ void Robot::updateWinningBidsMatrixPostFailure() {
         }
         
     }    
-
 }
 
 void Robot::updateWinningBidsMatrixPostResolution() {
@@ -1679,16 +1678,10 @@ bool Robot::getCurrentTaskScope(TaskInfo& current_task_info) {
 
 }
 
-std::pair<bool,std::unordered_map<int,int>> Robot::HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures) {
+std::pair<bool,std::unordered_map<int,int>> Robot::HandleFailures() {
 
     // Action that works in conjunction with parent counter node
     // This function will be called in HandleFailures action node, which is always first counter sequence child node before subtasks
-
-    // First, handle input, i.e., update subtask failure tracker per new info counter sequence obtained
-    updateSubtaskFailuresPerSelf(new_self_subtask_failures);
-    updateWinningBidsMatrixPostFailure(); // If a subtask is found to fail, assign agent to that subtask in winning bids matrix to denote wait for help
-
-    // Below is for outputs
 
     std::pair<bool,std::unordered_map<int,int>> scope_and_threshold_info;
 
