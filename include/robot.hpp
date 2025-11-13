@@ -193,7 +193,7 @@ public:
 
     bool getCurrentTaskScope(TaskInfo& current_task_info);
 
-    std::pair<bool,std::unordered_map<int,int>> HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures);
+    std::pair<std::pair<int,bool>,std::unordered_map<int,int>> HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures);
 
     //void resurfaceToCharge();
 

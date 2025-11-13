@@ -482,7 +482,7 @@ void Robot::testNewSelfSubtaskFailures() {
 
 }
 
-void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures) {
+void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
 
     // not yet tested
 
@@ -1678,12 +1678,12 @@ bool Robot::getCurrentTaskScope(TaskInfo& current_task_info) {
 
 }
 
-std::pair<bool,std::unordered_map<int,int>> Robot::HandleFailures() {
+std::pair<std::pair<int,bool>,std::unordered_map<int,int>> Robot::HandleFailures(std::unordered_map<int,bool> current_subtask_failures) {
 
     // Action that works in conjunction with parent counter node
     // This function will be called in HandleFailures action node, which is always first counter sequence child node before subtasks
 
-    std::pair<bool,std::unordered_map<int,int>> scope_and_threshold_info;
+    std::pair<std::pair<int,bool>,std::unordered_map<int,int>> scope_and_threshold_info;
 
     // Get current task info object
     TaskInfo& current_task = world->getTaskInfo(path[0]);
@@ -1692,7 +1692,12 @@ std::pair<bool,std::unordered_map<int,int>> Robot::HandleFailures() {
 
     std::unordered_map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task);
     
-    scope_and_threshold_info.first = current_task_is_main;
-    scope_and_threshold_info.second = subtask_failure_thresholds;
+    // Get current task id and scope (i.e., whether main or sub task) in pair
+    std::pair<int,bool> current_task_id_scope;
+    current_task_id_scope.first = current_task.id;
+    current_task_id_scope.second = current_task_is_main;
+
+    scope_and_threshold_info.first = current_task_id_scope; 
+    scope_and_threshold_info.second = subtask_failure_thresholds; 
     return scope_and_threshold_info;
 }

@@ -239,7 +239,9 @@ static const char* xml_text = R"(
                 <ClearPath/>
             </RepeatSequence>
             <RepeatSequence>
-                <HandleFailures task_is_main="tim"/>
+                <CounterSequence task_is_main="{tim}">
+                <HandleFailures task_is_main="{tim}"/>
+                </CounterSequence>
             </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
@@ -448,6 +450,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world));
                 factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world));
                 factory.registerNodeType<HandleFailures>("HandleFailures", std::ref(world), std::ref(robot));
+                factory.registerNodeType<CounterSequence>("CounterSequence");
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

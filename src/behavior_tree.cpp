@@ -1367,12 +1367,18 @@ NodeStatus HandleFailures::onRunning() {
 
         std::unordered_map<int,bool> current_subtask_failures = getInput<std::unordered_map<int,bool>>("self_subtask_failures").value();
 
-        std::pair<bool,std::unordered_map<int,int>> scope_and_threshold_info = _robot.HandleFailures(current_subtask_failures);
-        bool task_is_main = scope_and_threshold_info.first;
+        // Process input and provide output via HandleFailures robot function
+        std::pair<std::pair<int,bool>,std::unordered_map<int,int>> scope_and_threshold_info = _robot.HandleFailures(current_subtask_failures);
+        std::pair<int,bool> current_task_id_scope = scope_and_threshold_info.first;
+        int current_task_id = current_task_id_scope.first;
+        bool task_is_main = current_task_id_scope.second; // main vs subtask bool
         std::unordered_map<int,int> subtask_failure_thresholds = scope_and_threshold_info.second;
 
         // Tell counter sequence whether current task is main or sub
         setOutput("task_is_main", task_is_main);
+
+        // Tell counter sequence what the current task is, by id (will only be used if it is a subtask)
+        setOutput("current_task_id", current_task_id);
 
         // Tell counter sequence how many times it should attempt a failing subtask before counting it as truly failed
         setOutput("subtask_failure_thresholds", subtask_failure_thresholds);
@@ -1391,5 +1397,6 @@ PortsList HandleFailures::providedPorts()
 {
     return { InputPort<std::unordered_map<int,bool>>("self_subtask_failures"),
              OutputPort<bool>("task_is_main"),
+             OutputPort<int>("current_task_id"),
              OutputPort<std::unordered_map<int,int>>("subtask_failure_thresholds")};
 }
