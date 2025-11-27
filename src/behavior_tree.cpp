@@ -1040,7 +1040,7 @@ NodeStatus PathClearingNeeded::tick()
         }
 
     } catch (const std::exception& e) {
-        std::cerr << "Exception caught in ExploreD::tick: " << e.what() << std::endl;
+        std::cerr << "Exception caught in PathClearingNeeded::tick: " << e.what() << std::endl;
         return NodeStatus::FAILURE;
     }
 }
@@ -1365,14 +1365,28 @@ NodeStatus HandleFailures::onRunning() {
 
     try {
 
-        std::unordered_map<int,bool> current_subtask_failures = getInput<std::unordered_map<int,bool>>("self_subtask_failures").value();
+        std::cout << "\nRunning HandleFailures (in onRunning)..." << std::endl;
+
+        // std::unordered_map<int,bool> current_subtask_failures = getInput<std::unordered_map<int,bool>>("self_subtask_failures").value();
+
+        std::unordered_map<int,bool> current_subtask_failures;
+        auto input = getInput<std::unordered_map<int,bool>>("self_subtask_failures");
+        if (input) {
+            current_subtask_failures = input.value();
+        } else {
+            // First tick - initialize with empty
+            current_subtask_failures = std::unordered_map<int,bool>();
+        }
 
         // Process input and provide output via HandleFailures robot function
-        std::pair<std::pair<int,bool>,std::unordered_map<int,int>> scope_and_threshold_info = _robot.HandleFailures(current_subtask_failures);
+        std::pair<std::pair<int,bool>,std::map<int,int>> scope_and_threshold_info = _robot.HandleFailures(current_subtask_failures);
         std::pair<int,bool> current_task_id_scope = scope_and_threshold_info.first;
         int current_task_id = current_task_id_scope.first;
         bool task_is_main = current_task_id_scope.second; // main vs subtask bool
-        std::unordered_map<int,int> subtask_failure_thresholds = scope_and_threshold_info.second;
+        std::map<int,int> subtask_failure_thresholds = scope_and_threshold_info.second;
+
+        // Testing counter sequence with values below
+        //task_is_main = 
 
         // Tell counter sequence whether current task is main or sub
         setOutput("task_is_main", task_is_main);
@@ -1398,5 +1412,82 @@ PortsList HandleFailures::providedPorts()
     return { InputPort<std::unordered_map<int,bool>>("self_subtask_failures"),
              OutputPort<bool>("task_is_main"),
              OutputPort<int>("current_task_id"),
-             OutputPort<std::unordered_map<int,int>>("subtask_failure_thresholds")};
+             OutputPort<std::map<int,int>>("subtask_failure_thresholds")};
+}
+
+TaskNeededNow::TaskNeededNow(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus TaskNeededNow::tick()
+{
+    try {   
+        _robot.log_info("in TaskNeededNow");
+
+        if (_robot.TaskNeededNow()) { 
+            _robot.log_info("About to return success - task needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in TaskNeededNow::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList TaskNeededNow::providedPorts()
+{
+    return { OutputPort<std::pair<int,int>>("start_loc") };
+}
+
+Subtask_1::Subtask_1(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w)
+    : StatefulActionNode(name, config), _robot(r), _world(w) {
+    }
+
+NodeStatus Subtask_1::onStart()
+{
+    try {
+        std::cout << "Robot " << _robot.getID() << " doing subtask 1..." << std::endl;
+        std::string strt = "Starting subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+        
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus Subtask_1::onRunning()
+{
+    try {
+
+        // If here, Subtask 1 is current task because condition node returned true to get here in BT
+        // Just a dummy task for testing counter sequence
+
+        //int current_task_id = task_path[0]; // This has to be subtask 1 to be in onRunning per BT
+
+        std::string strt = "Running subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+
+        // For now always returns success, change this for testing (before able to inject a fault)
+        return NodeStatus::FAILURE;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void Subtask_1::onHalted()
+{
+    std::cout << "Test Subtask 1 halted." << std::endl;
+}
+
+PortsList Subtask_1::providedPorts()
+{
+    return {};
 }

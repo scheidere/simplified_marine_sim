@@ -201,7 +201,7 @@
 // Testing switch to CBGA from CBBA while allowing switch back/between task allocation methods (CBBA vs CBGA, as greedy has a different BT)
 // Denoted by do_cbga = true or do_cbga = false for CBBA
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="7">
@@ -240,13 +240,35 @@ static const char* xml_text = R"(
             </RepeatSequence>
             <RepeatSequence>
                 <CounterSequence task_is_main="{tim}">
-                <HandleFailures task_is_main="{tim}"/>
+                    <HandleFailures task_is_main="{tim}"/>
+                </CounterSequence>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// For initial basic counter sequence testing
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="2">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence>
+                <TaskNeededNow/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <Subtask_1/>
                 </CounterSequence>
             </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
 )";
+
+
 /*<RepeatSequence>
     <CollectSample/>
     <HandleFailures/>
@@ -451,6 +473,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world));
                 factory.registerNodeType<HandleFailures>("HandleFailures", std::ref(world), std::ref(robot));
                 factory.registerNodeType<CounterSequence>("CounterSequence");
+                factory.registerNodeType<TaskNeededNow>("TaskNeededNow", std::ref(robot), std::ref(world));
+                factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

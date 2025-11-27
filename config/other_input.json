@@ -3,13 +3,13 @@
 		{
 			"size_x": 200,
 			"size_y": 200,
-			"step_size": 20
+			"step_size": 5
 		},
 
 	"robot_attributes":
 		{
 			"comms_range": 50.0,
-			"observation_radius": 20
+			"observation_radius": 10
 
 		},
 
@@ -27,6 +27,7 @@
 			"id": 1,
 			"name": "Explore_A",
 			"type": "coverage",
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"area": {"xmin": 0, "xmax": 100, "ymin": 0, "ymax": 100},
 			"reward": 5
 		},
@@ -34,6 +35,7 @@
 			"id": 2,
 			"name": "Explore_B",
 			"type": "coverage",
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"area": {"xmin": 100, "xmax": 200, "ymin": 0, "ymax": 100},
 			"reward": 5
 		},
@@ -41,6 +43,7 @@
 			"id": 3,
 			"name": "Explore_C",
 			"type": "coverage",
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"area": {"xmin": 0, "xmax": 100, "ymin": 100, "ymax": 200},
 			"reward": 5
 		},
@@ -48,7 +51,45 @@
 			"id": 4,
 			"name":  "Explore_D",
 			"type": "coverage",
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"area": {"xmin": 100, "xmax": 200, "ymin": 100, "ymax": 200},
+			"reward": 5
+		},
+		{
+			"id": 5,
+			"name":  "Clear_Path",
+			"type": "co-op",
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 3},
+			"location": {"x": 40, "y": 40},
+			"reward": 5
+		},
+		{
+			"id": 6,
+			"name":  "Collect_Sample",
+			"type": "collect",
+			"subtasks": [7, 8],
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		}
+	],
+	"local_subtasks": [
+		{
+			"id": 7,
+			"name":  "Extract_Sample",
+			"type": "collect",
+			"prerequisite_failures": 3,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		},
+		{
+			"id": 8,
+			"name":  "Load_Sample",
+			"type": "collect",
+			"prerequisite_failures": 3,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 90, "y": 90},
 			"reward": 5
 		}
 	],
@@ -62,11 +103,8 @@
 			]
 		},
 		{
-			"mapper": ["coverage"],
-			"analysis": ["coverage"]
-		},
-		{
-			"all":["coverage"]
+			"mapper": ["coverage","collect","co-op"],
+			"analysis": ["coverage","collect","co-op"]
 		}
 	],
 
@@ -74,27 +112,40 @@
 		{
 			"id": 1,
 			"type": "mapper",
-			"start_x": 20,
-	        "start_y": 20,
-	        "goal_x": -1,
-	        "goal_y": -1,
+			"start_x": 10,
+	        "start_y": 10,
 	        "color": [0, 0, 255],
 	        "_comments": ["Comments here"]
 		},
 		{
 			"id": 2,
 			"type": "analysis",
-			"start_x": 30,
-	        "start_y": 20,
-	        "goal_x": -1,
-	        "goal_y": -1,
+			"start_x": 20,
+	        "start_y": 10,
 	        "color": [255, 0, 0],
+	        "_comments": ["Comments here"]
+		},
+		{
+			"id": 3,
+			"type": "mapper",
+			"start_x": 30,
+	        "start_y": 10,
+	        "color": [0, 255, 0],
+	        "_comments": ["Comments here"]
+		},
+		{
+			"id": 4,
+			"type": "analysis",
+			"start_x": 40,
+	        "start_y": 10,
+	        "color": [0, 255, 255],
 	        "_comments": ["Comments here"]
 		}
 	],
 
 	"cbba": {
-		"max_depth": 3
+		"max_depth": 3,
+		"convergence_threshold": 5
 	}
 
 }

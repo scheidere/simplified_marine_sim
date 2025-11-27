@@ -107,7 +107,8 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     subtask_failures = initSubtaskFailures(); // All false at start because no failures
     prev_subtask_failures = initSubtaskFailures();
 
-    testNewSelfSubtaskFailures();
+    // testNewSelfSubtaskFailures();
+    testCounterSequence();
 
 }
 
@@ -1643,7 +1644,9 @@ bool Robot::taskAlreadyStarted(int task_id) {
     return false;
 }
 
-std::unordered_map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info) {
+/*std::unordered_map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info) {
+
+    // Changing to ordered map so that counter sequence has subtask node order access (since no direct robot class access there)
 
     // Will only be called for main tasks using getCurrentTaskScope() to check main vs subtask
     // Therefore, subtasks list will have subtask id ints in it (used to be string names but that's less reliable I think)
@@ -1660,44 +1663,133 @@ std::unordered_map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_t
     }
 
     return subtask_failure_thresholds;
+}*/
+
+std::map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info) {
+
+    // Changed to ordered map so that counter sequence has subtask node order access (since no direct robot class access there)
+
+    // Will only be called for main tasks using getCurrentTaskScope() to check main vs subtask
+    // Therefore, subtasks list will have subtask id ints in it (used to be string names but that's less reliable I think)
+    // Returns ordered map with keys being subtask ids and values being prerequisite failure threshold for that subtask
+
+    std::map<int,int> subtask_failure_thresholds;
+    std::vector<int> subtasks = current_task_info.subtasks;
+    for (int subtask_id : subtasks) {
+        TaskInfo& subtask_info = world->getSubtaskInfo(subtask_id);
+        subtask_failure_thresholds[subtask_id] = subtask_info.prerequisite_failures;
+    }
+    return subtask_failure_thresholds;
 }
 
 bool Robot::getCurrentTaskScope(TaskInfo& current_task_info) {
 
     // Determine whether current task in path is main or subtask
 
-    bool current_task_is_main = true;
+    bool current_task_is_main = false;
 
-    std::vector<int> subtasks = current_task_info.subtasks;
+    if (current_task_info.prerequisite_failures==-1) { // All subtasks have actual threshold defined by prerequisite_failures, so if not -1, it is a subtask
+        current_task_is_main = true;
 
-    if (subtasks.size() == 0) { // All main tasks have at least one subtask, so if 0, current task is subtask being executed by helper robot
-        current_task_is_main = false;
     }
 
     return current_task_is_main;
 
 }
 
-std::pair<std::pair<int,bool>,std::unordered_map<int,int>> Robot::HandleFailures(std::unordered_map<int,bool> current_subtask_failures) {
+void Robot::testCounterSequence() {
+
+    log_info("Changing variables for counter sequence testing");
+
+    // Create at consensus state since testing without actual CBGA subtree running
+    at_consensus = true;
+
+    // Make up an assigned task
+    // path[0] = 1; // main task, empty subtasks list
+    // path[0] = 6; // main task, populated subtasks list
+    // path[0] = 8; // subtask
+    path[0] = 7; // dummy main task, empty subtasks list (for now)
+
+    std::string p = "path first element: " + std::to_string(path[0]);
+    log_info(p);
+
+    // Info from handlefailures for counter sequence
+
+}
+
+std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unordered_map<int,bool> current_subtask_failures) {
 
     // Action that works in conjunction with parent counter node
     // This function will be called in HandleFailures action node, which is always first counter sequence child node before subtasks
 
-    std::pair<std::pair<int,bool>,std::unordered_map<int,int>> scope_and_threshold_info;
+    //std::cout << "\nRunning HandleFailures..." << std::endl;   
+    log_info("in HandleFailures"); 
 
-    // Get current task info object
-    TaskInfo& current_task = world->getTaskInfo(path[0]);
+    log_info("current_subtask_failures:");
+    utils::logUnorderedMap(current_subtask_failures, *this);
 
-    bool current_task_is_main = getCurrentTaskScope(current_task);
+    std::pair<std::pair<int,bool>,std::map<int,int>> scope_and_threshold_info;
 
-    std::unordered_map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task);
+    if (path[0] != -1) { // Only consider actual id's, -1 means path element is empty
+
+        // Get current task info object
+        TaskInfo& current_task = world->getTaskInfo(path[0]);
+
+        bool current_task_is_main = getCurrentTaskScope(current_task);
+        std::string c = "current_task_is_main:" + std::to_string(current_task_is_main);
+        log_info(c);
+
+        std::map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task);
+        log_info("subtask_failure_thresholds:");
+        utils::logMap(subtask_failure_thresholds,*this);
+        
+        // Get current task id and scope (i.e., whether main or sub task) in pair
+        std::pair<int,bool> current_task_id_scope;
+        current_task_id_scope.first = current_task.id;
+        current_task_id_scope.second = current_task_is_main;
+
+        scope_and_threshold_info.first = current_task_id_scope; 
+        scope_and_threshold_info.second = subtask_failure_thresholds; 
+
+    }
+
     
-    // Get current task id and scope (i.e., whether main or sub task) in pair
-    std::pair<int,bool> current_task_id_scope;
-    current_task_id_scope.first = current_task.id;
-    current_task_id_scope.second = current_task_is_main;
-
-    scope_and_threshold_info.first = current_task_id_scope; 
-    scope_and_threshold_info.second = subtask_failure_thresholds; 
     return scope_and_threshold_info;
+}
+
+bool Robot::TaskNeededNow() {
+    // Condition that should return true when first task in path is Clear_Path (will check by ID)
+
+    log_info("in robot::TaskNeededNow");
+
+    if (!at_consensus) { // prevent triggering the start of a new action's execution if task allocation is in progress
+        log_info("Not at consensus");
+        return false;
+    }
+
+    if (path.empty()) {
+        log_info("Path is empty");
+        return false;
+    }
+
+    if (!world->hasTaskInfo(path[0])) {
+        log_info("World doesn't have task info yet");
+        return false;  // World not done initializing task info 
+    }
+
+    log_info("Past checks in TaskNeededNow");
+
+    // Get info for first task in path (i.e., task that has been allocated to occur next)
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    std::string a = "name of current task in path: " + next_task.name;
+    log_info(a);
+
+    if (next_task.name == "Test_Task") {
+        log_info("Next task to execute is Test_Task!");
+        return true;
+    }
+
+    return false;
+
 }

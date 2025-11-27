@@ -189,11 +189,16 @@ public:
 
     bool SampleCollectionNeeded();
 
-    std::unordered_map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info);
+    // std::unordered_map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info);
+    std::map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info); 
 
     bool getCurrentTaskScope(TaskInfo& current_task_info);
 
-    std::pair<std::pair<int,bool>,std::unordered_map<int,int>> HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures);
+    void testCounterSequence();
+
+    std::pair<std::pair<int,bool>,std::map<int,int>> HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures);
+
+    bool TaskNeededNow();
 
     //void resurfaceToCharge();
 
