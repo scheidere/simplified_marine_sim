@@ -1366,6 +1366,7 @@ NodeStatus HandleFailures::onRunning() {
     try {
 
         std::cout << "\nRunning HandleFailures (in onRunning)..." << std::endl;
+        _robot.log_info("\nRunning HandleFailures (in onRunning)...");
 
         // std::unordered_map<int,bool> current_subtask_failures = getInput<std::unordered_map<int,bool>>("self_subtask_failures").value();
 
@@ -1373,6 +1374,9 @@ NodeStatus HandleFailures::onRunning() {
         auto input = getInput<std::unordered_map<int,bool>>("self_subtask_failures");
         if (input) {
             current_subtask_failures = input.value();
+            std::string s = "current_subtask_failures: ";
+            _robot.log_info(s);
+            utils::logUnorderedMap(current_subtask_failures, _robot);
         } else {
             // First tick - initialize with empty
             current_subtask_failures = std::unordered_map<int,bool>();
@@ -1397,7 +1401,7 @@ NodeStatus HandleFailures::onRunning() {
         // Tell counter sequence how many times it should attempt a failing subtask before counting it as truly failed
         setOutput("subtask_failure_thresholds", subtask_failure_thresholds);
       
-        return NodeStatus::SUCCESS;
+        return NodeStatus::RUNNING; // For use with counter sequence, to allow repeated ticking of HandleFailure
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in HandleFailures::tick: " << e.what() << std::endl;
         _robot.log_info("HandleFailures node FAILURE");
