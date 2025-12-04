@@ -1665,7 +1665,7 @@ bool Robot::taskAlreadyStarted(int task_id) {
     return subtask_failure_thresholds;
 }*/
 
-std::map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info) {
+std::map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info, bool current_task_is_main) {
 
     // Changed to ordered map so that counter sequence has subtask node order access (since no direct robot class access there)
 
@@ -1674,7 +1674,15 @@ std::map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info) 
     // Returns ordered map with keys being subtask ids and values being prerequisite failure threshold for that subtask
 
     std::map<int,int> subtask_failure_thresholds;
-    std::vector<int> subtasks = current_task_info.subtasks;
+    std::vector<int> subtasks;
+    if (current_task_is_main) {
+        subtasks = current_task_info.subtasks;
+    } else { // Current is subtask
+        // Find main task by type match to get subtasks list since current task is subtask
+        int main_id = current_task_info.main_id; // Subtasks have the id of the main task they correspond to
+        TaskInfo& main_task_info = world->getTaskInfo(main_id);
+        subtasks = main_task_info.subtasks;
+    }
     for (int subtask_id : subtasks) {
         TaskInfo& subtask_info = world->getSubtaskInfo(subtask_id);
         subtask_failure_thresholds[subtask_id] = subtask_info.prerequisite_failures;
@@ -1708,7 +1716,9 @@ void Robot::testCounterSequence() {
     // path[0] = 1; // main task, empty subtasks list
     // path[0] = 6; // main task, populated subtasks list
     // path[0] = 8; // subtask
-    path[0] = 7; // dummy main task, empty subtasks list (for now)
+    // path[0] = 7; // dummy main task, subtasks 10,11
+    // path[0] = 10; // First subtask for main task 7
+    path[0] = 11; // Second subtask for main task 7
 
     std::string p = "path first element: " + std::to_string(path[0]);
     log_info(p);
@@ -1739,7 +1749,7 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
         std::string c = "current_task_is_main:" + std::to_string(current_task_is_main);
         log_info(c);
 
-        std::map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task);
+        std::map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task, current_task_is_main); // this breaks when current task is not main (i.e., is subtask, which doesnt have subtask list like main)
         log_info("subtask_failure_thresholds:");
         utils::logMap(subtask_failure_thresholds,*this);
         
@@ -1785,8 +1795,8 @@ bool Robot::TaskNeededNow() {
     std::string a = "name of current task in path: " + next_task.name;
     log_info(a);
 
-    if (next_task.name == "Test_Task") {
-        log_info("Next task to execute is Test_Task!");
+    if (next_task.type == "test") {
+        log_info("Next task to execute is Test_Task or one of its subtasks (all same type 'test')!");
         return true;
     }
 

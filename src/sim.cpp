@@ -261,6 +261,7 @@ static const char* xml_text = R"(
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
                     <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
                     <Subtask_1/>
+                    <Subtask_2/>
                 </CounterSequence>
             </RepeatSequence>
         </ParallelAll>
@@ -475,6 +476,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<CounterSequence>("CounterSequence");
                 factory.registerNodeType<TaskNeededNow>("TaskNeededNow", std::ref(robot), std::ref(world));
                 factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world));
+                factory.registerNodeType<Subtask_2>("Subtask_2", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

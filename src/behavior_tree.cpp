@@ -1478,7 +1478,7 @@ NodeStatus Subtask_1::onRunning()
         _world.log_info(strt);
 
         // For now always returns success, change this for testing (before able to inject a fault)
-        return NodeStatus::FAILURE;
+        return NodeStatus::SUCCESS;
         
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
@@ -1492,6 +1492,57 @@ void Subtask_1::onHalted()
 }
 
 PortsList Subtask_1::providedPorts()
+{
+    return {};
+}
+
+Subtask_2::Subtask_2(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w)
+    : StatefulActionNode(name, config), _robot(r), _world(w) {
+    }
+
+NodeStatus Subtask_2::onStart()
+{
+    try {
+        std::cout << "Robot " << _robot.getID() << " doing subtask 2..." << std::endl;
+        std::string strt = "Starting subtask 2 for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+        
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus Subtask_2::onRunning()
+{
+    try {
+
+        // If here, Subtask 2 is current task because condition node returned true to get here in BT
+        // Just a dummy task for testing counter sequence
+
+        //int current_task_id = task_path[0]; // This has to be subtask 1 to be in onRunning per BT
+
+        std::string strt = "Running subtask 2 for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+
+        // For now always returns success, change this for testing (before able to inject a fault)
+        return NodeStatus::FAILURE;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void Subtask_2::onHalted()
+{
+    std::cout << "Test Subtask 2 halted." << std::endl;
+}
+
+PortsList Subtask_2::providedPorts()
 {
     return {};
 }

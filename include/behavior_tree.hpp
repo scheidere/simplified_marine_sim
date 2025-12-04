@@ -354,4 +354,19 @@ public:
     static PortsList providedPorts();
 };
 
+class Subtask_2 : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+
+public:
+    Subtask_2(const std::string& name, const NodeConfig& config, Robot& r, World& w);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

@@ -22,6 +22,7 @@ struct TaskInfo {
     std::string type;
     int prerequisite_failures; // only for subtasks
     std::vector<int> subtasks; // only for main tasks, elements changed from string to int for accessibility
+    int main_id; // only for subtasks to denote umbrella/parent task
     int group_size;
     std::unordered_map<std::string, int> group_info;
     std::pair<int,int> location;

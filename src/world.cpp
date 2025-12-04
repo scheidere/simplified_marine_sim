@@ -251,6 +251,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         if (task.contains("subtasks")) {
             subtasks = task["subtasks"].get<std::vector<int>>();
         }
+        int main_id = -1; // This is only for subtasks, would be redundant with own id for main tasks
         
         std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
         
@@ -278,6 +279,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
             type, // string
             prerequisite_failures, // int
             subtasks, // std::vector<int>
+            main_id, // int
             group_size, //int
             group_info, // <std::unordered_map<std::string, int>>
             location, // std::pair<int,int>
@@ -305,6 +307,7 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
         std::string type = task["type"];
         int prerequisite_failures = task["prerequisite_failures"];
         std::vector<int> subtasks = {}; // changed from string to int for ease
+        int main_id = task["main_id"].get<int>();
         std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
         
         int group_size = getGroupSize(group_info);
@@ -331,6 +334,7 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
             type, // string
             prerequisite_failures, // int
             subtasks, // std::vector<int>
+            main_id, // int
             group_size, //int
             group_info, // <std::unordered_map<std::string, int>>
             location, // std::pair<int,int>

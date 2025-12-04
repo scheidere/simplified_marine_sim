@@ -190,7 +190,7 @@ public:
     bool SampleCollectionNeeded();
 
     // std::unordered_map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info);
-    std::map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info); 
+    std::map<int,int> initFailureThresholdsDict(TaskInfo& current_task_info, bool current_task_is_main); 
 
     bool getCurrentTaskScope(TaskInfo& current_task_info);
 
