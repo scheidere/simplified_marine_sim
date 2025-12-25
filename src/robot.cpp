@@ -106,9 +106,18 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
 
     subtask_failures = initSubtaskFailures(); // All false at start because no failures
     prev_subtask_failures = initSubtaskFailures();
+    // // Replacing the real init just above for seg fault testing
+    // subtask_failures = std::unordered_map<int, std::unordered_map<int, bool>>();
+    // prev_subtask_failures = std::unordered_map<int, std::unordered_map<int, bool>>();
 
     // testNewSelfSubtaskFailures();
-    testCounterSequence();
+    //testCounterSequence();
+    /*log_info("test path print b4: ");
+    utils::log1DVector(path, *this);
+    path[0] = 1;
+    bundle[0] = 1;
+    log_info("test path print after: ");
+    utils::log1DVector(path, *this);*/
 
 }
 
@@ -256,7 +265,16 @@ std::unordered_map<int,int> Robot::initTaskProgress() {
     // Get ALL tasks from world, not just doable ones per current robot type
     std::unordered_map<int,TaskInfo>& all_tasks_info = world->getAllTasksInfo();
 
-     for (const auto& task : all_tasks_info) {
+    for (const auto& task : all_tasks_info) {
+        int task_id = task.first;
+        task_progress[task_id] = 0; // At start, no tasks started
+    }
+
+    // Do we need to account for subtasks here?
+
+    std::unordered_map<int,TaskInfo>& all_subtasks_info = world->getAllSubtasksInfo();
+
+    for (const auto& task : all_subtasks_info) {
         int task_id = task.first;
         task_progress[task_id] = 0; // At start, no tasks started
     }
@@ -290,6 +308,8 @@ void Robot::updateSubtaskFailuresPerNeighbors() {
 
     // Given the subtask failures from another robot in comms, update local subtask tracker
     // Greedily defer to 1s (meaning tracked fails)
+
+    log_info("in updateSubtaskFailuresPerNeighbors");
 
     // First, save current as prev subtask_failures
     prev_subtask_failures = subtask_failures;
@@ -485,19 +505,27 @@ void Robot::testNewSelfSubtaskFailures() {
 
 void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
 
-    // not yet tested
-
-    // Update when self newly fails at own tasks
-    // Or when a task was failed but is now done (back to zero as in not failed) - do we want to deal with this or just leave at 1 if failed? i think do it to denote fixed
+    // Done: Update when self newly fails at own tasks
+    // Not done yet: Or when a task was failed but is now done (back to zero as in not failed) - do we want to deal with this or just leave at 1 if failed? i think do it to denote fixed
+    // Might not need this, unless same subtask with same id could be used again?
     // Basically always trust counter sequence unordered map of subtask failure status
-
-    // need to check that its new first - do we? i think maybe we don't need it here because always update to have accurate data
 
     prev_subtask_failures = subtask_failures; // save previous for consistency - do we need this here? Do we need mutex?
 
     for (int subtask_id : world->getSubtaskIDs()) {
+
+        if (new_self_subtask_failures[subtask_id] == 1) {
+            log_info("FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf");
+
+            // Update flag for ping to denote new info available even for robots that were already in comms with each other
+            new_self_subtask_failure = true;
+        }
+
         subtask_failures[subtask_id][id] = new_self_subtask_failures[subtask_id]; // Update own part of main subtask_failures tracker
     }
+
+    log_info("in updateSubtaskFailuresPerSelf:");
+    utils::log2DUnorderedMap(subtask_failures,*this);
 
     // Note we also change subtask failures in comms, which is node in CBBA/CBGA subtree
     // Could this ever happen at the same time for a given robot, where it updates from counter sequence here and also updates neighbor parts in comms node?
@@ -507,7 +535,7 @@ void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_s
 
 void Robot::updateWinningBidsMatrixPostFailure() {
 
-    // not yet tested
+    // not yet tested, do we need this? Not currently called I think
 
     // When current robot fails, add assignment to failing subtask to denote wait for help
     // Assignment (aka winning bid value) stays on the main task, and infinite value added to subtask for self (so will always remain)
@@ -546,10 +574,15 @@ void Robot::updateDoableTasks() {
 
     // Add failed subtask ids to doable_task_ids
 
+    log_info("in updateDoableTasks");
+
     // Compare previous to current subtask failure trackers, ignoring changes that represent currrent robot failures (can't help self)
     std::pair<bool,std::vector<int>> neighbor_fail_info = newNeighborSubtaskFailures();
     bool neighbor_failed = neighbor_fail_info.first;
     std::vector<int> newly_failed_subtasks = neighbor_fail_info.second; // subtasks neighbors failed
+
+    log_info("newly_failed_subtasks:");
+    utils::log1DVector(newly_failed_subtasks, *this);
 
     if (neighbor_failed) { // If at least one neighbor failed
         // Add each failed subtask id to doable_task_ids so current robot can consider helping failing neighbor(s)
@@ -789,7 +822,8 @@ bool Robot::checkIfNewInfoAvailable() {
 
     bool info_available = false;
 
-    std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
+    // std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
+    std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world->getPingTracker();
     int receiverID = getID(); // can we just do id?
 
     // just for print >>>
@@ -800,7 +834,8 @@ bool Robot::checkIfNewInfoAvailable() {
 
     // Find current robot's ping vector
     if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
-        std::vector<std::pair<int,double>>& new_pings = world_ping_tracker[receiverID];
+        // std::vector<std::pair<int,double>>& new_pings = world_ping_tracker[receiverID];
+        std::vector<std::tuple<int,double,bool>>& new_pings = world_ping_tracker[receiverID];        
         log_info("new_pings: ");
         utils::log1DVector(new_pings, *this);
         log_info("last_pings: ");
@@ -808,15 +843,24 @@ bool Robot::checkIfNewInfoAvailable() {
 
         // Check 1: if a new robot has entered comms - this would qualify as new info
         // Check 2: if a robot was already in comms but has made changes to its belief via cbba since last check - new info here too
-        // CHECK 2 IS FLAWED (scope too broad) SO COMMENTED OUT
+        // CHECK 2 IS FLAWED (scope too broad) - REMOVED
+        // Check 3: if a robot was already in comms but has newly failed a subtask
         for (const auto& ping : new_pings) {
-            int other_robot_id = ping.first; // For check 1
-            double other_robot_new_timestamp = ping.second; // For check 2 (note timestamp may be the same - denotes last cbba variable update)
+            // int other_robot_id = ping.first; // For check 1
+            // double other_robot_new_timestamp = ping.second; // For check 2 (note timestamp may be the same - denotes last cbba/cbga variable update)
+            // bool other_robot_new_subtask_failure = ping.third; wrong, need to change from pair to tuple
+            auto [other_robot_id, other_robot_new_timestamp, other_robot_new_subtask_failure_flag] = ping; // for tuple unpack
 
             // Check if the robot that sent the received ping had already been heard during the last check
-            auto it = std::find_if(last_pings.begin(), last_pings.end(), 
+           /* auto it = std::find_if(last_pings.begin(), last_pings.end(), 
                       [&other_robot_id](const std::pair<int,double>& p) { 
-                          return p.first == other_robot_id; });
+                          return p.first == other_robot_id; });*/
+
+            // Check if the robot that sent the received ping had already been heard during the last check (find ping with from other robot)
+            auto it = std::find_if(last_pings.begin(), last_pings.end(), 
+                      [&other_robot_id](const std::tuple<int,double,bool>& p) { 
+                          auto [sender_id, timestamp, flag] = p;
+                          return sender_id == other_robot_id;  });
 
             // Check 1
             if (it == last_pings.end()) {
@@ -824,29 +868,18 @@ bool Robot::checkIfNewInfoAvailable() {
                 info_available = true;
                 log_info("NEW INFO FOUND DUE TO NEW ROBOT IN COMMS");
 
-                /*// Update last_pings with new_pings
-                log_info("New info available");
-                last_pings = new_pings;
-                log_info("last_pings updated to: ");
-                utils::log1DVector(last_pings, *this);
-
                 break; // Stop checking because already found at least one instance of new info*/
+            } else { // Other robot id was found, meaning it was already in comms at last check
 
-            // Check 2 // COMMENTED OUT FOR NOW BECAUSE IT CATCHES INTERNAL CHANGE, NOT JUST EXTERNAL 
-            // (causes redundant runs of CBBA since internal belief changes are more common) 
-            // Internal meaning CBBA-induced changes between robot i and neighbor robot k
-            // External meaning CBBA-induced changes between robot k and neighbors of k, j, where j not a neighbor of i
-            } /*else { // Other robot id was found, meaning it was already in comms at last check
-
-                // Let's check if timestamp has changed (i.e., is now higher), indicating other robot has made belief changes via CBBA since last check
-                double other_robot_prev_timestamp = it->second; // iterator found the id, timestamp pair, accessing timestamp
-                if ( other_robot_prev_timestamp < other_robot_new_timestamp ) {
-                    // New timestamp is different (larger) than previous meaning more recent update was made to this other robot's bundle/path/winners list or winning bids list
+                auto [sender_id, other_robot_old_timestamp, other_robot_old_subtask_failure_flag] = *it;
+        
+                // Check 3: Check if neighbor has failed in way previously unknown to current robot
+                if (!other_robot_old_subtask_failure_flag && other_robot_new_subtask_failure_flag) {
                     info_available = true;
-                    log_info("NEW INFO FOUND DUE TO IN-COMMS ROBOT CBBA SELF-UPDATE");
+                    log_info("NEW INFO FOUND DUE TO NEIGHBOR ROBOT NEWLY FAILING A SUBTASK");
+                    break;
                 }
-
-            }*/
+            }
 
             if (info_available) {
 
@@ -868,7 +901,7 @@ bool Robot::checkIfNewInfoAvailable() {
     return info_available;
 }
 
-void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker) {
+/*void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker) {
 
    for (const auto& pair : world_ping_tracker) {
         int temp_id = pair.first;
@@ -877,6 +910,16 @@ void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<
         std::string bla = "Receiver ID: " + std::to_string(temp_id) + " received pings from: ";
         log_info(bla);
         utils::log1DVector(pings,*this);
+    }
+}*/
+
+void Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker) {
+   for (const auto& pair : world_ping_tracker) {
+        int temp_id = pair.first;
+        const std::vector<std::tuple<int,double,bool>>& pings = pair.second; // pings: sender ID, timestamp, sender new subtask failure flag
+        std::string bla = "Receiver ID: " + std::to_string(temp_id) + " received pings from: ";
+        log_info(bla);
+        utils::log1DVector(pings, *this);
     }
 }
 
@@ -1176,7 +1219,7 @@ void Robot::updateLastSelfUpdateTime(double new_update_timestamp) {
     time_of_last_self_update = new_update_timestamp;
 }
 
-void Robot::clearStalePings() {
+/*void Robot::clearStalePings() {
 
     double current_time = getCurrentTime();
 
@@ -1207,6 +1250,36 @@ void Robot::clearStalePings() {
     }
 
 
+}*/
+
+void Robot::clearStalePings() {
+
+    double current_time = getCurrentTime();
+
+    std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world->getPingTracker();
+    
+    // Find current robot's ping vector
+    if (world_ping_tracker.find(id) != world_ping_tracker.end()) {
+        std::vector<std::tuple<int,double,bool>>& new_pings = world_ping_tracker[id];
+
+        log_info("current pings vector before clearing any stale pings: ");
+        utils::log1DVector(new_pings, *this);
+        
+        for (int i = new_pings.size() - 1; i >= 0; i--) { // Backward iteration to prevent issues when removing elements
+            auto [sender_id, timestamp, failure_flag] = new_pings[i];
+            
+            // Check each ping's timestamp against current time
+            double ping_age = current_time - timestamp;
+            if (ping_age > comms_timeout_threshold) {
+                new_pings.erase(new_pings.begin() + i);
+                std::string bla = "ERASING A PING THAT IS OLDER THAN THRESHOLD (id of offline robot is " + std::to_string(sender_id) + ")";
+                log_info(bla);
+            }
+        }
+        
+        log_info("pings vector after removing stale pings: ");
+        utils::log1DVector(new_pings, *this);
+    }
 }
 
 bool Robot::ExploreA() {
@@ -1673,20 +1746,31 @@ std::map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info, 
     // Therefore, subtasks list will have subtask id ints in it (used to be string names but that's less reliable I think)
     // Returns ordered map with keys being subtask ids and values being prerequisite failure threshold for that subtask
 
+    // THIS CAUSES FAILURE - DEBUG STARTING HERE
+    log_info("in initFailureThresholdsDict");
+
     std::map<int,int> subtask_failure_thresholds;
     std::vector<int> subtasks;
     if (current_task_is_main) {
+        log_info("current task is main");
         subtasks = current_task_info.subtasks;
     } else { // Current is subtask
+        log_info("current task is subtask");
         // Find main task by type match to get subtasks list since current task is subtask
         int main_id = current_task_info.main_id; // Subtasks have the id of the main task they correspond to
         TaskInfo& main_task_info = world->getTaskInfo(main_id);
         subtasks = main_task_info.subtasks;
     }
+    log_info("subtasks");
     for (int subtask_id : subtasks) {
+        std::string plz = "subtask_id:" + std::to_string(subtask_id);
+        log_info(plz);
+
         TaskInfo& subtask_info = world->getSubtaskInfo(subtask_id);
         subtask_failure_thresholds[subtask_id] = subtask_info.prerequisite_failures;
     }
+
+    log_info("returning");
     return subtask_failure_thresholds;
 }
 
@@ -1716,9 +1800,13 @@ void Robot::testCounterSequence() {
     // path[0] = 1; // main task, empty subtasks list
     // path[0] = 6; // main task, populated subtasks list
     // path[0] = 8; // subtask
-    // path[0] = 7; // dummy main task, subtasks 10,11
+    path[0] = 7; // dummy main task, subtasks 10,11
     // path[0] = 10; // First subtask for main task 7
-    path[0] = 11; // Second subtask for main task 7
+    // path[0] = 11; // Second subtask for main task 7
+
+    bundle[0] = 7; // Change this to match the path, even though it won't be needed for this test directly
+    // if this test is left to run when CBGA is included and bundle is empty but path isnt, it will seg fault
+    // however, this test replaces CBGA, that's the whole point, so don't leave it to run when CBGA subtree is running
 
     std::string p = "path first element: " + std::to_string(path[0]);
     log_info(p);
@@ -1735,12 +1823,27 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
     //std::cout << "\nRunning HandleFailures..." << std::endl;   
     log_info("in HandleFailures"); 
 
+    log_info("doable tasks, subtasks at START of handle failures: ");
+    utils::log1DVector(doable_task_ids, *this);
+    utils::log1DVector(doable_subtask_ids, *this);
+
+
     log_info("current_subtask_failures:");
+    utils::logUnorderedMap(current_subtask_failures, *this);
+
+    // Save new info about own failures
+    updateSubtaskFailuresPerSelf(current_subtask_failures);
+    log_info("current_subtask_failures post self update:");
     utils::logUnorderedMap(current_subtask_failures, *this);
 
     std::pair<std::pair<int,bool>,std::map<int,int>> scope_and_threshold_info;
 
+    log_info("path:");
+    utils::log1DVector(path, *this);
+
     if (path[0] != -1) { // Only consider actual id's, -1 means path element is empty
+
+        log_info("we are in not empty path part");
 
         // Get current task info object
         TaskInfo& current_task = world->getTaskInfo(path[0]);
@@ -1749,7 +1852,9 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
         std::string c = "current_task_is_main:" + std::to_string(current_task_is_main);
         log_info(c);
 
+        log_info("testinggg"); // THIS PRINTS BUT LINE BELOW FAILS, no subsequent prints
         std::map<int,int> subtask_failure_thresholds = initFailureThresholdsDict(current_task, current_task_is_main); // this breaks when current task is not main (i.e., is subtask, which doesnt have subtask list like main)
+        log_info("testingggg");
         log_info("subtask_failure_thresholds:");
         utils::logMap(subtask_failure_thresholds,*this);
         
@@ -1762,6 +1867,14 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
         scope_and_threshold_info.second = subtask_failure_thresholds; 
 
     }
+
+    utils::log2DUnorderedMap(prev_subtask_failures, *this);
+    log_info("end of handle failures, subtask_failures:");
+    utils::log2DUnorderedMap(subtask_failures, *this);
+
+    log_info("doable tasks/subtasks at END of handle failures: ");
+    utils::log1DVector(doable_task_ids, *this);
+    utils::log1DVector(doable_subtask_ids, *this);
 
     
     return scope_and_threshold_info;

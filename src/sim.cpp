@@ -238,9 +238,37 @@
                 <FollowShortestPath goal_loc="{loc}"/>
                 <ClearPath/>
             </RepeatSequence>
-            <RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+// Removed counter sequence part to above tree for seg fault debug test, still get seg fault without it
+/*
+<RepeatSequence>
                 <CounterSequence task_is_main="{tim}">
                     <HandleFailures task_is_main="{tim}"/>
+                </CounterSequence>
+            </RepeatSequence>
+*/
+
+// For initial basic counter sequence testing, sans CBGA (comms only)
+// no seg fault
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="3">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence>
+                <Communicate/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <TaskNeededNow/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <Subtask_1/>
+                    <Subtask_2/>
                 </CounterSequence>
             </RepeatSequence>
         </ParallelAll>
@@ -248,14 +276,24 @@
 </root>
 )";*/
 
-// For initial basic counter sequence testing
+// Next level counter sequence testing with CBGA, still dummy task 7 (subtasks 10,11), debugging seg fault that happens when build bundle + added
+// this gives seg fault currently, wahoo
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="2">
+        <ParallelAll max_failures="3">
             <Repeat num_cycles="-1">
             <Ping/>
             </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="true" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="true" />
+                    <Communicate/>
+                    <ResolveConflicts do_cbga="true" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="true" />
+                </RepeatSequence>
+            </RepeatSequence>
             <RepeatSequence>
                 <TaskNeededNow/>
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
@@ -268,7 +306,24 @@ static const char* xml_text = R"(
      </BehaviorTree>
 </root>
 )";
-
+// Changing the above tree for seg fault debug - see below (this causes seg fault - fixed)
+/*static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="2">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="true" />
+                <BuildBundle do_cbga="true" />
+                <Communicate/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
+*/
 
 /*<RepeatSequence>
     <CollectSample/>

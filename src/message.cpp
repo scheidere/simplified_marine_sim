@@ -100,9 +100,42 @@ void Message::broadcastMessage(World& world) {
 
 }
 
-void Message::updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp) {
+// void Message::updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp) {
+//     //std::lock_guard<std::mutex> lock(world.getWorldMutex());
+//     std::unordered_map<int,std::vector<std::pair<int,double>>>& world_ping_tracker = world.getPingTracker();
+//     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
+
+//     if (receiverID == senderID) { 
+//         std::cerr << "ERROR: Robot " << senderID << " is adding itself to ping tracker! Fix this!" << std::endl;
+//         return;
+//     }
+
+//     // Search for senderID in the first element of pairs
+//     auto& receiver_pings = world_ping_tracker[receiverID];
+//     auto it = std::find_if(receiver_pings.begin(), receiver_pings.end(), 
+//                           [senderID](const std::pair<int,double>& p) { 
+//                               return p.first == senderID; 
+//                           });
+    
+//     // If didn't find ping from sender already
+//     if (it == receiver_pings.end()) {
+//         receiver_pings.push_back({senderID, senderTimestamp}); // Add ping
+
+//     } else { // Ping from robot already heard so just update timestamp to represent new ping
+//         it->second = senderTimestamp; 
+//     }
+
+//     // COMMENTED OUT because using timestamps as a way to track when a robot last updated it's beliefs catches too many updates and CBBA runs extra unnecessary rounds
+//     /*else if (sender.foundBeliefUpdate()) { // Already have a ping from sender, so just update the timestamp IFF cbba has changed bundle/path/winners/winning bids
+//         it->second = senderTimestamp;
+//     } // Otherwise had already received a ping from sender but no changes were caused by CBBA since last check so no update to report by updating timestamp 
+//     */
+
+// }
+
+void Message::updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp, bool senderSubtaskFailureFlag) {
     //std::lock_guard<std::mutex> lock(world.getWorldMutex());
-    std::unordered_map<int,std::vector<std::pair<int,double>>>& world_ping_tracker = world.getPingTracker();
+    std::unordered_map<int,std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world.getPingTracker();
     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
 
     if (receiverID == senderID) { 
@@ -110,26 +143,20 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID,
         return;
     }
 
-    // Search for senderID in the first element of pairs
+    // Search for senderID in the pings
     auto& receiver_pings = world_ping_tracker[receiverID];
     auto it = std::find_if(receiver_pings.begin(), receiver_pings.end(), 
-                          [senderID](const std::pair<int,double>& p) { 
-                              return p.first == senderID; 
+                          [senderID](const std::tuple<int,double,bool>& p) { 
+                              auto [sender_id, timestamp, flag] = p;
+                              return sender_id == senderID; 
                           });
     
     // If didn't find ping from sender already
     if (it == receiver_pings.end()) {
-        receiver_pings.push_back({senderID, senderTimestamp}); // Add ping
-
-    } else { // Ping from robot already heard so just update timestamp to represent new ping
-        it->second = senderTimestamp; 
+        receiver_pings.push_back({senderID, senderTimestamp, senderSubtaskFailureFlag}); // Add ping
+    } else { // Ping from robot already heard so just update timestamp and failure flag
+        *it = {senderID, senderTimestamp, senderSubtaskFailureFlag};
     }
-
-    // COMMENTED OUT because using timestamps as a way to track when a robot last updated it's beliefs catches too many updates and CBBA runs extra unnecessary rounds
-    /*else if (sender.foundBeliefUpdate()) { // Already have a ping from sender, so just update the timestamp IFF cbba has changed bundle/path/winners/winning bids
-        it->second = senderTimestamp;
-    } // Otherwise had already received a ping from sender but no changes were caused by CBBA since last check so no update to report by updating timestamp 
-    */
 
 }
 
@@ -142,6 +169,8 @@ void Message::ping(World& world) {
     //sender.log_info("In ping");
     double senderTimestamp = sender.getCurrentTime(); // NOTE: this timestamp just represents the time a ping is broadcasted (not anything to do with last CBBA belief update now)
 
+    bool senderSubtaskFailureFlag = sender.getNewSelfSubtaskFailureFlag();
+
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;
         int receiverID = receiver->getID();
@@ -153,7 +182,7 @@ void Message::ping(World& world) {
                 //std::string bla = "DEBUG: Robot " + std::to_string(senderID) + " pinging Robot " + std::to_string(receiverID);
                 //sender.log_info(bla);
                 // In range, so update tracker so each receiver will know what robots are newly in range (but haven't send messages yet)
-                updateWorldPingTracker(world, receiverID, senderID, senderTimestamp);
+                updateWorldPingTracker(world, receiverID, senderID, senderTimestamp, senderSubtaskFailureFlag);
             }
         }
     }

@@ -35,7 +35,7 @@ public:
     void broadcastMessage(World& world);
     void updateWorldMessageTracker(World& world, int receiverID);
     void ping(World& world);
-    void updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp);
+    void updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp, bool senderSubtaskFailureFlag);
     //void updateRobotMessageQueue(Robot& receiver);
     //void receiveMessages(World& world, Robot& receiver);
 

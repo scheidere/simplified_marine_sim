@@ -143,6 +143,23 @@ void logUnorderedMap(const std::unordered_map<K1, std::unordered_map<K2, V2>>& m
     robot.log_info(log_msg.str());
 }
 
+// Log 2D unordered map
+template <typename K1, typename K2, typename V>
+void log2DUnorderedMap(const std::unordered_map<K1, std::unordered_map<K2, V>>& my_map, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& [outer_key, inner_map] : my_map) {
+        log_msg << "  " << outer_key << " : {";
+        bool first = true;
+        for (const auto& [inner_key, value] : inner_map) {
+            if (!first) log_msg << ", ";
+            log_msg << inner_key << "=" << value;
+            first = false;
+        }
+        log_msg << "}\n";
+    }
+    robot.log_info(log_msg.str());
+}
+
 // Log unordered_map with Pose2D values  
 template <>
 inline void logUnorderedMap<int, Pose2D>(const std::unordered_map<int, Pose2D>& my_map, Robot& robot) {
@@ -180,6 +197,16 @@ inline void log1DVector<std::pair<int,double>>(const std::vector<std::pair<int,d
     std::ostringstream log_msg;
     for (const auto& elem : vec) {
         log_msg << "(" << elem.first << "," << elem.second << ") ";
+    }
+    robot.log_info(log_msg.str());
+}
+
+// Log 1D vector of std::tuple<int,double,bool> elements
+template <>
+inline void log1DVector<std::tuple<int,double,bool>>(const std::vector<std::tuple<int,double,bool>>& vec, Robot& robot) {
+    std::ostringstream log_msg;
+    for (const auto& elem : vec) {
+        log_msg << "(" << std::get<0>(elem) << "," << std::get<1>(elem) << "," << std::get<2>(elem) << ") ";
     }
     robot.log_info(log_msg.str());
 }

@@ -829,11 +829,16 @@ double CBGA::getSoloWinningBid(std::vector<std::vector<double>>& winning_bids_ma
     // ONLY for tasks with group_size = 1, solo tasks, where agent is assigned
     // Previously this value was stored in the unordered map winning_bids, with the task_id as the key
 
+    robot.log_info("in getSoloWinningBid");
+    robot.log_info("winning_bids_matrix:");
+    utils::log2DVector(winning_bids_matrix, robot);
+
     double solo_winning_bid = 0.0; // if no agent assigned yet, stays 0
 
     int task_idx = task_id-1; // Need conversion bc matrix is 2D vector (unlike bids which is unordered map so can directly use task_id)
     int count = 0; // Make sure only one winner for solo task
     for (auto& bid : winning_bids_matrix[task_idx]) {
+        
         if (bid > solo_winning_bid) {
             solo_winning_bid = bid;
             count += 1;
@@ -843,6 +848,8 @@ double CBGA::getSoloWinningBid(std::vector<std::vector<double>>& winning_bids_ma
     if (count > 1) {
         robot.log_info("ERROR in CBGA.getSoloWinningBid: more than one winner counted for solo task!");
     } 
+
+    robot.log_info("end in getSoloWinningBid");
 
     return solo_winning_bid;
 }

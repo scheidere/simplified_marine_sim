@@ -74,7 +74,7 @@ NewInfoAvailable::NewInfoAvailable(const std::string& name, const NodeConfig& co
 NodeStatus NewInfoAvailable::tick()
 {
     try {
-        //std::cout << "Checking if new info is available (any pings heard)..." << std::endl;
+        //std::cout << "Checking if new info is available (any pings heard)..." << std::endl;\
 
         bool info_available = _robot.checkIfNewInfoAvailable();
 
@@ -217,6 +217,9 @@ NodeStatus Communicate::onRunning()
 
         // _robot.log_info("Testing subtask failures update, setting...");
         // _robot.testSubtaskFailuresUpdater();
+
+        // Update doable tasks and subtasks lists per help needed from neighbors
+       _robot.updateDoableTasks(); // commented out to see if fix seg fault, nope
 
         _world.log_info("Task progress after update via comms:");
         _world.logCurrentTeamTaskProgress();
@@ -430,30 +433,7 @@ NodeStatus CheckConvergence::tick()
         _robot.log_info("Path:");
         utils::log1DVector(path, _robot);
 
-        setOutput("cumulative_convergence_count_out", cumulative_convergence_count); // original
-
-        _robot.log_info("RIGHT BEFORE SET TO 3 IF STATEMENT");
-        bool test = false;
-        if (test and _robot.getID() == 1) { // Only have robot 1 add it otherwise might create race condition
-            _robot.log_info("JUST INSIDE SET TO 3 IF STATEMENT (should only happen for robot id 1)");
-            // For testing, given we currently only have 2 robots, let's pseudo add 3 as if a third robot came into comms range for once of the robots (id 1)
-            // This should cause cbba to run twice for robot 1, and only once for robot 2
-            // Prevent duplicates of this id 3, since this node will be executed once per cbba round and there will be multiple rounds to reach convergence
-            std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = _world.getPingTracker();
-            //std::vector<int>& new_pings = world_ping_tracker[1];
-            std::vector<std::pair<int,double>>& new_pings = world_ping_tracker[1]; // Getting ping tracker for robot 1
-
-            auto it = std::find_if(new_pings.begin(), new_pings.end(), 
-                       [](const std::pair<int,double>& p) { return p.first == 3; });
-
-            // If didn't find a ping from robot 3 already, add one (with made up timestamp of 1.0)
-            if (it == new_pings.end()) {
-                new_pings.push_back({3, 1.0});
-                std::cout << "ADDING 3 TO ROBOT 1 PING TRACKER VECTOR" << std::endl;
-                _robot.printWorldPingTracker(world_ping_tracker);
-            }
-
-        }
+        setOutput("cumulative_convergence_count_out", cumulative_convergence_count); // original    
 
         // If any changes to bundle, path, winners list, or winning bids list -> update timestamp of last self-update for pinging purposes
         // Commented out because it catches changes made redundantly (e.g., between robot i and k, not just between k and j where k is neighbor of i but j isn't)
@@ -1382,6 +1362,8 @@ NodeStatus HandleFailures::onRunning() {
             current_subtask_failures = std::unordered_map<int,bool>();
         }
 
+        _robot.log_info("are we here in HandleFailures node");
+
         // Process input and provide output via HandleFailures robot function
         std::pair<std::pair<int,bool>,std::map<int,int>> scope_and_threshold_info = _robot.HandleFailures(current_subtask_failures);
         std::pair<int,bool> current_task_id_scope = scope_and_threshold_info.first;
@@ -1389,8 +1371,9 @@ NodeStatus HandleFailures::onRunning() {
         bool task_is_main = current_task_id_scope.second; // main vs subtask bool
         std::map<int,int> subtask_failure_thresholds = scope_and_threshold_info.second;
 
-        // Testing counter sequence with values below
-        //task_is_main = 
+        _robot.log_info("task_is_main in HandleFailures node: ");
+        std::string a = std::to_string(task_is_main);
+        _robot.log_info(a);
 
         // Tell counter sequence whether current task is main or sub
         setOutput("task_is_main", task_is_main);
@@ -1403,7 +1386,7 @@ NodeStatus HandleFailures::onRunning() {
       
         return NodeStatus::RUNNING; // For use with counter sequence, to allow repeated ticking of HandleFailure
     } catch (const std::exception& e) {
-        std::cerr << "Exception caught in HandleFailures::tick: " << e.what() << std::endl;
+        std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nException caught in HandleFailures::tick: " << e.what() << std::endl;
         _robot.log_info("HandleFailures node FAILURE");
         return NodeStatus::FAILURE;
     }
@@ -1529,6 +1512,7 @@ NodeStatus Subtask_2::onRunning()
         _world.log_info(strt);
 
         // For now always returns success, change this for testing (before able to inject a fault)
+        _robot.log_info("failing subtask 2");
         return NodeStatus::FAILURE;
         
     } catch (const std::exception& e) {

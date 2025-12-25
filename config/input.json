@@ -22,61 +22,11 @@
 		}
 	],
 	"local_tasks": [
-
 		{
 			"id": 1,
-			"name": "Explore_A",
-			"type": "coverage",
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"area": {"xmin": 0, "xmax": 100, "ymin": 0, "ymax": 100},
-			"reward": 5
-		},
-		{
-			"id": 2,
-			"name": "Explore_B",
-			"type": "coverage",
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"area": {"xmin": 100, "xmax": 200, "ymin": 0, "ymax": 100},
-			"reward": 5
-		},
-		{
-			"id": 3,
-			"name": "Explore_C",
-			"type": "coverage",
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"area": {"xmin": 0, "xmax": 100, "ymin": 100, "ymax": 200},
-			"reward": 5
-		},
-		{
-			"id": 4,
-			"name":  "Explore_D",
-			"type": "coverage",
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"area": {"xmin": 100, "xmax": 200, "ymin": 100, "ymax": 200},
-			"reward": 5
-		},
-		{
-			"id": 5,
-			"name":  "Clear_Path",
-			"type": "co-op",
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 3},
-			"location": {"x": 40, "y": 40},
-			"reward": 5
-		},
-		{
-			"id": 6,
-			"name":  "Collect_Sample",
-			"type": "collect",
-			"subtasks": [8, 9],
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"location": {"x": 90, "y": 90},
-			"reward": 5
-		},
-		{
-			"id": 7,
 			"name":  "Test_Task",
 			"type": "test",
-			"subtasks": [10,11],
+			"subtasks": [2,3],
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"location": {"x": 0, "y": 0},
 			"reward": 5
@@ -84,40 +34,20 @@
 	],
 	"local_subtasks": [
 		{
-			"id": 8,
-			"name":  "Extract_Sample",
-			"type": "collect",
-			"main_id": 6,
-			"prerequisite_failures": 3,
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
-			"location": {"x": 90, "y": 90},
-			"reward": 5
-		},
-		{
-			"id": 9,
-			"name":  "Load_Sample",
-			"type": "collect",
-			"main_id": 6,
-			"prerequisite_failures": 2,
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
-			"location": {"x": 90, "y": 90},
-			"reward": 5
-		},
-		{
-			"id": 10,
+			"id": 2,
 			"name":  "Test_Subtask_1",
 			"type": "test",
-			"main_id": 7,
+			"main_id": 1,
 			"prerequisite_failures": 2,
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
 			"location": {"x": 0, "y": 0},
 			"reward": 5
 		},
 		{
-			"id": 11,
+			"id": 3,
 			"name":  "Test_Subtask_2",
 			"type": "test",
-			"main_id": 7,
+			"main_id": 1,
 			"prerequisite_failures": 2,
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
 			"location": {"x": 0, "y": 0},
@@ -146,6 +76,14 @@
 			"start_x": 10,
 	        "start_y": 10,
 	        "color": [0, 0, 255],
+	        "_comments": ["Comments here"]
+		},
+		{
+			"id": 2,
+			"type": "analysis",
+			"start_x": 20,
+	        "start_y": 10,
+	        "color": [255, 0, 0],
 	        "_comments": ["Comments here"]
 		}
 	],

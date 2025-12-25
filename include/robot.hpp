@@ -59,7 +59,8 @@ private:
 
     int cbba_rounds;
     int cbga_rounds;
-    std::vector<std::pair<int,double>> last_pings; // Pings when last check for new info occurred
+    // std::vector<std::pair<int,double>> last_pings; // Pings when last check for new info occurred
+    std::vector<std::tuple<int,double,bool>> last_pings; // Pings when last check for new info occurred
     double time_of_last_self_update; // Timestamp at which robot updated its own bundle/path/winners/winning bids (to be passed with id in pings)
 
     double comms_timeout_threshold;
@@ -75,7 +76,7 @@ private:
     std::unordered_map<int, std::unordered_map<int, bool>> subtask_failures; // Values True when robot k fails task j 
     std::unordered_map<int, std::unordered_map<int, bool>> prev_subtask_failures; // Used for updating doable tasks when subtasks can newly be considered to aid failing neighboring robots
 
-
+    bool new_self_subtask_failure;
 
 public:
     Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
@@ -126,7 +127,8 @@ public:
     std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
     void init(Pose2D initial_pose);
     void move(Pose2D waypoint);
-    void printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker);
+    // void printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker);
+    void printWorldPingTracker(std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker);
     std::vector<Msg>& getMessageQueue() { return message_queue; }
     //void printMessageQueue(std::vector<Msg>&  message_queue);
     //void printMessage(Msg msg);
@@ -199,6 +201,8 @@ public:
     std::pair<std::pair<int,bool>,std::map<int,int>> HandleFailures(std::unordered_map<int,bool> new_self_subtask_failures);
 
     bool TaskNeededNow();
+
+    bool getNewSelfSubtaskFailureFlag() { return new_self_subtask_failure; }
 
     //void resurfaceToCharge();
 

@@ -643,7 +643,14 @@ std::unordered_map<int,std::vector<Msg>>& World::getMessageTrackerUnsafe() {
     return message_tracker;  // No mutex
 }
 
-std::unordered_map<int,std::vector<std::pair<int,double>>>& World::getPingTracker() {
+// each ping is a pair of sender id and double timestamp of last cbba/cbga update
+/*std::unordered_map<int,std::vector<std::pair<int,double>>>& World::getPingTracker() {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    return ping_tracker;
+}*/
+
+// below only if need all three variables in each ping (id, timestamp of last cbba/cbga update, new self failure flag)
+std::unordered_map<int,std::vector<std::tuple<int,double,bool>>>& World::getPingTracker() {
     std::lock_guard<std::mutex> lock(world_mutex);
     return ping_tracker;
 }
@@ -971,6 +978,7 @@ void World::updateMessagingLog(int robot_id, int msg_id) {
 void World::logMessagingLog() {
 
     // At time of print to world log, who has heard from whom
+    log_info("Logging of sender ids for each msg each robot has received");
 
     for (auto& pair : robot_tracker) {
         int robot_id = pair.first;

@@ -3,13 +3,13 @@
 		{
 			"size_x": 200,
 			"size_y": 200,
-			"step_size": 20
+			"step_size": 5
 		},
 
 	"robot_attributes":
 		{
 			"comms_range": 50.0,
-			"observation_radius": 20
+			"observation_radius": 10
 
 		},
 
@@ -60,7 +60,67 @@
 			"name":  "Clear_Path",
 			"type": "co-op",
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 3},
-			"location": {"x": 50, "y": 50},
+			"location": {"x": 40, "y": 40},
+			"reward": 5
+		},
+		{
+			"id": 6,
+			"name":  "Collect_Sample",
+			"type": "collect",
+			"subtasks": [8, 9],
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		},
+		{
+			"id": 7,
+			"name":  "Test_Task",
+			"type": "test",
+			"subtasks": [10,11],
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
+			"location": {"x": 0, "y": 0},
+			"reward": 5
+		}
+	],
+	"local_subtasks": [
+		{
+			"id": 8,
+			"name":  "Extract_Sample",
+			"type": "collect",
+			"main_id": 6,
+			"prerequisite_failures": 3,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		},
+		{
+			"id": 9,
+			"name":  "Load_Sample",
+			"type": "collect",
+			"main_id": 6,
+			"prerequisite_failures": 2,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 90, "y": 90},
+			"reward": 5
+		},
+		{
+			"id": 10,
+			"name":  "Test_Subtask_1",
+			"type": "test",
+			"main_id": 7,
+			"prerequisite_failures": 2,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 0, "y": 0},
+			"reward": 5
+		},
+		{
+			"id": 11,
+			"name":  "Test_Subtask_2",
+			"type": "test",
+			"main_id": 7,
+			"prerequisite_failures": 2,
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"location": {"x": 0, "y": 0},
 			"reward": 5
 		}
 	],
@@ -74,11 +134,8 @@
 			]
 		},
 		{
-			"mapper": ["coverage"],
-			"analysis": ["coverage"]
-		},
-		{
-			"all":["coverage"]
+			"mapper": ["coverage","collect","co-op"],
+			"analysis": ["coverage","collect","co-op"]
 		}
 	],
 
@@ -97,70 +154,6 @@
 			"start_x": 20,
 	        "start_y": 10,
 	        "color": [255, 0, 0],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 3,
-			"type": "analysis",
-			"start_x": 65,
-	        "start_y": 10,
-	        "color": [0, 255, 0],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 4,
-			"type": "mapper",
-			"start_x": 45,
-	        "start_y": 10,
-	        "color": [0, 255, 255],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 1,
-			"type": "mapper",
-			"start_x": 10,
-	        "start_y": 10,
-	        "color": [0, 0, 255],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 2,
-			"type": "analysis",
-			"start_x": 20,
-	        "start_y": 10,
-	        "color": [255, 0, 0],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 3,
-			"type": "mapper",
-			"start_x": 30,
-	        "start_y": 10,
-	        "color": [0, 255, 0],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 4,
-			"type": "analysis",
-			"start_x": 40,
-	        "start_y": 10,
-	        "color": [0, 255, 255],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 5,
-			"type": "mapper",
-			"start_x": 50,
-	        "start_y": 10,
-	        "color": [255, 255, 0],
-	        "_comments": ["Comments here"]
-		},
-		{
-			"id": 6,
-			"type": "analysis",
-			"start_x": 60,
-	        "start_y": 10,
-	        "color": [255, 0, 255],
 	        "_comments": ["Comments here"]
 		}
 	],
