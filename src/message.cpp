@@ -138,10 +138,16 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID,
     std::unordered_map<int,std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world.getPingTracker();
     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
 
+    sender.log_info("in updateWorldPingTracker");
+    std::string hay = "senderSubtaskFailureFlag in ping: " + std::to_string(senderSubtaskFailureFlag);
+    sender.log_info(hay);
+
     if (receiverID == senderID) { 
         std::cerr << "ERROR: Robot " << senderID << " is adding itself to ping tracker! Fix this!" << std::endl;
         return;
     }
+
+    sender.log_info("here");
 
     // Search for senderID in the pings
     auto& receiver_pings = world_ping_tracker[receiverID];
@@ -153,14 +159,24 @@ void Message::updateWorldPingTracker(World& world, int receiverID, int senderID,
     
     // If didn't find ping from sender already
     if (it == receiver_pings.end()) {
+        std::string jfc = "senderSubtaskFailureFlag 3: " + std::to_string(senderSubtaskFailureFlag);
+        sender.log_info(jfc);
         receiver_pings.push_back({senderID, senderTimestamp, senderSubtaskFailureFlag}); // Add ping
     } else { // Ping from robot already heard so just update timestamp and failure flag
+        std::string jfc = "senderSubtaskFailureFlag 4: " + std::to_string(senderSubtaskFailureFlag);
+        sender.log_info(jfc);
         *it = {senderID, senderTimestamp, senderSubtaskFailureFlag};
     }
 
+    if (senderSubtaskFailureFlag) { // for debugging
+        world.log_info("Receiver pings in world tracker after update:");
+        utils::log1DVectorFromWorld(receiver_pings, world);
+    }
 }
 
 void Message::ping(World& world) {
+
+    sender.log_info("in pinggg");
 
     // std::unordered_map<int, Robot*> world_robot_tracker = world.getRobotTracker();
     std::map<int, Robot*> world_robot_tracker = world.getRobotTracker(); // want order to be consistent so need map
@@ -170,6 +186,19 @@ void Message::ping(World& world) {
     double senderTimestamp = sender.getCurrentTime(); // NOTE: this timestamp just represents the time a ping is broadcasted (not anything to do with last CBBA belief update now)
 
     bool senderSubtaskFailureFlag = sender.getNewSelfSubtaskFailureFlag();
+
+    // Below stuff was an incomplete idea for communicating help was given (instead we will have counter sequence inherently reattempt until success)
+    // bool reattempt_failing_action = false; // Default false because is meaningless unless sender has recently helped and needs to communicate to failing robots to try again
+    // if (sender.inHelperMode()) {
+    //     reattempt_failing_action = sender.getHelpGivenFlag(); // Will be true if help has been given successfully
+
+    //     // Helper has succeeded at both helping and communicating this help, so it is no longer in helper mode
+    //     sender.setHelperMode(false);
+    //     sender.setHelpGivenFlag(false);
+    // }
+
+    std::string hir = "senderSubtaskFailureFlag: " + std::to_string(senderSubtaskFailureFlag);
+    sender.log_info(hir);
 
     for (const auto& pair : world_robot_tracker) {
         Robot* receiver = pair.second;

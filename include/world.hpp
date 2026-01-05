@@ -71,6 +71,8 @@ protected:
     double cumulative_distance_traveled; // by the team
     double cumulative_reward_achieved; // by the team
 
+    std::unordered_map<int, bool> fault_injection_tracker; // task id keys, and bool denoting if task fails when attempted by main assigned robot
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
@@ -216,6 +218,18 @@ public:
     void logMessagingLog();
 
     int getPrerequisiteFailureThreshold(std::string subtask_name);
+
+    std::unordered_map<int,bool> initFaultInjectionTracker();
+
+    bool getFaultInjectionFlag(int task_id);
+
+    void updateFaultInjectionTracker(int task_id, bool fail_flag); // fail flag 1 if injection defaults failure, 0 when helper has helped do it successfully
+
+    int getSubtaskID(std::string name);
+
+    bool isSubtaskID(int task_id);
+
+    bool isLastSubtask(int current_task_id, int local_current_task_id);
 };
 
 #endif

@@ -77,6 +77,9 @@ private:
     std::unordered_map<int, std::unordered_map<int, bool>> prev_subtask_failures; // Used for updating doable tasks when subtasks can newly be considered to aid failing neighboring robots
 
     bool new_self_subtask_failure;
+    bool helper_mode;
+    bool reattempt_failing_action; // received from neighbors who may have helped
+    bool help_given; // self is helper and has succeeded (set to true in helper mode subtask success)
 
 public:
     Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
@@ -162,6 +165,7 @@ public:
     std::pair<int,int> getNextStartLocation(); // Location robot should go to start the current (first) task in the path
 
     void removeCompletedTaskFromPath();
+    void removeCompletedTaskFromPathAndBundle();
 
     bool& getAtConsensus() { return at_consensus; }
     void setAtConsensus(bool value) { at_consensus = value; }
@@ -203,6 +207,16 @@ public:
     bool TaskNeededNow();
 
     bool getNewSelfSubtaskFailureFlag() { return new_self_subtask_failure; }
+
+    bool inHelperMode() { return helper_mode; }
+    void setHelperMode(bool mode) { helper_mode = mode; }
+
+    // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
+    // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }
+    // void setReattemptFailingActionFlag(bool new_reattempt_flag);
+
+    // bool getHelpGivenFlag() { return reattempt_failing_action; }
+    // void setHelpGivenFlag(bool new_reattempt_flag);
 
     //void resurfaceToCharge();
 

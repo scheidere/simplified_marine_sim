@@ -221,6 +221,16 @@ inline void log1DVector<std::pair<int,Pose2D>>(const std::vector<std::pair<int,P
     robot.log_info(log_msg.str());
 }
 
+// Log 1D vector of std::tuple<int,double,bool> elements for World
+template <>
+inline void log1DVectorFromWorld<std::tuple<int,double,bool>>(const std::vector<std::tuple<int,double,bool>>& vec, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& elem : vec) {
+        log_msg << "(" << std::get<0>(elem) << "," << std::get<1>(elem) << "," << std::get<2>(elem) << ") ";
+    }
+    world.log_info(log_msg.str());
+}
+
 // Log a 2D vector with rows on separate lines
 template <typename T>
 void log2DVector(const std::vector<std::vector<T>>& vec, Robot& robot) {

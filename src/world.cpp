@@ -40,10 +40,26 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         agent_ids = getAgentIDs();
         subtask_ids = getSubtaskIDs();
 
+        fault_injection_tracker = initFaultInjectionTracker();
+
         log_info("all_tasks_info: ");
         logListofTaskIDs(all_tasks_info);
         log_info("all_subtasks_info: ");
         logListofTaskIDs(all_subtasks_info);
+        log_info("fault_injection_tracker: ");
+        utils::logUnorderedMapWorld(fault_injection_tracker, *this);
+
+        /*bool flag1 = getFaultInjectionFlag(3);
+        std::string s = "fault_injection_flag: " + std::to_string(flag1);
+        log_info(s);
+
+        updateFaultInjectionTracker(3,0);
+
+        bool flag2 = getFaultInjectionFlag(3);
+        std::string s2 = "fault_injection_flag: " + std::to_string(flag2);
+        log_info(s2);  */     
+
+
 
         //agent_indices = parser->getAgentIndices();
         agent_types = parser->getAgentTypes();
@@ -141,6 +157,18 @@ void World::logCurrentTeamAssignment() {
         std::string bla = std::string("Robot ") + std::to_string(id) + ": ";
         log_info(bla);
         utils::log1DVectorFromWorld(path, *this);
+
+    }
+
+    log_info("Bundles for each agent on the team:");
+
+    for (auto& pair : robot_tracker) {
+        int id = pair.first;
+        Robot* robot = pair.second;
+        std::vector<int>& bundle = robot->getBundle();
+        std::string bla = std::string("Robot ") + std::to_string(id) + ": ";
+        log_info(bla);
+        utils::log1DVectorFromWorld(bundle, *this);
 
     }
 }
@@ -1001,4 +1029,99 @@ int World::getPrerequisiteFailureThreshold(std::string subtask_name) {
     }
 
     return -1; // To denote error, failure threshold not found
+}
+
+std::unordered_map<int, bool> World::initFaultInjectionTracker() {
+    auto world_attributes = parser->j["world_attributes"];
+    
+    // Parse as string keys and int values (what's actually in the JSON)
+    auto fault_injection_json = world_attributes["fault_injection"].get<std::unordered_map<std::string, int>>();
+    
+    // Convert to int keys and bool values
+    std::unordered_map<int, bool> fault_injection_tracker;
+    for (const auto& [key_str, value] : fault_injection_json) {
+        fault_injection_tracker[std::stoi(key_str)] = (value != 0);
+    }
+    
+    return fault_injection_tracker;
+}
+
+bool World::getFaultInjectionFlag(int task_id) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+
+    return fault_injection_tracker[task_id];
+}
+
+/*void World::updateFaultInjectionTracker(int task_id, bool fail_flag) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    // fail flag 1 if injection defaults failure, 0 when helper has helped do it successfully
+
+    // log_info("in updateFaultInjectionTracker, tracker now: ");
+    // utils::logUnorderedMapWorld(fault_injection_tracker, *this);
+
+    fault_injection_tracker[task_id] = fail_flag;
+
+    // log_info("in updateFaultInjectionTracker, tracker after: ");
+    // utils::logUnorderedMapWorld(fault_injection_tracker, *this);
+}*/
+
+void World::updateFaultInjectionTracker(int task_id, bool fail_flag) {
+    log_info("in updateFaultInjectionTracker, about to update");
+    utils::logUnorderedMapWorld(fault_injection_tracker, *this);
+    {
+        std::lock_guard<std::mutex> lock(world_mutex);
+        fault_injection_tracker[task_id] = fail_flag;
+    }  // Lock released here
+    
+    log_info("in updateFaultInjectionTracker, tracker updated");
+    utils::logUnorderedMapWorld(fault_injection_tracker, *this);
+}
+
+int World::getSubtaskID(std::string name) {
+
+    for (auto& pair : all_subtasks_info) {
+        TaskInfo& subtask = pair.second;
+
+        if (subtask.name == name) {
+            return subtask.id;
+        }
+    }
+
+    log_info("ERROR: getSubtaskID() - id not found due to name not found");
+    return -1;
+}
+
+bool World::isSubtaskID(int task_id) {
+    log_info("in isSubtaskID");
+    std::string hel = "task_id: " + std::to_string(task_id);
+    log_info(hel);
+
+    bool test = {std::find(subtask_ids.begin(), subtask_ids.end(), task_id) != subtask_ids.end()};
+    std::string p = "issubtaskid: " + std::to_string(test);
+    log_info(p);
+
+    return std::find(subtask_ids.begin(), subtask_ids.end(), task_id) != subtask_ids.end();
+}
+
+bool World::isLastSubtask(int current_task_id, int local_current_task_id) {
+
+    // testing
+
+    if (isSubtaskID(current_task_id)) {
+        return true; // This would be the case for helper mode
+    } else {
+        // Get subtasks list of current_task_id, which here is main
+        TaskInfo& main_task_info = getTaskInfo(current_task_id);
+        std::vector<int> subtasks = main_task_info.subtasks;
+        int last_subtask_id = subtasks.back();
+
+        if (local_current_task_id == last_subtask_id) {
+            return true;
+        }
+
+    }
+
+    // Otherwise, is main task but just completed an intermediate subtask so cannot mark main task as complete yet
+    return false;
+
 }

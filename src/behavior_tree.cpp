@@ -30,6 +30,64 @@ void saveDistance(double time, double distance, const std::string& filename = "d
     file.close();
 }
 
+void taskSuccessProcessing(World& _world, Robot& _robot, int current_task_id, int local_current_task_id) {
+
+    // Current task id is id from path (either main id or subtask id if current robot is in helper mode)
+    // Local current task id is always a subtask id, but will match current task id if robot in helper mode
+
+    /*bool do_all = false;
+    if (_robot.inHelperMode()) {
+        // Helper robot has completed subtask, remove subtask from path, get reward, etc.
+
+    } else {
+        // Robot not in helper mode, check if current task is main or subtask and final one in main task subtask list
+    }*/
+
+    // // First, catch if robot doing main task and current task is not the final subtask needed to complete that main task
+    // if (!_robot.inHelperMode() && !_world.isLastSubtask(current_task_id, local_current_task_id)) {
+    //     // In this case, main assigned task not complete, so skip processing
+    //     return
+    // } else {
+
+    // Reflect task completion if:
+    // Option 1: robot in helper mode and this function is being called due to subtask success
+    // Option 2: robot in main mode (main task id) and current subtask (local id) is the final required to complete main task
+    if (_robot.inHelperMode() || _world.isLastSubtask(current_task_id, local_current_task_id)) {
+
+        TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+        double reward = current_task.reward;
+
+        std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+        _robot.log_info(rew);
+
+        // Add new reward to cumulative reward for whole team
+        _world.updateCumulativeReward(reward);
+        //cumulative_reward += reward; potentially unsafe update
+
+        double& cumulative_reward = _world.getCumulativeReward();
+
+        // Save reward at current time
+        double current_time = _robot.getCurrentTime();
+        saveReward(current_time, cumulative_reward);
+
+        _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+
+        // Remove current first task from path since it has been completed
+        _robot.removeCompletedTaskFromPathAndBundle(); // Removes first task
+        // DO WE NEED TO REMOVE FROM BUNDLE AS WELL?? Or does this happen in bundleRemove... seems sketch
+
+        _world.log_info("Paths at task completion:");
+        _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+
+        _world.log_info("Task progress at task completion:");
+        _world.logCurrentTeamTaskProgress();
+
+        _world.log_info("Current tasks completed by each robot: ");
+        _world.logTaskCompletion();
+
+    }
+}
+
 Ping::Ping(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
     : StatefulActionNode(name, config), _world(world), _robot(robot) {}
 
@@ -137,6 +195,8 @@ NodeStatus Communicate::onRunning()
         // std::string blork1 = "Robot " + std::to_string(_robot.getID()) + " STARTING broadcast";
         // _world.log_info(blork1);  // Use world.log_info
 
+        auto do_cbga = getInput<bool>("do_cbga").value_or(false);
+
         // Send messages
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
         _robot.log_info(log_msg);
@@ -153,8 +213,24 @@ NodeStatus Communicate::onRunning()
         // std::string blork2 = "Robot " + std::to_string(_robot.getID()) + " FINISHED broadcast";  
         // _world.log_info(blork2);
 
-        std::string b = "Robot " + std::to_string(_robot.getID()) + "finished broadcasting.";
+        std::string b = "Robot " + std::to_string(_robot.getID()) + " finished broadcasting.";
         _robot.log_info(b);
+
+        _robot.log_info("Broadcasted the following message:");
+        std::string bla = "ID: " + std::to_string(_robot.getID());
+        _robot.log_info(bla);
+        _robot.log_info("Winners: ");
+        utils::logUnorderedMap(_robot.getWinners(), _robot);
+        _robot.log_info("Winning bids: ");
+        utils::logUnorderedMap(_robot.getWinningBids(), _robot);
+        _robot.log_info("Winning bids matrix: ");
+        utils::log2DVector(_robot.getWinningBidsMatrix(), _robot);
+        _robot.log_info("Timestamps: ");
+        utils::logUnorderedMap(_robot.getTimestamps(), _robot);
+        _robot.log_info("Task progress: ");
+        utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
+        _robot.log_info("Subtask_failures: ");
+        utils::log2DUnorderedMap(_robot.getSubtaskFailures(), _robot);
 
         //_robot.log_info("in communicate node, before receiveMessages");
 
@@ -201,25 +277,30 @@ NodeStatus Communicate::onRunning()
             
 
         //_robot.updateTimestamps(); // testing calling this in more specific spots in receiveMessages(), split into two parts
-        _robot.updateLocations(); // CBGA
+        if (do_cbga) {
+            _robot.updateLocations(); // CBGA
+        }
         _robot.log_info("task progress b4 update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
         _robot.updateTaskProgress(); // CBGA and CBBA
         _robot.log_info("task progress after update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
 
-        // Merge subtask failures tracker (taking in info about how other robots have failed and need help)
-        _robot.log_info("subtask failures b4 update in comms node");
-        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
-        _robot.updateSubtaskFailuresPerNeighbors(); // CBGA
-        _robot.log_info("subtask failures after update in comms node");
-        utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+        if (do_cbga) {
+            // Merge subtask failures tracker (taking in info about how other robots have failed and need help)
+            _robot.log_info("subtask failures b4 update in comms node");
+            utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+            _robot.updateSubtaskFailuresPerNeighbors(); // CBGA
+            _robot.log_info("subtask failures after update in comms node");
+            utils::logUnorderedMap(_robot.getSubtaskFailures(), _robot);
+        
 
-        // _robot.log_info("Testing subtask failures update, setting...");
-        // _robot.testSubtaskFailuresUpdater();
+            // _robot.log_info("Testing subtask failures update, setting...");
+            // _robot.testSubtaskFailuresUpdater();
 
-        // Update doable tasks and subtasks lists per help needed from neighbors
-       _robot.updateDoableTasks(); // commented out to see if fix seg fault, nope
+            // Update doable tasks and subtasks lists per help needed from neighbors
+            _robot.updateDoableTasks();
+        }
 
         _world.log_info("Task progress after update via comms:");
         _world.logCurrentTeamTaskProgress();
@@ -240,7 +321,7 @@ void Communicate::onHalted() {}
 
 PortsList Communicate::providedPorts()
 {
-    return {};
+    return {InputPort<bool>("do_cbga")};
 }
 
 NeedRegroup::NeedRegroup(const std::string& name, const NodeConfig& config, Robot& receiver)
@@ -1057,7 +1138,7 @@ NodeStatus ClearPath::onRunning()
 
         // If here, ClearPath is current task because condition node returned true to get here in BT
         // Get location to clear path
-         std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
+        std::vector<int> task_path = _robot.getPath(); // Order tasks should be executed, by ID
         int current_task_id = task_path[0]; // This has to be clear_path to be in onRunning per BT
         // TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
         // std::pair<int,int> location = current_task.location; // Get location of this clear path task
@@ -1347,6 +1428,9 @@ NodeStatus HandleFailures::onRunning() {
 
         std::cout << "\nRunning HandleFailures (in onRunning)..." << std::endl;
         _robot.log_info("\nRunning HandleFailures (in onRunning)...");
+    
+        std::string a = "Robot " + std::to_string(_robot.getID()) + " in HandleFailures...";
+        _world.log_info(a);
 
         // std::unordered_map<int,bool> current_subtask_failures = getInput<std::unordered_map<int,bool>>("self_subtask_failures").value();
 
@@ -1357,6 +1441,8 @@ NodeStatus HandleFailures::onRunning() {
             std::string s = "current_subtask_failures: ";
             _robot.log_info(s);
             utils::logUnorderedMap(current_subtask_failures, _robot);
+            _world.log_info(s);
+            utils::logUnorderedMapWorld(current_subtask_failures, _world);
         } else {
             // First tick - initialize with empty
             current_subtask_failures = std::unordered_map<int,bool>();
@@ -1371,9 +1457,11 @@ NodeStatus HandleFailures::onRunning() {
         bool task_is_main = current_task_id_scope.second; // main vs subtask bool
         std::map<int,int> subtask_failure_thresholds = scope_and_threshold_info.second;
 
-        _robot.log_info("task_is_main in HandleFailures node: ");
-        std::string a = std::to_string(task_is_main);
-        _robot.log_info(a);
+        std::string b = "task_is_main in HandleFailures node: " + std::to_string(task_is_main);
+        _robot.log_info(b);
+        _world.log_info(b);
+        std::string c = "current_task_id in HandleFailures node: " + std::to_string(current_task_id);
+        _world.log_info(c);
 
         // Tell counter sequence whether current task is main or sub
         setOutput("task_is_main", task_is_main);
@@ -1439,7 +1527,7 @@ NodeStatus Subtask_1::onStart()
         std::cout << "Robot " << _robot.getID() << " doing subtask 1..." << std::endl;
         std::string strt = "Starting subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
         _world.log_info(strt);
-        
+
         return NodeStatus::RUNNING;
         
     } catch (const std::exception& e) {
@@ -1455,12 +1543,63 @@ NodeStatus Subtask_1::onRunning()
         // If here, Subtask 1 is current task because condition node returned true to get here in BT
         // Just a dummy task for testing counter sequence
 
-        //int current_task_id = task_path[0]; // This has to be subtask 1 to be in onRunning per BT
+        //_world.log_info("in subtask 1 onRunning");
+
+        std::string e = "Robot " + std::to_string(_robot.getID()) + " in onRunning for subtask 1";
+        _world.log_info(e);
+
+         // Current_task_id will either be the maintask this subtask is part of (main mode), or the id of this subtask itself (helper mode)
+        std::vector<int> path = _robot.getPath();
+        int current_task_id = path[0];
+        if (_world.isSubtaskID(current_task_id)) {
+            std::string plz = "Current_task_id: " + std::to_string(current_task_id);
+            _robot.log_info(plz);
+            _robot.log_info("in is subtask if statement in subtask 1 onRunning");
+            _robot.setHelperMode(true);
+        } // otherwise remains default false, which allows potential fault injections
+
+        // Now that we have checked main vs sub logic, need to update current task to this subtask id for fault injection/recovery logic
+        std::string name = "Test_Subtask_1";
+        int local_current_task_id = _world.getSubtaskID(name);
 
         std::string strt = "Running subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
         _world.log_info(strt);
 
-        // For now always returns success, change this for testing (before able to inject a fault)
+        std::string hi = "Current_task_id: " + std::to_string(local_current_task_id);
+        _world.log_info(hi);
+
+        // Allow world to inject fault, or not
+        bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+
+        std::string hii = "fault_flag: " + std::to_string(fault_flag);
+        _world.log_info(hii);
+
+        std::string d = "Robot " + std::to_string(_robot.getID()) + " right before return block for subtask 1";
+        _world.log_info(d);
+
+        if (fault_flag && !_robot.inHelperMode()) {
+            _robot.log_info("in failure return for subtask 1");
+            std::string a = "Robot " + std::to_string(_robot.getID()) + " in failure return for subtask 1";
+            _world.log_info(a);
+            return NodeStatus::FAILURE;
+        } else if (_robot.inHelperMode()) { // For now, we always allow helper robot to successfully help
+            _robot.log_info("helper helping with subtask 1 now!");
+            // World must detect that helper has helped, and reflect change by reseting fault injection flag from 1 (cause fault) to 0
+            _world.updateFaultInjectionTracker(local_current_task_id,0); // Helper resolves fault
+            _robot.setHelperMode(false); // No longer a helper for this subtask, because fault resolved now
+            std::string hep = "fault recovered with subtask 1, helper succeeds";
+            _robot.log_info(hep);
+            std::string b = "Robot " + std::to_string(_robot.getID()) + " in helper mode for subtask 1";
+            _world.log_info(b);
+        }
+
+        taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+
+        std::string herp = "processing done, subtask 1 returning success";
+        _robot.log_info(herp);
+        std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for subtask 1";
+        _world.log_info(c);
+        // If in helper mode or not, permitted to return success here, i.e., no fault
         return NodeStatus::SUCCESS;
         
     } catch (const std::exception& e) {
@@ -1506,14 +1645,68 @@ NodeStatus Subtask_2::onRunning()
         // If here, Subtask 2 is current task because condition node returned true to get here in BT
         // Just a dummy task for testing counter sequence
 
-        //int current_task_id = task_path[0]; // This has to be subtask 1 to be in onRunning per BT
+        //_world.log_info("in subtask 2 onRunning");
+
+        std::string e = "Robot " + std::to_string(_robot.getID()) + " in onRunning for subtask 2";
+        _world.log_info(e);
+
+        // Current_task_id will either be the maintask this subtask is part of (main mode), or the id of this subtask itself (helper mode)
+        std::vector<int> path = _robot.getPath();
+        int current_task_id = path[0];
+        if (_world.isSubtaskID(current_task_id)) {
+            std::string plz = "Current_task_id: " + std::to_string(current_task_id);
+            _robot.log_info(plz);
+            _robot.log_info("in is subtask if statement in subtask 2 onRunning");
+            _robot.setHelperMode(true);
+        } // otherwise remains default false, which allows potential fault injections
+
+        // Now that we have checked main vs sub logic, need to update current task to this subtask id for fault injection/recovery logic
+        std::string name = "Test_Subtask_2";
+        int local_current_task_id = _world.getSubtaskID(name);
 
         std::string strt = "Running subtask 2 for robot " + std::to_string(_robot.getID()) + "...";
         _world.log_info(strt);
 
-        // For now always returns success, change this for testing (before able to inject a fault)
-        _robot.log_info("failing subtask 2");
-        return NodeStatus::FAILURE;
+        std::string hi = "Current_task_id: " + std::to_string(local_current_task_id);
+        _world.log_info(hi);
+
+        // Allow world to inject fault, or not
+        bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+
+        std::string hii = "fault_flag: " + std::to_string(fault_flag);
+        _world.log_info(hii);
+
+        // testing helper
+        std::string eep = "robot in helper mode?: " + std::to_string(_robot.inHelperMode());
+        _robot.log_info(eep);
+
+        std::string d = "Robot " + std::to_string(_robot.getID()) + " right before return block for subtask 2";
+        _world.log_info(d);
+
+        if (fault_flag && !_robot.inHelperMode()) {
+            _robot.log_info("in failure return for subtask 2");
+            std::string a = "Robot " + std::to_string(_robot.getID()) + " in failure return for subtask 2";
+            _world.log_info(a);
+            return NodeStatus::FAILURE;
+        } else if (_robot.inHelperMode()) { // For now, we always allow helper robot to successfully help
+            _robot.log_info("helper helping with subtask 2 now!");
+            // World must detect that helper has helped, and reflect change by reseting fault injection flag from 1 (cause fault) to 0
+            _world.updateFaultInjectionTracker(local_current_task_id,0); // Helper resolves fault
+            _robot.setHelperMode(false); // No longer a helper for this subtask, because fault resolved now
+            std::string hep = "fault recovered with subtask 2, helper succeeds";
+            _robot.log_info(hep);
+            std::string b = "Robot " + std::to_string(_robot.getID()) + " in helper mode for subtask 2";
+            _world.log_info(b);
+        }
+
+        taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+
+        std::string herp = "processing done, subtask 2 returning success";
+        _robot.log_info(herp);
+        std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for subtask 2";
+        _world.log_info(c);
+        // If in helper mode or not, permitted to return success here, i.e., no fault
+        return NodeStatus::SUCCESS;
         
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
@@ -1530,3 +1723,45 @@ PortsList Subtask_2::providedPorts()
 {
     return {};
 }
+
+
+
+/// Below is logic that should be included in any new action success block, perhaps slightly adapted per main vs sub
+// TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
+// double reward = current_task.reward;
+
+// std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+// _robot.log_info(rew);
+
+// // Add new reward to cumulative reward for whole team
+// _world.updateCumulativeReward(reward);
+// //cumulative_reward += reward; potentially unsafe update
+
+// double& cumulative_reward = _world.getCumulativeReward();
+
+// // Save reward at current time
+// double current_time = _robot.getCurrentTime();
+// saveReward(current_time, cumulative_reward);
+
+// _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+
+// // Movement is done!
+// // Remove current first task from path since it has been completed
+// _robot.removeCompletedTaskFromPath(); // Removes first task
+
+// auto end_time = std::chrono::high_resolution_clock::now();
+// double total_start_time = std::chrono::duration<double>(end_time - _start_time).count();
+// std::string p = "FollowCoveragePath onStart() total time: " + std::to_string(total_start_time) + "s";
+// _robot.log_info(p);
+
+// _world.log_info("Paths at task completion:");
+// _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
+
+// _world.log_info("Task progress at task completion:");
+// _world.logCurrentTeamTaskProgress();
+
+// _world.log_info("Current tasks completed by each robot: ");
+// _world.logTaskCompletion();
+
+// std::string strt = "Completed coverage path for robot " + std::to_string(_robot.getID()) + "...";
+// _world.log_info(strt);

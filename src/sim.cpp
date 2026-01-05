@@ -289,7 +289,7 @@ static const char* xml_text = R"(
                 <NewInfoAvailable do_cbga="true" />
                 <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
                     <BuildBundle do_cbga="true" />
-                    <Communicate/>
+                    <Communicate do_cbga="true"/>
                     <ResolveConflicts do_cbga="true" />
                     <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="true" />
                 </RepeatSequence>

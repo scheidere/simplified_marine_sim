@@ -119,6 +119,10 @@ Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParse
     log_info("test path print after: ");
     utils::log1DVector(path, *this);*/
 
+    new_self_subtask_failure = false;
+    helper_mode = false; // Initially not in helper mode
+    //reattempt_failing_action = false; // Initially no failures [not needed if counter sequence inherently reattempts until success on failing tasks]
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -395,7 +399,7 @@ std::pair<bool,std::vector<int>> Robot::newNeighborSubtaskFailures() {
 
     // Check if neighbors (given messages from them) have failed in ways current robot was previously unaware of
 
-    // log_info("in newNeighborSubtaskFailures");
+    log_info("in newNeighborSubtaskFailures");
 
     // We only care about neighbor failures in our update of doable_task_ids
     // because this update is for helping other robots with their failures (cannot help self with own failures)
@@ -407,11 +411,11 @@ std::pair<bool,std::vector<int>> Robot::newNeighborSubtaskFailures() {
 
     // Check if previous matches current 100%
     if (prev_subtask_failures == subtask_failures) {
-        // log_info("match");
+        log_info("match");
         // If so, no neighbors are known to have newly failed (and self hasn't failed)
         return {false, {}}; // could also return neighbor_fail_info which should be same at this point
     } else {
-        // log_info("in else");
+        log_info("in else");
         // Given they do not match, check if they match except for self failures (i.e., check whether there are new neighbor failures)
         for (int subtask_id : world->getSubtaskIDs()) {
             for (int agent_id : world->getAgentIDs()) {
@@ -581,10 +585,11 @@ void Robot::updateDoableTasks() {
     bool neighbor_failed = neighbor_fail_info.first;
     std::vector<int> newly_failed_subtasks = neighbor_fail_info.second; // subtasks neighbors failed
 
-    log_info("newly_failed_subtasks:");
+    log_info("neighbor_newly_failed_subtasks:");
     utils::log1DVector(newly_failed_subtasks, *this);
 
     if (neighbor_failed) { // If at least one neighbor failed
+
         // Add each failed subtask id to doable_task_ids so current robot can consider helping failing neighbor(s)
         for (int subtask_id : newly_failed_subtasks) {
             // We add subtasks at the front, so they are considered for assignment before remaining assignable main tasks
@@ -824,13 +829,12 @@ bool Robot::checkIfNewInfoAvailable() {
 
     // std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker = world->getPingTracker();
     std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world->getPingTracker();
-    int receiverID = getID(); // can we just do id?
+    int receiverID = getID();
 
-    // just for print >>>
-    //printWorldPingTracker(world_ping_tracker);
-    // <<< just for print
-
-    // Get pings from last update (i.e., check via this function) saved in last_pings (init'd as empty vector)
+    // Check 4: if a robot itself is failing, so should be triggered to broadcast info to get help from another
+    if (new_self_subtask_failure) {
+        return true; // Don't need to check pings for newness in this case
+    }
 
     // Find current robot's ping vector
     if (world_ping_tracker.find(receiverID) != world_ping_tracker.end()) {
@@ -868,7 +872,6 @@ bool Robot::checkIfNewInfoAvailable() {
                 info_available = true;
                 log_info("NEW INFO FOUND DUE TO NEW ROBOT IN COMMS");
 
-                break; // Stop checking because already found at least one instance of new info*/
             } else { // Other robot id was found, meaning it was already in comms at last check
 
                 auto [sender_id, other_robot_old_timestamp, other_robot_old_subtask_failure_flag] = *it;
@@ -877,7 +880,6 @@ bool Robot::checkIfNewInfoAvailable() {
                 if (!other_robot_old_subtask_failure_flag && other_robot_new_subtask_failure_flag) {
                     info_available = true;
                     log_info("NEW INFO FOUND DUE TO NEIGHBOR ROBOT NEWLY FAILING A SUBTASK");
-                    break;
                 }
             }
 
@@ -1425,7 +1427,18 @@ void Robot::removeCompletedTaskFromPath() {
     utils::log1DVector(path, *this);
 }
 
-
+void Robot::removeCompletedTaskFromPathAndBundle() {
+    int completed_task = path[0];
+    path[0] = -1;  // Mark as removed
+    
+    // Find and mark in bundle
+    for (auto& task : bundle) {
+        if (task == completed_task) {
+            task = -1;
+            break;
+        }
+    }
+}
 
 std::unordered_map<std::string, int> Robot::initTaskGroupFullnessMap() {
 
@@ -1881,7 +1894,7 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
 }
 
 bool Robot::TaskNeededNow() {
-    // Condition that should return true when first task in path is Clear_Path (will check by ID)
+    // Condition that should return true when first task in path is Test_Task (will check by ID)
 
     log_info("in robot::TaskNeededNow");
 
