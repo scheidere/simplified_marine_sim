@@ -718,6 +718,7 @@ NodeStatus FollowShortestPath::onRunning()
         
         _robot.move(waypoint);
 
+        // do we still want this below?
         if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
 
             //_world.log_info("in robot 1 logging area - shortest path");
@@ -1722,6 +1723,35 @@ void Subtask_2::onHalted()
 PortsList Subtask_2::providedPorts()
 {
     return {};
+}
+
+TestShortPath::TestShortPath(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+// timing bug not here
+NodeStatus TestShortPath::tick()
+{
+    try {
+
+        _robot.log_info("in TestShortPath before check");
+
+        std::pair<int,int> task_loc = {150,150}; // Location of first task in path (which here is ExploreA)
+        std::string bla = "task_loc in TestShortPath tick (x, y): " + std::to_string(task_loc.first) + ", " + std::to_string(task_loc.second);
+        _robot.log_info(bla);
+        setOutput("task_loc", task_loc);
+        return NodeStatus::SUCCESS;
+
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in TestShortPath::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList TestShortPath::providedPorts()
+{
+    return { OutputPort<std::pair<int,int>>("task_loc") }; // deprecated, was used to test shortest path alone
+    // return {};
 }
 
 

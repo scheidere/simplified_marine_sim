@@ -369,4 +369,15 @@ public:
     static PortsList providedPorts();
 };
 
+class TestShortPath : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    TestShortPath(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

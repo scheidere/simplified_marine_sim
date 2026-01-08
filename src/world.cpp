@@ -17,7 +17,8 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
     sensor_model(s),
     parser(p),
     comms_range(comms_range),
-    image(init())
+    image(init()),
+    background_image(image.clone()) // testing this
 {
     try {
 
@@ -49,17 +50,22 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         log_info("fault_injection_tracker: ");
         utils::logUnorderedMapWorld(fault_injection_tracker, *this);
 
-        /*bool flag1 = getFaultInjectionFlag(3);
-        std::string s = "fault_injection_flag: " + std::to_string(flag1);
-        log_info(s);
+        //addObstacle({{50, 50}, {70, 50}, {60, 70}}); // for testing
+        getObstacles(); // parse and populate obstacles list
+        initializeBackground(); // just obstacles, so don't have to replot
 
-        updateFaultInjectionTracker(3,0);
-
-        bool flag2 = getFaultInjectionFlag(3);
-        std::string s2 = "fault_injection_flag: " + std::to_string(flag2);
-        log_info(s2);  */     
-
-
+        log_info("isObstacle for 0,0 (should be false):");
+        std::string a = std::to_string(isObstacle(0,0));
+        log_info(a);
+        log_info("isObstacle for 51,51 (should be true):");
+        std::string b = std::to_string(isObstacle(51,51));
+        log_info(b);
+        log_info("isObstacle for 49,49 (close but no edge) (should be false):");
+        std::string c = std::to_string(isObstacle(49,49));
+        log_info(c);
+        log_info("isObstacle for 50,50 (edge) (should be true):");
+        std::string d = std::to_string(isObstacle(50,50));
+        log_info(d);
 
         //agent_indices = parser->getAgentIndices();
         agent_types = parser->getAgentTypes();
@@ -689,27 +695,10 @@ void World::clear(Pose2D pose) {
     cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
 }
 
-/*void World::plot() {
-    std::lock_guard<std::mutex> lock(world_mutex);
-    //std::cout << "Plotting world..." << std::endl;
-
-    // Plotting quadrant centers (for now)
-    std::vector<Pose2D> quadrant_centers = getQuadrantCenters(); // also plots them; will remove once we add obstacles
-
-    for (auto& pair : robot_tracker) {
-        Robot* robot = pair.second;
-        cv::Scalar color = robot->getColor();
-        Pose2D robot_pose = robot->getPose();
-        //std::cout << "Plotting robot ID: " << robot->getID() << " at pose: " << robot_pose.x << ", " << robot_pose.y << " with color: " << color << std::endl;
-        cv::circle(image, cv::Point(robot_pose.x, robot_pose.y), 5, color, -1);
-    }
-
-    cv::imshow("Quadrant Image", image);
-    cv::waitKey(300);
-}*/
-
 void World::plot() {
     // Mutex used to lock whole function but there were big delays for some of the robots
+
+    image = background_image.clone(); // to keep obstacles + anything else that doesn't change in evironment
 
     std::vector<std::pair<Pose2D, cv::Scalar>> robot_data;
     
@@ -717,7 +706,7 @@ void World::plot() {
         std::lock_guard<std::mutex> lock(world_mutex);
         
         // Collect all data while holding lock
-        std::vector<Pose2D> quadrant_centers = getQuadrantCenters();
+        //std::vector<Pose2D> quadrant_centers = getQuadrantCenters(); // don't need this right? it was just to confirm coverage planning visual
         
         for (auto& pair : robot_tracker) {
             Robot* robot = pair.second;
@@ -730,7 +719,7 @@ void World::plot() {
         cv::circle(image, cv::Point(data.first.x, data.first.y), 5, data.second, -1);
     }
     
-    cv::imshow("Quadrant Image", image);
+    cv::imshow("World Image", image);
     cv::waitKey(300);  // No longer blocking other robots!
 }
 
@@ -796,10 +785,11 @@ std::vector<Pose2D> World::getQuadrantCenters() {
 
         int size = 5;
 
-        cv::rectangle(image, cv::Point(centerA.x - size, centerA.y - size), cv::Point(centerA.x + size, centerA.y + size), cv::Scalar(0, 0, 0), -1);
-        cv::rectangle(image, cv::Point(centerB.x - size, centerB.y - size), cv::Point(centerB.x + size, centerB.y + size), cv::Scalar(0, 0, 0), -1);
-        cv::rectangle(image, cv::Point(centerC.x - size, centerC.y - size), cv::Point(centerC.x + size, centerC.y + size), cv::Scalar(0, 0, 0), -1);
-        cv::rectangle(image, cv::Point(centerD.x - size, centerD.y - size), cv::Point(centerD.x + size, centerD.y + size), cv::Scalar(0, 0, 0), -1);
+        // Uncomment to plot
+        // cv::rectangle(image, cv::Point(centerA.x - size, centerA.y - size), cv::Point(centerA.x + size, centerA.y + size), cv::Scalar(0, 0, 0), -1);
+        // cv::rectangle(image, cv::Point(centerB.x - size, centerB.y - size), cv::Point(centerB.x + size, centerB.y + size), cv::Scalar(0, 0, 0), -1);
+        // cv::rectangle(image, cv::Point(centerC.x - size, centerC.y - size), cv::Point(centerC.x + size, centerC.y + size), cv::Scalar(0, 0, 0), -1);
+        // cv::rectangle(image, cv::Point(centerD.x - size, centerD.y - size), cv::Point(centerD.x + size, centerD.y + size), cv::Scalar(0, 0, 0), -1);
 
         //std::cout << "Quadrant centers defined: " << quadrant_centers.size() << " centers." << std::endl;
 
@@ -1124,4 +1114,63 @@ bool World::isLastSubtask(int current_task_id, int local_current_task_id) {
     // Otherwise, is main task but just completed an intermediate subtask so cannot mark main task as complete yet
     return false;
 
+}
+
+void World::initializeBackground() {
+    // Draw all obstacles onto the already-created background_image, just once so no redundant expensive plotting
+    for (const auto& polygon : obstacles) {
+        const cv::Point* pts = polygon.data();
+        int npts = polygon.size();
+        cv::fillPoly(background_image, &pts, &npts, 1, cv::Scalar(0, 0, 0));
+    }
+    
+    std::cout << "Background with " << obstacles.size() << " obstacles initialized" << std::endl;
+}
+
+void World::addObstacle(std::vector<cv::Point> polygon) { // to list, not plotting yet
+    obstacles.push_back(polygon);
+}
+
+void World::getObstacles() {
+    // Parse obstacles
+
+    auto world_attrs = parser->j["world_attributes"];
+    
+    if (world_attrs.contains("obstacles")) {
+        for (const auto& obstacle_json : world_attrs["obstacles"]) {
+            std::vector<cv::Point> polygon;
+            
+            for (const auto& point : obstacle_json["points"]) {
+                int x = point["x"].get<int>();
+                int y = point["y"].get<int>();
+                polygon.push_back(cv::Point(x, y));
+            }
+            
+            addObstacle(polygon);
+        }
+    }
+    
+    std::cout << "Loaded " << obstacles.size() << " obstacles from JSON" << std::endl;
+}
+
+bool World::isObstacle(int x, int y) {
+    cv::Point test_point(x, y);
+    
+    for (const auto& polygon : obstacles) {
+
+        // double result = cv::pointPolygonTest(polygon, test_point, false); // positive if in polygone, negative outside, 0 on edge
+        
+        // if (result >= 0) {  // Inside or on edge = obstacle
+        //     return true;
+        // }
+
+        double distance = cv::pointPolygonTest(polygon, test_point, true);  // true = measure distance
+        
+        // If inside polygon OR within robot radius (5)
+        if (distance >= -5) {
+            return true;
+        }
+    }
+    
+    return false;  // Not in any obstacle
 }

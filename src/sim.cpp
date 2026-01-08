@@ -276,9 +276,8 @@
 </root>
 )";*/
 
-// Next level counter sequence testing with CBGA, still dummy task 7 (subtasks 10,11), debugging seg fault that happens when build bundle + added
-// this gives seg fault currently, wahoo
-static const char* xml_text = R"(
+// Next level counter sequence testing with CBGA, still dummy task 7 (subtasks 10,11), this runs! Demonstrates fault recovery given subtask 2 failure
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="3">
@@ -305,25 +304,24 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
-// Changing the above tree for seg fault debug - see below (this causes seg fault - fixed)
-/*static const char* xml_text = R"(
+)";*/
+
+// For testing obstacle avoidance
+// next add task node to travel to
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="2">
+        <ParallelAll max_failures="1">
             <Repeat num_cycles="-1">
             <Ping/>
             </Repeat>
-            <RepeatSequence name="unlimited_repeat">
-                <NewInfoAvailable do_cbga="true" />
-                <BuildBundle do_cbga="true" />
-                <Communicate/>
-            </RepeatSequence>
+            <TestShortPath task_loc = "{stl}" />
+            <FollowShortestPath goal_loc = "{stl}" />
         </ParallelAll>
      </BehaviorTree>
 </root>
 )";
-*/
+
 
 /*<RepeatSequence>
     <CollectSample/>
@@ -477,9 +475,12 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
             const int obs_radius = robot_attributes["observation_radius"];
 
             // Need different instance for each robot so creating here
-            Planner planner(step_size);
-            ShortestPath shortest_path(step_size);
-            CoveragePath coverage_path(step_size, obs_radius);
+            // Planner planner(step_size, world);
+            // ShortestPath shortest_path(step_size);
+            // CoveragePath coverage_path(step_size, obs_radius);
+            Planner planner(step_size, &world);
+            ShortestPath shortest_path(step_size, &world);
+            CoveragePath coverage_path(step_size, obs_radius, &world);
 
             Robot robot(&planner, &shortest_path, &coverage_path, &world, &parser, initial_pose, robot_id, robot_type, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
@@ -532,6 +533,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<TaskNeededNow>("TaskNeededNow", std::ref(robot), std::ref(world));
                 factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world));
                 factory.registerNodeType<Subtask_2>("Subtask_2", std::ref(robot), std::ref(world));
+                factory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

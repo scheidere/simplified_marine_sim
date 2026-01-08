@@ -24,9 +24,10 @@ class Planner {
 protected:
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> current_plan;
     int step_size; // In pixels
+    World* world;
 
 public:
-    Planner(int step_size);
+    Planner(int step_size, World* w);
 
     void test();
 
@@ -50,13 +51,13 @@ public:
     int getIndex(int x, int y, int Y);
     std::pair<int,int> getCoords(int idx, int Y);
     bool inBounds(int x, int y, int X, int Y);
-    std::vector<P> getNeighbors(int x, int y, int X, int Y);
+    std::vector<P> getNeighbors(int x, int y, int X, int Y); // added world for isObstacle call
 
 };
 
 class ShortestPath : public Planner {
 public:
-    ShortestPath(int step_size);
+    ShortestPath(int step_size, World* w);
 
     // This function generates shortest path to waypoint (does not change sim state)
     //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // This was original way
@@ -73,7 +74,7 @@ protected:
     int obs_radius; // Observation radius in pixels
 
 public:
-    CoveragePath(int step_size, int obs_radius);
+    CoveragePath(int step_size, int obs_radius, World* w);
 
     int getObsRadius() const { return obs_radius; }
 

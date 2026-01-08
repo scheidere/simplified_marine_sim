@@ -23,7 +23,8 @@ protected:
     Distance* distance;
     SensorModel* sensor_model;
     JSONParser* parser;
-    cv::Mat image;
+    cv::Mat image; // For movement
+    cv::Mat background_image;  // Permanent background with obstacles
     // std::unordered_map<int, Robot*> robot_tracker; // id, instance
     std::map<int, Robot*> robot_tracker; // id, instance (updated to map from unordered for consistency is messaging runs)
     mutable std::mutex world_mutex; // mutex for MR access to robot tracker (and downstream), mutable for access of consts
@@ -72,6 +73,8 @@ protected:
     double cumulative_reward_achieved; // by the team
 
     std::unordered_map<int, bool> fault_injection_tracker; // task id keys, and bool denoting if task fails when attempted by main assigned robot
+
+    std::vector<std::vector<cv::Point>> obstacles; // Main obstacles list
 
 
 public:
@@ -230,6 +233,14 @@ public:
     bool isSubtaskID(int task_id);
 
     bool isLastSubtask(int current_task_id, int local_current_task_id);
+
+    void initializeBackground();
+
+    void addObstacle(std::vector<cv::Point> polygon); // to list, not plotting yet
+
+    void getObstacles();
+
+    bool isObstacle(int x, int y);
 };
 
 #endif
