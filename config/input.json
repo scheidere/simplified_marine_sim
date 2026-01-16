@@ -1,27 +1,19 @@
 {
 	"world_attributes": 
 		{
+			"notes:": ["Fault injection object must only include action (subtask) IDs..."],
 			"size_x": 200,
 			"size_y": 200,
 			"step_size": 5,
-			"fault_injection": {"1": 0, "2": 0, "3": 1 },
+			"fault_injection": {"2": 0, "3": 1 },
 			"obstacles": [
-		        {
-		         "points": [
-				        {"x": 0, "y": 100},
-				        {"x": 93, "y": 100},
-				        {"x": 93, "y": 120},
-				        {"x": 0, "y": 120}
-    				]
-		     	},
-		     	{
-		         "points": [
-				        {"x": 104, "y": 100},
-				        {"x": 200, "y": 100},
-				        {"x": 200, "y": 120},
-				        {"x": 104, "y": 120}
-    				]
-		     	}
+		       {
+		            "points": [
+		                {"x": 50, "y": 50},
+		                {"x": 70, "y": 50},
+		                {"x": 60, "y": 70}
+		            ]
+		        }
     		]
 		},
 
@@ -32,15 +24,7 @@
 
 		},
 
-	"global_tasks": [
-		{
-			"_comments": ["Explore the entire area A+B+C+D"],
-			"id": "Explore", 
-			"reward": 20, 
-			"requires": ["Explore_A","Explore_B","Explore_C","Explore_D"]
-		}
-	],
-	"local_tasks": [
+	"tasks": [
 		{
 			"id": 1,
 			"name":  "Test_Task",
@@ -51,14 +35,14 @@
 			"reward": 5
 		}
 	],
-	"local_subtasks": [
+	"actions": [
 		{
 			"id": 2,
 			"name":  "Test_Subtask_1",
 			"type": "test",
 			"main_id": 1,
 			"prerequisite_failures": 2,
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"location": {"x": 0, "y": 0},
 			"reward": 5
 		},
@@ -68,7 +52,7 @@
 			"type": "test",
 			"main_id": 1,
 			"prerequisite_failures": 2,
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 2},
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"location": {"x": 0, "y": 0},
 			"reward": 5
 		}
@@ -83,8 +67,8 @@
 			]
 		},
 		{
-			"mapper": ["coverage","collect","co-op"],
-			"analysis": ["coverage","collect","co-op"]
+			"mapper": ["test"],
+			"analysis": ["test"]
 		}
 	],
 
@@ -95,6 +79,14 @@
 			"start_x": 10,
 	        "start_y": 10,
 	        "color": [0, 0, 255],
+	        "_comments": ["Comments here"]
+		},
+		{
+			"id": 2,
+			"type": "analysis",
+			"start_x": 20,
+	        "start_y": 10,
+	        "color": [255, 0, 0],
 	        "_comments": ["Comments here"]
 		}
 	],

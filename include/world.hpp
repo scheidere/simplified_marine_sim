@@ -44,7 +44,8 @@ protected:
     //std::vector<int> agent_indices; // is this really needed
     std::vector<std::string> agent_types;
     std::vector<std::string> task_types;
-    std::unordered_map<std::string, std::vector<int>> all_agent_capabilities; // Denotes which agents can do which tasks by agent type (0: can't; 1: can by self; 2: can co-op; 3: TBD)
+    //std::unordered_map<std::string, std::vector<int>> all_agent_capabilities; // Denotes which agents can do which tasks by agent type (0: can't; 1: can by self; 2: can co-op; 3: TBD)
+    std::unordered_map<std::string, std::unordered_map<std::string,bool>> all_agent_capabilities;
 
     std::vector<int> agent_ids;
     std::vector<int> subtask_ids;
@@ -184,7 +185,8 @@ public:
 
     std::pair<int,int> getTaskLocationFromArea(std::unordered_map<std::string, int>& area);
 
-    std::unordered_map<std::string,std::vector<int>> getAllCapabilities(); // { return all_agent_capabilities; }
+    //std::unordered_map<std::string,std::vector<int>> getAllCapabilities(); // { return all_agent_capabilities; }
+    std::unordered_map<std::string, std::unordered_map<std::string,bool>> getAllCapabilities();
 
     std::vector<int> getRobotSubtaskCapabilities(Robot* robot);
 

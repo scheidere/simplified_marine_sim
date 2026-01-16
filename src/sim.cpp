@@ -277,7 +277,7 @@
 )";*/
 
 // Next level counter sequence testing with CBGA, still dummy task 7 (subtasks 10,11), this runs! Demonstrates fault recovery given subtask 2 failure
-/*static const char* xml_text = R"(
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="3">
@@ -304,11 +304,11 @@
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";*/
+)";
 
 // For testing obstacle avoidance
 // next add task node to travel to
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="1">
@@ -320,7 +320,7 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 
 /*<RepeatSequence>
@@ -654,7 +654,8 @@ int main(int argc, char** argv) {
 
         std::this_thread::sleep_for(std::chrono::seconds(2));
         std::cout << "in main 1" << std::endl;
-        std::unordered_map<std::string,std::vector<int>> test = world.getAllCapabilities();
+        // std::unordered_map<std::string,std::vector<int>> test = world.getAllCapabilities();
+        std::unordered_map<std::string, std::unordered_map<std::string,bool>> test = world.getAllCapabilities();
         std::cout << "in main 2" << std::endl;
         std::cout << "Inits are done..." << std::endl;
 

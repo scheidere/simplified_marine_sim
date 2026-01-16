@@ -91,7 +91,6 @@ std::vector<std::pair<double,int>> Planner::getNeighbors(int x, int y, int X, in
                     //std::cout << "neigh idx: " << neighbor_idx << std::endl;
                     double distance = Distance::getEuclideanDistance(x,y,new_x,new_y);
                     neighbors.push_back(std::make_pair(distance, neighbor_idx)); // pair = (dist, index)
-                    
 
                 }
             }

@@ -253,6 +253,23 @@ inline void logMsgVector(const std::vector<Msg>& msgs, Robot& robot) {
     robot.log_info(log_msg.str());
 }
 
+
+template <typename K, typename V>
+void logMapOfVectorInt(const std::unordered_map<K, std::vector<V>>& my_map, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& [key, vec] : my_map) {
+        log_msg << "  " << key << " : [";
+        bool first = true;
+        for (const auto& value : vec) {
+            if (!first) log_msg << ", ";
+            log_msg << value;
+            first = false;
+        }
+        log_msg << "]\n";
+    }
+    world.log_info(log_msg.str());
+}
+
 } // namespace end
 
 

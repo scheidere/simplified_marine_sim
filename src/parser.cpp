@@ -45,11 +45,13 @@ int JSONParser::getNumAgents() {
 
 int JSONParser::getNumLocalTasks() {
 
+    // We now call "local_tasks" just "tasks", since didn't need global tasks term as initially expected
+    // Might change name here later
+
     int num_local_tasks;
 
-    if (j.contains("local_tasks") && j["local_tasks"].is_array()) {
-        num_local_tasks = j["local_tasks"].size();
-        std::cout << "Number of local tasks: " << num_local_tasks << std::endl;
+    if (j.contains("tasks") && j["tasks"].is_array()) {
+        num_local_tasks = j["tasks"].size();
     }
 
     return num_local_tasks;
@@ -58,10 +60,13 @@ int JSONParser::getNumLocalTasks() {
 
 int JSONParser::getNumSubtasks() {
 
+    // We now call "local_subtasks" just "actions", since we want every task to point to at least one action that each corresponds to an actual node
+    // Might change name here later
+
     int num_subtasks;
 
-    if (j.contains("local_subtasks") && j["local_subtasks"].is_array()) {
-        num_subtasks = j["local_subtasks"].size();
+    if (j.contains("actions") && j["actions"].is_array()) {
+        num_subtasks = j["actions"].size();
         std::cout << "Number of subtasks: " << num_subtasks << std::endl;
     }
 
@@ -166,8 +171,8 @@ std::vector<std::string> JSONParser::getTaskTypes() {
 
     std::unordered_set<std::string> unique_task_types; // unordered set to only get unique types
 
-    if (j.contains("local_tasks") && j["local_tasks"].is_array()) {
-        for (const auto& task : j["local_tasks"]) {
+    if (j.contains("tasks") && j["tasks"].is_array()) {
+        for (const auto& task : j["tasks"]) {
             unique_task_types.insert(task["type"].get<std::string>()); // Have to explicitly convert to string, json library can't do unless basic like vector
         }
     }
@@ -180,7 +185,29 @@ std::vector<std::string> JSONParser::getTaskTypes() {
     return task_types;
 }
 
-std::unordered_map<std::string, std::vector<int>> JSONParser::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
+std::unordered_map<std::string, std::unordered_map<std::string,bool>> JSONParser::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
+
+    // Get 2d unordered map that denotes true/false for all agent/task type combos, i.e., what task types each agent type can do
+
+    // std::unordered_map<std::string, std::vector<int>> capabilities;
+    std::unordered_map<std::string, std::unordered_map<std::string,bool>> capabilities;
+
+    for (auto agent_type : agent_types) {
+        std::unordered_map<std::string,bool> row; // Create a row for each agent type, will have task type keys and bool to denote if agent type can do task type
+        for (auto task_type : task_types) { // Each column is different task type
+            //std::cout << task_types[j] << std::endl;
+            row[task_type] = getCompatibility(agent_type, task_type);
+        }
+
+        capabilities[agent_type] = row; // Add capabilities map 
+    }
+
+    return capabilities;
+}
+
+/*std::unordered_map<std::string, std::vector<int>> JSONParser::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
+
+    // deprecated, changing to 2d unordered map: std::unordered_map<std::string, std::unordered_map<std::string,bool>>
 
     // Not including checks for JSON agents or local_tasks array existence
     // This function is called in CBBA init AFTER functions with those checks run successfully
@@ -213,9 +240,38 @@ std::unordered_map<std::string, std::vector<int>> JSONParser::getAgentCapabiliti
     //std::cin.get();
 
     return capabilities;
-}
+}*/
 
 int JSONParser::getCompatibility(std::string agent_type, std::string task_type) {
+
+    // 0 - not able; 1 - able; 
+
+    if (j.contains("agent_capabilities") && j["agent_capabilities"].is_array()) {
+        //std::cout << agent_type << std::endl;
+        //std::cout << task_type << std::endl;
+        //std::cin.get();
+
+        // Now check each individual agents doable task types, and add if not covered in the "all" case already
+        for (const auto& t : j["agent_capabilities"][1][agent_type]) {
+            //std::cout << t << " " << task_type << std::endl;
+            //std::cin.get();
+            if (t == task_type) {
+                //std::cout << "agent type for found match: " << agent_type << " 1" << std::endl;
+                return 1;
+            }
+        }
+    }
+    else {
+        std::cerr << "Error: agent_capabilities not found or invalid in JSON." << std::endl;  
+    }
+
+    //std::cout << "agent type for found match: " << agent_type << " 0" << std::endl;
+    return 0; // Did not find given task type in list of capabilities (task types it can do) for given agent type
+} 
+
+/*int JSONParser::getCompatibility(std::string agent_type, std::string task_type) {
+
+    // This is deprecated, no longer dealing with solo vs co-op with 2, just doing can do (1) or not (0)
 
     // 0 - not able; 1 - able; 
     // Dealing with these later: 2 - able with assistance (co-op); 3 - co-op after fault
@@ -243,7 +299,7 @@ int JSONParser::getCompatibility(std::string agent_type, std::string task_type) 
 
     //std::cout << "agent type for found match: " << agent_type << " 0" << std::endl;
     return 0; // Did not find given task type in list of capabilities (task types it can do) for given agent type
-}
+}*/
 
 /*json JSONParser::getAgentsList() {
 

@@ -507,7 +507,7 @@ void Robot::testNewSelfSubtaskFailures() {
 
 }
 
-void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
+/*void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
 
     // Done: Update when self newly fails at own tasks
     // Not done yet: Or when a task was failed but is now done (back to zero as in not failed) - do we want to deal with this or just leave at 1 if failed? i think do it to denote fixed
@@ -535,6 +535,26 @@ void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_s
     // Could this ever happen at the same time for a given robot, where it updates from counter sequence here and also updates neighbor parts in comms node?
     // Do we need robot mutex protection for subtask_failures objects?
 
+}*/
+
+void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
+    prev_subtask_failures = subtask_failures;
+    
+    bool any_failures = false;  // Track if ANY subtask is currently failing
+    
+    for (int subtask_id : world->getSubtaskIDs()) {
+        if (new_self_subtask_failures[subtask_id] == 1) {
+            log_info("FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf");
+            any_failures = true;
+        }
+        subtask_failures[subtask_id][id] = new_self_subtask_failures[subtask_id];
+    }
+    
+    // Update the flag to true if any failures, otherwise false
+    new_self_subtask_failure = any_failures;
+    
+    log_info("in updateSubtaskFailuresPerSelf:");
+    utils::log2DUnorderedMap(subtask_failures, *this);
 }
 
 void Robot::updateWinningBidsMatrixPostFailure() {
@@ -621,7 +641,7 @@ void Robot::testSubtaskFailuresUpdater() {
     // Check that robot 1 updates given this new info when it comms with robot 2
 }
 
-void Robot::init (Pose2D initial_pose) {
+void Robot::init(Pose2D initial_pose) {
     std::cout << "Initializing robot pose..." << std::endl;
     // Access world for image
     cv::Mat image = world->getImage();

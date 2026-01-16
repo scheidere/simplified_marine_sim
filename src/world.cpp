@@ -54,29 +54,21 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         getObstacles(); // parse and populate obstacles list
         initializeBackground(); // just obstacles, so don't have to replot
 
-        log_info("isObstacle for 0,0 (should be false):");
-        std::string a = std::to_string(isObstacle(0,0));
-        log_info(a);
-        log_info("isObstacle for 51,51 (should be true):");
-        std::string b = std::to_string(isObstacle(51,51));
-        log_info(b);
-        log_info("isObstacle for 49,49 (close but no edge) (should be false):");
-        std::string c = std::to_string(isObstacle(49,49));
-        log_info(c);
-        log_info("isObstacle for 50,50 (edge) (should be true):");
-        std::string d = std::to_string(isObstacle(50,50));
-        log_info(d);
+        log_info("after obstacle init");
 
         //agent_indices = parser->getAgentIndices();
         agent_types = parser->getAgentTypes();
         task_types = parser->getTaskTypes();
         //std::cout << "start world init print" << std::endl;
         all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types);
+        log_info("all_agents_capabilitiesss:");
+        //utils::logMapOfVectorInt(all_agent_capabilities, *this);
         initMessageTracker();
         //initPingIDTracker();
         initPingTracker(); // Note: Pings contain sender id and time sender last updated its own beliefs via CBBA
         //std::cout << "end world init print" << std::endl;
         //print2DVector(agent_capabilities);
+        log_info("end of world constructor");
 
         // Adding this so that greedy alg timing is consistent, because unlike CBBA/CBGA BTs, there isn't sufficient time to load world fully before running alg
         // Want to get consistent estimate of runtime for greedy
@@ -232,7 +224,8 @@ void World::initPingTracker() {
     }
 }
 
-std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
+// std::unordered_map<std::string,std::vector<int>> World::getAllCapabilities() {
+std::unordered_map<std::string, std::unordered_map<std::string,bool>> World::getAllCapabilities() {
 
     //std::cout << "start world getter cap" << std::endl;
     //utils::printCapabilities(all_agent_capabilities);
@@ -273,7 +266,7 @@ int World::getGroupSize(std::unordered_map<std::string, int> group_info) {
 
 std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
     std::unordered_map<int, TaskInfo> all_tasks_info;
-    auto parsed_tasks = parser->j["local_tasks"];
+    auto parsed_tasks = parser->j["tasks"];
     
     for (const auto& task : parsed_tasks) {
         
@@ -330,7 +323,7 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
 
 std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
     std::unordered_map<int, TaskInfo> all_subtasks_info;
-    auto parsed_tasks = parser->j["local_subtasks"];
+    auto parsed_tasks = parser->j["actions"];
     
     //std::cout << "Starting subtasks initialization..." << std::endl;
     
@@ -563,20 +556,19 @@ std::vector<int> World::getRobotSubtaskCapabilities(Robot* robot) {
         return {};  // Return an empty vector
     }
 
-    std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
+    // std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
+    std::unordered_map<std::string,bool> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
 
-     for (int i=0; i<task_types.size(); i++) {
+    for (auto& pair : all_subtasks_info) {
+        TaskInfo& subtask = pair.second;
 
-        for (auto& pair : all_subtasks_info) {
-            TaskInfo& subtask = pair.second;
-            
-            // Check if robot can do specific subtask and task type must match by definition
-            if ((robot_capabilities_by_type[i]==1 || robot_capabilities_by_type[i] == 2) && task_types[i]==subtask.type) {
-                // Found doable subtask 
-                doable_local_subtasks.push_back(pair.first); // pair.first is task id (int)
-            }
+        auto it = robot_capabilities_by_type.find(subtask.type);
+    
+        if (it != robot_capabilities_by_type.end() && it->second == true) {
+            // Robot has this capability - found doable subtask
+            doable_local_subtasks.push_back(pair.first); // pair.first is task id (int)
         }
-
+        
     }
 
     // Since we traverse all_subtasks_info which is an unordered map, tasks not necessarily traversed in ascending id order
@@ -594,55 +586,29 @@ std::vector<int> World::getRobotSubtaskCapabilities(Robot* robot) {
 std::vector<int> World::getRobotCapabilities(Robot* robot) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
-    //std::cout << "in world getRobotCapabilities " << std::endl;
-    //std::cout << all_agent_capabilities.size() << std::endl;
-
     std::vector<int> doable_local_tasks;
 
     std::string agent_type = robot->getType();
-    //std::cout << "Robot type: " << type << std::endl;
-    //std::cin.get();
+
+    // logging to world here stalled it
 
     if (all_agent_capabilities.find(agent_type) == all_agent_capabilities.end()) {
         std::cerr << "Error: Capabilities for type " << agent_type << " not found!" << std::endl;
         return {};  // Return an empty vector
     }
 
-    // utils::log1DVector(task_types, *robot);
+    std::unordered_map<std::string,bool> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
 
-    std::string log_msg = "Robot " + std::to_string(robot->getID()) + " is capable of the following tasks by id: ";
-    //robot->log_info(log_msg);
-    //for (const auto& elem : vec) {
-    robot->log_info("all_agent_capabilities: ");
-    utils::logMapOfVectors(all_agent_capabilities, *robot);
-    std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type]; 
+    for (auto& pair : all_tasks_info) {
+        TaskInfo& local_task = pair.second;
 
-    robot->log_info("robot_capabilities_by_type: ");
-    utils::log1DVector(robot_capabilities_by_type, *robot);
-
-    for (int i=0; i<task_types.size(); i++) {
-        //robot->log("test2");
-        //robot->log_info(std::to_string(i));
-        //robot->log_info("Traversing all_task_info unordered_map...");
-        for (auto& pair : all_tasks_info) {
-            TaskInfo& local_task = pair.second;
-            std::string log_msg3 = local_task.type;
-            //robot->log_info(log_msg3);
-            
-            // Check if robot can do specific task (solo or co-op) and task type must match by definition
-            if ((robot_capabilities_by_type[i]==1 || robot_capabilities_by_type[i] == 2) && task_types[i]==local_task.type) {
-                // Found doable task 
-                std::string log_msg1 = "Found task of type " + local_task.type + " saving " + std::to_string(pair.first);  
-                robot->log_info(log_msg1);
-                doable_local_tasks.push_back(pair.first); // pair.first is local task id (int)
-                std::string log_msg2 = std::to_string(pair.first);
-                robot->log_info(log_msg2);
-            }
+        auto it = robot_capabilities_by_type.find(local_task.type);
+    
+        if (it != robot_capabilities_by_type.end() && it->second == true) {
+            // Robot has this capability - found doable task
+            doable_local_tasks.push_back(pair.first); // pair.first is task id (int)
         }
-
-
-        //std::string log_msg2 = task_types[i] + ": " + std::to_string(robot_capabilities[i]);
-        //robot->log(log_msg2);
+        
     }
 
     // Since we traverse all_tasks_info which is an unordered map, tasks not necessarily traversed from id 1 and increasing
