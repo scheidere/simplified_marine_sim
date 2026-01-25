@@ -1,11 +1,13 @@
 {
 	"world_attributes": 
 		{
-			"notes:": ["Fault injection object must only include action (subtask) IDs..."],
+			"notes:": ["Fault injection object must only include action (subtask) IDs...",
+						"Lower decay_rate corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)"],
 			"size_x": 200,
 			"size_y": 200,
 			"step_size": 5,
 			"fault_injection": {"2": 0, "3": 1 },
+			"decay_rate": 1.5,
 			"obstacles": [
 		       {
 		            "points": [
@@ -13,7 +15,15 @@
 		                {"x": 70, "y": 50},
 		                {"x": 60, "y": 70}
 		            ]
-		        }
+		        },
+			    {
+			        "points": [
+			            {"x": 150, "y": 150},
+			            {"x": 170, "y": 150},
+			            {"x": 170, "y": 170},
+			            {"x": 150, "y": 170}
+			        ]
+			    }
     		]
 		},
 
@@ -29,7 +39,7 @@
 			"id": 1,
 			"name":  "Test_Task",
 			"type": "test",
-			"subtasks": [2,3],
+			"actions": [2,3],
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
 			"location": {"x": 0, "y": 0},
 			"reward": 5
@@ -39,22 +49,15 @@
 		{
 			"id": 2,
 			"name":  "Test_Subtask_1",
-			"type": "test",
 			"main_id": 1,
 			"prerequisite_failures": 2,
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"location": {"x": 0, "y": 0},
-			"reward": 5
+			"location": {"x": 10, "y": 5}
 		},
 		{
 			"id": 3,
 			"name":  "Test_Subtask_2",
-			"type": "test",
 			"main_id": 1,
-			"prerequisite_failures": 2,
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"location": {"x": 0, "y": 0},
-			"reward": 5
+			"prerequisite_failures": 2
 		}
 	],
 	"agent_capabilities": [
@@ -84,7 +87,7 @@
 		{
 			"id": 2,
 			"type": "analysis",
-			"start_x": 20,
+			"start_x": 11,
 	        "start_y": 10,
 	        "color": [255, 0, 0],
 	        "_comments": ["Comments here"]

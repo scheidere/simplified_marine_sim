@@ -206,7 +206,9 @@ void Message::ping(World& world) {
 
         if (receiverID != senderID) { // as long as not self
 
+            sender.log_info("before incomms in ping");
             bool inComms = world.inComms(senderID, receiverID);
+            sender.log_info("after incomms in ping");
             if (inComms) {
                 //std::string bla = "DEBUG: Robot " + std::to_string(senderID) + " pinging Robot " + std::to_string(receiverID);
                 //sender.log_info(bla);

@@ -160,6 +160,21 @@ void log2DUnorderedMap(const std::unordered_map<K1, std::unordered_map<K2, V>>& 
     robot.log_info(log_msg.str());
 }
 
+template <typename K1, typename K2, typename V>
+void log2DUnorderedMap(const std::unordered_map<K1, std::unordered_map<K2, V>>& my_map, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& [outer_key, inner_map] : my_map) {
+        log_msg << "  " << outer_key << " : {";
+        bool first = true;
+        for (const auto& [inner_key, value] : inner_map) {
+            if (!first) log_msg << ", ";
+            log_msg << inner_key << "=" << value;
+            first = false;
+        }
+        log_msg << "}\n";
+    }
+    world.log_info(log_msg.str());
+}
 // Log unordered_map with Pose2D values  
 template <>
 inline void logUnorderedMap<int, Pose2D>(const std::unordered_map<int, Pose2D>& my_map, Robot& robot) {
@@ -266,6 +281,71 @@ void logMapOfVectorInt(const std::unordered_map<K, std::vector<V>>& my_map, Worl
             first = false;
         }
         log_msg << "]\n";
+    }
+    world.log_info(log_msg.str());
+}
+
+inline void logTaskInfo(const TaskInfo& task, World& world) {
+    std::ostringstream log_msg;
+    log_msg << "TaskInfo:\n";
+    log_msg << "  id: " << task.id << "\n";
+    log_msg << "  name: " << task.name << "\n";
+    log_msg << "  type: " << task.type << "\n";
+    log_msg << "  prerequisite_failures: " << task.prerequisite_failures << "\n";
+    log_msg << "  subtasks: [";
+    for (size_t i = 0; i < task.subtasks.size(); i++) {
+        if (i > 0) log_msg << ", ";
+        log_msg << task.subtasks[i];
+    }
+    log_msg << "]\n";
+    log_msg << "  main_id: " << task.main_id << "\n";
+    log_msg << "  group_size: " << task.group_size << "\n";
+    log_msg << "  group_info: {";
+    bool first = true;
+    for (const auto& [key, val] : task.group_info) {
+        if (!first) log_msg << ", ";
+        log_msg << key << "=" << val;
+        first = false;
+    }
+    log_msg << "}\n";
+    log_msg << "  location: (" << task.location.first << ", " << task.location.second << ")\n";
+    log_msg << "  area: {";
+    first = true;
+    for (const auto& [key, val] : task.area) {
+        if (!first) log_msg << ", ";
+        log_msg << key << "=" << val;
+        first = false;
+    }
+    log_msg << "}\n";
+    log_msg << "  reward: " << task.reward << "\n";
+    world.log_info(log_msg.str());
+}
+
+inline void logAllTasksInfo(const std::unordered_map<int, TaskInfo>& tasks_map, World& world) {
+    std::ostringstream log_msg;
+    for (const auto& [task_id, task] : tasks_map) {
+        log_msg << "Task ID " << task_id << ":\n";
+        log_msg << "  name: " << task.name << "\n";
+        log_msg << "  type: " << task.type << "\n";
+        log_msg << "  prerequisite_failures: " << task.prerequisite_failures << "\n";
+        log_msg << "  subtasks: [";
+        for (size_t i = 0; i < task.subtasks.size(); i++) {
+            if (i > 0) log_msg << ", ";
+            log_msg << task.subtasks[i];
+        }
+        log_msg << "]\n";
+        log_msg << "  main_id: " << task.main_id << "\n";
+        log_msg << "  group_size: " << task.group_size << "\n";
+        log_msg << "  group_info: {";
+        bool first = true;
+        for (const auto& [key, val] : task.group_info) {
+            if (!first) log_msg << ", ";
+            log_msg << key << "=" << val;
+            first = false;
+        }
+        log_msg << "}\n";
+        log_msg << "  location: (" << task.location.first << ", " << task.location.second << ")\n";
+        log_msg << "  reward: " << task.reward << "\n\n";
     }
     world.log_info(log_msg.str());
 }

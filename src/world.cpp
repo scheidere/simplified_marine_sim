@@ -62,7 +62,7 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         //std::cout << "start world init print" << std::endl;
         all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types);
         log_info("all_agents_capabilitiesss:");
-        //utils::logMapOfVectorInt(all_agent_capabilities, *this);
+        utils::log2DUnorderedMap(all_agent_capabilities, *this);
         initMessageTracker();
         //initPingIDTracker();
         initPingTracker(); // Note: Pings contain sender id and time sender last updated its own beliefs via CBBA
@@ -81,6 +81,11 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
             getTaskReward(task_id);
             getTaskLocation(task_id);
         }*/
+
+        signal_path_loss_factor = initSignalPathLossFactor();
+        // std::string y = "signal_path_loss_factor:" + std::to_string(signal_path_loss_factor);
+        // log_info(y);
+        decay_rate = initDecayRate();
 
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
@@ -273,10 +278,9 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         int id = task["id"].get<int>();
         std::string name = task["name"];
         std::string type = task["type"];
-        int prerequisite_failures = -1;
         std::vector<int> subtasks = {}; // Changed from string to int for access ease
-        if (task.contains("subtasks")) {
-            subtasks = task["subtasks"].get<std::vector<int>>();
+        if (task.contains("actions")) { // previously "subtasks"
+            subtasks = task["actions"].get<std::vector<int>>();
         }
         int main_id = -1; // This is only for subtasks, would be redundant with own id for main tasks
         
@@ -300,12 +304,16 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
             location = std::make_pair(x, y);
         }
 
+        // Info that only pertains to actions, not main tasks being initialized here
+        int prerequisite_failures = -1; // is this needed?
+        // we don't give a dummy value for main_id which is only for actions not tasks sooo
+
         TaskInfo task_struct = {
             id, // int
             name, // string
             type, // string
             prerequisite_failures, // int
-            subtasks, // std::vector<int>
+            subtasks, // std::vector<int>, this is the actions list, calling subtasks still because it's many changes to update throughout
             main_id, // int
             group_size, //int
             group_info, // <std::unordered_map<std::string, int>>
@@ -317,42 +325,66 @@ std::unordered_map<int, TaskInfo> World::initAllTasksInfo() {
         all_tasks_info[id] = task_struct;
     }
 
+    log_info("all_tasks_info:");
+    utils::logAllTasksInfo(all_tasks_info, *this);
+
     return all_tasks_info;
 
 }
 
 std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
     std::unordered_map<int, TaskInfo> all_subtasks_info;
-    auto parsed_tasks = parser->j["actions"];
-    
+    auto parsed_actions = parser->j["actions"];
+    auto parsed_tasks = parser->j["tasks"];
+
     //std::cout << "Starting subtasks initialization..." << std::endl;
     
-    for (const auto& task : parsed_tasks) {
+    for (const auto& action : parsed_actions) {
         
-        int id = task["id"].get<int>();
-        std::string name = task["name"];
-        std::string type = task["type"];
-        int prerequisite_failures = task["prerequisite_failures"];
-        std::vector<int> subtasks = {}; // changed from string to int for ease
-        int main_id = task["main_id"].get<int>();
-        std::unordered_map<std::string, int> group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
+        // Info from action definition only
+        int id = action["id"].get<int>();
+        std::string name = action["name"];
+        int prerequisite_failures = action["prerequisite_failures"];
+        int main_id = action["main_id"].get<int>();
         
-        int group_size = getGroupSize(group_info);
-        
-        double reward = task["reward"];
-
-        std::unordered_map<std::string, int> area; // This will remain empty if no area defined in input json
+        // Info from parent/main task that given action is a subtask of
+        std::string type = "";
+        std::vector<int> subtasks = {};
+        std::unordered_map<std::string, int> group_info;
+        int group_size = 0;
+        std::unordered_map<std::string, int> area;
         std::pair<int, int> location = {-1, -1};
+        double reward = 0.0;
 
-        if (task.contains("area")) {
-            area = task["area"].get<std::unordered_map<std::string, int>>();
+        if (action.contains("location")) {
+                    auto loc_json = action["location"];
+                    int x = loc_json.value("x", -1);  // fallback to -1 if missing
+                    int y = loc_json.value("y", -1);
+                    location = std::make_pair(x, y);
         }
 
-        if (task.contains("location")) {
-            auto loc_json = task["location"];
-            int x = loc_json.value("x", -1);  // fallback to -1 if missing
-            int y = loc_json.value("y", -1);
-            location = std::make_pair(x, y);
+        for (const auto& task : parsed_tasks) {
+            if (task["id"] == main_id) { // found relevant parent/main task to given action
+                log_info("in parsed tasks - found main id task");
+                type = task["type"];
+                subtasks = {}; // changed from string to int for ease, is this line even needed?
+                group_info = task["group_info"].get<std::unordered_map<std::string, int>>();
+                group_size = getGroupSize(group_info);
+
+                if (task.contains("area")) {
+                    area = task["area"].get<std::unordered_map<std::string, int>>();
+                }
+
+                // If action (subtask) didn't have a location defined, pull location from main task
+                if (location.first == -1 && location.second == -1 && task.contains("location")) {
+                    auto loc_json = task["location"];
+                    int x = loc_json.value("x", -1);  // fallback to -1 if missing
+                    int y = loc_json.value("y", -1);
+                    location = std::make_pair(x, y);
+                }
+
+                reward = task["reward"];
+            }
         }
 
         TaskInfo task_struct = {
@@ -371,6 +403,9 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
 
         all_subtasks_info[id] = task_struct;
     }
+
+    log_info("all_subtasks_info:");
+    utils::logAllTasksInfo(all_subtasks_info, *this);
 
     return all_subtasks_info;
     
@@ -697,6 +732,10 @@ void World::trackRobot(Robot* robot) {
 
 bool World::inComms(int id1, int id2) {
     std::lock_guard<std::mutex> lock(world_mutex);
+
+    // testing now
+    // can log with world log_info here because nested mutex
+
     if (robot_tracker.find(id1) == robot_tracker.end() || robot_tracker.find(id2) == robot_tracker.end()) {
         return false;
     }
@@ -704,15 +743,64 @@ bool World::inComms(int id1, int id2) {
     Robot* robot2 = robot_tracker[id2];
     Pose2D p1 = robot1->getPose(); Pose2D p2 = robot2->getPose();
     double distance_between_robots = distance->getEuclideanDistance(p1.x,p1.y,p2.x,p2.y);
-    return distance_between_robots <= comms_range; // before testing below
 
-    // below for testing
-    /*bool result = distance_between_robots <= comms_range;
+    robot1->log_info("here in incomms 1");
+    robot2->log_info("here in incomms 1");
+
+    // First do binary return (either in or out of comms range), corresponds with signal path loss factor of 0 so easy to check with that
+    if (decay_rate == 0.0) {
+        robot1->log_info("binary comms...");
+        robot2->log_info("binary comms...");
+        return distance_between_robots <= comms_range;
+    } else {
+
+        robot1->log_info("degrading comms...");
+        robot2->log_info("degrading comms...");
+        // Signal degrades from 1.0 (when distance btwn robots is 0) to ~0 (when distance is ~comms range)
+        // double signal_strength = pow(comms_range / std::max(distance_between_robots, 1.0), signal_path_loss_factor);
+
+        // // Normalize to [0,1] range
+        // double max_signal = pow(comms_range / 1.0, signal_path_loss_factor);  // Signal at 1 pixel
+        // double normalized_signal = std::min(1.0, signal_strength / max_signal);
+
+        // std::string s = "normalized_signal: " + std::to_string(normalized_signal);
+        // robot1->log_info(s); robot2->log_info(s);
+        // double random_num = dis(gen);
+        // std::string s2 = "random_num:" + std::to_string(random_num);
+        // robot1->log_info(s2); robot2->log_info(s2);
+
+        // bool comms_success = random_num < normalized_signal;
+
+        double distance_ratio = distance_between_robots / comms_range;
+        double success_probability = exp(-decay_rate * distance_ratio);
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis(0.0, 1.0);
+
+        std::string s = "success_probability: " + std::to_string(success_probability);
+        robot1->log_info(s); robot2->log_info(s);
+        double random_num = dis(gen);
+        std::string s2 = "random_num:" + std::to_string(random_num);
+        robot1->log_info(s2); robot2->log_info(s2);
+
+        bool comms_success = random_num < success_probability;
+
+        std::string s3; std::string s4;
+        if (distance_between_robots < comms_range && !comms_success) {
+            s3 = "Comms fading resulting in comms failure despite distance less than comms range";
+            s4 = "Distance:" + std::to_string(distance_between_robots) + ", comms range: " + std::to_string(comms_range);
+            robot1->log_info(s3); robot2->log_info(s3); robot1->log_info(s4); robot2->log_info(s4);
+        } else if (distance_between_robots < comms_range && comms_success) {
+            std::string s5 = "comms fading on but still comms succeed";
+            robot1->log_info(s5); robot2->log_info(s5);
+        }
+        
     
-    std::cout << "inComms(" << id1 << ", " << id2 << "): distance=" 
-              << distance_between_robots << ", result=" << result << std::endl;
+        return comms_success;
+
+    }
     
-    return result;*/
 }
 
 bool World::isCollision(int x, int y) {
@@ -1095,6 +1183,32 @@ void World::initializeBackground() {
 
 void World::addObstacle(std::vector<cv::Point> polygon) { // to list, not plotting yet
     obstacles.push_back(polygon);
+}
+
+double World::initSignalPathLossFactor() {
+
+    double signal_path_loss_factor = 0;
+
+    auto world_attrs = parser->j["world_attributes"];
+
+    if (world_attrs.contains("signal_path_loss_factor")) {
+        signal_path_loss_factor = world_attrs["signal_path_loss_factor"];
+    }
+
+    return signal_path_loss_factor;
+}
+
+double World::initDecayRate() {
+
+    double decay_rate = 0;
+
+    auto world_attrs = parser->j["world_attributes"];
+
+    if (world_attrs.contains("decay_rate")) {
+        decay_rate = world_attrs["decay_rate"];
+    }
+
+    return decay_rate;
 }
 
 void World::getObstacles() {

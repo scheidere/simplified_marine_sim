@@ -77,6 +77,9 @@ protected:
 
     std::vector<std::vector<cv::Point>> obstacles; // Main obstacles list
 
+    double signal_path_loss_factor;
+    double decay_rate;
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
@@ -243,6 +246,12 @@ public:
     void getObstacles();
 
     bool isObstacle(int x, int y);
+
+    double initSignalPathLossFactor();
+
+    double getSignalStrength(); // not used now
+
+    double initDecayRate();
 };
 
 #endif
