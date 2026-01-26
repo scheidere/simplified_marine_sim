@@ -80,6 +80,9 @@ protected:
     double signal_path_loss_factor;
     double decay_rate;
 
+    double fault_percentage; // percentage of actions that will fail when executed
+    double random_seed; // for ability to toggle for repeatability
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
@@ -136,6 +139,7 @@ public:
 
     void printTrackedRobots();
 
+    bool inCommsTrue(int id1, int id2);
     bool inComms(int id1, int id2);
 
     std::mutex& getWorldMutex() { return world_mutex; }
@@ -227,6 +231,7 @@ public:
 
     int getPrerequisiteFailureThreshold(std::string subtask_name);
 
+    std::unordered_map<int,bool> initManualFaultInjectionTracker();
     std::unordered_map<int,bool> initFaultInjectionTracker();
 
     bool getFaultInjectionFlag(int task_id);
@@ -252,6 +257,11 @@ public:
     double getSignalStrength(); // not used now
 
     double initDecayRate();
+
+    double initFaultInjectionPercentage();
+    double initRandomSeed();
+
+    void injectRandomFaults();
 };
 
 #endif

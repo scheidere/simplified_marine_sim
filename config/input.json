@@ -2,12 +2,16 @@
 	"world_attributes": 
 		{
 			"notes:": ["Fault injection object must only include action (subtask) IDs...",
-						"Lower decay_rate corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)"],
+						"Lower decay_rate corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)",
+						"random_seed of 0 results in different seed every run",
+						"fault_percentage should be an int between 0 and 100"],
 			"size_x": 200,
 			"size_y": 200,
 			"step_size": 5,
-			"fault_injection": {"2": 0, "3": 1 },
+			"fault_injection": {"2": 0, "3": 0 },
 			"decay_rate": 1.5,
+			"fault_percentage": 50,
+			"random_seed": 0,
 			"obstacles": [
 		       {
 		            "points": [

@@ -38,10 +38,19 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         all_tasks_info = initAllTasksInfo();
         all_subtasks_info = initAllSubtasksInfo();
 
+
         agent_ids = getAgentIDs();
         subtask_ids = getSubtaskIDs();
 
-        fault_injection_tracker = initFaultInjectionTracker();
+        signal_path_loss_factor = initSignalPathLossFactor();
+        // std::string y = "signal_path_loss_factor:" + std::to_string(signal_path_loss_factor);
+        // log_info(y);
+        decay_rate = initDecayRate();
+        fault_percentage = initFaultInjectionPercentage();
+        random_seed = initRandomSeed();
+
+        //fault_injection_tracker = initManualFaultInjectionTracker(); // only if fault_injection given manually in input world attributes
+        fault_injection_tracker = initFaultInjectionTracker(); // Init'd randomly by input fault percentage
 
         log_info("all_tasks_info: ");
         logListofTaskIDs(all_tasks_info);
@@ -82,10 +91,6 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
             getTaskLocation(task_id);
         }*/
 
-        signal_path_loss_factor = initSignalPathLossFactor();
-        // std::string y = "signal_path_loss_factor:" + std::to_string(signal_path_loss_factor);
-        // log_info(y);
-        decay_rate = initDecayRate();
 
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
@@ -730,6 +735,21 @@ void World::trackRobot(Robot* robot) {
     robot_tracker[robot->getID()] = robot;
 }
 
+bool World::inCommsTrue(int id1, int id2) {
+    // This is the old inComms, used for world functions that need true list of neighbors in comms 
+
+    std::lock_guard<std::mutex> lock(world_mutex);
+    if (robot_tracker.find(id1) == robot_tracker.end() || robot_tracker.find(id2) == robot_tracker.end()) {
+        return false;
+    }
+    Robot* robot1 = robot_tracker[id1];
+    Robot* robot2 = robot_tracker[id2];
+    Pose2D p1 = robot1->getPose(); Pose2D p2 = robot2->getPose();
+    double distance_between_robots = distance->getEuclideanDistance(p1.x,p1.y,p2.x,p2.y);
+    return distance_between_robots <= comms_range; // before testing below
+
+}
+
 bool World::inComms(int id1, int id2) {
     std::lock_guard<std::mutex> lock(world_mutex);
 
@@ -865,7 +885,7 @@ std::vector<int> World::getNeighborsInComms(int robot_id) {
     for (auto& pair : robot_tracker) {
         int other_robot_id = pair.first;
         Robot* robot = pair.second;
-        if ( other_robot_id != robot_id && inComms(robot_id,other_robot_id)) {
+        if ( other_robot_id != robot_id && inCommsTrue(robot_id,other_robot_id)) { // inCommsTrue 
             // Neighbor found! Potential neighbor is not self and is in comms range of robot with id = robot_id so it is a neighbor
             neighbor_ids.push_back(other_robot_id);
         }
@@ -1075,7 +1095,7 @@ int World::getPrerequisiteFailureThreshold(std::string subtask_name) {
     return -1; // To denote error, failure threshold not found
 }
 
-std::unordered_map<int, bool> World::initFaultInjectionTracker() {
+std::unordered_map<int, bool> World::initManualFaultInjectionTracker() {
     auto world_attributes = parser->j["world_attributes"];
     
     // Parse as string keys and int values (what's actually in the JSON)
@@ -1087,6 +1107,19 @@ std::unordered_map<int, bool> World::initFaultInjectionTracker() {
         fault_injection_tracker[std::stoi(key_str)] = (value != 0);
     }
     
+    return fault_injection_tracker;
+}
+
+std::unordered_map<int, bool> World::initFaultInjectionTracker() {
+
+    log_info("in new init for fault injection tracker");
+
+    // Initialize all subtasks with false (no faults)
+    for (const auto& [subtask_id, task_info] : all_subtasks_info) {
+        fault_injection_tracker[subtask_id] = false;
+    }
+    injectRandomFaults();
+
     return fault_injection_tracker;
 }
 
@@ -1253,4 +1286,77 @@ bool World::isObstacle(int x, int y) {
     }
     
     return false;  // Not in any obstacle
+}
+
+void World::injectRandomFaults() {
+
+    log_info("in injectRandomFaults for fault_percentage: ");
+    std::string b = std::to_string(fault_percentage);
+    log_info(b);
+    
+    std::mt19937 gen;
+    if (random_seed == 0) { // No seed given
+        std::random_device rd;
+        gen.seed(rd());
+    } else { // seed given, repeatable randomness
+        gen.seed(random_seed);
+    }
+
+    std::uniform_real_distribution<> dis(0.0, 1.0);
+    
+    // This method initializes each action with a given % chance of failure
+    /*for (auto& [subtask_id, fault_flag] : fault_injection_tracker) {
+        // Roll dice: if under percentage, inject fault (true), otherwise no fault (false)
+        fault_flag = (dis(gen) < fault_percentage);
+    }*/
+
+    // This method initializes given % of actions to fail
+
+    // Approximate number of faults from given % to fail
+    int total_actions = fault_injection_tracker.size();
+    // int num_faults1 = static_cast<int>(std::round(total_actions * fault_percentage)); // less predictable
+    int num_faults = std::lround(total_actions * fault_percentage);
+
+    // std::string d = "Given num actions, num_faults1: " + std::to_string(num_faults1);
+    // log_info(d);
+    std::string c = "Given num actions, num_faults: " + std::to_string(num_faults);
+    log_info(c);
+
+    // Shuffle action IDs
+    std::vector<int> action_ids;
+    for (const auto& [id, _] : fault_injection_tracker) {
+        action_ids.push_back(id);
+    }
+    std::shuffle(action_ids.begin(), action_ids.end(), gen);
+
+    // Given random order of actions, set num_faults of them to false
+    for (size_t i = 0; i < action_ids.size(); i++) {
+        fault_injection_tracker[action_ids[i]] = (i < num_faults);
+    }
+    
+    
+}
+
+double World::initFaultInjectionPercentage() {
+    double fault_percentage = 0; // no faults
+
+    auto world_attrs = parser->j["world_attributes"];
+
+    if (world_attrs.contains("fault_percentage")) {
+        fault_percentage = world_attrs["fault_percentage"].get<double>() / 100.0;
+    }
+
+    return fault_percentage;
+}
+
+double World::initRandomSeed() {
+    double random_seed = 0; // 0 because why not
+
+    auto world_attrs = parser->j["world_attributes"];
+
+    if (world_attrs.contains("random_seed")) {
+        random_seed = world_attrs["random_seed"];
+    }
+
+    return random_seed;
 }
