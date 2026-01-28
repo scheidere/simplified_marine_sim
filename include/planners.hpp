@@ -25,9 +25,10 @@ protected:
     std::shared_ptr<BT::ProtectedQueue<Pose2D>> current_plan;
     int step_size; // In pixels
     World* world;
+    Robot* robot;
 
 public:
-    Planner(int step_size, World* w);
+    Planner(int step_size, World* w, Robot* robot);
 
     void test();
 
@@ -57,7 +58,7 @@ public:
 
 class ShortestPath : public Planner {
 public:
-    ShortestPath(int step_size, World* w);
+    ShortestPath(int step_size, World* w, Robot* r);
 
     // This function generates shortest path to waypoint (does not change sim state)
     //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // This was original way
@@ -74,7 +75,7 @@ protected:
     int obs_radius; // Observation radius in pixels
 
 public:
-    CoveragePath(int step_size, int obs_radius, World* w);
+    CoveragePath(int step_size, int obs_radius, World* w, Robot* r);
 
     int getObsRadius() const { return obs_radius; }
 

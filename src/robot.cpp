@@ -13,8 +13,8 @@
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
-Robot::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
-: planner(p), shortest_path(sp), coverage_path(cp), world(w), parser(psr), id(robot_id), type(robot_type) {
+Robot::Robot( World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar dot_color) 
+: world(w), parser(psr), id(robot_id), type(robot_type) {
     
     // Get filename for logging and then open it
     std::string filename = generateLogFilename();
@@ -658,8 +658,10 @@ bool Robot::batteryLow() {
     return battery_level < 0.15;
 }
 
-void Robot::move(Pose2D waypoint) {
+/*void Robot::move(Pose2D waypoint) {
     //std::cout << "In move for robot with ID " << getID() << std::endl;
+
+    log_info("in move");
 
     Pose2D old_pose = pose;
 
@@ -691,6 +693,36 @@ void Robot::move(Pose2D waypoint) {
     double drain_percent = 0.01;
     updateBatteryLevel(drain_percent);
     //std::cout << "New battery level after move: " << battery_level << " for robot ID " << id << std::endl;
+}*/
+
+void Robot::move(Pose2D waypoint) {
+    log_info("in move");
+    
+    Pose2D old_pose = pose;
+    std::string old = "old_pose: (" + std::to_string(old_pose.x) + ", " + std::to_string(old_pose.y) + ")";
+    log_info(old);
+    std::string target = "waypoint: (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ")";
+    log_info(target);
+    
+    world->clear(pose);
+    pose = waypoint; // Update x and y within robot class
+    
+    std::string new_p = "new pose: (" + std::to_string(pose.x) + ", " + std::to_string(pose.y) + ")";
+    log_info(new_p);
+    
+    // Track distance traveled
+    std::thread([this, old_pose, waypoint]() { 
+        double distance = Distance::getEuclideanDistance(old_pose.x, old_pose.y, pose.x, pose.y);
+        
+        cumulative_distance += distance;
+        std::string d = "Current cumulative distance: " + std::to_string(cumulative_distance);
+        log_info(d);
+    }).detach();
+    
+    std::thread([this]() { world->plot(); }).detach();
+    
+    double drain_percent = 0.01;
+    updateBatteryLevel(drain_percent);
 }
 
 // debug version of move with prints below

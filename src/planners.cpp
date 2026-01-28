@@ -6,7 +6,7 @@
 #include "distance.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
-Planner::Planner(int step_size, World* w) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>()), world(w) 
+Planner::Planner(int step_size, World* w, Robot* r) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>()), world(w), robot(r)
 {
 }
 
@@ -149,7 +149,7 @@ std::vector<bool> Planner::initializeVisits(int V) {
 }*/
 
 
-ShortestPath::ShortestPath(int step_size, World* w) : Planner(step_size, w) {
+ShortestPath::ShortestPath(int step_size, World* w, Robot* r) : Planner(step_size, w, r) {
 
 }
 
@@ -329,7 +329,7 @@ std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X
 
 
 
-CoveragePath::CoveragePath(int step_size, int obs_radius, World* w) : ShortestPath(step_size, w), obs_radius(obs_radius)  {
+CoveragePath::CoveragePath(int step_size, int obs_radius, World* w, Robot* r) : ShortestPath(step_size, w, r), obs_radius(obs_radius)  {
     std::cout << "HELLLLLOOOOOOOOO obs_radius in coverage path: " << obs_radius << std::endl;
 
 }

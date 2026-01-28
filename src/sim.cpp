@@ -276,7 +276,7 @@
 </root>
 )";*/
 
-// Next level counter sequence testing with CBGA, still dummy task 7 (subtasks 10,11), this runs! Demonstrates fault recovery given subtask 2 failure
+// Main testing tree
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
@@ -298,13 +298,16 @@ static const char* xml_text = R"(
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
                     <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
                     <Subtask_1/>
-                    <Subtask_2/>
                 </CounterSequence>
             </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
 )";
+// Removed <Subtask_1/>
+// <TestShortPath task_loc = "{stl}" />
+// <FollowShortestPath goal_loc = "{stl}" />
+
 
 // For testing obstacle avoidance
 // next add task node to travel to
@@ -478,12 +481,13 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
             // Planner planner(step_size, world);
             // ShortestPath shortest_path(step_size);
             // CoveragePath coverage_path(step_size, obs_radius);
-            Planner planner(step_size, &world);
-            ShortestPath shortest_path(step_size, &world);
-            CoveragePath coverage_path(step_size, obs_radius, &world);
-
-            Robot robot(&planner, &shortest_path, &coverage_path, &world, &parser, initial_pose, robot_id, robot_type, color);
+            
+            Robot robot(&world, &parser, initial_pose, robot_id, robot_type, color);
             std::cout << "Robot " << robot_id << " created successfully." << std::endl;
+
+            Planner planner(step_size, &world, &robot);
+            ShortestPath shortest_path(step_size, &world, &robot);
+            CoveragePath coverage_path(step_size, obs_radius, &world, &robot);
 
             {
                 world.plot();
@@ -531,7 +535,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<HandleFailures>("HandleFailures", std::ref(world), std::ref(robot));
                 factory.registerNodeType<CounterSequence>("CounterSequence");
                 factory.registerNodeType<TaskNeededNow>("TaskNeededNow", std::ref(robot), std::ref(world));
-                factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world));
+                factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<Subtask_2>("Subtask_2", std::ref(robot), std::ref(world));
                 factory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));

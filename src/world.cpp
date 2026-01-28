@@ -988,6 +988,7 @@ void World::debugTaskAccess(int task_id, Robot& robot) {
 
 bool World::fullGroupPresent(int current_task_id) {
 
+    log_info("in fullGroupPresent");
     // Get task struct
     TaskInfo& current_task = getTaskInfo(current_task_id); // Get task struct from world 
     std::pair<int,int> task_location = current_task.location;

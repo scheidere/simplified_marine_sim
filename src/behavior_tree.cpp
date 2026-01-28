@@ -1518,8 +1518,8 @@ PortsList TaskNeededNow::providedPorts()
 }
 
 Subtask_1::Subtask_1(const std::string& name, const NodeConfig& config,
-                                       Robot& r, World& w)
-    : StatefulActionNode(name, config), _robot(r), _world(w) {
+                                       Robot& r, World& w, ShortestPath& sp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _shortest_path_planner(sp) {
     }
 
 NodeStatus Subtask_1::onStart()
@@ -1528,6 +1528,34 @@ NodeStatus Subtask_1::onStart()
         std::cout << "Robot " << _robot.getID() << " doing subtask 1..." << std::endl;
         std::string strt = "Starting subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
         _world.log_info(strt);
+
+        _world.log_info("Task progress after single update in action start function:");
+        _world.logCurrentTeamTaskProgress();
+
+        std::vector<int> task_path = _robot.getPath(); 
+        int current_task_id = task_path[0];
+        TaskInfo& current_task = _world.getTaskInfo(current_task_id);
+        std::pair<int,int> goal_loc = current_task.location;
+        Pose2D goal_pose = {goal_loc.first, goal_loc.second,0};
+
+        std::string bla = "Goal loc for subtask 1 is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);
+        _robot.log_info(bla);
+        _world.log_info(bla);
+
+        Pose2D current_pose = _robot.getPose();
+
+        // Init vector of waypoints, the plan
+        _waypoints = _shortest_path_planner.plan(current_pose, goal_pose,
+                                                _world.getX(), _world.getY());
+        
+        if (_waypoints.empty()) {
+            std::cout << "No path found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::string borp = "Planned path with " + std::to_string(_waypoints.size()) + " waypoints";
+        _robot.log_info(borp);
 
         return NodeStatus::RUNNING;
         
@@ -1559,49 +1587,94 @@ NodeStatus Subtask_1::onRunning()
             _robot.setHelperMode(true);
         } // otherwise remains default false, which allows potential fault injections
 
-        // Now that we have checked main vs sub logic, need to update current task to this subtask id for fault injection/recovery logic
-        std::string name = "Test_Subtask_1";
-        int local_current_task_id = _world.getSubtaskID(name);
+        bool group_present = _world.fullGroupPresent(current_task_id);
+        std::string gp = "fullGroupPresent: " + std::to_string(group_present);
+        _robot.log_info(gp);
+
+        // Traverse to task location and wait for group, if applicable
+        if (_world.fullGroupPresent(current_task_id)) {
+
+            // just for testing
+            TaskInfo& task = _world.getTaskInfo(current_task_id);
+            std::string msg1 = "GROUP PRESENT! group_size needed: " + std::to_string(task.group_size);
+            _robot.log_info(msg1);
+            std::string msg2 = "Robot at: " + std::to_string(_robot.getPose().x) + ", " + std::to_string(_robot.getPose().y);
+            _robot.log_info(msg2);
+            std::string msg3 = "Task location: " + std::to_string(task.location.first) + ", " + std::to_string(task.location.second);
+            _robot.log_info(msg3);
+            // just for testing
+
+            // Now that we have checked main vs sub logic, need to update current task to this subtask id for fault injection/recovery logic
+            std::string name = "Test_Subtask_1";
+            int local_current_task_id = _world.getSubtaskID(name);
+
+            std::string strt = "Running subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+
+            std::string hi = "Current_task_id: " + std::to_string(local_current_task_id);
+            _world.log_info(hi);
+
+            // Allow world to inject fault, or not
+            bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+
+            std::string hii = "fault_flag: " + std::to_string(fault_flag);
+            _world.log_info(hii);
+
+            std::string d = "Robot " + std::to_string(_robot.getID()) + " right before return block for subtask 1";
+            _world.log_info(d);
+
+            if (fault_flag && !_robot.inHelperMode()) {
+                _robot.log_info("in failure return for subtask 1");
+                std::string a = "Robot " + std::to_string(_robot.getID()) + " in failure return for subtask 1";
+                _world.log_info(a);
+                return NodeStatus::FAILURE;
+            } else if (_robot.inHelperMode()) { // For now, we always allow helper robot to successfully help
+                _robot.log_info("helper helping with subtask 1 now!");
+                // World must detect that helper has helped, and reflect change by reseting fault injection flag from 1 (cause fault) to 0
+                _world.updateFaultInjectionTracker(local_current_task_id,0); // Helper resolves fault
+                _robot.setHelperMode(false); // No longer a helper for this subtask, because fault resolved now
+                std::string hep = "fault recovered with subtask 1, helper succeeds";
+                _robot.log_info(hep);
+                std::string b = "Robot " + std::to_string(_robot.getID()) + " in helper mode for subtask 1";
+                _world.log_info(b);
+            }
+
+            taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+
+            std::string herp = "processing done, subtask 1 returning success";
+            _robot.log_info(herp);
+            std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for subtask 1";
+            _world.log_info(c);
+            // If in helper mode or not, permitted to return success here, i.e., no fault
+            return NodeStatus::SUCCESS;
+        
+
+        }
 
         std::string strt = "Running subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
         _world.log_info(strt);
 
-        std::string hi = "Current_task_id: " + std::to_string(local_current_task_id);
-        _world.log_info(hi);
-
-        // Allow world to inject fault, or not
-        bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
-
-        std::string hii = "fault_flag: " + std::to_string(fault_flag);
-        _world.log_info(hii);
-
-        std::string d = "Robot " + std::to_string(_robot.getID()) + " right before return block for subtask 1";
-        _world.log_info(d);
-
-        if (fault_flag && !_robot.inHelperMode()) {
-            _robot.log_info("in failure return for subtask 1");
-            std::string a = "Robot " + std::to_string(_robot.getID()) + " in failure return for subtask 1";
-            _world.log_info(a);
-            return NodeStatus::FAILURE;
-        } else if (_robot.inHelperMode()) { // For now, we always allow helper robot to successfully help
-            _robot.log_info("helper helping with subtask 1 now!");
-            // World must detect that helper has helped, and reflect change by reseting fault injection flag from 1 (cause fault) to 0
-            _world.updateFaultInjectionTracker(local_current_task_id,0); // Helper resolves fault
-            _robot.setHelperMode(false); // No longer a helper for this subtask, because fault resolved now
-            std::string hep = "fault recovered with subtask 1, helper succeeds";
-            _robot.log_info(hep);
-            std::string b = "Robot " + std::to_string(_robot.getID()) + " in helper mode for subtask 1";
-            _world.log_info(b);
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "All waypoints completed!" << std::endl;
+            std::string strt = "Completed shortest path to subask 1 for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+            // return NodeStatus::RUNNING;
+            return NodeStatus::SUCCESS; // for testing without group part above
         }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        std::string wp = "Waypoint coords: (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ")";
+        _robot.log_info(wp);
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
+                  << ": " << waypoint.x << "/" << waypoint.y << std::endl;
+        
+        _robot.move(waypoint);
 
-        taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+        _current_waypoint_index++;
+        return NodeStatus::RUNNING;
 
-        std::string herp = "processing done, subtask 1 returning success";
-        _robot.log_info(herp);
-        std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for subtask 1";
-        _world.log_info(c);
-        // If in helper mode or not, permitted to return success here, i.e., no fault
-        return NodeStatus::SUCCESS;
         
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;

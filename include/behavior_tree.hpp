@@ -343,9 +343,13 @@ class Subtask_1 : public StatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
 
 public:
-    Subtask_1(const std::string& name, const NodeConfig& config, Robot& r, World& w);
+    Subtask_1(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
 
     NodeStatus onStart() override;
     NodeStatus onRunning() override;

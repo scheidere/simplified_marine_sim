@@ -10,38 +10,27 @@
 			"size_x": 200,
 			"size_y": 200,
 			"step_size": 5,
-			"decay_rate": 0,
-			"fault_percentage": 0,
+			"decay_rate": 1.5,
+			"fault_percentage": 50,
 			"random_seed": 0,
 			"obstacles": [
+		       {
+		            "points": [
+		                {"x": 50, "y": 50},
+		                {"x": 70, "y": 50},
+		                {"x": 60, "y": 70}
+		            ]
+		        },
 			    {
 			        "points": [
-			            {"x": 0, "y": 100},
-			            {"x": 94, "y": 100},
-			            {"x": 94, "y": 120},
-			            {"x": 0, "y": 120}
-			        ]
-			    },
-			    {
-			        "points": [
-			            {"x": 106, "y": 100},
-			            {"x": 200, "y": 100},
-			            {"x": 200, "y": 120},
-			            {"x": 106, "y": 120}
+			            {"x": 150, "y": 150},
+			            {"x": 170, "y": 150},
+			            {"x": 170, "y": 170},
+			            {"x": 150, "y": 170}
 			        ]
 			    }
-			],
-			"unknown_obstacles": [
-				{
-				    "points": [
-				        {"x": 94, "y": 100},
-				        {"x": 106, "y": 100},
-				        {"x": 106, "y": 120},
-				        {"x": 94, "y": 120}
-				    ]
-				}
-			]
-	},
+    		]
+		},
 
 	"robot_attributes":
 		{
@@ -55,9 +44,9 @@
 			"id": 1,
 			"name":  "Test_Task",
 			"type": "test",
-			"actions": [2],
+			"actions": [2,3],
 			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"location": {"x": 150, "y": 150},
+			"location": {"x": 0, "y": 0},
 			"reward": 5
 		}
 	],
@@ -65,6 +54,19 @@
 		{
 			"id": 2,
 			"name":  "Test_Subtask_1",
+			"main_id": 1,
+			"prerequisite_failures": 2,
+			"location": {"x": 10, "y": 5}
+		},
+		{
+			"id": 3,
+			"name":  "Test_Subtask_2",
+			"main_id": 1,
+			"prerequisite_failures": 2
+		},
+		{
+			"id": 4,
+			"name":  "Test_Subtask_3",
 			"main_id": 1,
 			"prerequisite_failures": 2
 		}

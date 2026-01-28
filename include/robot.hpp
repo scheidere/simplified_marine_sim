@@ -22,9 +22,6 @@ private:
     std::string type;
     int task_id;
     Pose2D pose;
-    Planner* planner;
-    ShortestPath* shortest_path;
-    CoveragePath* coverage_path;
     World* world; // Point to single,shared world instance
     JSONParser* parser;
     std::vector<Msg> message_queue;
@@ -82,7 +79,7 @@ private:
     bool help_given; // self is helper and has succeeded (set to true in helper mode subtask success)
 
 public:
-    Robot(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
+    Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
     int getID() const { return id; }
     std::string getType() const { return type; }
