@@ -85,7 +85,7 @@ std::vector<std::pair<double,int>> Planner::getNeighbors(int x, int y, int X, in
                 double new_y = y + j;
                 //std::cout << new_x << ", " << new_y << std::endl;
                 // Check that neighbor is valid, i.e. on map (and eventually not in an obstacle)
-                if (inBounds(new_x,new_y,X,Y) && !world->isObstacle(new_x, new_y)) { // added check for obstacle
+                if (inBounds(new_x,new_y,X,Y) && !world->isObstacle(new_x, new_y) && !robot->isFoundObstacle(new_x,new_y)) { // added check for obstacle
                     //std::cout << "Neighbor " << new_x << ", " << new_y << " is valid" << std::endl;
                     int neighbor_idx = getIndex(new_x,new_y,Y);
                     //std::cout << "neigh idx: " << neighbor_idx << std::endl;
@@ -202,6 +202,7 @@ std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X
     if (predecessor[goal_idx] == -1 && start_idx != goal_idx) {
         // Goal was never reached - no path exists
         std::cout << "No path to goal - unreachable!" << std::endl;
+        world->log_info("No path to goal - unreachable!");
         return std::vector<Pose2D>();  // Return empty
     }
     

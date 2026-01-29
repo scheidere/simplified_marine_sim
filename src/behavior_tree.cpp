@@ -1532,11 +1532,14 @@ NodeStatus Subtask_1::onStart()
         _world.log_info("Task progress after single update in action start function:");
         _world.logCurrentTeamTaskProgress();
 
-        std::vector<int> task_path = _robot.getPath(); 
-        int current_task_id = task_path[0];
-        TaskInfo& current_task = _world.getTaskInfo(current_task_id);
-        std::pair<int,int> goal_loc = current_task.location;
-        Pose2D goal_pose = {goal_loc.first, goal_loc.second,0};
+        // std::vector<int> task_path = _robot.getPath(); 
+        // int current_task_id = task_path[0];
+        // TaskInfo& current_task = _world.getTaskInfo(current_task_id);
+        // std::pair<int,int> goal_loc = current_task.location;
+        // Pose2D goal_pose = {goal_loc.first, goal_loc.second,0};
+
+        // Above lines now in this function
+        Pose2D goal_pose = _robot.getCurrentGoalPose();
 
         std::string bla = "Goal loc for subtask 1 is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);
         _robot.log_info(bla);
@@ -1669,6 +1672,27 @@ NodeStatus Subtask_1::onRunning()
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
                   << ": " << waypoint.x << "/" << waypoint.y << std::endl;
+
+
+        // Check if next waypoint is traversable for current robot type
+        if(_robot.foundObstacle(waypoint)) {
+            _robot.log_info("in found obstacle in subtask 1");
+
+            // Clear plan, replan, continue on new plan
+            _waypoints.clear(); 
+            Pose2D current_pose = _robot.getPose();
+            Pose2D goal_pose = _robot.getCurrentGoalPose();
+            _waypoints = _shortest_path_planner.plan(current_pose, goal_pose, _world.getX(), _world.getY());
+
+            if (_waypoints.empty()) {
+                std::cout << "No path found" << std::endl;
+                return NodeStatus::FAILURE;
+            }
+            
+            _current_waypoint_index = 0;
+
+            return NodeStatus::RUNNING;
+        }
         
         _robot.move(waypoint);
 

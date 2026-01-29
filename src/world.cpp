@@ -61,6 +61,7 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
 
         //addObstacle({{50, 50}, {70, 50}, {60, 70}}); // for testing
         getObstacles(); // parse and populate obstacles list
+        getUnknownObstacles(); // get obstacles that are not known by robot until encountered
         initializeBackground(); // just obstacles, so don't have to replot
 
         log_info("after obstacle init");
@@ -1211,12 +1212,26 @@ void World::initializeBackground() {
         int npts = polygon.size();
         cv::fillPoly(background_image, &pts, &npts, 1, cv::Scalar(0, 0, 0));
     }
+
+    // for (const auto& blocked_robot_type : unknown_obstacles.keys()) {
+    //     for (const auto& polygon : unknown_obstacles[blocked_robot_type]) {
+    for (const auto& [blocked_robot_type, obstacles] : unknown_obstacles) {
+        for (const auto& polygon : obstacles) {
+            const cv::Point* pts = polygon.data();
+            int npts = polygon.size();
+            cv::fillPoly(background_image, &pts, &npts, 1, cv::Scalar(128, 128, 128));
+        }
+    }
     
     std::cout << "Background with " << obstacles.size() << " obstacles initialized" << std::endl;
 }
 
 void World::addObstacle(std::vector<cv::Point> polygon) { // to list, not plotting yet
     obstacles.push_back(polygon);
+}
+
+void World::addUnknownObstacle(std::string blocked_robot_type, std::vector<cv::Point> polygon) { // to list, not plotting yet
+    unknown_obstacles[blocked_robot_type].push_back(polygon);
 }
 
 double World::initSignalPathLossFactor() {
@@ -1267,6 +1282,32 @@ void World::getObstacles() {
     std::cout << "Loaded " << obstacles.size() << " obstacles from JSON" << std::endl;
 }
 
+void World::getUnknownObstacles() {
+    // Parse unknown obstacles
+
+    auto world_attrs = parser->j["world_attributes"];
+    
+    if (world_attrs.contains("unknown_obstacles")) {
+        for (const auto& obstacle_json : world_attrs["unknown_obstacles"]) {
+            std::vector<cv::Point> polygon;
+
+            for (const auto& blocked_robot_type : obstacle_json["blocks"]) {
+                for (const auto& point : obstacle_json["points"]) {
+                    int x = point["x"].get<int>();
+                    int y = point["y"].get<int>();
+                    polygon.push_back(cv::Point(x, y));
+                }
+            
+                addUnknownObstacle(blocked_robot_type, polygon);
+            }
+            
+            
+        }
+    }
+    
+    std::cout << "Loaded " << unknown_obstacles.size() << " unknown obstacles from JSON" << std::endl;
+}
+
 bool World::isObstacle(int x, int y) {
     cv::Point test_point(x, y);
     
@@ -1287,6 +1328,43 @@ bool World::isObstacle(int x, int y) {
     }
     
     return false;  // Not in any obstacle
+}
+
+std::pair<bool, std::vector<cv::Point>> World::isUnknownObstacle(Pose2D waypoint, std::string robot_type) {
+    std::pair<bool, std::vector<cv::Point>> is_obstacle = {false, std::vector<cv::Point>()};
+    
+    cv::Point test_point(waypoint.x, waypoint.y);
+    
+    std::string wp = "Checking waypoint (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ") for robot type: " + robot_type;
+    log_info(wp);
+    
+    // Check if this robot type has unknown obstacles
+    if (unknown_obstacles.find(robot_type) == unknown_obstacles.end()) {
+        log_info("No unknown obstacles defined for this robot type");
+        return is_obstacle;  // No unknown obstacles for this robot type
+    }
+    
+    std::string count = "Found " + std::to_string(unknown_obstacles[robot_type].size()) + " unknown obstacles for " + robot_type;
+    log_info(count);
+    
+    // Check each unknown obstacle polygon for this robot type
+    for (const auto& polygon : unknown_obstacles[robot_type]) {
+        double distance = cv::pointPolygonTest(polygon, test_point, true);  // true = measure distance
+        
+        std::string dist_msg = "Distance to obstacle: " + std::to_string(distance);
+        log_info(dist_msg);
+        
+        // If inside polygon OR within robot radius (5)
+        if (distance >= -5) {
+            log_info("WAYPOINT IS IN UNKNOWN OBSTACLE!");
+            is_obstacle.first = true;
+            is_obstacle.second = polygon;  // Return the polygon that blocks
+            return is_obstacle;
+        }
+    }
+    
+    log_info("Waypoint is clear of unknown obstacles");
+    return is_obstacle;  // Not in any unknown obstacle
 }
 
 void World::injectRandomFaults() {

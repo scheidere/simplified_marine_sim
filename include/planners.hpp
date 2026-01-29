@@ -38,8 +38,6 @@ public:
     //void updatePlan(std::shared_ptr<BT::ProtectedQueue<Pose2D>> new_plan) { current_plan = new_plan; }
     void updateStepSize(double new_step_size) { step_size = new_step_size; }   
 
-
-
     adjacency_vector convertImageToAdjacencyVector(int X, int Y);
     void printAdjacencyVector(const adjacency_vector &adj_vec, int Y);
     template <typename T>
@@ -64,9 +62,6 @@ public:
     //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // This was original way
     std::vector<Pose2D> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // new way, for single FollowShortestPath call in BT
 
-    // Update distance from start node to current node (given) with respect to its neighbor node
-    //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);
-
 
 };
 
@@ -83,9 +78,6 @@ public:
 
     std::vector<Pose2D> generateBoustrophedonWaypoints(std::unordered_map<std::string,int> area);
     std::vector<Pose2D> plan(Pose2D current_pose, std::unordered_map<std::string,int> area, int X, int Y); // new way, for single FollowCoveragePath call in BT
-
-    // Update distance from start node to current node (given) with respect to its neighbor node
-    //std::pair<matrix,matrix> updateDistanceFromStart(Pose2D current, matrix distance_tracker, matrix visit_tracker);
 
 
 };

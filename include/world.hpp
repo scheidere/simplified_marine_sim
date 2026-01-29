@@ -77,6 +77,9 @@ protected:
 
     std::vector<std::vector<cv::Point>> obstacles; // Main obstacles list
 
+    // Unknown obstacles list, discovered online, sorted by robot type (type: obstacles that block that type)
+    std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> unknown_obstacles;
+
     double signal_path_loss_factor;
     double decay_rate;
 
@@ -246,9 +249,13 @@ public:
 
     void initializeBackground();
 
-    void addObstacle(std::vector<cv::Point> polygon); // to list, not plotting yet
+    void addObstacle(std::vector<cv::Point> polygon);
+
+    void addUnknownObstacle(std::string blocked_robot_type, std::vector<cv::Point> polygon);
 
     void getObstacles();
+
+    void getUnknownObstacles();
 
     bool isObstacle(int x, int y);
 
@@ -262,6 +269,8 @@ public:
     double initRandomSeed();
 
     void injectRandomFaults();
+
+    std::pair<bool,std::vector<cv::Point>> isUnknownObstacle(Pose2D waypoint, std::string robot_type);
 };
 
 #endif

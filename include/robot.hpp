@@ -78,6 +78,9 @@ private:
     bool reattempt_failing_action; // received from neighbors who may have helped
     bool help_given; // self is helper and has succeeded (set to true in helper mode subtask success)
 
+    // Obstacles list, discovered online, sorted by robot type (type: obstacles found that block that type)
+    std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> discovered_obstacles;
+
 public:
     Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
@@ -126,6 +129,7 @@ public:
     std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
     std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
     void init(Pose2D initial_pose);
+    void saveNewFoundObstacle(std::vector<cv::Point> discovered_obstacle);
     void move(Pose2D waypoint);
     // void printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker);
     void printWorldPingTracker(std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker);
@@ -207,6 +211,12 @@ public:
 
     bool inHelperMode() { return helper_mode; }
     void setHelperMode(bool mode) { helper_mode = mode; }
+
+    bool foundObstacle(Pose2D waypoint); // for call in BT nodes before robot.move(waypoint)
+
+    bool isFoundObstacle(int x, int y); // for call in planner.plan
+
+    Pose2D getCurrentGoalPose();
 
     // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
     // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }

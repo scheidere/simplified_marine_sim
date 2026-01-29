@@ -695,6 +695,64 @@ bool Robot::batteryLow() {
     //std::cout << "New battery level after move: " << battery_level << " for robot ID " << id << std::endl;
 }*/
 
+void Robot::saveNewFoundObstacle(std::vector<cv::Point> discovered_obstacle) {
+
+    discovered_obstacles[type].push_back(discovered_obstacle);
+
+    log_info("Saved newly found obstacle, here is knowledge of previously unknown obstacles now:");
+    utils::logMapOfVectors(discovered_obstacles, *this);
+
+}
+
+bool Robot::isFoundObstacle(int x, int y) {
+
+    // To be called in planner getNeighbors like world->isObstacle is for known obstacles
+    // This checks if x and y are in NEWLY known obstacle
+
+    cv::Point test_point(x, y);
+    
+    // Search obstacles current robot has discovered
+    for (const auto& polygon : discovered_obstacles[type]) {
+
+        double distance = cv::pointPolygonTest(polygon, test_point, true);  // true = measure distance
+        
+        // If inside polygon OR within robot radius (5)
+        if (distance >= -5) {
+            return true;
+        }
+    }
+    
+    return false;  // Not in any obstacle
+}
+
+
+bool Robot::foundObstacle(Pose2D waypoint) {
+
+    // THIS IS ONLY TO BE CALLED IN BT NODE RIGHT BEFORE ROBOT MOVE
+    // This represents robot encountering the obstacle directly and justifies access to world info (as opposed to just pulling global info for no reason)
+
+    bool found_obstacle = false;
+
+    // Determine if waypoint is in previously unknown obstacle, and if so, also get obstacle (robot now knows this obstacle exists)
+    std::pair<bool, std::vector<cv::Point>> is_obstacle = world->isUnknownObstacle(waypoint, type); // bool denoting obstacle or not, obstacle vector of points
+
+    std::string o = "is_obstacle.first: " + std::to_string(is_obstacle.first);
+    log_info(o);
+
+    // Checking whether waypoint is in a previously unknown obstacle, and therefore impossible
+    if (is_obstacle.first) {
+        std::string msg = "Waypoint (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ") is in previously unknown obstacle";
+        log_info(msg);
+
+        // Save obstacle to new obstacle tracker, in list for robot type
+        saveNewFoundObstacle(is_obstacle.second);
+
+        found_obstacle = true;
+    }
+
+    return found_obstacle;
+}
+
 void Robot::move(Pose2D waypoint) {
     log_info("in move");
     
@@ -723,6 +781,17 @@ void Robot::move(Pose2D waypoint) {
     
     double drain_percent = 0.01;
     updateBatteryLevel(drain_percent);
+}
+
+Pose2D Robot::getCurrentGoalPose() {
+
+    std::vector<int> task_path = getPath(); 
+    int current_task_id = task_path[0];
+    TaskInfo& current_task = world->getTaskInfo(current_task_id);
+    std::pair<int,int> goal_loc = current_task.location;
+    Pose2D goal_pose = {goal_loc.first, goal_loc.second,0};
+
+    return goal_pose;
 }
 
 // debug version of move with prints below
