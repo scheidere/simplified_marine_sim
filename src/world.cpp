@@ -1255,6 +1255,16 @@ void World::initializeBackground() {
         }
     }
     
+    // Draw X for main tasks
+    for (const auto& [task_id, task_info] : all_tasks_info) {
+        cv::Point center(task_info.location.first, task_info.location.second);
+        int size = 4;
+        cv::line(background_image, cv::Point(center.x - size, center.y - size), 
+                 cv::Point(center.x + size, center.y + size), cv::Scalar(0, 0, 0), 2);
+        cv::line(background_image, cv::Point(center.x - size, center.y + size), 
+                 cv::Point(center.x + size, center.y - size), cv::Scalar(0, 0, 0), 2);
+    }
+
     std::cout << "Background with " << obstacles.size() << " obstacles initialized" << std::endl;
 }
 
