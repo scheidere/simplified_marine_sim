@@ -3,6 +3,7 @@
 #include <thread>
 #include <exception>
 #include <iostream>
+#include <csignal>
 #include "distance.hpp"
 #include "sensor_model.hpp"
 #include "world.hpp"
@@ -595,7 +596,23 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
     std::cout << "Exiting run_robot for robot " << robot_id << std::endl;
 }
 
+
+// for recording halt
+World* g_world = nullptr;
+
+void signalHandler(int signum) {
+    std::cout << "\nInterrupt signal (" << signum << ") received. Stopping recording..." << std::endl;
+    
+    if (g_world) {
+        g_world->stopRecording();
+    }
+    
+    exit(signum);
+}
+
 int main(int argc, char** argv) {
+    signal(SIGINT, signalHandler);
+
     try {
         double start_time = getCurrentTime();
         std::cout << "Running simulation..." << std::endl;
@@ -652,9 +669,12 @@ int main(int argc, char** argv) {
         Distance distance;
         SensorModel sensor_model(&distance);
         World world(X, Y, &distance, &sensor_model, &parser, comms_range);
-        /*Planner planner(step_size);
-        ShortestPath shortest_path(step_size);
-        CoveragePath coverage_path(step_size, obs_radius);*/
+        g_world = &world;  // Set global pointer
+        
+        // Register signal handler
+        signal(SIGINT, signalHandler);  // Ctrl+C
+        
+        world.startRecording("simulation.avi", 3.33);
 
         std::this_thread::sleep_for(std::chrono::seconds(2));
         std::cout << "in main 1" << std::endl;
@@ -702,6 +722,9 @@ int main(int argc, char** argv) {
         }
 
         std::cout << "Both threads finished" << std::endl;
+
+        // STOP VIDEO RECORDING
+        //world.stopRecording();
 
         double end_time = getCurrentTime();
         double total_time = end_time - start_time;

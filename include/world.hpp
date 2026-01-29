@@ -86,9 +86,13 @@ protected:
     double fault_percentage; // percentage of actions that will fail when executed
     double random_seed; // for ability to toggle for repeatability
 
+    cv::VideoWriter video_writer;
+    bool recording = false;
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
+    ~World(); // destructor, added for recording sim
 
     int getX() const { return X; }
     int getY() const { return Y; }
@@ -271,6 +275,9 @@ public:
     void injectRandomFaults();
 
     std::pair<bool,std::vector<cv::Point>> isUnknownObstacle(Pose2D waypoint, std::string robot_type);
+
+    void startRecording(const std::string& filename, double fps = 10.0);
+    void stopRecording();
 };
 
 #endif

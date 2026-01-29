@@ -702,6 +702,34 @@ void World::clear(Pose2D pose) {
     cv::circle(image, cv::Point(pose.x, pose.y), 5, cv::Scalar(255, 255, 255), -1);
 }
 
+void World::startRecording(const std::string& filename, double fps) {
+    int codec = 0;  // Uncompressed
+    cv::Size frame_size(X, Y);
+    
+    video_writer.open(filename, codec, fps, frame_size, true);
+    
+    if (!video_writer.isOpened()) {
+        std::cerr << "Failed to open video writer!" << std::endl;
+        recording = false;
+    } else {
+        std::cout << "Recording started" << std::endl;
+        recording = true;
+    }
+}
+    
+void World::stopRecording() {
+    if (recording) {
+        video_writer.release();
+        recording = false;
+        std::cout << "Recording stopped" << std::endl;
+    }
+}
+
+World::~World() {
+    stopRecording();
+    std::cout << "World destructor called - recording stopped" << std::endl;
+}
+
 void World::plot() {
     // Mutex used to lock whole function but there were big delays for some of the robots
 
@@ -724,6 +752,10 @@ void World::plot() {
     // Do all the slow drawing/display work without holding lock
     for (auto& data : robot_data) {
         cv::circle(image, cv::Point(data.first.x, data.first.y), 5, data.second, -1);
+    }
+
+    if (recording && video_writer.isOpened()) {
+        video_writer.write(image);
     }
     
     cv::imshow("World Image", image);
