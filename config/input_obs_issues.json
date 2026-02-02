@@ -1,0 +1,205 @@
+{
+	"world_attributes": 
+		{
+			"notes": [ "marine, easy domain: in progress - obstacles have issues, prolly throw out",
+						"Fault injection object must only include action (subtask) IDs...",
+						"fault_injection does not have to be manually defined, so only do if testing.",
+						"Will have to add initManualFaultInjectionTracker call to world constructor for the above.",
+						"Define fault_percentage instead by default. fault_percentage should be an int between 0 and 100",
+						"Lower decay_rate relates to comms and corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)",
+						"random_seed of 0 results in different seed every run"],
+			"size_x": 200,
+			"size_y": 200,
+			"step_size": 5,
+			"decay_rate": 1.5,
+			"fault_percentage": 0,
+			"random_seed": 0,
+			"obstacles": [
+			  {
+			    "points": [
+			      {"x": 136, "y": 107},
+			      {"x": 143, "y": 88},
+			      {"x": 170, "y": 105},
+			      {"x": 143, "y": 112}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 184, "y": 132},
+			      {"x": 195, "y": 136},
+			      {"x": 198, "y": 153},
+			      {"x": 194, "y": 162},
+			      {"x": 186, "y": 173}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 43, "y": 171},
+			      {"x": 54, "y": 144},
+			      {"x": 79, "y": 144},
+			      {"x": 69, "y": 159},
+			      {"x": 65, "y": 164}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 105, "y": 171},
+			      {"x": 129, "y": 167},
+			      {"x": 131, "y": 184}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 90, "y": 43},
+			      {"x": 95, "y": 31},
+			      {"x": 104, "y": 17},
+			      {"x": 100, "y": 32}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 168, "y": 45},
+			      {"x": 193, "y": 36},
+			      {"x": 186, "y": 65}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 44, "y": 78},
+			      {"x": 77, "y": 75},
+			      {"x": 86, "y": 95}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 124, "y": 0},
+			      {"x": 130, "y": 0},
+			      {"x": 153, "y": 20},
+			      {"x": 142, "y": 32}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 19, "y": 106},
+			      {"x": 23, "y": 111},
+			      {"x": 24, "y": 121}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 0, "y": 9},
+			      {"x": 16, "y": 13},
+			      {"x": 6, "y": 36}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 0, "y": 165},
+			      {"x": 19, "y": 158},
+			      {"x": 8, "y": 170}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 121, "y": 35},
+			      {"x": 163, "y": 58},
+			      {"x": 131, "y": 49}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 62, "y": 106},
+			      {"x": 93, "y": 125},
+			      {"x": 63, "y": 120}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 79, "y": 189},
+			      {"x": 101, "y": 191},
+			      {"x": 99, "y": 198},
+			      {"x": 84, "y": 200}
+			    ]
+			  },
+			  {
+			    "points": [
+			      {"x": 148, "y": 158},
+			      {"x": 159, "y": 134},
+			      {"x": 169, "y": 122},
+			      {"x": 163, "y": 135}
+			    ]
+			  }
+			],
+			"unknown_obstacles": [
+				
+			]
+
+	},
+
+	"robot_attributes":
+		{
+			"comms_range": 50.0,
+			"observation_radius": 10
+
+		},
+
+	"tasks": [
+		{
+			"id": 1,
+			"name":  "Test_Task",
+			"type": "test",
+			"actions": [2],
+			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
+			"location": {"x": 150, "y": 150},
+			"reward": 5
+		}
+	],
+	"actions": [
+		{
+			"id": 2,
+			"name":  "Test_Subtask_1",
+			"main_id": 1,
+			"prerequisite_failures": 2
+		}
+	],
+	"agent_capabilities": [
+		{
+			"_comments": [
+    			"Capabilities (task types they can do) of the agents by agent type",
+    			"Will add more task types later",
+    			"There must be at least one agent of each type below",
+    			"For each task, there must be at least one agent at the start capable of doing it"
+			]
+		},
+		{
+			"mapper": ["test"],
+			"analysis": ["test"]
+		}
+	],
+
+	"agents": [
+		{
+			"id": 1,
+			"type": "mapper",
+			"start_x": 10,
+	        "start_y": 10,
+	        "color": [0, 0, 255],
+	        "_comments": ["Comments here"]
+		},
+		{
+			"id": 2,
+			"type": "analysis",
+			"start_x": 11,
+	        "start_y": 10,
+	        "color": [255, 0, 0],
+	        "_comments": ["Comments here"]
+		}
+	],
+
+	"cbba": {
+		"max_depth": 3,
+		"convergence_threshold": 5,
+		"do_cbga": true
+	}
+
+}

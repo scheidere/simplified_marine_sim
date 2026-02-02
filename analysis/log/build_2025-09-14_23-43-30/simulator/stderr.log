@@ -1,0 +1,16 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testResolveConflicts(int, std::vector<Msg>&, std::vector<std::vector<double, std::allocator<double> > >&, std::unordered_map<int, double>&, int, std::vector<std::vector<double, std::allocator<double> > >&, std::unordered_map<int, double>&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1692:9:[m[K [01;31m[Kerror: [m[Kredeclaration of ‘[01m[Kint id_m1[m[K’
+ 1692 |     int [01;31m[Kid_m1[m[K = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
+      |         [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1685:9:[m[K [01;36m[Knote: [m[K‘[01m[Kint id_m1[m[K’ previously declared here
+ 1685 |     int [01;36m[Kid_m1[m[K = 2; int id_m2 = 3; // so would need to look at k=4 to see this specific test result accurately
+      |         [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1692:24:[m[K [01;31m[Kerror: [m[Kredeclaration of ‘[01m[Kint id_m2[m[K’
+ 1692 |     int id_m1 = 2; int [01;31m[Kid_m2[m[K = 3; // so would need to look at k=4 to see this specific test result accurately
+      |                        [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1685:24:[m[K [01;36m[Knote: [m[K‘[01m[Kint id_m2[m[K’ previously declared here
+ 1685 |     int id_m1 = 2; int [01;36m[Kid_m2[m[K = 3; // so would need to look at k=4 to see this specific test result accurately
+      |                        [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

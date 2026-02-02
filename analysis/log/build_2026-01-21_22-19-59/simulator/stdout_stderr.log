@@ -1,0 +1,32 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, TaskInfo> World::initAllTasksInfo()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:324:5:[m[K [01;31m[Kerror: [m[K‘[01m[KlogAllTasksInfo[m[K’ was not declared in this scope; did you mean ‘[01m[Kutils::logAllTasksInfo[m[K’?
+  324 |     [01;31m[KlogAllTasksInfo[m[K(all_tasks_info, *this);
+      |     [01;31m[K^~~~~~~~~~~~~~~[m[K
+      |     [32m[Kutils::logAllTasksInfo[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:324:13:[m[K [01;36m[Knote: [m[K‘[01m[Kutils::logAllTasksInfo[m[K’ declared here
+  324 | inline void [01;36m[KlogAllTasksInfo[m[K(const std::unordered_map<int, TaskInfo>& tasks_map, World& world) {
+      |             [01;36m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, TaskInfo> World::initAllSubtasksInfo()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:397:5:[m[K [01;31m[Kerror: [m[K‘[01m[KlogAllTasksInfo[m[K’ was not declared in this scope; did you mean ‘[01m[Kutils::logAllTasksInfo[m[K’?
+  397 |     [01;31m[KlogAllTasksInfo[m[K(all_subtasks_info, *this);
+      |     [01;31m[K^~~~~~~~~~~~~~~[m[K
+      |     [32m[Kutils::logAllTasksInfo[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:324:13:[m[K [01;36m[Knote: [m[K‘[01m[Kutils::logAllTasksInfo[m[K’ declared here
+  324 | inline void [01;36m[KlogAllTasksInfo[m[K(const std::unordered_map<int, TaskInfo>& tasks_map, World& world) {
+      |             [01;36m[K^~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

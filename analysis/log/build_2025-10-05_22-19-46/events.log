@@ -1,0 +1,418 @@
+[0.000000] (-) TimerEvent: {}
+[0.000360] (behaviortree_cpp) JobQueued: {'identifier': 'behaviortree_cpp', 'dependencies': OrderedDict()}
+[0.000440] (simulator) JobQueued: {'identifier': 'simulator', 'dependencies': OrderedDict([('behaviortree_cpp', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp')])}
+[0.000608] (behaviortree_cpp) JobStarted: {'identifier': 'behaviortree_cpp'}
+[0.005616] (behaviortree_cpp) JobProgress: {'identifier': 'behaviortree_cpp', 'progress': 'cmake'}
+[0.006424] (behaviortree_cpp) JobProgress: {'identifier': 'behaviortree_cpp', 'progress': 'build'}
+[0.006502] (behaviortree_cpp) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/emily/sa-mrbt_ws/build/behaviortree_cpp', '--', '-j12', '-l12'], 'cwd': '/home/emily/sa-mrbt_ws/build/behaviortree_cpp', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'emily'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:/opt/ros/iron/opt/rviz_ogre_vendor/lib:/opt/ros/iron/lib/x86_64-linux-gnu:/opt/ros/iron/lib'), ('HOME', '/home/emily'), ('OLDPWD', '/home/emily/sa-mrbt_ws/src/simplified_marine_sim'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '179750'), ('SYSTEMD_EXEC_PID', '567369'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator25ef4b219e3b005583550f2b0f9f990c3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '568937'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install'), ('ROS_DISTRO', 'iron'), ('LOGNAME', 'emily'), ('JOURNAL_STREAM', '8:3088740'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'emily'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:/opt/ros/iron/bin:/home/emily/.local/bin:/home/emily/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/emily-Alienware-m15-R3:@/tmp/.ICE-unix/567342,unix/emily-Alienware-m15-R3:/tmp/.ICE-unix/567342'), ('INVOCATION_ID', 'ca8b0208b81a422dbc3cf06b744e4912'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.ME5NC3'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/simulator:/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:39a8cf8c-659b-4440-9c13-6bb7aa9340c2'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('ROS_AUTOMATIC_DISCOVERY_RANGE', 'SUBNET'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/emily/sa-mrbt_ws/build/behaviortree_cpp'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/iron/lib/python3.10/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/simulator:/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron')]), 'shell': False}
+[0.040581] (behaviortree_cpp) StdoutLine: {'line': b'[  4%] Built target lexy_file\n'}
+[0.040769] (behaviortree_cpp) StdoutLine: {'line': b'[  5%] Built target minitrace\n'}
+[0.040838] (behaviortree_cpp) StdoutLine: {'line': b'[  5%] Built target gtest_main\n'}
+[0.040893] (behaviortree_cpp) StdoutLine: {'line': b'[  6%] Built target gtest\n'}
+[0.072216] (behaviortree_cpp) StdoutLine: {'line': b'[ 37%] Built target behaviortree_cpp\n'}
+[0.088252] (behaviortree_cpp) StdoutLine: {'line': b'[ 38%] Built target movebase_node_dyn\n'}
+[0.088664] (behaviortree_cpp) StdoutLine: {'line': b'[ 42%] Built target crossdoor_nodes_dyn\n'}
+[0.088795] (behaviortree_cpp) StdoutLine: {'line': b'[ 42%] Built target bt_sample_nodes\n'}
+[0.088909] (behaviortree_cpp) StdoutLine: {'line': b'[ 43%] Built target dummy_nodes_dyn\n'}
+[0.090070] (behaviortree_cpp) StdoutLine: {'line': b'[ 45%] Built target test_plugin_executor\n'}
+[0.090325] (behaviortree_cpp) StdoutLine: {'line': b'[ 47%] Built target bt4_plugin_manifest\n'}
+[0.093604] (behaviortree_cpp) StdoutLine: {'line': b'[ 49%] Built target test_plugin_action\n'}
+[0.093875] (behaviortree_cpp) StdoutLine: {'line': b'[ 50%] Built target t01_first_tree_dynamic\n'}
+[0.100287] (-) TimerEvent: {}
+[0.111136] (behaviortree_cpp) StdoutLine: {'line': b'[ 54%] Built target t08_additional_node_args\n'}
+[0.111403] (behaviortree_cpp) StdoutLine: {'line': b'[ 54%] Built target t02_basic_ports\n'}
+[0.111520] (behaviortree_cpp) StdoutLine: {'line': b'[ 55%] Built target t05_crossdoor\n'}
+[0.111605] (behaviortree_cpp) StdoutLine: {'line': b'[ 57%] Built target t06_subtree_port_remapping\n'}
+[0.111902] (behaviortree_cpp) StdoutLine: {'line': b'[ 58%] Built target t03_generic_ports\n'}
+[0.112288] (behaviortree_cpp) StdoutLine: {'line': b'[ 59%] Built target t01_first_tree_static\n'}
+[0.112422] (behaviortree_cpp) StdoutLine: {'line': b'[ 59%] Built target t04_reactive_sequence\n'}
+[0.116166] (behaviortree_cpp) StdoutLine: {'line': b'[ 61%] Built target t07_load_multiple_xml\n'}
+[0.116377] (behaviortree_cpp) StdoutLine: {'line': b'[ 63%] Built target t10_observer\n'}
+[0.116497] (behaviortree_cpp) StdoutLine: {'line': b'[ 65%] Built target t11_groot_howto\n'}
+[0.116598] (behaviortree_cpp) StdoutLine: {'line': b'[ 65%] Built target t09_scripting\n'}
+[0.134200] (behaviortree_cpp) StdoutLine: {'line': b'[ 70%] Built target t17_blackboard_backup\n'}
+[0.134428] (behaviortree_cpp) StdoutLine: {'line': b'[ 70%] Built target t13_access_by_ref\n'}
+[0.134552] (behaviortree_cpp) StdoutLine: {'line': b'[ 70%] Built target t15_nodes_mocking\n'}
+[0.134640] (behaviortree_cpp) StdoutLine: {'line': b'[ 70%] Built target t14_subtree_model\n'}
+[0.135471] (behaviortree_cpp) StdoutLine: {'line': b'[ 89%] Built target behaviortree_cpp_test\n'}
+[0.135644] (behaviortree_cpp) StdoutLine: {'line': b'[ 91%] Built target t16_global_blackboard\n'}
+[0.136347] (behaviortree_cpp) StdoutLine: {'line': b'[ 92%] Built target ex02_runtime_ports\n'}
+[0.136830] (behaviortree_cpp) StdoutLine: {'line': b'[ 96%] Built target ex03_sqlite_log\n'}
+[0.136969] (behaviortree_cpp) StdoutLine: {'line': b'[ 96%] Built target t12_default_ports\n'}
+[0.137140] (behaviortree_cpp) StdoutLine: {'line': b'[ 98%] Built target t18_waypoints\n'}
+[0.137381] (behaviortree_cpp) StdoutLine: {'line': b'[100%] Built target ex01_wrap_legacy\n'}
+[0.145675] (behaviortree_cpp) CommandEnded: {'returncode': 0}
+[0.200354] (-) TimerEvent: {}
+[0.225530] (behaviortree_cpp) JobProgress: {'identifier': 'behaviortree_cpp', 'progress': 'install'}
+[0.231854] (behaviortree_cpp) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/emily/sa-mrbt_ws/build/behaviortree_cpp'], 'cwd': '/home/emily/sa-mrbt_ws/build/behaviortree_cpp', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'emily'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:/opt/ros/iron/opt/rviz_ogre_vendor/lib:/opt/ros/iron/lib/x86_64-linux-gnu:/opt/ros/iron/lib'), ('HOME', '/home/emily'), ('OLDPWD', '/home/emily/sa-mrbt_ws/src/simplified_marine_sim'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '179750'), ('SYSTEMD_EXEC_PID', '567369'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator25ef4b219e3b005583550f2b0f9f990c3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '568937'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install'), ('ROS_DISTRO', 'iron'), ('LOGNAME', 'emily'), ('JOURNAL_STREAM', '8:3088740'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'emily'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:/opt/ros/iron/bin:/home/emily/.local/bin:/home/emily/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/emily-Alienware-m15-R3:@/tmp/.ICE-unix/567342,unix/emily-Alienware-m15-R3:/tmp/.ICE-unix/567342'), ('INVOCATION_ID', 'ca8b0208b81a422dbc3cf06b744e4912'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.ME5NC3'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/simulator:/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:39a8cf8c-659b-4440-9c13-6bb7aa9340c2'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('ROS_AUTOMATIC_DISCOVERY_RANGE', 'SUBNET'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/emily/sa-mrbt_ws/build/behaviortree_cpp'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/iron/lib/python3.10/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/simulator:/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron')]), 'shell': False}
+[0.237351] (behaviortree_cpp) StdoutLine: {'line': b'-- Install configuration: "Release"\n'}
+[0.237649] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib/liblexy_file.a\n'}
+[0.237735] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib/cmake/lexy/lexyTargets.cmake\n'}
+[0.237821] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib/cmake/lexy/lexyTargets-release.cmake\n'}
+[0.237879] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib/cmake/lexy/lexyConfig.cmake\n'}
+[0.237969] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib/cmake/lexy/lexyConfigVersion.cmake\n'}
+[0.238062] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy\n'}
+[0.238134] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/lexeme.hpp\n'}
+[0.238186] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/visualize.hpp\n'}
+[0.238238] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback\n'}
+[0.238291] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/bind.hpp\n'}
+[0.238343] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/integer.hpp\n'}
+[0.238406] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/object.hpp\n'}
+[0.238555] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/forward.hpp\n'}
+[0.238645] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/string.hpp\n'}
+[0.238718] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/adapter.hpp\n'}
+[0.238797] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/noop.hpp\n'}
+[0.238848] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/bit_cast.hpp\n'}
+[0.238907] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/base.hpp\n'}
+[0.239002] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/constant.hpp\n'}
+[0.239092] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/composition.hpp\n'}
+[0.239144] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/fold.hpp\n'}
+[0.239196] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/container.hpp\n'}
+[0.239247] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback/aggregate.hpp\n'}
+[0.239298] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail\n'}
+[0.239400] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/detect.hpp\n'}
+[0.239455] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/std.hpp\n'}
+[0.239556] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/invoke.hpp\n'}
+[0.239606] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/code_point.hpp\n'}
+[0.239655] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/unicode_database.hpp\n'}
+[0.239713] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/nttp_string.hpp\n'}
+[0.239762] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/iterator.hpp\n'}
+[0.239813] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/string_view.hpp\n'}
+[0.239864] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/assert.hpp\n'}
+[0.239925] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/buffer_builder.hpp\n'}
+[0.239973] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/stateless_lambda.hpp\n'}
+[0.240021] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/tuple.hpp\n'}
+[0.240072] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/config.hpp\n'}
+[0.240124] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/lazy_init.hpp\n'}
+[0.240175] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/type_name.hpp\n'}
+[0.240226] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/any_ref.hpp\n'}
+[0.240279] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/integer_sequence.hpp\n'}
+[0.240330] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/memory_resource.hpp\n'}
+[0.240381] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/_detail/swar.hpp\n'}
+[0.240450] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl.hpp\n'}
+[0.240506] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input_location.hpp\n'}
+[0.240555] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/error.hpp\n'}
+[0.240603] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/code_point.hpp\n'}
+[0.240652] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/callback.hpp\n'}
+[0.240701] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input\n'}
+[0.240752] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/base.hpp\n'}
+[0.240803] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/string_input.hpp\n'}
+[0.240855] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/file.hpp\n'}
+[0.240906] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/lexeme_input.hpp\n'}
+[0.240957] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/parse_tree_input.hpp\n'}
+[0.241008] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/buffer.hpp\n'}
+[0.241058] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/range_input.hpp\n'}
+[0.241109] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/input/argv_input.hpp\n'}
+[0.241209] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl\n'}
+[0.241281] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/subgrammar.hpp\n'}
+[0.241333] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/integer.hpp\n'}
+[0.241410] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/newline.hpp\n'}
+[0.241500] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/operator.hpp\n'}
+[0.241606] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/punctuator.hpp\n'}
+[0.241677] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/terminator.hpp\n'}
+[0.241729] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/recover.hpp\n'}
+[0.241780] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/times.hpp\n'}
+[0.241831] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/list.hpp\n'}
+[0.241883] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/choice.hpp\n'}
+[0.241933] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/whitespace.hpp\n'}
+[0.241996] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/branch.hpp\n'}
+[0.242048] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/eof.hpp\n'}
+[0.242253] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/combination.hpp\n'}
+[0.242306] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/follow.hpp\n'}
+[0.242385] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/if.hpp\n'}
+[0.242439] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/capture.hpp\n'}
+[0.242533] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/bom.hpp\n'}
+[0.242615] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/error.hpp\n'}
+[0.242668] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/code_point.hpp\n'}
+[0.242719] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/base.hpp\n'}
+[0.242771] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/unicode.hpp\n'}
+[0.242839] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/brackets.hpp\n'}
+[0.242911] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/byte.hpp\n'}
+[0.242979] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/symbol.hpp\n'}
+[0.243031] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/repeat.hpp\n'}
+[0.243083] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/identifier.hpp\n'}
+[0.243135] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/token.hpp\n'}
+[0.243186] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/literal.hpp\n'}
+[0.243237] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/until.hpp\n'}
+[0.243288] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/flags.hpp\n'}
+[0.243338] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/context_counter.hpp\n'}
+[0.243388] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/scan.hpp\n'}
+[0.243438] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/delimited.hpp\n'}
+[0.243515] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/ascii.hpp\n'}
+[0.243564] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/char_class.hpp\n'}
+[0.243611] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/expression.hpp\n'}
+[0.243659] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/option.hpp\n'}
+[0.243706] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/loop.hpp\n'}
+[0.243753] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/return.hpp\n'}
+[0.243866] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/effect.hpp\n'}
+[0.243920] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/context_flag.hpp\n'}
+[0.243970] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/member.hpp\n'}
+[0.244021] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/parse_as.hpp\n'}
+[0.244071] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/production.hpp\n'}
+[0.244121] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/parse_tree_node.hpp\n'}
+[0.244171] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/peek.hpp\n'}
+[0.244220] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/lookahead.hpp\n'}
+[0.244269] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/separator.hpp\n'}
+[0.244319] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/case_folding.hpp\n'}
+[0.244368] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/context_identifier.hpp\n'}
+[0.244418] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/sequence.hpp\n'}
+[0.244555] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/digit.hpp\n'}
+[0.244724] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/position.hpp\n'}
+[0.244773] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/sign.hpp\n'}
+[0.244822] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/any.hpp\n'}
+[0.244870] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/dsl/bits.hpp\n'}
+[0.244917] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/parse_tree.hpp\n'}
+[0.244965] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/grammar.hpp\n'}
+[0.245149] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/token.hpp\n'}
+[0.245199] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/encoding.hpp\n'}
+[0.245246] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action\n'}
+[0.245294] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/match.hpp\n'}
+[0.245342] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/parse.hpp\n'}
+[0.245389] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/base.hpp\n'}
+[0.245436] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/validate.hpp\n'}
+[0.245681] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/scan.hpp\n'}
+[0.245733] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/parse_as_tree.hpp\n'}
+[0.245849] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy/action/trace.hpp\n'}
+[0.245898] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy_ext\n'}
+[0.245946] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy_ext/shell.hpp\n'}
+[0.246017] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy_ext/report_error.hpp\n'}
+[0.246069] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy_ext/compiler_explorer.hpp\n'}
+[0.246118] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy_ext/parse_tree_algorithm.hpp\n'}
+[0.246168] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/lexy_ext/parse_tree_doctest.hpp\n'}
+[0.246217] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/bt_plugins/libcrossdoor_nodes_dyn.so\n'}
+[0.246267] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/bt_plugins/libdummy_nodes_dyn.so\n'}
+[0.246317] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/bt_plugins/libmovebase_node_dyn.so\n'}
+[0.246366] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin/bt4_plugin_manifest\n'}
+[0.246422] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib/libbehaviortree_cpp.so\n'}
+[0.246653] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include\n'}
+[0.246706] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp\n'}
+[0.246755] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/behavior_tree.h\n'}
+[0.246802] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/condition_node.h\n'}
+[0.246849] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions\n'}
+[0.246897] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/pop_from_queue.hpp\n'}
+[0.246946] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/set_blackboard_node.h\n'}
+[0.246994] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/unset_blackboard_node.h\n'}
+[0.247041] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/updated_action.h\n'}
+[0.247095] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/always_failure_node.h\n'}
+[0.247144] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/test_node.h\n'}
+[0.247192] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/script_node.h\n'}
+[0.247239] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/script_condition.h\n'}
+[0.247294] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/always_success_node.h\n'}
+[0.247342] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/sleep_node.h\n'}
+[0.247391] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/leaf_node.h\n'}
+[0.247440] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/scripting\n'}
+[0.247667] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/scripting/any_types.hpp\n'}
+[0.247780] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/scripting/operators.hpp\n'}
+[0.247829] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/scripting/script_parser.hpp\n'}
+[0.247939] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls\n'}
+[0.247989] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/while_do_else_node.h\n'}
+[0.248037] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/reactive_fallback.h\n'}
+[0.248085] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/fallback_node.h\n'}
+[0.248133] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/sequence_with_memory_node.h\n'}
+[0.248181] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/parallel_node.h\n'}
+[0.248229] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/reactive_sequence.h\n'}
+[0.248277] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/repeat_sequence.h\n'}
+[0.248326] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/switch_node.h\n'}
+[0.248373] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/parallel_all_node.h\n'}
+[0.248420] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/if_then_else_node.h\n'}
+[0.248502] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/sequence_node.h\n'}
+[0.248568] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/controls/manual_node.h\n'}
+[0.248616] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/control_node.h\n'}
+[0.248718] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/xml_parsing.h\n'}
+[0.248767] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/action_node.h\n'}
+[0.248815] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/exceptions.h\n'}
+[0.248862] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators\n'}
+[0.248920] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/loop_node.h\n'}
+[0.248968] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/consume_queue.h\n'}
+[0.249015] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/force_failure_node.h\n'}
+[0.249062] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/delay_node.h\n'}
+[0.249109] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/timeout_node.h\n'}
+[0.249156] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/retry_node.h\n'}
+[0.249203] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/repeat_node.h\n'}
+[0.249250] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/force_success_node.h\n'}
+[0.249297] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/run_once_node.h\n'}
+[0.249344] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/inverter_node.h\n'}
+[0.249391] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/subtree_node.h\n'}
+[0.249438] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/keep_running_until_failure_node.h\n'}
+[0.249536] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/updated_decorator.h\n'}
+[0.249618] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorators/script_precondition.h\n'}
+[0.249665] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/bt_factory.h\n'}
+[0.249714] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/blackboard.h\n'}
+[0.249761] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/flatbuffers\n'}
+[0.249809] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/flatbuffers/bt_flatbuffer_helper.h\n'}
+[0.249883] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/basic_types.h\n'}
+[0.249931] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/bt_parser.h\n'}
+[0.249979] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils\n'}
+[0.250026] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/convert_impl.hpp\n'}
+[0.250074] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/signal.h\n'}
+[0.250122] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/wakeup_signal.hpp\n'}
+[0.250218] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/platform.hpp\n'}
+[0.250268] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/locked_reference.hpp\n'}
+[0.250316] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/strcat.hpp\n'}
+[0.250364] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/timer_queue.h\n'}
+[0.250412] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/simple_string.hpp\n'}
+[0.250494] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/demangle_util.h\n'}
+[0.250669] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/safe_any.hpp\n'}
+[0.250721] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/utils/shared_library.h\n'}
+[0.250769] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/json_export.h\n'}
+[0.250817] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/decorator_node.h\n'}
+[0.250865] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/tree_node.h\n'}
+[0.250913] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers\n'}
+[0.250961] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/bt_file_logger_v2.h\n'}
+[0.251008] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/bt_minitrace_logger.h\n'}
+[0.251056] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/bt_observer.h\n'}
+[0.251105] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/bt_cout_logger.h\n'}
+[0.251152] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/abstract_logger.h\n'}
+[0.251199] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/groot2_publisher.h\n'}
+[0.251247] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/bt_sqlite_logger.h\n'}
+[0.251294] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/loggers/groot2_protocol.h\n'}
+[0.251342] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib\n'}
+[0.251389] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib/json.hpp\n'}
+[0.251435] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib/magic_enum.hpp\n'}
+[0.251576] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib/expected.hpp\n'}
+[0.251676] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib/any.hpp\n'}
+[0.251730] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/environment/library_path.sh\n'}
+[0.251777] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/environment/library_path.dsv\n'}
+[0.251825] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/ament_index/resource_index/package_run_dependencies/behaviortree_cpp\n'}
+[0.251873] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/ament_index/resource_index/parent_prefix_path/behaviortree_cpp\n'}
+[0.251920] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/environment/ament_prefix_path.sh\n'}
+[0.251968] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/environment/ament_prefix_path.dsv\n'}
+[0.252069] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/environment/path.sh\n'}
+[0.252119] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/environment/path.dsv\n'}
+[0.252167] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/local_setup.bash\n'}
+[0.252215] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/local_setup.sh\n'}
+[0.252263] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/local_setup.zsh\n'}
+[0.252335] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/local_setup.dsv\n'}
+[0.252400] (behaviortree_cpp) StdoutLine: {'line': b'-- Installing: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/package.dsv\n'}
+[0.252456] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/ament_index/resource_index/packages/behaviortree_cpp\n'}
+[0.252604] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/behaviortree_cppTargetsExport.cmake\n'}
+[0.252705] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/behaviortree_cppTargetsExport-release.cmake\n'}
+[0.252759] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[0.252811] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[0.252862] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[0.252913] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[0.252964] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/behaviortree_cppConfig.cmake\n'}
+[0.253015] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/cmake/behaviortree_cppConfig-version.cmake\n'}
+[0.253068] (behaviortree_cpp) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/behaviortree_cpp/share/behaviortree_cpp/package.xml\n'}
+[0.253298] (behaviortree_cpp) CommandEnded: {'returncode': 0}
+[0.300466] (-) TimerEvent: {}
+[0.350781] (behaviortree_cpp) JobEnded: {'identifier': 'behaviortree_cpp', 'rc': 0}
+[0.351690] (simulator) JobStarted: {'identifier': 'simulator'}
+[0.356737] (simulator) JobProgress: {'identifier': 'simulator', 'progress': 'cmake'}
+[0.357090] (simulator) JobProgress: {'identifier': 'simulator', 'progress': 'build'}
+[0.357264] (simulator) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/emily/sa-mrbt_ws/build/simulator', '--', '-j12', '-l12'], 'cwd': '/home/emily/sa-mrbt_ws/build/simulator', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'emily'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:/opt/ros/iron/opt/rviz_ogre_vendor/lib:/opt/ros/iron/lib/x86_64-linux-gnu:/opt/ros/iron/lib'), ('HOME', '/home/emily'), ('OLDPWD', '/home/emily/sa-mrbt_ws/src/simplified_marine_sim'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '179750'), ('SYSTEMD_EXEC_PID', '567369'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator25ef4b219e3b005583550f2b0f9f990c3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '568937'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install'), ('ROS_DISTRO', 'iron'), ('LOGNAME', 'emily'), ('JOURNAL_STREAM', '8:3088740'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'emily'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:/opt/ros/iron/bin:/home/emily/.local/bin:/home/emily/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/emily-Alienware-m15-R3:@/tmp/.ICE-unix/567342,unix/emily-Alienware-m15-R3:/tmp/.ICE-unix/567342'), ('INVOCATION_ID', 'ca8b0208b81a422dbc3cf06b744e4912'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.ME5NC3'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/simulator:/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:39a8cf8c-659b-4440-9c13-6bb7aa9340c2'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('ROS_AUTOMATIC_DISCOVERY_RANGE', 'SUBNET'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/emily/sa-mrbt_ws/build/simulator'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/iron/lib/python3.10/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron')]), 'shell': False}
+[0.391083] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target sim\x1b[0m\n'}
+[0.400527] (-) TimerEvent: {}
+[0.416612] (simulator) StdoutLine: {'line': b'[ 15%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o\x1b[0m\n'}
+[0.416836] (simulator) StdoutLine: {'line': b'[ 15%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o\x1b[0m\n'}
+[0.416945] (simulator) StdoutLine: {'line': b'[ 23%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o\x1b[0m\n'}
+[0.417032] (simulator) StdoutLine: {'line': b'[ 30%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o\x1b[0m\n'}
+[0.417116] (simulator) StdoutLine: {'line': b'[ 38%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o\x1b[0m\n'}
+[0.417200] (simulator) StdoutLine: {'line': b'[ 46%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o\x1b[0m\n'}
+[0.418994] (simulator) StdoutLine: {'line': b'[ 53%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o\x1b[0m\n'}
+[0.419659] (simulator) StdoutLine: {'line': b'[ 61%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o\x1b[0m\n'}
+[0.419957] (simulator) StdoutLine: {'line': b'[ 69%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o\x1b[0m\n'}
+[0.420299] (simulator) StdoutLine: {'line': b'[ 76%] \x1b[32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o\x1b[0m\n'}
+[0.500637] (-) TimerEvent: {}
+[0.601011] (-) TimerEvent: {}
+[0.701312] (-) TimerEvent: {}
+[0.801704] (-) TimerEvent: {}
+[0.902653] (-) TimerEvent: {}
+[1.005517] (-) TimerEvent: {}
+[1.105830] (-) TimerEvent: {}
+[1.207510] (-) TimerEvent: {}
+[1.308010] (-) TimerEvent: {}
+[1.408458] (-) TimerEvent: {}
+[1.508900] (-) TimerEvent: {}
+[1.609376] (-) TimerEvent: {}
+[1.709884] (-) TimerEvent: {}
+[1.810760] (-) TimerEvent: {}
+[1.911237] (-) TimerEvent: {}
+[2.011793] (-) TimerEvent: {}
+[2.112515] (-) TimerEvent: {}
+[2.212863] (-) TimerEvent: {}
+[2.313185] (-) TimerEvent: {}
+[2.413638] (-) TimerEvent: {}
+[2.514022] (-) TimerEvent: {}
+[2.614399] (-) TimerEvent: {}
+[2.714778] (-) TimerEvent: {}
+[2.815151] (-) TimerEvent: {}
+[2.915526] (-) TimerEvent: {}
+[3.015915] (-) TimerEvent: {}
+[3.116229] (-) TimerEvent: {}
+[3.216524] (-) TimerEvent: {}
+[3.316841] (-) TimerEvent: {}
+[3.417163] (-) TimerEvent: {}
+[3.517486] (-) TimerEvent: {}
+[3.617799] (-) TimerEvent: {}
+[3.718103] (-) TimerEvent: {}
+[3.818405] (-) TimerEvent: {}
+[3.918734] (-) TimerEvent: {}
+[4.019045] (-) TimerEvent: {}
+[4.119361] (-) TimerEvent: {}
+[4.219806] (-) TimerEvent: {}
+[4.320133] (-) TimerEvent: {}
+[4.420507] (-) TimerEvent: {}
+[4.520808] (-) TimerEvent: {}
+[4.621110] (-) TimerEvent: {}
+[4.721411] (-) TimerEvent: {}
+[4.821730] (-) TimerEvent: {}
+[4.922018] (-) TimerEvent: {}
+[5.022384] (-) TimerEvent: {}
+[5.122705] (-) TimerEvent: {}
+[5.223009] (-) TimerEvent: {}
+[5.323316] (-) TimerEvent: {}
+[5.423619] (-) TimerEvent: {}
+[5.523933] (-) TimerEvent: {}
+[5.624165] (-) TimerEvent: {}
+[5.724403] (-) TimerEvent: {}
+[5.824665] (-) TimerEvent: {}
+[5.924922] (-) TimerEvent: {}
+[6.025219] (-) TimerEvent: {}
+[6.125515] (-) TimerEvent: {}
+[6.225822] (-) TimerEvent: {}
+[6.326063] (-) TimerEvent: {}
+[6.426356] (-) TimerEvent: {}
+[6.526591] (-) TimerEvent: {}
+[6.626802] (-) TimerEvent: {}
+[6.727025] (-) TimerEvent: {}
+[6.827356] (-) TimerEvent: {}
+[6.927662] (-) TimerEvent: {}
+[7.027950] (-) TimerEvent: {}
+[7.128192] (-) TimerEvent: {}
+[7.228506] (-) TimerEvent: {}
+[7.228904] (simulator) StdoutLine: {'line': b'[ 84%] \x1b[32m\x1b[1mLinking CXX executable sim\x1b[0m\n'}
+[7.328629] (-) TimerEvent: {}
+[7.428960] (-) TimerEvent: {}
+[7.529335] (-) TimerEvent: {}
+[7.629743] (-) TimerEvent: {}
+[7.730010] (-) TimerEvent: {}
+[7.830291] (-) TimerEvent: {}
+[7.930529] (-) TimerEvent: {}
+[8.030886] (-) TimerEvent: {}
+[8.054428] (simulator) StdoutLine: {'line': b'[100%] Built target sim\n'}
+[8.062075] (simulator) CommandEnded: {'returncode': 0}
+[8.091606] (simulator) JobProgress: {'identifier': 'simulator', 'progress': 'install'}
+[8.091912] (simulator) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/emily/sa-mrbt_ws/build/simulator'], 'cwd': '/home/emily/sa-mrbt_ws/build/simulator', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'emily'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:/opt/ros/iron/opt/rviz_ogre_vendor/lib:/opt/ros/iron/lib/x86_64-linux-gnu:/opt/ros/iron/lib'), ('HOME', '/home/emily'), ('OLDPWD', '/home/emily/sa-mrbt_ws/src/simplified_marine_sim'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '179750'), ('SYSTEMD_EXEC_PID', '567369'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator25ef4b219e3b005583550f2b0f9f990c3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '568937'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install'), ('ROS_DISTRO', 'iron'), ('LOGNAME', 'emily'), ('JOURNAL_STREAM', '8:3088740'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'emily'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:/opt/ros/iron/bin:/home/emily/.local/bin:/home/emily/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/emily-Alienware-m15-R3:@/tmp/.ICE-unix/567342,unix/emily-Alienware-m15-R3:/tmp/.ICE-unix/567342'), ('INVOCATION_ID', 'ca8b0208b81a422dbc3cf06b744e4912'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.ME5NC3'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/simulator:/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:39a8cf8c-659b-4440-9c13-6bb7aa9340c2'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('ROS_AUTOMATIC_DISCOVERY_RANGE', 'SUBNET'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/emily/sa-mrbt_ws/build/simulator'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/iron/lib/python3.10/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron')]), 'shell': False}
+[8.096995] (simulator) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[8.097154] (simulator) StdoutLine: {'line': b'-- Installing: /home/emily/sa-mrbt_ws/install/simulator/lib/simulator/sim\n'}
+[8.101352] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/emily/sa-mrbt_ws/install/simulator/lib/simulator/sim" to ""\n'}
+[8.101447] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/ament_index/resource_index/package_run_dependencies/simulator\n'}
+[8.101572] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/ament_index/resource_index/parent_prefix_path/simulator\n'}
+[8.101642] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/environment/ament_prefix_path.sh\n'}
+[8.101694] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/environment/ament_prefix_path.dsv\n'}
+[8.101744] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/environment/path.sh\n'}
+[8.101796] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/environment/path.dsv\n'}
+[8.101846] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/local_setup.bash\n'}
+[8.101910] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/local_setup.sh\n'}
+[8.101981] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/local_setup.zsh\n'}
+[8.102028] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/local_setup.dsv\n'}
+[8.102075] (simulator) StdoutLine: {'line': b'-- Installing: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/package.dsv\n'}
+[8.102122] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/ament_index/resource_index/packages/simulator\n'}
+[8.102168] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/cmake/simulatorConfig.cmake\n'}
+[8.102221] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/cmake/simulatorConfig-version.cmake\n'}
+[8.102268] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/emily/sa-mrbt_ws/install/simulator/share/simulator/package.xml\n'}
+[8.103192] (simulator) CommandEnded: {'returncode': 0}
+[8.130951] (-) TimerEvent: {}
+[8.139920] (simulator) JobEnded: {'identifier': 'simulator', 'rc': 0}
+[8.140336] (-) EventReactorShutdown: {}

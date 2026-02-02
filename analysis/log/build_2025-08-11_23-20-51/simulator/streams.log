@@ -1,0 +1,34 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.040s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.062s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.063s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.063s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[1.836s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[1.836s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:358:80:[m[K [01;31m[Kerror: [m[K‘[01m[Kconst struct AgentInfo[m[K’ has no member named ‘[01m[Kgoal_pose[m[K’
+[1.836s]   358 |                     run_robot, agent.id, agent.type, agent.initial_pose, agent.[01;31m[Kgoal_pose[m[K, agent.color,
+[1.836s]       |                                                                                [01;31m[K^~~~~~~~~[m[K
+[3.257s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+[3.257s] gmake[2]: *** Waiting for unfinished jobs....
+[3.398s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:15:1:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, int, std::string, cv::Scalar)[m[K’
+[3.398s]    15 | [01;31m[KRobot[m[K::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar dot_color)
+[3.398s]       | [01;31m[K^~~~~[m[K
+[3.398s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[3.398s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[3.399s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[Kcandidates are: ‘[01m[KRobot::Robot(Robot&&)[m[K’
+[3.399s]    19 | class [01;36m[KRobot[m[K {
+[3.399s]       |       [01;36m[K^~~~~[m[K
+[3.399s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K                ‘[01m[KRobot::Robot(const Robot&)[m[K’
+[3.399s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[3.399s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[3.399s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:70:5:[m[K [01;36m[Knote: [m[K                ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, const Pose2D&, int, std::string, cv::Scalar)[m[K’
+[3.399s]    70 |     [01;36m[KRobot[m[K(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
+[3.399s]       |     [01;36m[K^~~~~[m[K
+[3.399s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[3.399s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[3.399s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+[3.399s]    19 | class [01;36m[KRobot[m[K {
+[3.399s]       |       [01;36m[K^~~~~[m[K
+[4.508s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[4.508s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[4.508s] gmake: *** [Makefile:146: all] Error 2
+[4.510s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

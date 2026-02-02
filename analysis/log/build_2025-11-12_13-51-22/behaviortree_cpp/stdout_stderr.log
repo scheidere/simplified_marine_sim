@@ -1,0 +1,55 @@
+[  3%] Built target gtest_main
+[  3%] Built target minitrace
+[  6%] Built target lexy_file
+[  5%] Built target gtest
+[  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In constructor ‘[01m[KBT::CounterSequence::CounterSequence(const string&, const BT::NodeConfig&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:21:34:[m[K [01;31m[Kerror: [m[Kclass ‘[01m[KBT::CounterSequence[m[K’ does not have any field named ‘[01m[Khas_threshold_[m[K’
+   21 |     : ControlNode(name, config), [01;31m[Khas_threshold_[m[K(false)
+      |                                  [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:25:41:[m[K [01;31m[Kerror: [m[K‘[01m[Kconvergence_threshold_[m[K’ was not declared in this scope
+   25 |   if (getInput("convergence_threshold", [01;31m[Kconvergence_threshold_[m[K)) {
+      |                                         [01;31m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:26:5:[m[K [01;31m[Kerror: [m[K‘[01m[Khas_threshold_[m[K’ was not declared in this scope
+   26 |     [01;31m[Khas_threshold_[m[K = true;
+      |     [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K At global scope:
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:31:6:[m[K [01;31m[Kerror: [m[K‘[01m[KRepeatSequence[m[K’ has not been declared
+   31 | void [01;31m[KRepeatSequence[m[K::halt()
+      |      [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In function ‘[01m[Kvoid BT::halt()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:33:3:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_child_idx_[m[K’ was not declared in this scope
+   33 |   [01;31m[Kcurrent_child_idx_[m[K = 0;
+      |   [01;31m[K^~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:35:7:[m[K [01;31m[Kerror: [m[K‘[01m[Khas_threshold_[m[K’ was not declared in this scope
+   35 |   if ([01;31m[Khas_threshold_[m[K) {
+      |       [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:41:28:[m[K [01;31m[Kerror: [m[Kcannot call member function ‘[01m[Kvoid BT::ControlNode::haltChildren()[m[K’ without object
+   41 |   [01;31m[KControlNode::haltChildren()[m[K;
+      |   [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~^~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus BT::CounterSequence::tick()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:57:9:[m[K [01;31m[Kerror: [m[K‘[01m[Khas_threshold_[m[K’ was not declared in this scope
+   57 |     if ([01;31m[Khas_threshold_[m[K) {
+      |         [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:60:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kcumulative_convergence_count_[m[K’ was not declared in this scope; did you mean ‘[01m[Kcumulative_convergence_count[m[K’?
+   60 |             [01;31m[Kcumulative_convergence_count_[m[K = cumulative_convergence_count.value();
+      |             [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |             [32m[Kcumulative_convergence_count[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:13:[m[K [01;31m[Kerror: [m[K‘[01m[Khas_threshold_[m[K’ was not declared in this scope
+   67 |         if ([01;31m[Khas_threshold_[m[K && cumulative_convergence_count_ >= convergence_threshold_)
+      |             [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:31:[m[K [01;31m[Kerror: [m[K‘[01m[Kcumulative_convergence_count_[m[K’ was not declared in this scope
+   67 |         if (has_threshold_ && [01;31m[Kcumulative_convergence_count_[m[K >= convergence_threshold_)
+      |                               [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:64:[m[K [01;31m[Kerror: [m[K‘[01m[Kconvergence_threshold_[m[K’ was not declared in this scope
+   67 |         if (has_threshold_ && cumulative_convergence_count_ >= [01;31m[Kconvergence_threshold_[m[K)
+      |                                                                [01;31m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:112:21:[m[K [01;31m[Kerror: [m[K‘[01m[Khas_threshold_[m[K’ was not declared in this scope
+  112 |                 if ([01;31m[Khas_threshold_[m[K) {
+      |                     [01;31m[K^~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:119:21:[m[K [01;31m[Kerror: [m[K‘[01m[Kconvergence_count_[m[K’ was not declared in this scope
+  119 |                     [01;31m[Kconvergence_count_[m[K = 0;
+      |                     [01;31m[K^~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

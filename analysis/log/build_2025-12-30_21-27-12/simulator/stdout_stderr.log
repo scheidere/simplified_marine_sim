@@ -1,0 +1,27 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus Communicate::onRunning()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:162:55:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Kid[m[K’
+  162 |         std::string bla = "ID: " + std::to_string(msg.[01;31m[Kid[m[K);
+      |                                                       [01;31m[K^~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:165:36:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Kwinners[m[K’
+  165 |         utils::logUnorderedMap(msg.[01;31m[Kwinners[m[K,_robot);
+      |                                    [01;31m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:167:36:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Kwinning_bids[m[K’
+  167 |         utils::logUnorderedMap(msg.[01;31m[Kwinning_bids[m[K,_robot);
+      |                                    [01;31m[K^~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:169:32:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Kwinning_bids_matrix[m[K’
+  169 |         utils::log2DVector(msg.[01;31m[Kwinning_bids_matrix[m[K, _robot);
+      |                                [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:171:36:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Ktimestamps[m[K’
+  171 |         utils::logUnorderedMap(msg.[01;31m[Ktimestamps[m[K,_robot);
+      |                                    [01;31m[K^~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:173:36:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Ktask_progress[m[K’
+  173 |         utils::logUnorderedMap(msg.[01;31m[Ktask_progress[m[K, _robot);
+      |                                    [01;31m[K^~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:175:36:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Message[m[K’ has no member named ‘[01m[Ksubtask_failures[m[K’
+  175 |         utils::logUnorderedMap(msg.[01;31m[Ksubtask_failures[m[K, _robot);
+      |                                    [01;31m[K^~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

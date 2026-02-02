@@ -1,0 +1,21 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.040s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.064s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[3.070s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::updateLocations()[m[K’:
+[3.070s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:507:48:[m[K [01;31m[Kerror: [m[K‘[01m[KgetMostUpToDateNeighborInfo[m[K’ was not declared in this scope
+[3.070s]   507 |             std::pair<int, Pose2D> best_info = [01;31m[KgetMostUpToDateNeighborInfo[m[K(id_k);
+[3.070s]       |                                                [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[3.070s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K At global scope:
+[3.070s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:521:24:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo(int)[m[K’
+[3.070s]   521 | std::pair<int, Pose2D> [01;31m[KRobot[m[K::getMostUpToDateNeighborInfo(int id_k) {
+[3.070s]       |                        [01;31m[K^~~~~[m[K
+[3.070s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:521:24:[m[K [01;36m[Knote: [m[Kno functions named ‘[01m[Kstd::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo(int)[m[K’
+[3.070s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[3.070s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[3.070s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+[3.071s]    19 | class [01;36m[KRobot[m[K {
+[3.071s]       |       [01;36m[K^~~~~[m[K
+[4.129s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[4.129s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[4.130s] gmake: *** [Makefile:146: all] Error 2
+[4.131s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

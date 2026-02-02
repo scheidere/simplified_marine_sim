@@ -1,0 +1,18 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::resolveConflicts(bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1100:71:[m[K [01;31m[Kerror: [m[K‘[01m[Kstruct Msg[m[K’ has no member named ‘[01m[Kwinning_bids_matrix[m[K’; did you mean ‘[01m[Kwinning_bids[m[K’?
+ 1100 |         std::vector<std::vector<double>>& winning_bids_matrix_k = msg.[01;31m[Kwinning_bids_matrix[m[K;
+      |                                                                       [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+      |                                                                       [32m[Kwinning_bids[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1299:32:[m[K [01;31m[Kerror: [m[Kqualified-id in declaration before ‘[01m[K([m[K’ token
+ 1299 | void CBGA::testResolveConflicts[01;31m[K([m[Kint id_i, std::vector<Msg>& message_queue, std::unordered_map<int, int>& winners_i,
+      |                                [01;31m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1567:2:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K}[m[K’ at end of input
+ 1567 | }
+      |  [01;31m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1074:43:[m[K [01;36m[Knote: [m[Kto match this ‘[01m[K{[m[K’
+ 1074 | void CBGA::resolveConflicts(bool do_test) [01;36m[K{[m[K
+      |                                           [01;36m[K^[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

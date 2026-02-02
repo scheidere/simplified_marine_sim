@@ -37,6 +37,8 @@ public:
 
 	int getCompatibility(std::string agent_type, std::string task_type);
 
+	bool getDoCBGA();
+
 	//json getAgentsList();
 
 };

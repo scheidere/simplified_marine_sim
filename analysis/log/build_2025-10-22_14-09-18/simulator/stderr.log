@@ -1,0 +1,31 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kint World::getPrerequisiteFailureThreshold(std::string)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:941:12:[m[K [01;31m[Kerror: [m[K‘[01m[Kfailure_threshold[m[K’ was not declared in this scope
+  941 |     return [01;31m[Kfailure_threshold[m[K;
+      |            [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, std::unordered_map<int, bool> > Robot::initSubtaskFailures()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:263:58:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::unordered_map<int, TaskInfo> World::all_subtasks_info[m[K’ is protected within this context
+  263 |     for (const auto& [subtask_id, subtask_info] : world->[01;31m[Kall_subtasks_info[m[K) {
+      |                                                          [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:41:38:[m[K [01;36m[Knote: [m[Kdeclared protected here
+   41 |     std::unordered_map<int,TaskInfo> [01;36m[Kall_subtasks_info[m[K; // not initially available for assignment, each one triggered to be available by a certain fault
+      |                                      [01;36m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K At global scope:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:274:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid Robot::setSubtaskFailure(int, int, bool)[m[K’
+  274 | void [01;31m[KRobot[m[K::setSubtaskFailure(int subtask_id, int agent_id, bool failed) {
+      |      [01;31m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:96:10:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kbool Robot::setSubtaskFailure(int, int, bool)[m[K’
+   96 |     bool [01;36m[KsetSubtaskFailure[m[K(int subtask_id, int agent_id, bool failed);
+      |          [01;36m[K^~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

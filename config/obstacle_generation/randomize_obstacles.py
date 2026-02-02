@@ -7,6 +7,11 @@ import random
 import sys
 from typing import List, Tuple
 
+
+'''
+python3 randomize_obstacles.py ../input.json --num-obstacles 20 --min-spacing 5
+'''
+
 Point = Tuple[int, int]
 Polygon = List[Point]
 
@@ -208,6 +213,7 @@ def main() -> None:
         sys.exit(1)
 
     tasks = extract_task_locations(data)
+    #action locations (if they exist) need to be extracted and avoided as well
     robots = extract_robot_locations(data)
 
     protected_locations = tasks + robots

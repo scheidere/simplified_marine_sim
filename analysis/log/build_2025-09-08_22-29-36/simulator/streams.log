@@ -1,0 +1,33 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.066s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.066s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.066s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.066s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.067s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.068s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.069s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.069s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.070s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.072s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[3.075s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:[m[K In constructor ‘[01m[KMessage::Message(Robot&)[m[K’:
+[3.075s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:8:7:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KMsg::Msg(int, std::unordered_map<int, int>&, std::unordered_map<int, double>&, std::unordered_map<int, double>&, std::unordered_map<int, Pose2D>&)[m[K’
+[3.075s]     8 |       [01;31m[Kmsg(sender.getID(), sender.getWinners(), sender.getWinningBids(), sender.getTimestamps(), sender.getLocations())[m[K // Timestamp updated upon receipt by another robot
+[3.075s]       |       [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[3.075s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:2[m[K:
+[3.076s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:21:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KMsg::Msg(int, std::unordered_map<int, int>, std::unordered_map<int, double>, std::vector<std::vector<double, std::allocator<double> > >, std::unordered_map<int, double>, std::unordered_map<int, Pose2D>)[m[K’
+[3.076s]    21 |     [01;36m[KMsg[m[K(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::vector<std::vector<double>> winning_bids_matrix, std::unordered_map<int,double> timestamps, std::unordered_map<int,Pose2D> locations)
+[3.076s]       |     [01;36m[K^~~[m[K
+[3.076s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:21:5:[m[K [01;36m[Knote: [m[K  candidate expects 6 arguments, 5 provided
+[3.076s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:2[m[K:
+[3.076s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KMsg::Msg(const Msg&)[m[K’
+[3.076s]    11 | struct [01;36m[KMsg[m[K {
+[3.076s]       |        [01;36m[K^~~[m[K
+[3.076s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 5 provided
+[3.076s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KMsg::Msg(Msg&&)[m[K’
+[3.076s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 5 provided
+[4.452s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:132: CMakeFiles/sim.dir/src/message.cpp.o] Error 1
+[4.452s] gmake[2]: *** Waiting for unfinished jobs....
+[7.475s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[7.475s] gmake: *** [Makefile:146: all] Error 2
+[7.477s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

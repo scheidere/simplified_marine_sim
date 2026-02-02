@@ -10,6 +10,12 @@
 #include "utils.hpp"
 
 
+void saveDistance(double time, double distance, const std::string& filename = "distance_data.csv") {
+    std::ofstream file(filename, std::ios::app);  // Allow appending
+    file << time << "," << distance << "\n";
+    file.close();
+}
+
 // Create state class, which will contain robot condition functions
 
 // Note we init winning_bids and winning_agent_indices with numTasks of 1 because of access issues to numTasks during initialization
@@ -701,6 +707,8 @@ void Robot::saveNewFoundObstacle(std::vector<cv::Point> discovered_obstacle) {
 
     log_info("Saved newly found obstacle, here is knowledge of previously unknown obstacles now:");
     utils::logMapOfVectors(discovered_obstacles, *this);
+    log_info("other log method:");
+    utils::logMapOf2DVectorOfPoints(discovered_obstacles, *this);
 
 }
 
@@ -775,6 +783,12 @@ void Robot::move(Pose2D waypoint) {
         cumulative_distance += distance;
         std::string d = "Current cumulative distance: " + std::to_string(cumulative_distance);
         log_info(d);
+
+        // Save team distance (file I/O already async in this thread)
+        if (id == 2) {
+            world->updateCumulativeDistance();
+            saveDistance(getCurrentTime(), world->getCumulativeDistance());
+        }
     }).detach();
     
     std::thread([this]() { world->plot(); }).detach();
@@ -2049,4 +2063,65 @@ bool Robot::TaskNeededNow() {
 
     return false;
 
+}
+
+void Robot::updateDiscoveredObstacles(std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> neighbor_discovered_obstacles) {
+    
+     // Given message from a neighbor, update your own knowledge of obstacles discovered online (sorted by blocked robot type) using the neighbor's discoveries
+
+    // Want to merge neighbor discovered obstacles object with current robot's own, without duplicate obstacles
+    // Need to cover case where blocked robot type exists already in both maps and case where neighbor knows of blocked type current doesn't yet
+    // First case is merge, second case is just add key and value from neighbor right?
+
+    for (const auto& [blocked_type, neighbor_polygons] : neighbor_discovered_obstacles) {
+        
+        // Check if this robot already has discovered obstacles for this blocked_type
+        if (discovered_obstacles.find(blocked_type) == discovered_obstacles.end()) {
+            // Case 2: New blocked_type - just add it
+            discovered_obstacles[blocked_type] = neighbor_polygons;
+        } else {
+            // Case 1: Blocked_type exists - merge without duplicates
+            for (const auto& neighbor_polygon : neighbor_polygons) {
+                
+                // Check if this polygon already exists in our list
+                bool already_known = false;
+                for (const auto& known_polygon : discovered_obstacles[blocked_type]) {
+                    if (polygonsAreEqual(neighbor_polygon, known_polygon)) {
+                        already_known = true;
+                        break;
+                    }
+                }
+                
+                // Add if new
+                if (!already_known) {
+                    discovered_obstacles[blocked_type].push_back(neighbor_polygon);
+                }
+            }
+        }
+    }
+}
+
+// Helper function to check if two polygons are the same
+bool Robot::polygonsAreEqual(const std::vector<cv::Point>& poly1, const std::vector<cv::Point>& poly2) {
+    if (poly1.size() != poly2.size()) {
+        return false;
+    }
+    
+    // Check if all points match (assumes same order)
+    for (size_t i = 0; i < poly1.size(); i++) {
+        if (poly1[i].x != poly2[i].x || poly1[i].y != poly2[i].y) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void Robot::updateDiscoveredObstaclesPerNeighbors() {
+
+    std::unordered_map<std::string, std::vector<std::vector<cv::Point>>> neighbor_discovered_obstacles;
+    for (Msg& msg : message_queue) {
+        neighbor_discovered_obstacles = msg.discovered_obstacles;
+        updateDiscoveredObstacles(neighbor_discovered_obstacles);
+    }
 }

@@ -1,0 +1,36 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.038s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.062s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[3.110s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::testNewNeighborSubtaskFailures()[m[K’:
+[3.110s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:355:46:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[Klog_info[m[K’
+[3.110s]   355 |     log_info("before doable tasks update...")
+[3.110s]       |                                              [01;31m[K^[m[K
+[3.110s]       |                                              [32m[K;[m[K
+[3.110s]   356 |     [32m[Klog_info[m[K("doable_task_ids:")
+[3.110s]       |     [32m[K~~~~~~~~[m[K                                  
+[3.110s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:358:36:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[Kutils[m[K’
+[3.110s]   358 |     log_info("doable_subtask_ids:")
+[3.110s]       |                                    [01;31m[K^[m[K
+[3.110s]       |                                    [32m[K;[m[K
+[3.110s]   359 |     [32m[Kutils[m[K::log1DVector(doable_subtask_ids,*this);
+[3.110s]       |     [32m[K~~~~~[m[K                           
+[3.110s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:363:45:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[Klog_info[m[K’
+[3.110s]   363 |     log_info("AFTER doable tasks update...")
+[3.110s]       |                                             [01;31m[K^[m[K
+[3.111s]       |                                             [32m[K;[m[K
+[3.111s]   364 |     [32m[Klog_info[m[K("doable_task_ids:")
+[3.111s]       |     [32m[K~~~~~~~~[m[K                                 
+[3.111s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:366:36:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[Kutils[m[K’
+[3.111s]   366 |     log_info("doable_subtask_ids:")
+[3.111s]       |                                    [01;31m[K^[m[K
+[3.111s]       |                                    [32m[K;[m[K
+[3.111s]   367 |     [32m[Kutils[m[K::log1DVector(doable_subtask_ids,*this);
+[3.111s]       |     [32m[K~~~~~[m[K                           
+[3.113s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::updateDoableTasks()[m[K’:
+[3.113s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:422:18:[m[K [01;31m[Kerror: [m[K‘[01m[Kerase[m[K’ is not a member of ‘[01m[Kstd[m[K’
+[3.113s]   422 |             std::[01;31m[Kerase[m[K(doable_subtask_ids, subtask_id); // We remove subtask from doable subtask list because each is unique, meant to be done once (at least for now)
+[3.113s]       |                  [01;31m[K^~~~~[m[K
+[4.308s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[4.308s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[4.308s] gmake: *** [Makefile:146: all] Error 2
+[4.310s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

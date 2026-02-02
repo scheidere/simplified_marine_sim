@@ -5,7 +5,7 @@
 
 Message::Message(Robot& sender)
     : sender(sender),
-      msg(sender.getID(), sender.getWinners(), sender.getWinningBids(), sender.getWinningBidsMatrix(), sender.getTimestamps(), sender.getLocations(), sender.getTaskProgress(), sender.getSubtaskFailures()) // Timestamp updated upon receipt by another robot
+      msg(sender.getID(), sender.getWinners(), sender.getWinningBids(), sender.getWinningBidsMatrix(), sender.getTimestamps(), sender.getLocations(), sender.getTaskProgress(), sender.getSubtaskFailures(), sender.getDiscoveredObstacles()) // Timestamp updated upon receipt by another robot
 {
 }
 
@@ -100,39 +100,6 @@ void Message::broadcastMessage(World& world) {
 
 }
 
-// void Message::updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp) {
-//     //std::lock_guard<std::mutex> lock(world.getWorldMutex());
-//     std::unordered_map<int,std::vector<std::pair<int,double>>>& world_ping_tracker = world.getPingTracker();
-//     //std::cout << "in msg update world tracker, world msg tracker b4: " << world_msg_tracker.size() << std::endl;
-
-//     if (receiverID == senderID) { 
-//         std::cerr << "ERROR: Robot " << senderID << " is adding itself to ping tracker! Fix this!" << std::endl;
-//         return;
-//     }
-
-//     // Search for senderID in the first element of pairs
-//     auto& receiver_pings = world_ping_tracker[receiverID];
-//     auto it = std::find_if(receiver_pings.begin(), receiver_pings.end(), 
-//                           [senderID](const std::pair<int,double>& p) { 
-//                               return p.first == senderID; 
-//                           });
-    
-//     // If didn't find ping from sender already
-//     if (it == receiver_pings.end()) {
-//         receiver_pings.push_back({senderID, senderTimestamp}); // Add ping
-
-//     } else { // Ping from robot already heard so just update timestamp to represent new ping
-//         it->second = senderTimestamp; 
-//     }
-
-//     // COMMENTED OUT because using timestamps as a way to track when a robot last updated it's beliefs catches too many updates and CBBA runs extra unnecessary rounds
-//     /*else if (sender.foundBeliefUpdate()) { // Already have a ping from sender, so just update the timestamp IFF cbba has changed bundle/path/winners/winning bids
-//         it->second = senderTimestamp;
-//     } // Otherwise had already received a ping from sender but no changes were caused by CBBA since last check so no update to report by updating timestamp 
-//     */
-
-// }
-
 void Message::updateWorldPingTracker(World& world, int receiverID, int senderID, double senderTimestamp, bool senderSubtaskFailureFlag) {
     //std::lock_guard<std::mutex> lock(world.getWorldMutex());
     std::unordered_map<int,std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world.getPingTracker();
@@ -187,16 +154,6 @@ void Message::ping(World& world) {
 
     bool senderSubtaskFailureFlag = sender.getNewSelfSubtaskFailureFlag();
 
-    // Below stuff was an incomplete idea for communicating help was given (instead we will have counter sequence inherently reattempt until success)
-    // bool reattempt_failing_action = false; // Default false because is meaningless unless sender has recently helped and needs to communicate to failing robots to try again
-    // if (sender.inHelperMode()) {
-    //     reattempt_failing_action = sender.getHelpGivenFlag(); // Will be true if help has been given successfully
-
-    //     // Helper has succeeded at both helping and communicating this help, so it is no longer in helper mode
-    //     sender.setHelperMode(false);
-    //     sender.setHelpGivenFlag(false);
-    // }
-
     std::string hir = "senderSubtaskFailureFlag: " + std::to_string(senderSubtaskFailureFlag);
     sender.log_info(hir);
 
@@ -218,19 +175,3 @@ void Message::ping(World& world) {
         }
     }
 }
-
-/*double Message::getTimestamp() { //do we want this here
-    // Time of last information update from other robot
-}
-*/
-
-/*void Message::printMessage(Msg msg) {
-    std::cout << "Message ID:" << msg.id << ":\n";
-    std::cout << "Task ID: " << msg.task_id << "\n";
-    std::cout << "Location: (" << msg.location.x << ", " << msg.location.y << ", " << msg.location.theta << ")\n";
-   /* std::cout << "Bundle: [";
-    for (const auto& task : msg.bundle.tasks) {
-        std::cout << task << " "; // Assuming tasks can be printed this way
-    }
-    std::cout << "]\n";
-}*/

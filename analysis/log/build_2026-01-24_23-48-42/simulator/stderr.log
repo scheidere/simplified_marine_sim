@@ -1,0 +1,26 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In constructor ‘[01m[KWorld::World(int, int, Distance*, SensorModel*, JSONParser*, double)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:53:35:[m[K [01;31m[Kerror: [m[K‘[01m[KinitFaultInjectionTracker[m[K’ was not declared in this scope; did you mean ‘[01m[KupdateFaultInjectionTracker[m[K’?
+   53 |         fault_injection_tracker = [01;31m[KinitFaultInjectionTracker[m[K(); // Init'd randomly by input fault percentage
+      |                                   [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |                                   [32m[KupdateFaultInjectionTracker[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K At global scope:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1113:31:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::unordered_map<int, bool> World::initFaultInjectionTracker()[m[K’
+ 1113 | std::unordered_map<int, bool> [01;31m[KWorld[m[K::initFaultInjectionTracker() {
+      |                               [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1113:31:[m[K [01;36m[Knote: [m[Kno functions named ‘[01m[Kstd::unordered_map<int, bool> World::initFaultInjectionTracker()[m[K’
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:20:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass World[m[K’ defined here
+   20 | class [01;36m[KWorld[m[K {
+      |       [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1291:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid World::injectRandomFaults()[m[K’
+ 1291 | void [01;31m[KWorld[m[K::injectRandomFaults() {
+      |      [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1291:6:[m[K [01;36m[Knote: [m[Kno functions named ‘[01m[Kvoid World::injectRandomFaults()[m[K’
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:20:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass World[m[K’ defined here
+   20 | class [01;36m[KWorld[m[K {
+      |       [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,19 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.036s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.059s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[1.617s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::vector<int> World::getRobotCapabilities(Robot*)[m[K’:
+[1.617s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:286:23:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Klog1DVector(std::vector<std::__cxx11::basic_string<char> >&, Robot*&)[m[K’
+[1.617s]   286 |     [01;31m[Kutils::log1DVector(task_types, robot)[m[K;
+[1.617s]       |     [01;31m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~[m[K
+[1.617s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:8[m[K:
+[1.617s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:86:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class T> void utils::log1DVector(const std::vector<_Tp>&, Robot&)[m[K’
+[1.617s]    86 | void [01;36m[Klog1DVector[m[K(const std::vector<T>& vec, Robot& robot) {
+[1.617s]       |      [01;36m[K^~~~~~~~~~~[m[K
+[1.617s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:86:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[1.617s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:286:36:[m[K [01;36m[Knote: [m[K  cannot convert ‘[01m[Krobot[m[K’ (type ‘[01m[KRobot*[m[K’) to type ‘[01m[KRobot&[m[K’
+[1.617s]   286 |     utils::log1DVector(task_types, [01;36m[Krobot[m[K);
+[1.617s]       |                                    [01;36m[K^~~~~[m[K
+[2.453s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+[2.454s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.454s] gmake: *** [Makefile:146: all] Error 2
+[2.455s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

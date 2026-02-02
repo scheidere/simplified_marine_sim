@@ -1,0 +1,44 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.040s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.064s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.065s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.065s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.065s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.065s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.067s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.067s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.069s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.069s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[0.070s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[2.326s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus FollowShortestPath::onStart()[m[K’:
+[2.327s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:651:32:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Robot[m[K’ has no member named ‘[01m[KgetGoalPose[m[K’; did you mean ‘[01m[KgetPose[m[K’?
+[2.327s]   651 |             goal_pose = _robot.[01;31m[KgetGoalPose[m[K();
+[2.327s]       |                                [01;31m[K^~~~~~~~~~~[m[K
+[2.327s]       |                                [32m[KgetPose[m[K
+[2.674s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[2.675s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:358:80:[m[K [01;31m[Kerror: [m[K‘[01m[Kconst struct AgentInfo[m[K’ has no member named ‘[01m[Kgoal_pose[m[K’
+[2.675s]   358 |                     run_robot, agent.id, agent.type, agent.initial_pose, agent.[01;31m[Kgoal_pose[m[K, agent.color,
+[2.675s]       |                                                                                [01;31m[K^~~~~~~~~[m[K
+[3.791s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[3.791s] gmake[2]: *** Waiting for unfinished jobs....
+[4.729s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+[5.517s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In constructor ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, const Pose2D&, int, std::string, cv::Scalar)[m[K’:
+[5.517s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:25:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kgoal[m[K’ was not declared in this scope
+[5.517s]    25 |     [01;31m[Kgoal[m[K = goal_pose; // Like return to home or drop off item loc, specific to each robot
+[5.518s]       |     [01;31m[K^~~~[m[K
+[5.529s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kstd::unordered_map<int, Pose2D> initLocations()[m[K’:
+[5.529s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:206:57:[m[K [01;31m[Kerror: [m[K‘[01m[Kworld[m[K’ was not declared in this scope; did you mean ‘[01m[KWorld[m[K’?
+[5.529s]   206 |     std::unordered_map<int,AgentInfo> all_agents_info = [01;31m[Kworld[m[K->getAllAgentsInfo();
+[5.529s]       |                                                         [01;31m[K^~~~~[m[K
+[5.529s]       |                                                         [32m[KWorld[m[K
+[5.532s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:214:21:[m[K [01;31m[Kerror: [m[K‘[01m[Kid[m[K’ was not declared in this scope; did you mean ‘[01m[Kid_k[m[K’?
+[5.532s]   214 |         if (id_k == [01;31m[Kid[m[K) {
+[5.532s]       |                     [01;31m[K^~[m[K
+[5.532s]       |                     [32m[Kid_k[m[K
+[5.535s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:216:31:[m[K [01;31m[Kerror: [m[K‘[01m[Kpose[m[K’ was not declared in this scope
+[5.535s]   216 |             locations[id_k] = [01;31m[Kpose[m[K;
+[5.535s]       |                               [01;31m[K^~~~[m[K
+[6.634s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[6.635s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.635s] gmake: *** [Makefile:146: all] Error 2
+[6.637s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

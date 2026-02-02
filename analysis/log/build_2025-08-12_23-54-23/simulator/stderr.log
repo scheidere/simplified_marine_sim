@@ -1,0 +1,46 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::updateLocations()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:507:48:[m[K [01;31m[Kerror: [m[K‘[01m[KgetMostUpToDateNeighborInfo[m[K’ was not declared in this scope
+  507 |             std::pair<int, Pose2D> best_info = [01;31m[KgetMostUpToDateNeighborInfo[m[K(id_k);
+      |                                                [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:513:35:[m[K [01;31m[Kerror: [m[K‘[01m[Klocations_m[m[K’ was not declared in this scope; did you mean ‘[01m[Klocations[m[K’?
+  513 |                 locations[id_k] = [01;31m[Klocations_m[m[K[id_k];
+      |                                   [01;31m[K^~~~~~~~~~~[m[K
+      |                                   [32m[Klocations[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kstd::pair<int, Pose2D> getMostUpToDateNeighborInfo(int)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:530:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kdefer_to_id[m[K’ was not declared in this scope
+  530 |     [01;31m[Kdefer_to_id[m[K = id;
+      |     [01;31m[K^~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:530:19:[m[K [01;31m[Kerror: [m[K‘[01m[Kid[m[K’ was not declared in this scope; did you mean ‘[01m[Kid_k[m[K’?
+  530 |     defer_to_id = [01;31m[Kid[m[K;
+      |                   [01;31m[K^~[m[K
+      |                   [32m[Kid_k[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:531:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kmax_k_timestamp[m[K’ was not declared in this scope
+  531 |     [01;31m[Kmax_k_timestamp[m[K = timestamps[id_k];
+      |     [01;31m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:531:23:[m[K [01;31m[Kerror: [m[K‘[01m[Ktimestamps[m[K’ was not declared in this scope; did you mean ‘[01m[Kmkstemps[m[K’?
+  531 |     max_k_timestamp = [01;31m[Ktimestamps[m[K[id_k];
+      |                       [01;31m[K^~~~~~~~~~[m[K
+      |                       [32m[Kmkstemps[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:532:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kmost_recent_k_location[m[K’ was not declared in this scope
+  532 |     [01;31m[Kmost_recent_k_location[m[K = locations[id_k];
+      |     [01;31m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:532:30:[m[K [01;31m[Kerror: [m[K‘[01m[Klocations[m[K’ was not declared in this scope
+  532 |     most_recent_k_location = [01;31m[Klocations[m[K[id_k];
+      |                              [01;31m[K^~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:534:21:[m[K [01;31m[Kerror: [m[K‘[01m[Kmessage_queue[m[K’ was not declared in this scope
+  534 |     for (Msg& msg : [01;31m[Kmessage_queue[m[K) {
+      |                     [01;31m[K^~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:539:36:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator=[m[K’ (operand types are ‘[01m[KPose2D[m[K’ and ‘[01m[Kstd::unordered_map<int, Pose2D>[m[K’)
+  539 |             best_info.second = msg.[01;31m[Klocations[m[K; // locations_m
+      |                                    [01;31m[K^~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:3[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kconstexpr Pose2D& Pose2D::operator=(const Pose2D&)[m[K’
+   17 | struct [01;36m[KPose2D[m[K
+      |        [01;36m[K^~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<int, Pose2D>[m[K’ to ‘[01m[Kconst Pose2D&[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kconstexpr Pose2D& Pose2D::operator=(Pose2D&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<int, Pose2D>[m[K’ to ‘[01m[KPose2D&&[m[K’
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

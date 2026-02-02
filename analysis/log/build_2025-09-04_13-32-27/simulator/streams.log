@@ -1,0 +1,16 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.065s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[1.586s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleAdd(std::vector<int>&, std::vector<int>&, std::map<int, double>&, std::vector<std::vector<double, std::allocator<double> > >&)[m[K’:
+[1.586s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1091:25:[m[K [01;31m[Kerror: [m[K‘[01m[KlogMapOfVectors[m[K’ was not declared in this scope; did you mean ‘[01m[Kutils::logMapOfVectors[m[K’?
+[1.586s]  1091 |                         [01;31m[KlogMapOfVectors[m[K(task_sub_group_assignments, robot);
+[1.586s]       |                         [01;31m[K^~~~~~~~~~~~~~~[m[K
+[1.586s]       |                         [32m[Kutils::logMapOfVectors[m[K
+[1.586s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:11[m[K:
+[1.586s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:47:6:[m[K [01;36m[Knote: [m[K‘[01m[Kutils::logMapOfVectors[m[K’ declared here
+[1.586s]    47 | void [01;36m[KlogMapOfVectors[m[K(const std::unordered_map<std::string, std::vector<T>>& map_data, Robot& robot) {
+[1.587s]       |      [01;36m[K^~~~~~~~~~~~~~~[m[K
+[2.367s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+[2.367s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.368s] gmake: *** [Makefile:146: all] Error 2
+[2.369s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

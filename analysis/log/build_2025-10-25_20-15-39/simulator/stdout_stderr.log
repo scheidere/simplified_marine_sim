@@ -1,0 +1,9 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[ 15%] [32m[1mLinking CXX executable sim[0m
+/usr/bin/ld: CMakeFiles/sim.dir/src/behavior_tree.cpp.o: in function `Communicate::onRunning()':
+behavior_tree.cpp:(.text+0x134c): undefined reference to `Robot::updateSubtaskFailures()'
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:744: sim] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

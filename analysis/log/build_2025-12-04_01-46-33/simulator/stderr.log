@@ -1,0 +1,15 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kstd::vector<int> getSubtasksFromType(std::string)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1672:1:[m[K [01;35m[Kwarning: [m[Kno return statement in function returning non-void [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wreturn-type-Wreturn-type]8;;[m[K]
+ 1672 | [01;35m[K}[m[K
+      | [01;35m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::map<int, int> Robot::initFailureThresholdsDict(TaskInfo&, bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1687:23:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_task[m[K’ was not declared in this scope; did you mean ‘[01m[Kcurrent_task_info[m[K’?
+ 1687 |         int main_id = [01;31m[Kcurrent_task[m[K.main; // Subtasks have the id of the main task they correspond to
+      |                       [01;31m[K^~~~~~~~~~~~[m[K
+      |                       [32m[Kcurrent_task_info[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1689:9:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K,[m[K’ or ‘[01m[K;[m[K’ before ‘[01m[Kstd[m[K’
+ 1689 |         [01;31m[Kstd[m[K::vector<int> subtasks = main_task_info.subtasks;
+      |         [01;31m[K^~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

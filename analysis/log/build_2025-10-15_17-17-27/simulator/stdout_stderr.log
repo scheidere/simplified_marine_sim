@@ -1,0 +1,26 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, TaskInfo> World::initAllTasksInfo()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:228:13:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[Kstd::vector<std::__cxx11::basic_string<char> >[m[K’ to ‘[01m[Kint[m[K’ in initialization
+  228 |             [01;31m[Ksub_tasks[m[K, // std::vector<std::string>
+      |             [01;31m[K^~~~~~~~~[m[K
+      |             [01;31m[K|[m[K
+      |             [01;31m[Kstd::vector<std::__cxx11::basic_string<char> >[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, TaskInfo> World::initAllSubTasksInfo()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:276:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kprerequisute_task_failures[m[K’ was not declared in this scope; did you mean ‘[01m[Kprerequisute_failures[m[K’?
+  276 |             [01;31m[Kprerequisute_task_failures[m[K, // int
+      |             [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |             [32m[Kprerequisute_failures[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,14 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleAdd(std::vector<int>&, std::vector<int>&, std::map<int, double>&, std::vector<std::vector<double, std::allocator<double> > >&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1091:25:[m[K [01;31m[Kerror: [m[K‘[01m[KlogMapOfVectors[m[K’ was not declared in this scope; did you mean ‘[01m[Kutils::logMapOfVectors[m[K’?
+ 1091 |                         [01;31m[KlogMapOfVectors[m[K(task_sub_group_assignments, robot);
+      |                         [01;31m[K^~~~~~~~~~~~~~~[m[K
+      |                         [32m[Kutils::logMapOfVectors[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:11[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:47:6:[m[K [01;36m[Knote: [m[K‘[01m[Kutils::logMapOfVectors[m[K’ declared here
+   47 | void [01;36m[KlogMapOfVectors[m[K(const std::unordered_map<std::string, std::vector<T>>& map_data, Robot& robot) {
+      |      [01;36m[K^~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

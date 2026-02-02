@@ -1,0 +1,9372 @@
+all_agent_capabilities: 
+mapper : [2]
+analysis : [2]
+
+robot_capabilities_by_type: 
+2 
+Found task of type test saving 1
+1
+doable_task_ids: 
+1 
+doable_subtask_ids: 
+2 3 
+Bids (task id: double): 
+1 : 0
+
+Winners (task id: int): 
+1 : -1
+
+Winning bids (task id: double): 
+1 : 0
+
+Num local tasks: 3
+Num agents: 2
+Winning bids matrix: 
+0 0 
+0 0 
+0 0 
+
+after initLocations
+1 : (10,10,0)
+2 : (-1,-1,0)
+
+Num local tasks: 3
+Num agents: 2
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,2.63671,0) 
+pings vector after removing stale pings: 
+(2,2.63671,0) 
+new_pings: 
+(2,2.63671,0) 
+last_pings: 
+
+NEW INFO FOUND DUE TO NEW ROBOT IN COMMS
+New info available
+last_pings updated to: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is TRUE
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 3: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 0
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : -1
+
+BEFORE bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+0 0 
+0 0 
+0 0 
+
+In bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+winning_bids_matrix: 
+0 0 
+0 0 
+0 0 
+
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+-1 -1 -1 
+-1 -1 -1 
+0 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+Winning bids matrix:
+0 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 0
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Bundle currently is:
+-1 -1 -1 
+Looking at the following doable task not in bundle:1
+in computeBid
+getPathScore distance check for path:
+-1 -1 -1 
+Current score: 0.000000
+end getTestPaths
+n: 0, test_path:
+1 -1 -1 
+getPathScore distance check for path:
+1 -1 -1 
+in the right if**********
+solo task so using cbba reward function
+in cumulative distance function
+init prev loc: 10, 10
+task loc: 0, 0
+14.142136
+distance at end: 14.142136
+end cumulative distance function
+new path score: 4.929752
+marginal_score_improvement_c: 4.929752
+max_score_improvement: 0.000000
+Found new max max_score_improvement
+After computeBid update, bids: 
+1 : 4.92975
+
+and best position tracker: 
+1 : 0
+
+Task 1 is solo
+in getSoloWinningBid
+winning_bids_matrix:
+0 0 
+0 0 
+0 0 
+
+end in getSoloWinningBid
+current_winning_bid: 0.000000
+For task 1 bid (4.929752) > winning bid(0.000000)
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 1
+
+end getBestTaskID
+Best task ID is 1
+in addTaskToBundleEnd
+right before matrix update loop in bundleAdd
+in task_is_solo loop
+after clearing row allegedly: 
+0 0 
+0 0 
+0 0 
+
+after wb matrix update
+local_win_indicator_h: 
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : -1
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : -1
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: 
+In getMaxNeighborTimestamp() in world...
+Neighbors of robot 1
+2 
+Timestamps BEFORE change in world::getMaxNeighborTimestamp:
+2 : -1
+
+id_i: 1
+id_k: 2
+Timestamps AFTER change in world::getMaxNeighborTimestamp:
+2 : -1
+
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+locations update start
+number of msgs in queue: 0
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: -1,-1,0
+best id m: 1
+Defer to m belief of k location: -1,-1,0
+After locations update
+1 : (10,10,0)
+2 : (-1,-1,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+in updateTaskProgress
+Message queue size: 0
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 0
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : -1
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : -1
+
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 1 complete
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 0
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : -1
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 0
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : -1
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : -1
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+0 4.88938 
+0 0 
+0 0 
+
+Timestamps: 
+1 : -1
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: -1,-1,0
+msg.locations where m=k: 
+1 : (-1,-1,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 0
+
+in task progress loop
+in task progress loop
+in task progress loop
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 0
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 3.36678
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 3.36678
+
+Message from robot 2:
+Winning bids matrix: 
+0 4.88938 
+0 0 
+0 0 
+
+Timestamps: 
+1 : -1
+
+before test
+Task_j: 1
+full_group_size = 1
+winner_ij: 1
+winner_kj: 2
+winning_bid_ij: 4.929752
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+winner_kj == id_k: 
+2
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 2 complete
+At convergence for this round!!!!!
+Converged for 1 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 1
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 0
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 3.36678
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 0
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 3.36678
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 3.36678
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 2.95044
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 0
+
+in task progress loop
+in task progress loop
+in task progress loop
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 0
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 3.79417
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 3.79417
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 2.95044
+
+before test
+Task_j: 1
+full_group_size = 1
+winner_ij: 1
+winner_kj: 1
+winning_bid_ij: 4.929752
+winning_bid_kj: 4.929752
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 3 complete
+At convergence for this round!!!!!
+Converged for 2 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 2
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 0
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 3.79417
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 0
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 3.79417
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 3.79417
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 3.37803
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 0
+
+in task progress loop
+in task progress loop
+in task progress loop
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 0
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 4.22102
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 4.22102
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 3.37803
+
+before test
+Task_j: 1
+full_group_size = 1
+winner_ij: 1
+winner_kj: 1
+winning_bid_ij: 4.929752
+winning_bid_kj: 4.929752
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 4 complete
+At convergence for this round!!!!!
+Converged for 3 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 3
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 0
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 4.22102
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 0
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 4.22102
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 4.22102
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 3.80494
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 0
+
+in task progress loop
+in task progress loop
+in task progress loop
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 0
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 4.64717
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 4.64717
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 3.80494
+
+before test
+Task_j: 1
+full_group_size = 1
+winner_ij: 1
+winner_kj: 1
+winning_bid_ij: 4.929752
+winning_bid_kj: 4.929752
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 5 complete
+At convergence for this round!!!!!
+Converged for 4 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 4
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 0
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 4.64717
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 0
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+task_group_max_size: 
+mapper : 0
+any_agent_type : 1
+analysis : 0
+
+full_group_size: 1
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 4.64717
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 4.64717
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 4.23146
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 0
+
+in task progress loop
+in task progress loop
+in task progress loop
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 0
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 0
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 5.07356
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 5.07356
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 4.23146
+
+before test
+Task_j: 1
+full_group_size = 1
+winner_ij: 1
+winner_kj: 1
+winning_bid_ij: 4.929752
+winning_bid_kj: 4.929752
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 6 complete
+At convergence for this round!!!!!
+Converged for 5 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 5
+Setting at_consensus to TRUE (at end of checkConvergence)
+Time to convergence: 0.366006 seconds
+At convergence, so updating task progress tracker to prevent redundant allocation of tasks in later CBBA/CBGA rounds...
+Task progress tracker at convergence: 
+2 : 0
+3 : 0
+1 : 1
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Past checks in TaskNeededNow
+name of current task in path: Test_Task
+Next task to execute is Test_Task or one of its subtasks (all same type 'test')!
+About to return success - task needed now!
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in HandleFailures node start
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.33822,0) 
+pings vector after removing stale pings: 
+(2,5.33822,0) 
+new_pings: 
+(2,5.33822,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.39891,0) 
+pings vector after removing stale pings: 
+(2,5.39891,0) 
+new_pings: 
+(2,5.39891,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+processing done, subtask 1 returning success
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.45967,0) 
+pings vector after removing stale pings: 
+(2,5.45967,0) 
+new_pings: 
+(2,5.45967,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 0
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 0
+2 : 0
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 0
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.52073,0) 
+pings vector after removing stale pings: 
+(2,5.52073,0) 
+new_pings: 
+(2,5.52073,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 0
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 0
+2 : 0
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 0
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.58148,0) 
+pings vector after removing stale pings: 
+(2,5.58148,0) 
+new_pings: 
+(2,5.58148,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 0
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 0
+2 : 0
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 0
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.64238,0) 
+pings vector after removing stale pings: 
+(2,5.64238,0) 
+new_pings: 
+(2,5.64238,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 0
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 0
+2 : 0
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 0
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.70329,0) 
+pings vector after removing stale pings: 
+(2,5.70329,0) 
+new_pings: 
+(2,5.70329,0) 
+last_pings: 
+(2,2.63671,0) 
+end checkIfNewInfoAvailable
+info_available is FALSE
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+In checkIfNewInfoAvailable...
+current pings vector before clearing any stale pings: 
+(2,5.7641,0) 
+pings vector after removing stale pings: 
+(2,5.7641,0) 
+info_available is TRUE
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 5.07356
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 5.07356
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 5.07356
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 ID:2 
+Robot 1 received message from Robot 2
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 5.08403
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 0
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 0
+
+in task progress loop
+in task progress loop
+in task progress loop
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 6.04817
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 6.04817
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 5.08403
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 1 complete
+At convergence for this round!!!!!
+Converged for 1 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 6.04817
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 6.04817
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 6.04817
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 5.08403
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 6.47773
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 6.47773
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+1 : 5.08403
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 2 complete
+At convergence for this round!!!!!
+Converged for 2 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 2
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 6.47773
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 0 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 0 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 0 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 6.47773
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 0 
+
+Timestamps: 
+2 : 6.47773
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 6.0573
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 6.91024
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 0 
+
+2 : 6.91024
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 6.0573
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 0 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: -1
+winner_kj: 2
+winning_bid_ij: 0.000000
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+winner_kj == id_k: 
+2
+k thinks k, i does not know (-1), so update
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 3 complete
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 0
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 6.91024
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 6.91024
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 6.91024
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 ID:2 
+Robot 1 received message from Robot 2
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 6.91204
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 7.34285
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 7.34285
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 6.91204
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 4 complete
+At convergence for this round!!!!!
+Converged for 1 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 7.34285
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 7.34285
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 7.34285
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 6.91204
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 7.77294
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 7.77294
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 6.91204
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 5 complete
+At convergence for this round!!!!!
+Converged for 2 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 2
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 7.77294
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 7.77294
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 7.77294
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 7.76976
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.2009
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 8.2009
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 7.76976
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 6 complete
+At convergence for this round!!!!!
+Converged for 3 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 3
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 8.2009
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 2 checking broadcast to robot 1
+Robot 2 -> Robot 1: inComms = true
+Adding message: Robot 2 -> Robot 1
+Message added successfully
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 8.2009
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 8.2009
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: ID:2 
+Robot 1 received message from Robot 2
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 8.62694
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA Round 7 complete
+At convergence for this round!!!!!
+Converged for 4 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 4
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 8.62694
+
+BEFORE bundleRemove...
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+1 -1 -1 
+1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+task_idx: 0, current_robot_idx: 0
+New winner found: 0 winning_bids_matrix[task_idx][current_robot_idx]: 4.929752
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+1 -1 -1 
+1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+1 -1 -1 
+Path:
+1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+in failure return for subtask 2
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 8.62694
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: 
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 1
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 1
+2 : 0
+
+FOUND A FAILURE (aka a 1) in updateSubtaskFailuresPerSelf
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 1
+2 : 0
+
+path:
+1 -1 -1 
+we are in not empty path part
+current_task_is_main:1
+testinggg
+in initFailureThresholdsDict
+current task is main
+subtasks
+subtask_id:2
+subtask_id:3
+returning
+testingggg
+subtask_failure_thresholds:
+2 : 2
+3 : 2
+
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 1
+robot in helper mode?: 0
+Robot 1 receives reward of 5.000000 for completing Test_Task
+processing done, subtask 2 returning success
+in pinggg
+senderSubtaskFailureFlag: 1
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 1
+here
+senderSubtaskFailureFlag 4: 1
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 8.62694
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+
+Running HandleFailures (in onRunning)...
+current_subtask_failures: 
+3 : 0
+2 : 0
+
+are we here in HandleFailures node
+in HandleFailures
+doable tasks, subtasks at START of handle failures: 
+1 
+2 3 
+current_subtask_failures:
+3 : 0
+2 : 0
+
+in updateSubtaskFailuresPerSelf:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+current_subtask_failures post self update:
+3 : 0
+2 : 0
+
+path:
+-1 -1 -1 
+  3 : {2=0, 1=1}
+  2 : {2=0, 1=0}
+
+end of handle failures, subtask_failures:
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+doable tasks/subtasks at END of handle failures: 
+1 
+2 3 
+task_is_main in HandleFailures node: 0
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 8 complete
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 8.62694
+
+BEFORE bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 8.62694
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: 
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 8.62694
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 9 complete
+At convergence for this round!!!!!
+Converged for 1 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 1
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 8.62694
+
+BEFORE bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 8.62694
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: 
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 8.62694
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 10 complete
+At convergence for this round!!!!!
+Converged for 2 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 2
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 8.62694
+
+BEFORE bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 8.62694
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: 
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+STARTING resolveConflicts
+id_i in resolveConflicts: 1
+Current robot's winning bids matrix and timestamps before resolveConflicts...
+4.92975 0 
+0 0 
+0 4.88938 
+
+2 : 8.62694
+
+Message from robot 2:
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+before test
+Task_j: 1
+Task 1 already started, skipping conflict resolution
+Task_j: 2
+full_group_size = 1
+winner_ij: -1
+winner_kj: -1
+winning_bid_ij: 0.000000
+winning_bid_kj: 0.000000
+in resolveSoloConflicts...
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task_j: 3
+full_group_size = 1
+winner_ij: 2
+winner_kj: 2
+winning_bid_ij: 4.889383
+winning_bid_kj: 4.889383
+in resolveSoloConflicts...
+in update
+results right after resolveSoloConflicts()
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+End resolveConflicts test for single message...
+Current robot 1 (winning_bids_matrix):
+4.92975 0 
+0 0 
+0 4.88938 
+
+after wbm print
+END resolveConflicts
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA Round 11 complete
+At convergence for this round!!!!!
+Converged for 3 iterations...
+After convergence check at end of CBBA/CBGA round, bundle and path are the following:
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+CBGA init convergence_threshold: 5
+max depth: 3
+convergence_threshold: 5
+cumulative_convergence_count: 3
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+CBGA init convergence_threshold: 5
+max depth: 3
+Task progress tracker at start of buildBundle: 
+2 : 0
+3 : 0
+1 : 1
+
+Setting at_consensus to FALSE at start of buildBundle
+Timestamps BEFORE change in CBGA::buildBundle:
+2 : 8.62694
+
+BEFORE bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+In bundleRemove...
+-1 -1 -1 
+-1 -1 -1 
+winning_bids_matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Final results for bundleRemove (bundle, path, winning_bids_matrix): 
+-1 -1 -1 
+-1 -1 -1 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Bids before bundle add should be reset, here they are:
+1 : 0
+
+++++++++++in bundleAdd START++++++++++
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+Winning bids matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+Task progress:
+2 : 0
+3 : 0
+1 : 1
+
++++++++++++++++++++++++++++++++++++++
+local_win_indicator_h: 
+1 : 0
+
+Looking at doable task 1
+Task 1 already started, skipping bundle build for it
+Finished processing all tasks in this iteration
+in getBestTaskID
+indicator h:
+1 : 0
+
+end getBestTaskID
+No valid task found to add to bundle. Exiting loop.
+==========in bundleAdd END==========
+Bundle:
+-1 -1 -1 
+Path:
+-1 -1 -1 
+winning_bids_matrix:
+4.92975 0 
+0 0 
+0 4.88938 
+
+====================================
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+Robot 1 broadcasting message...
+Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+Robot 1 finished broadcasting.
+Broadcasted the following message:
+ID: 1
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+2 : 8.62694
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+  3 : {2=0, 1=0}
+  2 : {2=0, 1=0}
+
+before receiving messages officially, msg tracker for current robot is: 
+Messages: 
+after receiving messages officially and clearing, msg tracker for current robot is: 
+Messages: 
+Robot 1 receiving message(s)...
+ID: 2
+Winners: 
+1 : -1
+
+Winning bids: 
+1 : 0
+
+Winning bids matrix: 
+4.92975 0 
+0 0 
+0 4.88938 
+
+Timestamps: 
+1 : 8.19521
+
+Task progress: 
+2 : 0
+3 : 0
+1 : 1
+
+Subtask_failures: 
+3 : {2=0, 1=1}
+2 : {2=0, 1=0}
+
+locations update start
+number of msgs in queue: 1
+k: 1
+Defer to own location: 10,10,0
+k: 2
+k is not i, k is: 2
+k loc according to i: 20,10,0
+msg.locations where m=k: 
+1 : (10,10,0)
+2 : (20,10,0)
+
+k loc according to k: 20,10,0
+best id m: 2
+Defer to m belief of k location: 20,10,0
+in update for m (m != i) with best info on k loc
+After locations update
+1 : (10,10,0)
+2 : (20,10,0)
+
+task progress b4 update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+in updateTaskProgress
+Message queue size: 1
+in msg loop
+msg.task_progress: 
+2 : 0
+3 : 0
+1 : 1
+
+in task progress loop
+in task progress loop
+in task progress loop
+Robot 1 task progress updated (0 to 1 for one element) via robot 2
+Task progress in updateTaskProgress: 
+2 : 0
+3 : 0
+1 : 1
+
+task progress after update in comms node
+2 : 0
+3 : 0
+1 : 1
+
+subtask failures b4 update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateSubtaskFailuresPerNeighbors
+subtask failures after update in comms node
+3 : {2=0, 1=0}
+2 : {2=0, 1=0}
+
+in updateDoableTasks
+in newNeighborSubtaskFailures
+match
+neighbor_newly_failed_subtasks:
+
+AFTER doable tasks update IN FUNCTION...
+doable_task_ids:
+1 
+doable_subtask_ids:
+2 3 
+Timestamps AFTER change in Communicate::tick in behavior_tree.cpp:
+2 : 8.62694
+
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus
+in pinggg
+senderSubtaskFailureFlag: 0
+in updateWorldPingTracker
+senderSubtaskFailureFlag in ping: 0
+here
+senderSubtaskFailureFlag 4: 0
+in TaskNeededNow
+in robot::TaskNeededNow
+Not at consensus

@@ -1,0 +1,24 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.050s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.050s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.050s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.051s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.051s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.053s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.054s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.054s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.055s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[0.055s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[3.291s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In constructor ‘[01m[KWorld::World(int, int, Distance*, SensorModel*, JSONParser*, double)[m[K’:
+[3.291s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:88:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kdecay_rate[m[K’ was not declared in this scope
+[3.291s]    88 |         [01;31m[Kdecay_rate[m[K = initDecayRate();
+[3.291s]       |         [01;31m[K^~~~~~~~~~[m[K
+[3.570s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kbool World::inComms(int, int)[m[K’:
+[3.570s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:775:43:[m[K [01;31m[Kerror: [m[K‘[01m[Kdecay_rate[m[K’ was not declared in this scope
+[3.570s]   775 |         double success_probability = exp(-[01;31m[Kdecay_rate[m[K * distance_ratio);
+[3.570s]       |                                           [01;31m[K^~~~~~~~~~[m[K
+[5.535s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+[5.535s] gmake[2]: *** Waiting for unfinished jobs....
+[8.390s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[8.390s] gmake: *** [Makefile:146: all] Error 2
+[8.392s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

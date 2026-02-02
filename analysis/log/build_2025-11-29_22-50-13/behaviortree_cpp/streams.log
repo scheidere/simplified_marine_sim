@@ -1,0 +1,21 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12
+[0.040s] [  3%] Built target minitrace
+[0.041s] [  3%] Built target lexy_file
+[0.041s] [  4%] Built target gtest_main
+[0.041s] [  6%] Built target gtest
+[0.056s] [35m[1mConsolidate compiler generated dependencies of target behaviortree_cpp[0m
+[0.096s] [  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[1.153s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus BT::CounterSequence::tick()[m[K’:
+[1.153s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:88:38:[m[K [01;31m[Kerror: [m[K‘[01m[Kvoid BT::TreeNode::resetStatus()[m[K’ is protected within this context
+[1.153s]    88 |     [01;31m[Khandle_failures_node->resetStatus()[m[K;
+[1.153s]       |     [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~[m[K
+[1.153s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/include/behaviortree_cpp/control_node.h:17[m[K,
+[1.153s]                  from [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/include/behaviortree_cpp/controls/counter_sequence.h:74[m[K,
+[1.153s]                  from [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:15[m[K:
+[1.153s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/include/behaviortree_cpp/tree_node.h:378:8:[m[K [01;36m[Knote: [m[Kdeclared protected here
+[1.153s]   378 |   void [01;36m[KresetStatus[m[K();
+[1.153s]       |        [01;36m[K^~~~~~~~~~~[m[K
+[1.826s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+[1.826s] gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Error 2
+[1.827s] gmake: *** [Makefile:146: all] Error 2
+[1.828s] Invoked command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12

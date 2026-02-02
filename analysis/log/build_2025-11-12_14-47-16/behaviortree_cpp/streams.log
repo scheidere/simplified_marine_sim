@@ -1,0 +1,17 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp': CMAKE_PREFIX_PATH=/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12
+[0.040s] [  2%] Built target lexy_file
+[0.040s] [  3%] Built target minitrace
+[0.040s] [  4%] Built target gtest_main
+[0.041s] [  6%] Built target gtest
+[0.056s] [35m[1mConsolidate compiler generated dependencies of target behaviortree_cpp[0m
+[0.096s] [  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[1.140s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In constructor ‘[01m[KBT::CounterSequence::CounterSequence(const string&, const BT::NodeConfig&)[m[K’:
+[1.140s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:25:36:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[KBT::Result[m[K’ {aka ‘[01m[Knonstd::expected_lite::expected<std::monostate, std::__cxx11::basic_string<char> >[m[K’} to ‘[01m[Kint[m[K’ in initialization
+[1.140s]    25 |         int task_is_main = [01;31m[KgetInput("task_is_main", task_is_main)[m[K;
+[1.140s]       |                            [01;31m[K~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.141s]       |                                    [01;31m[K|[m[K
+[1.141s]       |                                    [01;31m[KBT::Result {aka nonstd::expected_lite::expected<std::monostate, std::__cxx11::basic_string<char> >}[m[K
+[1.631s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+[1.631s] gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Error 2
+[1.631s] gmake: *** [Makefile:146: all] Error 2
+[1.633s] Invoked command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp' returned '2': CMAKE_PREFIX_PATH=/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12

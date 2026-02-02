@@ -1,0 +1,24 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus Subtask_1::onStart()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1543:29:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[K_waypoints[m[K’
+ 1543 |         _world.log_info(bla)
+      |                             [01;31m[K^[m[K
+      |                             [32m[K;[m[K
+......
+ 1546 |         [32m[K_waypoints[m[K = _shortest_path_planner.plan(current_pose, goal_pose,
+      |         [32m[K~~~~~~~~~~[m[K           
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1549:13:[m[K [01;31m[Kerror: [m[K‘[01m[K_waypoints[m[K’ was not declared in this scope
+ 1549 |         if ([01;31m[K_waypoints[m[K.empty()) {
+      |             [01;31m[K^~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1554:9:[m[K [01;31m[Kerror: [m[K‘[01m[K_current_waypoint_index[m[K’ was not declared in this scope
+ 1554 |         [01;31m[K_current_waypoint_index[m[K = 0;
+      |         [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1555:46:[m[K [01;31m[Kerror: [m[K‘[01m[K_waypoints[m[K’ was not declared in this scope
+ 1555 |         std::cout << "Planned path with " << [01;31m[K_waypoints[m[K.size() << " waypoints" << std::endl;
+      |                                              [01;31m[K^~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

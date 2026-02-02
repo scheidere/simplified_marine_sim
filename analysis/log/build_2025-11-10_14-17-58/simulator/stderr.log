@@ -1,0 +1,28 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:485:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int, int>)[m[K’
+  485 | void [01;31m[KRobot[m[K::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures) {
+      |      [01;31m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:99:10:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kvoid Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int, bool>)[m[K’
+   99 |     void [01;36m[KupdateSubtaskFailuresPerSelf[m[K(std::unordered_map<int,bool> new_self_subtask_failures);
+      |          [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::pair<std::pair<int, bool>, std::unordered_map<int, int> > Robot::HandleFailures(std::unordered_map<int, bool>)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1700:38:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[Kstd::pair<int, bool>[m[K’ to ‘[01m[Kbool[m[K’ in assignment
+ 1700 |     scope_and_threshold_info.first = [01;31m[Kcurrent_task_id_scope[m[K;
+      |                                      [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+      |                                      [01;31m[K|[m[K
+      |                                      [01;31m[Kstd::pair<int, bool>[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1702:12:[m[K [01;31m[Kerror: [m[Kcould not convert ‘[01m[Kscope_and_threshold_info[m[K’ from ‘[01m[Kpair<[01;32m[Kbool[m[K,[...]>[m[K’ to ‘[01m[Kpair<[01;32m[Kstd::pair<int, bool>[m[K,[...]>[m[K’
+ 1702 |     return [01;31m[Kscope_and_threshold_info[m[K;
+      |            [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |            [01;31m[K|[m[K
+      |            [01;31m[Kpair<bool,[...]>[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

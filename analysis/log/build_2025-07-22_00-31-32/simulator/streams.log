@@ -1,0 +1,21 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.038s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.062s] [  8%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.062s] [ 16%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.062s] [ 25%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.062s] [ 33%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.062s] [ 41%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.065s] [ 50%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.065s] [ 58%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.066s] [ 75%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[0.066s] [ 75%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[3.178s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In constructor ‘[01m[KCheckConvergence::CheckConvergence(const string&, const BT::NodeConfig&, World&, Robot&, JSONParser&)[m[K’:
+[3.178s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:491:74:[m[K [01;31m[Kerror: [m[K‘[01m[Kparser[m[K’ was not declared in this scope; did you mean ‘[01m[K_parser[m[K’?
+[3.178s]   491 |     : ConditionNode(name, config), _world(world), _robot(robot), _parser([01;31m[Kparser[m[K) {}
+[3.179s]       |                                                                          [01;31m[K^~~~~~[m[K
+[3.179s]       |                                                                          [32m[K_parser[m[K
+[4.986s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[4.986s] gmake[2]: *** Waiting for unfinished jobs....
+[6.288s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.288s] gmake: *** [Makefile:146: all] Error 2
+[6.290s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

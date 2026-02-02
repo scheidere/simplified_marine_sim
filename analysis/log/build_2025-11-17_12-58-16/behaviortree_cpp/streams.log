@@ -1,0 +1,28 @@
+[0.008s] Invoking command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12
+[0.044s] [  2%] Built target lexy_file
+[0.044s] [  3%] Built target minitrace
+[0.044s] [  4%] Built target gtest_main
+[0.044s] [  6%] Built target gtest
+[0.063s] [35m[1mConsolidate compiler generated dependencies of target behaviortree_cpp[0m
+[0.103s] [  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/bt_factory.cpp.o[0m
+[0.103s] [  8%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[0.103s] [  9%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/groot2_publisher.cpp.o[0m
+[1.342s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus BT::CounterSequence::tick()[m[K’:
+[1.342s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:64:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_task_id[m[K’ was not declared in this scope; did you mean ‘[01m[Kcurrent_task_id_[m[K’?
+[1.342s]    64 |         [01;31m[Kcurrent_task_id[m[K = getInput<int>("current_task_id");
+[1.342s]       |         [01;31m[K^~~~~~~~~~~~~~~[m[K
+[1.342s]       |         [32m[Kcurrent_task_id_[m[K
+[1.345s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:9:[m[K [01;31m[Kerror: [m[K‘[01m[Ksubtask_failure_thresholds[m[K’ was not declared in this scope; did you mean ‘[01m[Ksubtask_failure_thresholds_[m[K’?
+[1.345s]    67 |         [01;31m[Ksubtask_failure_thresholds[m[K = getInput<
+[1.345s]       |         [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.345s]       |         [32m[Ksubtask_failure_thresholds_[m[K
+[1.345s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:38:[m[K [01;31m[Kerror: [m[Kparse error in template argument list
+[1.346s]    67 |         subtask_failure_thresholds = [01;31m[KgetInput<[m[K
+[1.346s]       |                                      [01;31m[K^~~~~~~~~[m[K
+[1.346s]    68 | [01;31m[K        subtask_failure_thresholds_ = subtask_failure_thresholds.value()[m[K;
+[1.346s]       |         [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.073s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+[2.073s] gmake[2]: *** Waiting for unfinished jobs....
+[11.140s] gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Error 2
+[11.140s] gmake: *** [Makefile:146: all] Error 2
+[11.141s] Invoked command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12

@@ -1,0 +1,30 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In constructor ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, int, std::string, cv::Scalar)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:109:5:[m[K [01;31m[Kerror: [m[K‘[01m[KtestNewNeighborSubtaskFailures[m[K’ was not declared in this scope; did you mean ‘[01m[KnewNeighborSubtaskFailures[m[K’?
+  109 |     [01;31m[KtestNewNeighborSubtaskFailures[m[K();
+      |     [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |     [32m[KnewNeighborSubtaskFailures[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kvoid testNewNeighborSubtaskFailures()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:321:5:[m[K [01;31m[Kerror: [m[K‘[01m[KsetSubtaskFailure[m[K’ was not declared in this scope
+  321 |     [01;31m[KsetSubtaskFailure[m[K(7,2,1); // subtask with id 7, robot 2, failed
+      |     [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:341:47:[m[K [01;31m[Kerror: [m[K‘[01m[KnewNeighborSubtaskFailures[m[K’ was not declared in this scope; did you mean ‘[01m[KtestNewNeighborSubtaskFailures[m[K’?
+  341 |     std::pair<bool,std::vector<int>> result = [01;31m[KnewNeighborSubtaskFailures[m[K();
+      |                                               [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |                                               [32m[KtestNewNeighborSubtaskFailures[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:342:5:[m[K [01;31m[Kerror: [m[K‘[01m[Klog_info[m[K’ was not declared in this scope
+  342 |     [01;31m[Klog_info[m[K("Results of newNeighborSubtaskFailures test:");
+      |     [01;31m[K^~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:348:23:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Klog1DVector(std::vector<int>&)[m[K’
+  348 |     [01;31m[Kutils::log1DVector(failed_ids)[m[K;
+      |     [01;31m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:9[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:159:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class T> void utils::log1DVector(const std::vector<_Tp>&, Robot&)[m[K’
+  159 | void [01;36m[Klog1DVector[m[K(const std::vector<T>& vec, Robot& robot) {
+      |      [01;36m[K^~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:159:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:348:23:[m[K [01;36m[Knote: [m[K  candidate expects 2 arguments, 1 provided
+  348 |     [01;36m[Kutils::log1DVector(failed_ids)[m[K;
+      |     [01;36m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

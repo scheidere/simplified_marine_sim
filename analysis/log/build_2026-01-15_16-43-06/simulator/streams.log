@@ -1,0 +1,61 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.060s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.061s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[1.775s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::vector<int> World::getRobotCapabilities(Robot*)[m[K’:
+[1.775s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:605:51:[m[K [01;31m[Kerror: [m[K‘[01m[Klocal_task[m[K’ was not declared in this scope
+[1.775s]   605 |         auto it = robot_capabilities_by_type.find([01;31m[Klocal_task[m[K.type);
+[1.775s]       |                                                   [01;31m[K^~~~~~~~~~[m[K
+[1.863s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > JSONParser::getAgentCapabilities(std::vector<std::__cxx11::basic_string<char> >, std::vector<std::__cxx11::basic_string<char> >)[m[K’:
+[1.863s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:188:75:[m[K [01;31m[Kerror: [m[Kconflicting declaration ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > capabilities[m[K’
+[1.863s]   188 |     std::unordered_map<std::string, std::unordered_map<std::string,bool>> [01;31m[Kcapabilities[m[K;
+[1.863s]       |                                                                           [01;31m[K^~~~~~~~~~~~[m[K
+[1.863s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:187:55:[m[K [01;36m[Knote: [m[Kprevious declaration as ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> > capabilities[m[K’
+[1.863s]   187 |     std::unordered_map<std::string, std::vector<int>> [01;36m[Kcapabilities[m[K;
+[1.863s]       |                                                       [01;36m[K^~~~~~~~~~~~[m[K
+[1.864s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:197:36:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator=[m[K’ (operand types are ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >::mapped_type[m[K’ {aka ‘[01m[Kstd::vector<int>[m[K’} and ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’)
+[1.864s]   197 |         capabilities[agent_type] = [01;31m[Krow[m[K; // Add capabilities map
+[1.864s]       |                                    [01;31m[K^~~[m[K
+[1.864s] In file included from [01m[K/usr/include/c++/11/vector:72[m[K,
+[1.865s]                  from [01m[K/usr/include/c++/11/functional:62[m[K,
+[1.865s]                  from [01m[K/usr/include/c++/11/pstl/glue_algorithm_defs.h:13[m[K,
+[1.865s]                  from [01m[K/usr/include/c++/11/algorithm:74[m[K,
+[1.865s]                  from [01m[K/usr/include/nlohmann/json.hpp:46[m[K,
+[1.865s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/parser.hpp:4[m[K,
+[1.865s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:1[m[K:
+[1.865s] [01m[K/usr/include/c++/11/bits/vector.tcc:198:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = int; _Alloc = std::allocator<int>][m[K’
+[1.865s]   198 |     [01;36m[Kvector<_Tp, _Alloc>[m[K::
+[1.865s]       |     [01;36m[K^~~~~~~~~~~~~~~~~~~[m[K
+[1.865s] [01m[K/usr/include/c++/11/bits/vector.tcc:199:42:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’ to ‘[01m[Kconst std::vector<int>&[m[K’
+[1.865s]   199 |     operator=([01;36m[Kconst vector<_Tp, _Alloc>& __x[m[K)
+[1.865s]       |               [01;36m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[1.865s] In file included from [01m[K/usr/include/c++/11/vector:67[m[K,
+[1.865s]                  from [01m[K/usr/include/c++/11/functional:62[m[K,
+[1.865s]                  from [01m[K/usr/include/c++/11/pstl/glue_algorithm_defs.h:13[m[K,
+[1.866s]                  from [01m[K/usr/include/c++/11/algorithm:74[m[K,
+[1.866s]                  from [01m[K/usr/include/nlohmann/json.hpp:46[m[K,
+[1.866s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/parser.hpp:4[m[K,
+[1.866s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:1[m[K:
+[1.866s] [01m[K/usr/include/c++/11/bits/stl_vector.h:709:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(std::vector<_Tp, _Alloc>&&) [with _Tp = int; _Alloc = std::allocator<int>][m[K’
+[1.866s]   709 |       [01;36m[Koperator[m[K=(vector&& __x) noexcept(_Alloc_traits::_S_nothrow_move())
+[1.866s]       |       [01;36m[K^~~~~~~~[m[K
+[1.866s] [01m[K/usr/include/c++/11/bits/stl_vector.h:709:26:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’ to ‘[01m[Kstd::vector<int>&&[m[K’
+[1.866s]   709 |       operator=([01;36m[Kvector&& __x[m[K) noexcept(_Alloc_traits::_S_nothrow_move())
+[1.866s]       |                 [01;36m[K~~~~~~~~~^~~[m[K
+[1.866s] [01m[K/usr/include/c++/11/bits/stl_vector.h:730:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(std::initializer_list<_Tp>) [with _Tp = int; _Alloc = std::allocator<int>][m[K’
+[1.866s]   730 |       [01;36m[Koperator[m[K=(initializer_list<value_type> __l)
+[1.866s]       |       [01;36m[K^~~~~~~~[m[K
+[1.866s] [01m[K/usr/include/c++/11/bits/stl_vector.h:730:46:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’ to ‘[01m[Kstd::initializer_list<int>[m[K’
+[1.867s]   730 |       operator=([01;36m[Kinitializer_list<value_type> __l[m[K)
+[1.867s]       |                 [01;36m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[1.867s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:200:12:[m[K [01;31m[Kerror: [m[Kcould not convert ‘[01m[Kcapabilities[m[K’ from ‘[01m[Kunordered_map<[...],[01;32m[Kstd::vector<int>[m[K>[m[K’ to ‘[01m[Kunordered_map<[...],[01;32m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K>[m[K’
+[1.867s]   200 |     return [01;31m[Kcapabilities[m[K;
+[1.867s]       |            [01;31m[K^~~~~~~~~~~~[m[K
+[1.867s]       |            [01;31m[K|[m[K
+[1.867s]       |            [01;31m[Kunordered_map<[...],std::vector<int>>[m[K
+[2.947s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:216: CMakeFiles/sim.dir/src/parser.cpp.o] Error 1
+[2.947s] gmake[2]: *** Waiting for unfinished jobs....
+[3.010s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+[3.010s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[3.010s] gmake: *** [Makefile:146: all] Error 2
+[3.012s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

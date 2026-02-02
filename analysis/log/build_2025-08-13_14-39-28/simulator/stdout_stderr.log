@@ -1,0 +1,29 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::updateLocations()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:507:75:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KRobot::getMostUpToDateNeighborInfo(std::tuple_element<0, std::pair<const int, Pose2D> >::type&)[m[K’
+  507 |             std::pair<int, Pose2D> best_info = [01;31m[KgetMostUpToDateNeighborInfo(id_k)[m[K;
+      |                                                [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:93:28:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo()[m[K’
+   93 |     std::pair<int, Pose2D> [01;36m[KgetMostUpToDateNeighborInfo[m[K();
+      |                            [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:93:28:[m[K [01;36m[Knote: [m[K  candidate expects 0 arguments, 1 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K At global scope:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:521:24:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo(int)[m[K’
+  521 | std::pair<int, Pose2D> [01;31m[KRobot[m[K::getMostUpToDateNeighborInfo(int id_k) {
+      |                        [01;31m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:93:28:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kstd::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo()[m[K’
+   93 |     std::pair<int, Pose2D> [01;36m[KgetMostUpToDateNeighborInfo[m[K();
+      |                            [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

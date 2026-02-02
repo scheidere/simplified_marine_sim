@@ -1,0 +1,24 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleAdd(std::vector<int>&, std::vector<int>&, std::map<int, double>&, std::vector<std::vector<double, std::allocator<double> > >&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:887:27:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass World[m[K’ has no member named ‘[01m[KtaskAlreadyStarted[m[K’
+  887 |                 if (world.[01;31m[KtaskAlreadyStarted[m[K(task_id)) {
+      |                           [01;31m[K^~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::resolveConflicts(bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1435:23:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass World[m[K’ has no member named ‘[01m[KtaskAlreadyStarted[m[K’
+ 1435 |             if (world.[01;31m[KtaskAlreadyStarted[m[K(task_id)) {
+      |                       [01;31m[K^~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, int> Robot::initTaskProgress()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:244:22:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator[][m[K’ (operand types are ‘[01m[Kconst std::pair<const int, TaskInfo>[m[K’ and ‘[01m[Kconst char [3][m[K’)
+  244 |         int id = task[01;31m[K[[m[K"id"].get<int>();
+      |                      [01;31m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:244:33:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[Kint[m[K’
+  244 |         int id = task["id"].get<[01;31m[Kint[m[K>();
+      |                                 [01;31m[K^~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::updateTaskProgress(int, int)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1126:5:[m[K [01;31m[Kerror: [m[K‘[01m[Ktask_progress_tracker[m[K’ was not declared in this scope
+ 1126 |     [01;31m[Ktask_progress_tracker[m[K[task_id] = started;
+      |     [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

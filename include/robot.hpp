@@ -218,6 +218,14 @@ public:
 
     Pose2D getCurrentGoalPose();
 
+    std::unordered_map<std::string,std::vector<std::vector<cv::Point>>>& getDiscoveredObstacles() { return discovered_obstacles; } // Used for messaging
+
+    void updateDiscoveredObstacles(std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> neighbor_discovered_obstacles);
+
+    bool polygonsAreEqual(const std::vector<cv::Point>& poly1, const std::vector<cv::Point>& poly2);
+
+    void updateDiscoveredObstaclesPerNeighbors();
+
     // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
     // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }
     // void setReattemptFailingActionFlag(bool new_reattempt_flag);

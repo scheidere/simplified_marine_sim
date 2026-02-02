@@ -1,0 +1,40 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:220:34:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinners[m[K’ was not declared in this scope
+  220 |         bool new_winner_found = ([01;31m[Kwinners[m[K[task_id] != robot.getID());
+      |                                  [01;31m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:235:17:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids[m[K’ was not declared in this scope; did you mean ‘[01m[Kwinning_bids_matrix[m[K’?
+  235 |                 [01;31m[Kwinning_bids[m[K[task_id] = 0.0;
+      |                 [01;31m[K^~~~~~~~~~~~[m[K
+      |                 [32m[Kwinning_bids_matrix[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testBundleRemove()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:318:17:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::unordered_map<int, int>&, std::unordered_map<int, double>&, bool)[m[K’
+  318 |     [01;31m[KbundleRemove(bundle,path,winners,winning_bids, true)[m[K; // Call for test 3
+      |     [01;31m[K~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’
+  200 | void [01;36m[KCBGA[m[K::bundleRemove(std::vector<int>& bundle,
+      |      [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[K  candidate expects 4 arguments, 5 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kbool CBGA::isGroupEffectivelyFull(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:839:70:[m[K [01;31m[Kerror: [m[Kbase operand of ‘[01m[K->[m[K’ has non-pointer type ‘[01m[KWorld[m[K’
+  839 |     std::unordered_map<std::string, int>& task_group_max_size = world[01;31m[K->[m[KgetTaskGroupInfo(task_id);
+      |                                                                      [01;31m[K^~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:839:89:[m[K [01;31m[Kerror: [m[K‘[01m[Ktask_id[m[K’ was not declared in this scope
+  839 | d::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo([01;31m[Ktask_id[m[K);
+      |                                                                                   [01;31m[K^~~~~~~[m[K
+
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleAdd(std::vector<int>&, std::vector<int>&, std::map<int, double>&, std::vector<std::vector<double, std::allocator<double> > >&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1010:117:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_fill_num_current_type[m[K’ was not declared in this scope
+ 1010 | ing bop3 = "Group not full for current robot type sub-group (" + std::to_string([01;31m[Kcurrent_fill_num_current_type[m[K) + ") OR/AND any-type sub-group (" + std::to_string(current_fill_num_any_type) + ")";
+      |                                                                                 [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1010:199:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_fill_num_any_type[m[K’ was not declared in this scope
+ 1010 | rrent_fill_num_current_type) + ") OR/AND any-type sub-group (" + std::to_string([01;31m[Kcurrent_fill_num_any_type[m[K) + ")";
+      |                                                                                 [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1031:182:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids[m[K’ was not declared in this scope; did you mean ‘[01m[Kwinning_bids_matrix[m[K’?
+ 1031 | id (" + std::to_string(bids[task_id]) + ") NOT > winning bid(" + std::to_string([01;31m[Kwinning_bids[m[K[task_id]) + ") for relevant sub-groups";
+      |                                                                                 [01;31m[K^~~~~~~~~~~~[m[K
+      |                                                                                 [32m[Kwinning_bids_matrix[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

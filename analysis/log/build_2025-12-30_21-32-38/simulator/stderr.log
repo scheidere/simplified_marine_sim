@@ -1,0 +1,95 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus Communicate::onRunning()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:162:58:[m[K [01;31m[Kerror: [m[K‘[01m[Kint Robot::id[m[K’ is private within this context
+  162 |         std::string bla = "ID: " + std::to_string(_robot.[01;31m[Kid[m[K);
+      |                                                          [01;31m[K^~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:21:9:[m[K [01;36m[Knote: [m[Kdeclared private here
+   21 |     int [01;36m[Kid[m[K;
+      |         [01;36m[K^~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:162:58:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kint Robot::id[m[K’ can be accessed via ‘[01m[Kint Robot::getID() const[m[K’
+  162 |         std::string bla = "ID: " + std::to_string(_robot.[01;36m[Kid[m[K);
+      |                                                          [01;36m[K^~[m[K
+      |                                                          [32m[KgetID()[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:165:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::unordered_map<int, int> Robot::winners[m[K’ is private within this context
+  165 |         utils::logUnorderedMap(_robot.[01;31m[Kwinners[m[K,_robot);
+      |                                       [01;31m[K^~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:44:34:[m[K [01;36m[Knote: [m[Kdeclared private here
+   44 |     std::unordered_map<int, int> [01;36m[Kwinners[m[K; // Values are agent IDs (vector for CBBA)
+      |                                  [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:165:39:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kstd::unordered_map<int, int> Robot::winners[m[K’ can be accessed via ‘[01m[Kstd::unordered_map<int, int>& Robot::getWinners()[m[K’
+  165 |         utils::logUnorderedMap(_robot.[01;36m[Kwinners[m[K,_robot);
+      |                                       [01;36m[K^~~~~~~[m[K
+      |                                       [32m[KgetWinners()[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:167:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::unordered_map<int, double> Robot::winning_bids[m[K’ is private within this context
+  167 |         utils::logUnorderedMap(_robot.[01;31m[Kwinning_bids[m[K,_robot);
+      |                                       [01;31m[K^~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:45:37:[m[K [01;36m[Knote: [m[Kdeclared private here
+   45 |     std::unordered_map<int, double> [01;36m[Kwinning_bids[m[K; // Values are bids obviously (vector for CBBA)
+      |                                     [01;36m[K^~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:167:39:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kstd::unordered_map<int, double> Robot::winning_bids[m[K’ can be accessed via ‘[01m[Kstd::unordered_map<int, double>& Robot::getWinningBids()[m[K’
+  167 |         utils::logUnorderedMap(_robot.[01;36m[Kwinning_bids[m[K,_robot);
+      |                                       [01;36m[K^~~~~~~~~~~~[m[K
+      |                                       [32m[KgetWinningBids()[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:169:35:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::vector<std::vector<double> > Robot::winning_bids_matrix[m[K’ is private within this context
+  169 |         utils::log2DVector(_robot.[01;31m[Kwinning_bids_matrix[m[K, _robot);
+      |                                   [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:46:38:[m[K [01;36m[Knote: [m[Kdeclared private here
+   46 |     std::vector<std::vector<double>> [01;36m[Kwinning_bids_matrix[m[K; // Values are bids, rows denote task j by idx r = j-1, columns denote agent k by idx c = k-1 (matrix for CBGA, combines winners/winning bids info)
+      |                                      [01;36m[K^~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:169:35:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kstd::vector<std::vector<double> > Robot::winning_bids_matrix[m[K’ can be accessed via ‘[01m[Kstd::vector<std::vector<double> >& Robot::getWinningBidsMatrix()[m[K’
+  169 |         utils::log2DVector(_robot.[01;36m[Kwinning_bids_matrix[m[K, _robot);
+      |                                   [01;36m[K^~~~~~~~~~~~~~~~~~~[m[K
+      |                                   [32m[KgetWinningBidsMatrix()[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:171:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::unordered_map<int, double> Robot::timestamps[m[K’ is private within this context
+  171 |         utils::logUnorderedMap(_robot.[01;31m[Ktimestamps[m[K,_robot);
+      |                                       [01;31m[K^~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:47:37:[m[K [01;36m[Knote: [m[Kdeclared private here
+   47 |     std::unordered_map<int, double> [01;36m[Ktimestamps[m[K; // Time of last info update from each of other agents (does not include own id, because doesn't need to message self)
+      |                                     [01;36m[K^~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:171:39:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kstd::unordered_map<int, double> Robot::timestamps[m[K’ can be accessed via ‘[01m[Kstd::unordered_map<int, double>& Robot::getTimestamps()[m[K’
+  171 |         utils::logUnorderedMap(_robot.[01;36m[Ktimestamps[m[K,_robot);
+      |                                       [01;36m[K^~~~~~~~~~[m[K
+      |                                       [32m[KgetTimestamps()[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:173:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::unordered_map<int, int> Robot::task_progress[m[K’ is private within this context
+  173 |         utils::logUnorderedMap(_robot.[01;31m[Ktask_progress[m[K, _robot);
+      |                                       [01;31m[K^~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:50:33:[m[K [01;36m[Knote: [m[Kdeclared private here
+   50 |     std::unordered_map<int,int> [01;36m[Ktask_progress[m[K; // task id: 0 if not started, 1 if started // might add 2 for complete at some point
+      |                                 [01;36m[K^~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:173:39:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kstd::unordered_map<int, int> Robot::task_progress[m[K’ can be accessed via ‘[01m[Kstd::unordered_map<int, int>& Robot::getTaskProgress()[m[K’
+  173 |         utils::logUnorderedMap(_robot.[01;36m[Ktask_progress[m[K, _robot);
+      |                                       [01;36m[K^~~~~~~~~~~~~[m[K
+      |                                       [32m[KgetTaskProgress()[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:175:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::unordered_map<int, std::unordered_map<int, bool> > Robot::subtask_failures[m[K’ is private within this context
+  175 |         utils::logUnorderedMap(_robot.[01;31m[Ksubtask_failures[m[K, _robot);
+      |                                       [01;31m[K^~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:76:60:[m[K [01;36m[Knote: [m[Kdeclared private here
+   76 |     std::unordered_map<int, std::unordered_map<int, bool>> [01;36m[Ksubtask_failures[m[K; // Values True when robot k fails task j
+      |                                                            [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:175:39:[m[K [01;36m[Knote: [m[Kfield ‘[01m[Kstd::unordered_map<int, std::unordered_map<int, bool> > Robot::subtask_failures[m[K’ can be accessed via ‘[01m[Kstd::unordered_map<int, std::unordered_map<int, bool> >& Robot::getSubtaskFailures()[m[K’
+  175 |         utils::logUnorderedMap(_robot.[01;36m[Ksubtask_failures[m[K, _robot);
+      |                                       [01;36m[K^~~~~~~~~~~~~~~~[m[K
+      |                                       [32m[KgetSubtaskFailures()[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

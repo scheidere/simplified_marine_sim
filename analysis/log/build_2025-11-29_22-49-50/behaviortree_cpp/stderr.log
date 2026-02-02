@@ -1,0 +1,13 @@
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus BT::CounterSequence::tick()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:84:8:[m[K [01;31m[Kerror: [m[Kinvalid use of member function ‘[01m[Kconst BT::TreeNode* BT::ControlNode::child(size_t) const[m[K’ (did you forget the ‘[01m[K()[m[K’ ?)
+   84 |     if([01;31m[Kchild[m[K->status() == NodeStatus::RUNNING)
+      |        [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:86:7:[m[K [01;31m[Kerror: [m[Kinvalid use of member function ‘[01m[Kconst BT::TreeNode* BT::ControlNode::child(size_t) const[m[K’ (did you forget the ‘[01m[K()[m[K’ ?)
+   86 |       [01;31m[Kchild[m[K->haltNode();
+      |       [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:88:5:[m[K [01;31m[Kerror: [m[Kinvalid use of member function ‘[01m[Kconst BT::TreeNode* BT::ControlNode::child(size_t) const[m[K’ (did you forget the ‘[01m[K()[m[K’ ?)
+   88 |     [01;31m[Kchild[m[K->resetStatus();
+      |     [01;31m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

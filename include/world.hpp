@@ -88,6 +88,9 @@ protected:
 
     cv::VideoWriter video_writer;
     bool recording = false;
+    bool do_recording = false;
+
+    double cumulative_discounted_reward = 0.0;
 
 
 public:
@@ -99,6 +102,8 @@ public:
 
     std::vector<int> getAgentIDs();
     std::vector<int> getSubtaskIDs();
+
+    bool& getDoRecordingFlag() {return do_recording;}
 
     void logListofTaskIDs(std::unordered_map<int,TaskInfo> task_list);
 
@@ -278,6 +283,9 @@ public:
 
     void startRecording(const std::string& filename, double fps = 10.0);
     void stopRecording();
+
+    void updateCumulativeDiscountedReward(double reward);
+    double& getCumulativeDiscountedReward() {return cumulative_discounted_reward;}
 };
 
 #endif

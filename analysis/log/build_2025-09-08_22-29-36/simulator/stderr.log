@@ -1,0 +1,20 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:[m[K In constructor ‘[01m[KMessage::Message(Robot&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:8:7:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KMsg::Msg(int, std::unordered_map<int, int>&, std::unordered_map<int, double>&, std::unordered_map<int, double>&, std::unordered_map<int, Pose2D>&)[m[K’
+    8 |       [01;31m[Kmsg(sender.getID(), sender.getWinners(), sender.getWinningBids(), sender.getTimestamps(), sender.getLocations())[m[K // Timestamp updated upon receipt by another robot
+      |       [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:2[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:21:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KMsg::Msg(int, std::unordered_map<int, int>, std::unordered_map<int, double>, std::vector<std::vector<double, std::allocator<double> > >, std::unordered_map<int, double>, std::unordered_map<int, Pose2D>)[m[K’
+   21 |     [01;36m[KMsg[m[K(int id, std::unordered_map<int,int> winners, std::unordered_map<int,double> winning_bids, std::vector<std::vector<double>> winning_bids_matrix, std::unordered_map<int,double> timestamps, std::unordered_map<int,Pose2D> locations)
+      |     [01;36m[K^~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:21:5:[m[K [01;36m[Knote: [m[K  candidate expects 6 arguments, 5 provided
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:2[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KMsg::Msg(const Msg&)[m[K’
+   11 | struct [01;36m[KMsg[m[K {
+      |        [01;36m[K^~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 5 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KMsg::Msg(Msg&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/message.hpp:11:8:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 5 provided
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:132: CMakeFiles/sim.dir/src/message.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,21 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kvoid World::updateCumulativeDistance()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:756:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kcumulative_distance[m[K’ was not declared in this scope; did you mean ‘[01m[Knew_cumulative_distance[m[K’?
+  756 |     [01;31m[Kcumulative_distance[m[K = new_cumulative_distance;
+      |     [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+      |     [32m[Knew_cumulative_distance[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:484:23:[m[K [01;31m[Kerror: [m[Kredeclaration of ‘[01m[Kstd::ofstream file[m[K’
+  484 |         std::ofstream [01;31m[Kfile[m[K(filename2);  // overwrites existing file
+      |                       [01;31m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:478:23:[m[K [01;36m[Knote: [m[K‘[01m[Kstd::ofstream file[m[K’ previously declared here
+  478 |         std::ofstream [01;36m[Kfile[m[K(filename);  // overwrites existing file
+      |                       [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:485:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kfile2[m[K’ was not declared in this scope; did you mean ‘[01m[Kfile[m[K’?
+  485 |         [01;31m[Kfile2[m[K << "time,distance\n";  // write header
+      |         [01;31m[K^~~~~[m[K
+      |         [32m[Kfile[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

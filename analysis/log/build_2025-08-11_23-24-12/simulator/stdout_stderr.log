@@ -1,0 +1,44 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kvoid run_robot(int, std::string, Pose2D, cv::Scalar, int, World&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:193:125:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, Pose2D&, int&, std::string&, cv::Scalar&)[m[K’
+  193 | shortest_path, &coverage_path, &world, &parser, initial_pose, robot_id, robot_type, color[01;31m[K)[m[K;
+      |                                                                                          [01;31m[K^[m[K
+
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:70:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, const Pose2D&, int, std::string, cv::Scalar)[m[K’
+   70 |     [01;36m[KRobot[m[K(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
+      |     [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:70:5:[m[K [01;36m[Knote: [m[K  candidate expects 10 arguments, 9 provided
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KRobot::Robot(Robot&&)[m[K’
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 9 provided
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:15:1:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, int, std::string, cv::Scalar)[m[K’
+   15 | [01;31m[KRobot[m[K::Robot(Planner* p, ShortestPath* sp, CoveragePath* cp, World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar dot_color)
+      | [01;31m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[Kcandidates are: ‘[01m[KRobot::Robot(Robot&&)[m[K’
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K                ‘[01m[KRobot::Robot(const Robot&)[m[K’
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:70:5:[m[K [01;36m[Knote: [m[K                ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, const Pose2D&, int, std::string, cv::Scalar)[m[K’
+   70 |     [01;36m[KRobot[m[K(Planner* planner, ShortestPath* shortest_path, CoveragePath* coverage_path, World* world, JSONParser* parser, const Pose2D& initial_pose, const Pose2D& goal_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
+      |     [01;36m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

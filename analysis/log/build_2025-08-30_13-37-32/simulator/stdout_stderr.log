@@ -1,0 +1,17 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:227:9:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K,[m[K’ or ‘[01m[K;[m[K’ before ‘[01m[Krobot[m[K’
+  227 |         [01;31m[Krobot[m[K.log_info("New winner found: " + std::to_string(new_winner_found) + " winning_bids_matrix[task_idx][current_robot_idx]: " + std::to_string(winning_bids_matrix[task_idx][current_robot_idx]));
+      |         [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testBundleRemove()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:319:17:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::unordered_map<int, int>&, std::unordered_map<int, double>&, bool)[m[K’
+  319 |     [01;31m[KbundleRemove(bundle,path,winners,winning_bids, true)[m[K; // Call for test 3
+      |     [01;31m[K~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’
+  200 | void [01;36m[KCBGA[m[K::bundleRemove(std::vector<int>& bundle,
+      |      [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[K  candidate expects 4 arguments, 5 provided
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

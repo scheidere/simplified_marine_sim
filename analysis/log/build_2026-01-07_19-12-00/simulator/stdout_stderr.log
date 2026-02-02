@@ -1,0 +1,62 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:9:1:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[KPlanner::Planner(int)[m[K’
+    9 | [01;31m[KPlanner[m[K::Planner(int step_size) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>())
+      | [01;31m[K^~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:3[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidates are: ‘[01m[KPlanner::Planner(Planner&&)[m[K’
+   23 | class [01;36m[KPlanner[m[K {
+      |       [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K                ‘[01m[KPlanner::Planner(const Planner&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:30:5:[m[K [01;36m[Knote: [m[K                ‘[01m[KPlanner::Planner(int, World*)[m[K’
+   30 |     [01;36m[KPlanner[m[K(int step_size, World* w);
+      |     [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Planner[m[K’ defined here
+   23 | class [01;36m[KPlanner[m[K {
+      |       [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:[m[K In constructor ‘[01m[KShortestPath::ShortestPath(int)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:153:62:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KPlanner::Planner(int&)[m[K’
+  153 | ShortestPath::ShortestPath(int step_size) : Planner(step_size[01;31m[K)[m[K {
+      |                                                              [01;31m[K^[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:3[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:30:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(int, World*)[m[K’
+   30 |     [01;36m[KPlanner[m[K(int step_size, World* w);
+      |     [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:30:5:[m[K [01;36m[Knote: [m[K  candidate expects 2 arguments, 1 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(const Planner&)[m[K’
+   23 | class [01;36m[KPlanner[m[K {
+      |       [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kint[m[K’ to ‘[01m[Kconst Planner&[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(Planner&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kint[m[K’ to ‘[01m[KPlanner&&[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kvoid run_robot(int, std::string, Pose2D, cv::Scalar, int, World&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:478:38:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KPlanner::Planner(int&)[m[K’
+  478 |             Planner planner(step_size[01;31m[K)[m[K;
+      |                                      [01;31m[K^[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:30:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(int, World*)[m[K’
+   30 |     [01;36m[KPlanner[m[K(int step_size, World* w);
+      |     [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:30:5:[m[K [01;36m[Knote: [m[K  candidate expects 2 arguments, 1 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(const Planner&)[m[K’
+   23 | class [01;36m[KPlanner[m[K {
+      |       [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kint[m[K’ to ‘[01m[Kconst Planner&[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(Planner&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kint[m[K’ to ‘[01m[KPlanner&&[m[K’
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:174: CMakeFiles/sim.dir/src/planners.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

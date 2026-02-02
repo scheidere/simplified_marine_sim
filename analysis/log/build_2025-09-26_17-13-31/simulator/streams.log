@@ -1,0 +1,19 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.038s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.061s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[1.667s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus FollowCoveragePath::onRunning()[m[K’:
+[1.667s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:814:29:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[Kint[m[K’ to ‘[01m[Kstd::string[m[K’ {aka ‘[01m[Kstd::__cxx11::basic_string<char>[m[K’}
+[1.667s]   814 |             _robot.log_info([01;31m[Kcurrent_task_id[m[K);
+[1.667s]       |                             [01;31m[K^~~~~~~~~~~~~~~[m[K
+[1.667s]       |                             [01;31m[K|[m[K
+[1.667s]       |                             [01;31m[Kint[m[K
+[1.667s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[1.667s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+[1.667s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[1.668s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:119:31:[m[K [01;36m[Knote: [m[K  initializing argument 1 of ‘[01m[Kvoid Robot::log_info(std::string)[m[K’
+[1.668s]   119 |     void log_info([01;36m[Kstd::string log_msg[m[K);
+[1.668s]       |                   [01;36m[K~~~~~~~~~~~~^~~~~~~[m[K
+[2.821s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[2.821s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.822s] gmake: *** [Makefile:146: all] Error 2
+[2.823s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

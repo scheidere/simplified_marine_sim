@@ -1,0 +1,53 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.050s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.050s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.050s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.051s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.052s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.053s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.053s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.055s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.055s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[0.055s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[2.847s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:[m[K In member function ‘[01m[Kvoid Message::updateWorldPingTracker(World&, int, int, double)[m[K’:
+[2.847s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:105:106:[m[K [01;31m[Kerror: [m[Kinvalid initialization of reference of type ‘[01m[Kstd::unordered_map<int, std::vector<std::pair<int, double> > >&[m[K’ from expression of type ‘[01m[Kstd::unordered_map<int, std::vector<std::tuple<int, double, bool> > >[m[K’
+[2.848s]   105 |     std::unordered_map<int,std::vector<std::pair<int,double>>>& world_ping_tracker = [01;31m[Kworld.getPingTracker()[m[K;
+[2.848s]       |                                                                                      [01;31m[K~~~~~~~~~~~~~~~~~~~~^~[m[K
+[2.873s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:[m[K In member function ‘[01m[Kvoid Message::ping(World&)[m[K’:
+[2.873s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:138:5:[m[K [01;31m[Kerror: [m[K‘[01m[KUPDATING[m[K’ was not declared in this scope
+[2.873s]   138 |     [01;31m[KUPDATING[m[K TO SEND NEW FAILURE FLAG
+[2.873s]       |     [01;31m[K^~~~~~~~[m[K
+[2.879s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/message.cpp:147:76:[m[K [01;31m[Kerror: [m[K‘[01m[KNEW[m[K’ was not declared in this scope
+[2.879s]   147 |     bool new_self_subtask_failure = sender.getNewSelfSubtaskFailureFlag(); [01;31m[KNEW[m[K
+[2.879s]       |                                                                            [01;31m[K^~~[m[K
+[3.329s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus NewInfoAvailable::tick()[m[K’:
+[3.329s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:79:9:[m[K [01;31m[Kerror: [m[K‘[01m[KNEED[m[K’ was not declared in this scope
+[3.329s]    79 |         [01;31m[KNEED[m[K TO ADD HANDLING FOR WHEN NEW FAILURES ARISE AND ROBOTS ARE STILL IN COMMS WITH EACH OTHER
+[3.329s]       |         [01;31m[K^~~~[m[K
+[3.339s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:88:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kinfo_available[m[K’ was not declared in this scope; did you mean ‘[01m[KNewInfoAvailable[m[K’?
+[3.339s]    88 |         if ([01;31m[Kinfo_available[m[K) {
+[3.339s]       |             [01;31m[K^~~~~~~~~~~~~~[m[K
+[3.339s]       |             [32m[KNewInfoAvailable[m[K
+[4.262s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:132: CMakeFiles/sim.dir/src/message.cpp.o] Error 1
+[4.262s] gmake[2]: *** Waiting for unfinished jobs....
+[4.349s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:907:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::tuple<int, double, bool> > >&)[m[K’
+[4.349s]   907 | void [01;31m[KRobot[m[K::printWorldPingTracker(std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker) {
+[4.350s]       |      [01;31m[K^~~~~[m[K
+[4.350s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[4.350s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[4.350s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:130:10:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kvoid Robot::printWorldPingTracker(std::unordered_map<int, std::vector<std::pair<int, double> > >&)[m[K’
+[4.350s]   130 |     void [01;36m[KprintWorldPingTracker[m[K(std::unordered_map<int, std::vector<std::pair<int,double>>>& world_ping_tracker);
+[4.350s]       |          [01;36m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[4.350s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[4.350s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[4.350s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+[4.350s]    19 | class [01;36m[KRobot[m[K {
+[4.350s]       |       [01;36m[K^~~~~[m[K
+[5.195s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:109:1:[m[K [01;35m[Kwarning: [m[Kcontrol reaches end of non-void function [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wreturn-type-Wreturn-type]8;;[m[K]
+[5.196s]   109 | [01;35m[K}[m[K
+[5.196s]       | [01;35m[K^[m[K
+[5.268s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[6.243s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[6.899s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.900s] gmake: *** [Makefile:146: all] Error 2
+[6.901s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

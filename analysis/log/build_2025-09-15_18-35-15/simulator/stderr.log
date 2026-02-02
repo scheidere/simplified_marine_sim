@@ -1,0 +1,10 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::receiveMessages()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:295:44:[m[K [01;31m[Kerror: [m[Krequest for member ‘[01m[KgetWorldMutex[m[K’ in ‘[01m[K((Robot*)this)->Robot::world[m[K’, which is of pointer type ‘[01m[KWorld*[m[K’ (maybe you meant to use ‘[01m[K->[m[K’ ?)
+  295 |     std::lock_guard<std::mutex> lock(world.[01;31m[KgetWorldMutex[m[K());
+      |                                            [01;31m[K^~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:298:73:[m[K [01;31m[Kerror: [m[Krequest for member ‘[01m[KgetMessageTrackerUnsafe[m[K’ in ‘[01m[K((Robot*)this)->Robot::world[m[K’, which is of pointer type ‘[01m[KWorld*[m[K’ (maybe you meant to use ‘[01m[K->[m[K’ ?)
+  298 |     std::unordered_map<int,std::vector<Msg>>& world_msg_tracker = world.[01;31m[KgetMessageTrackerUnsafe[m[K();// testing this with mutex added
+      |                                                                         [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,25 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.041s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.064s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[1.717s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, TaskInfo> World::initAllTasksInfo()[m[K’:
+[1.717s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:228:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kprerequisute_failures[m[K’ was not declared in this scope
+[1.717s]   228 |             [01;31m[Kprerequisute_failures[m[K, // int, but empty here because only for subtasks
+[1.717s]       |             [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[1.722s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, TaskInfo> World::initAllSubTasksInfo()[m[K’:
+[1.722s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:276:13:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, int>[m[K’ to ‘[01m[Kint[m[K’ in initialization
+[1.722s]   276 |             [01;31m[Kgroup_info[m[K, // <std::unordered_map<std::string, int>>
+[1.722s]       |             [01;31m[K^~~~~~~~~~[m[K
+[1.722s]       |             [01;31m[K|[m[K
+[1.722s]       |             [01;31m[Kstd::unordered_map<std::__cxx11::basic_string<char>, int>[m[K
+[1.722s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kint& World::getTaskGroupSize(int)[m[K’:
+[1.722s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:335:22:[m[K [01;31m[Kerror: [m[K‘[01m[Kstruct TaskInfo[m[K’ has no member named ‘[01m[Kgroup_size[m[K’
+[1.722s]   335 |     return task_info.[01;31m[Kgroup_size[m[K;
+[1.722s]       |                      [01;31m[K^~~~~~~~~~[m[K
+[1.738s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kbool World::clearPathFullGroupPresent(int)[m[K’:
+[1.738s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:776:50:[m[K [01;31m[Kerror: [m[K‘[01m[Kstruct TaskInfo[m[K’ has no member named ‘[01m[Kgroup_size[m[K’
+[1.739s]   776 |     if (count_robots_at_location == current_task.[01;31m[Kgroup_size[m[K) {
+[1.739s]       |                                                  [01;31m[K^~~~~~~~~~[m[K
+[2.653s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+[2.654s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.654s] gmake: *** [Makefile:146: all] Error 2
+[2.658s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

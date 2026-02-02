@@ -1,0 +1,49 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:[m[K In member function ‘[01m[Kstd::vector<Pose2D> ShortestPath::plan(Pose2D, Pose2D, int, int)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:166:67:[m[K [01;31m[Kerror: [m[K‘[01m[Kstart_idx[m[K’ was not declared in this scope
+  166 |     std::vector<double> distance_tracker = initializeDistances(V, [01;31m[Kstart_idx[m[K, Y);
+      |                                                                   [01;31m[K^~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:170:24:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Kstd::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int> >, std::greater<std::pair<double, int> > >::push(<brace-enclosed initializer list>)[m[K’
+  170 |     [01;31m[Kpriority_queue.push({0, start_idx})[m[K;
+      |     [01;31m[K~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/usr/include/c++/11/queue:64[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/stitching/detail/util_inl.hpp:46[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/stitching/detail/util.hpp:119[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/stitching/detail/motion_estimators.hpp:48[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/stitching.hpp:50[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/opencv.hpp:86[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:4[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:3[m[K:
+[01m[K/usr/include/c++/11/bits/stl_queue.h:640:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid std::priority_queue<_Tp, _Sequence, _Compare>::push(const value_type&) [with _Tp = std::pair<double, int>; _Sequence = std::vector<std::pair<double, int> >; _Compare = std::greater<std::pair<double, int> >; std::priority_queue<_Tp, _Sequence, _Compare>::value_type = std::pair<double, int>][m[K’
+  640 |       [01;36m[Kpush[m[K(const value_type& __x)
+      |       [01;36m[K^~~~[m[K
+[01m[K/usr/include/c++/11/bits/stl_queue.h:640:30:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[K<brace-enclosed initializer list>[m[K’ to ‘[01m[Kconst value_type&[m[K’ {aka ‘[01m[Kconst std::pair<double, int>&[m[K’}
+  640 |       push([01;36m[Kconst value_type& __x[m[K)
+      |            [01;36m[K~~~~~~~~~~~~~~~~~~^~~[m[K
+[01m[K/usr/include/c++/11/bits/stl_queue.h:648:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid std::priority_queue<_Tp, _Sequence, _Compare>::push(std::priority_queue<_Tp, _Sequence, _Compare>::value_type&&) [with _Tp = std::pair<double, int>; _Sequence = std::vector<std::pair<double, int> >; _Compare = std::greater<std::pair<double, int> >; std::priority_queue<_Tp, _Sequence, _Compare>::value_type = std::pair<double, int>][m[K’
+  648 |       [01;36m[Kpush[m[K(value_type&& __x)
+      |       [01;36m[K^~~~[m[K
+[01m[K/usr/include/c++/11/bits/stl_queue.h:648:25:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[K<brace-enclosed initializer list>[m[K’ to ‘[01m[Kstd::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int> >, std::greater<std::pair<double, int> > >::value_type&&[m[K’ {aka ‘[01m[Kstd::pair<double, int>&&[m[K’}
+  648 |       push([01;36m[Kvalue_type&& __x[m[K)
+      |            [01;36m[K~~~~~~~~~~~~~^~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:185:24:[m[K [01;31m[Kerror: [m[K‘[01m[Kgoal_idx[m[K’ was not declared in this scope
+  185 |         if (min_idx == [01;31m[Kgoal_idx[m[K) {
+      |                        [01;31m[K^~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:216:19:[m[K [01;31m[Kerror: [m[K‘[01m[Kgoal_idx[m[K’ was not declared in this scope
+  216 |     for (int at = [01;31m[Kgoal_idx[m[K; at != -1; at = predecessor[at]) {
+      |                   [01;31m[K^~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:225:9:[m[K [01;31m[Kerror: [m[Kinvalid use of member function ‘[01m[Kstd::vector<Pose2D> ShortestPath::plan(Pose2D, Pose2D, int, int)[m[K’ (did you forget the ‘[01m[K()[m[K’ ?)
+  225 |         [01;31m[Kplan[m[K.push_back(next_waypoint);  // Direct push_back
+      |         [01;31m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:230:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kin_plan[m[K’ was not declared in this scope; did you mean ‘[01m[Kplan[m[K’?
+  230 |     [01;31m[Kin_plan[m[K = false;
+      |     [01;31m[K^~~~~~~[m[K
+      |     [32m[Kplan[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:231:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kmy_call[m[K’ was not declared in this scope
+  231 |     std::cout << "=== PLAN CALL #" << [01;31m[Kmy_call[m[K << " END ===" << std::endl;
+      |                                       [01;31m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:239:12:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[KShortestPath::plan[m[K’ from type ‘[01m[Kstd::vector<Pose2D> (ShortestPath::)(Pose2D, Pose2D, int, int)[m[K’ to type ‘[01m[Kstd::vector<Pose2D>[m[K’
+  239 |     return [01;31m[Kplan[m[K;
+      |            [01;31m[K^~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:174: CMakeFiles/sim.dir/src/planners.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

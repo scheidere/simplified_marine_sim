@@ -1,0 +1,20 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12
+[0.041s] [  3%] Built target lexy_file
+[0.041s] [  4%] Built target minitrace
+[0.041s] [  4%] Built target gtest_main
+[0.041s] [  6%] Built target gtest
+[0.072s] [  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[1.149s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus BT::CounterSequence::tick()[m[K’:
+[1.150s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:138:35:[m[K [01;31m[Kerror: [m[K‘[01m[Kmy_map[m[K’ was not declared in this scope
+[1.150s]   138 |                         auto it = [01;31m[Kmy_map[m[K.begin();
+[1.150s]       |                                   [01;31m[K^~~~~~[m[K
+[1.150s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:141:37:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kkey[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+[1.150s]   141 |                                 int [01;35m[Kkey[m[K = it->first;
+[1.150s]       |                                     [01;35m[K^~~[m[K
+[1.150s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:142:37:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kvalue[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+[1.150s]   142 |                                 int [01;35m[Kvalue[m[K = it->second;
+[1.150s]       |                                     [01;35m[K^~~~~[m[K
+[1.799s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+[1.800s] gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Error 2
+[1.800s] gmake: *** [Makefile:146: all] Error 2
+[1.801s] Invoked command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12

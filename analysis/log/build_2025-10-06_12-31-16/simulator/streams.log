@@ -1,0 +1,45 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.061s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.061s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.062s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.062s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.062s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.063s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.064s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.066s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.066s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.066s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[5.302s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kvoid Robot::move(Pose2D)[m[K’:
+[5.302s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:285:34:[m[K [01;31m[Kerror: [m[Kcapture of non-variable ‘[01m[KRobot::pose[m[K’
+[5.302s]   285 |     std::thread([this, old_pose, [01;31m[Kpose[m[K]() {
+[5.302s]       |                                  [01;31m[K^~~~[m[K
+[5.302s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[5.302s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:4[m[K:
+[5.302s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:24:12:[m[K [01;36m[Knote: [m[K‘[01m[KPose2D Robot::pose[m[K’ declared here
+[5.303s]    24 |     Pose2D [01;36m[Kpose[m[K;
+[5.303s]       |            [01;36m[K^~~~[m[K
+[5.315s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In lambda function:
+[5.315s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:287:9:[m[K [01;31m[Kerror: [m[K‘[01m[KgetEuclideanDistance[m[K’ was not declared in this scope
+[5.315s]   287 |         [01;31m[KgetEuclideanDistance[m[K(old_pose.x, old_pose.y, pose.x, pose.y);
+[5.315s]       |         [01;31m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[5.316s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:289:32:[m[K [01;31m[Kerror: [m[K‘[01m[Kdistance[m[K’ was not declared in this scope; did you mean ‘[01m[Kstd::distance[m[K’?
+[5.316s]   289 |         cumulative_distance += [01;31m[Kdistance[m[K;
+[5.316s]       |                                [01;31m[K^~~~~~~~[m[K
+[5.316s]       |                                [32m[Kstd::distance[m[K
+[5.317s] In file included from [01m[K/usr/include/c++/11/filesystem:45[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib/json.hpp:4643[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/blackboard.h:9[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/tree_node.h:22[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/leaf_node.h:17[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/action_node.h:22[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/pop_from_queue.hpp:17[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:8[m[K,
+[5.317s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:3[m[K:
+[5.317s] [01m[K/usr/include/c++/11/bits/fs_path.h:1346:1:[m[K [01;36m[Knote: [m[K‘[01m[Kstd::distance[m[K’ declared here
+[5.317s]  1346 | [01;36m[Kdistance[m[K(filesystem::path::iterator __first, filesystem::path::iterator __last)
+[5.318s]       | [01;36m[K^~~~~~~~[m[K
+[6.622s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[6.622s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.622s] gmake: *** [Makefile:146: all] Error 2
+[6.624s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

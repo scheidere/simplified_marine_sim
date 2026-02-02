@@ -1,0 +1,47 @@
+[0.008s] Invoking command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12
+[0.042s] [  1%] Built target lexy_file
+[0.042s] [  3%] Built target minitrace
+[0.042s] [  4%] Built target gtest_main
+[0.042s] [  6%] Built target gtest
+[0.058s] [35m[1mConsolidate compiler generated dependencies of target behaviortree_cpp[0m
+[0.102s] [  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/bt_factory.cpp.o[0m
+[0.102s] [  8%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/behavior_tree.cpp.o[0m
+[0.102s] [  9%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/xml_parsing.cpp.o[0m
+[0.102s] [ 10%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/actions/updated_action.cpp.o[0m
+[0.102s] [ 11%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/decorators/updated_decorator.cpp.o[0m
+[0.102s] [ 12%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[0.104s] [ 12%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/bt_cout_logger.cpp.o[0m
+[0.104s] [ 13%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/bt_file_logger_v2.cpp.o[0m
+[0.105s] [ 14%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/bt_minitrace_logger.cpp.o[0m
+[0.105s] [ 15%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/bt_observer.cpp.o[0m
+[0.106s] [ 16%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/groot2_publisher.cpp.o[0m
+[0.106s] [ 17%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/loggers/bt_sqlite_logger.cpp.o[0m
+[2.698s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:46:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid BT::CounterSequence::initLocal()[m[K’
+[2.698s]    46 | void [01;31m[KCounterSequence[m[K::initLocal() {
+[2.698s]       |      [01;31m[K^~~~~~~~~~~~~~~[m[K
+[2.698s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:46:6:[m[K [01;36m[Knote: [m[Kno functions named ‘[01m[Kvoid BT::CounterSequence::initLocal()[m[K’
+[2.698s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:15[m[K:
+[2.699s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/include/behaviortree_cpp/controls/counter_sequence.h:79:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass BT::CounterSequence[m[K’ defined here
+[2.699s]    79 | class [01;36m[KCounterSequence[m[K : public ControlNode
+[2.699s]       |       [01;36m[K^~~~~~~~~~~~~~~[m[K
+[2.717s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus BT::CounterSequence::tick()[m[K’:
+[2.717s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:64:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_task_id[m[K’ was not declared in this scope; did you mean ‘[01m[Kcurrent_task_id_[m[K’?
+[2.717s]    64 |         [01;31m[Kcurrent_task_id[m[K = getInput<int>("current_task_id");
+[2.717s]       |         [01;31m[K^~~~~~~~~~~~~~~[m[K
+[2.717s]       |         [32m[Kcurrent_task_id_[m[K
+[2.720s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:9:[m[K [01;31m[Kerror: [m[K‘[01m[Ksubtask_failure_thresholds[m[K’ was not declared in this scope; did you mean ‘[01m[Ksubtask_failure_thresholds_[m[K’?
+[2.720s]    67 |         [01;31m[Ksubtask_failure_thresholds[m[K = getInput<
+[2.720s]       |         [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.721s]       |         [32m[Ksubtask_failure_thresholds_[m[K
+[2.721s] [01m[K/home/emily/sa-mrbt_ws/src/BehaviorTree.CPP/src/controls/counter_sequence.cpp:67:38:[m[K [01;31m[Kerror: [m[Kparse error in template argument list
+[2.721s]    67 |         subtask_failure_thresholds = [01;31m[KgetInput<[m[K
+[2.721s]       |                                      [01;31m[K^~~~~~~~~[m[K
+[2.721s]    68 | [01;31m[K        subtask_failure_thresholds_ = subtask_failure_thresholds.value()[m[K;
+[2.721s]       |         [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[4.503s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:482: CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o] Error 1
+[4.503s] gmake[2]: *** Waiting for unfinished jobs....
+[10.201s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:636: CMakeFiles/behaviortree_cpp.dir/src/loggers/groot2_publisher.cpp.o] Interrupt
+[10.201s] gmake[2]: *** [CMakeFiles/behaviortree_cpp.dir/build.make:132: CMakeFiles/behaviortree_cpp.dir/src/bt_factory.cpp.o] Interrupt
+[10.201s] gmake[1]: *** [CMakeFiles/Makefile2:340: CMakeFiles/behaviortree_cpp.dir/all] Interrupt
+[10.201s] gmake: *** [Makefile:146: all] Interrupt
+[10.228s] Invoked command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp' returned '-2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12

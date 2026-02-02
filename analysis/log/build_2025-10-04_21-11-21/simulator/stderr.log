@@ -1,0 +1,15 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kvoid World::logCurrentTeamTaskProgress()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:112:31:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KlogUnorderedMap(std::unordered_map<int, int>&, World&)[m[K’
+  112 |         [01;31m[Kutils::logUnorderedMap(robot->getTaskProgress(), *this)[m[K;
+      |         [01;31m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:83:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class K, class V> void utils::logUnorderedMap(const std::unordered_map<K, V>&, Robot&)[m[K’
+   83 | void [01;36m[KlogUnorderedMap[m[K(const std::unordered_map<K, V>& my_map, Robot& robot) {
+      |      [01;36m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:83:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:112:58:[m[K [01;36m[Knote: [m[K  cannot convert ‘[01m[K*(World*)this[m[K’ (type ‘[01m[KWorld[m[K’) to type ‘[01m[KRobot&[m[K’
+  112 |         utils::logUnorderedMap(robot->getTaskProgress(), [01;36m[K*this[m[K);
+      |                                                          [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

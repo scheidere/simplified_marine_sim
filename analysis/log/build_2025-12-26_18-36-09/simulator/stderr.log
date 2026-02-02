@@ -1,0 +1,7 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::unordered_map<int, bool> World::initFaultInjectionTracker()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1013:138:[m[K [01;31m[Kerror: [m[Kconversion from ‘[01m[Kunordered_map<[01;32m[Kstd::__cxx11::basic_string<char>[m[K,[01;32m[Kint[m[K>[m[K’ to non-scalar type ‘[01m[Kunordered_map<[01;32m[Kint[m[K,[01;32m[Kbool[m[K>[m[K’ requested
+ 1013 |     std::unordered_map<int, bool> fault_injection_tracker = [01;31m[Kworld_attributes["fault_injection"].get<std::unordered_map<std::string, int>>()[m[K;
+      |                                                             [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

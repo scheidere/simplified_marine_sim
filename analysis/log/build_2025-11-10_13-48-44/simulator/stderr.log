@@ -1,0 +1,43 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus HandleFailures::onRunning()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1370:117:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[Kunordered_map<[01;32m[Kint[m[K,[...]>[m[K’ to ‘[01m[Kunordered_map<[01;32m[Kstd::pair<int, bool>[m[K,[...]>[m[K’
+ 1370 |         std::pair<std::pair<int,bool>,std::unordered_map<int,int>> scope_and_threshold_info = _robot.HandleFailures([01;31m[Kcurrent_subtask_failures[m[K);
+      |                                                                                                                     [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |                                                                                                                     [01;31m[K|[m[K
+      |                                                                                                                     [01;31m[Kunordered_map<int,[...]>[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:196:109:[m[K [01;36m[Knote: [m[K  initializing argument 1 of ‘[01m[Kstd::pair<bool, std::unordered_map<int, int> > Robot::HandleFailures(std::unordered_map<std::pair<int, bool>, bool>)[m[K’
+  196 |     std::pair<bool,std::unordered_map<int,int>> HandleFailures([01;36m[Kstd::unordered_map<std::pair<int,bool>,bool> new_self_subtask_failures[m[K);
+      |                                                                [01;36m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:485:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int, int>)[m[K’
+  485 | void [01;31m[KRobot[m[K::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures) {
+      |      [01;31m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:99:10:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kvoid Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int, bool>)[m[K’
+   99 |     void [01;36m[KupdateSubtaskFailuresPerSelf[m[K(std::unordered_map<int,bool> new_self_subtask_failures);
+      |          [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1681:60:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::pair<std::pair<int, bool>, std::unordered_map<int, int> > Robot::HandleFailures()[m[K’
+ 1681 | std::pair<std::pair<int,bool>,std::unordered_map<int,int>> [01;31m[KRobot[m[K::HandleFailures() {
+      |                                                            [01;31m[K^~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:196:49:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kstd::pair<bool, std::unordered_map<int, int> > Robot::HandleFailures(std::unordered_map<std::pair<int, bool>, bool>)[m[K’
+  196 |     std::pair<bool,std::unordered_map<int,int>> [01;36m[KHandleFailures[m[K(std::unordered_map<std::pair<int,bool>,bool> new_self_subtask_failures);
+      |                                                 [01;36m[K^~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+   19 | class [01;36m[KRobot[m[K {
+      |       [01;36m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

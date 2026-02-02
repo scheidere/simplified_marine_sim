@@ -1,0 +1,19 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::resolveGroupConflicts(int, int, std::vector<std::vector<double, std::allocator<double> > >&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1236:41:[m[K [01;31m[Kerror: [m[K‘[01m[Kagent_idx_m[m[K’ was not declared in this scope; did you mean ‘[01m[Kagent_id_m[m[K’?
+ 1236 |     if (winning_bids_matrix_i[task_idx][[01;31m[Kagent_idx_m[m[K] > 0) { // if Y_ijm > 0, if agent i has positive winning bid for agent k for task j
+      |                                         [01;31m[K^~~~~~~~~~~[m[K
+      |                                         [32m[Kagent_id_m[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1269:108:[m[K [01;31m[Kerror: [m[K‘[01m[Knum_agents[m[K’ was not declared in this scope
+ 1269 |             std::pair<int, double> current_min = getMinExistingWinningBid(winning_bids_matrix_i[task_idx], [01;31m[Knum_agents[m[K);
+      |                                                                                                            [01;31m[K^~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testResolveConflicts(int, std::vector<Msg>&, std::vector<std::vector<double, std::allocator<double> > >&, std::unordered_map<int, double>&, int, std::vector<std::vector<double, std::allocator<double> > >&, std::unordered_map<int, double>&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1732:5:[m[K [01;31m[Kerror: [m[K‘[01m[Ki[m[K’ was not declared in this scope
+ 1732 |     [01;31m[Ki[m[K thinks group empty, k thinks group is partially full, not including i, including k - should result in no change, trusting i knowlege of self - PASSED
+      |     [01;31m[K^[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

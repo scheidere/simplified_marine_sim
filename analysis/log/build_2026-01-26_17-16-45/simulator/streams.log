@@ -1,0 +1,26 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.041s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.066s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.066s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.066s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.067s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.067s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.067s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.069s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.069s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.070s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.071s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[3.489s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kvoid run_robot(int, std::string, Pose2D, cv::Scalar, int, World&)[m[K’:
+[3.489s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:522:127:[m[K [01;31m[Kerror: [m[K‘[01m[Kshortest_path[m[K’ was not declared in this scope; did you mean ‘[01m[KShortestPath[m[K’?
+[3.489s]   522 |                 factory.registerNodeType<FollowShortestPath>("FollowShortestPath", std::ref(robot), std::ref(world), std::ref([01;31m[Kshortest_path[m[K));
+[3.489s]       |                                                                                                                               [01;31m[K^~~~~~~~~~~~~[m[K
+[3.490s]       |                                                                                                                               [32m[KShortestPath[m[K
+[3.496s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:527:127:[m[K [01;31m[Kerror: [m[K‘[01m[Kcoverage_path[m[K’ was not declared in this scope; did you mean ‘[01m[KCoveragePath[m[K’?
+[3.496s]   527 |                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref([01;31m[Kcoverage_path[m[K));
+[3.496s]       |                                                                                                                               [01;31m[K^~~~~~~~~~~~~[m[K
+[3.496s]       |                                                                                                                               [32m[KCoveragePath[m[K
+[5.778s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+[5.779s] gmake[2]: *** Waiting for unfinished jobs....
+[8.266s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[8.266s] gmake: *** [Makefile:146: all] Error 2
+[8.267s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

@@ -350,6 +350,28 @@ inline void logAllTasksInfo(const std::unordered_map<int, TaskInfo>& tasks_map, 
     world.log_info(log_msg.str());
 }
 
+template <typename K>
+void logMapOf2DVectorOfPoints(const std::unordered_map<K, std::vector<std::vector<cv::Point>>>& map, Robot& robot) {
+    std::ostringstream log_msg;
+    
+    for (const auto& [key, polygons] : map) {
+        log_msg << "  " << key << ":\n";
+        
+        for (size_t i = 0; i < polygons.size(); i++) {
+            log_msg << "    Polygon " << i << ": [";
+            
+            for (size_t j = 0; j < polygons[i].size(); j++) {
+                if (j > 0) log_msg << ", ";
+                log_msg << "(" << polygons[i][j].x << "," << polygons[i][j].y << ")";
+            }
+            
+            log_msg << "]\n";
+        }
+    }
+    
+    robot.log_info(log_msg.str());
+}
+
 } // namespace end
 
 

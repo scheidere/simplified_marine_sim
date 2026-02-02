@@ -1,0 +1,31 @@
+[35m[1mConsolidate compiler generated dependencies of target sim[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testBundleAdd(std::map<int, double>&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:65:24:[m[K [01;31m[Kerror: [m[K‘[01m[Kbundle[m[K’ was not declared in this scope; did you mean ‘[01m[KbundleAdd[m[K’?
+   65 |     utils::log1DVector([01;31m[Kbundle[m[K,robot);
+      |                        [01;31m[K^~~~~~[m[K
+      |                        [32m[KbundleAdd[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:66:24:[m[K [01;31m[Kerror: [m[K‘[01m[Kpath[m[K’ was not declared in this scope; did you mean ‘[01m[Kstd::filesystem::__cxx11::path[m[K’?
+   66 |     utils::log1DVector([01;31m[Kpath[m[K,robot);
+      |                        [01;31m[K^~~~[m[K
+      |                        [32m[Kstd::filesystem::__cxx11::path[m[K
+In file included from [01m[K/usr/include/c++/11/filesystem:45[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/contrib/json.hpp:4643[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/blackboard.h:9[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/tree_node.h:22[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/leaf_node.h:17[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/action_node.h:22[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/pop_from_queue.hpp:17[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:6[m[K:
+[01m[K/usr/include/c++/11/bits/fs_path.h:248:9:[m[K [01;36m[Knote: [m[K‘[01m[Kstd::filesystem::__cxx11::path[m[K’ declared here
+  248 |   class [01;36m[Kpath[m[K
+      |         [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:67:24:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids_matrix[m[K’ was not declared in this scope
+   67 |     utils::log2DVector([01;31m[Kwinning_bids_matrix[m[K, robot);
+      |                        [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

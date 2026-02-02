@@ -1,0 +1,158 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': AMENT_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron LD_LIBRARY_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:${LD_LIBRARY_PATH} PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:${PATH} /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.059s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.060s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[1.657s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’:
+[1.658s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:220:34:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinners[m[K’ was not declared in this scope
+[1.658s]   220 |         bool new_winner_found = ([01;31m[Kwinners[m[K[task_id] != robot.getID());
+[1.658s]       |                                  [01;31m[K^~~~~~~[m[K
+[1.663s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:235:17:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids[m[K’ was not declared in this scope; did you mean ‘[01m[Kwinning_bids_matrix[m[K’?
+[1.663s]   235 |                 [01;31m[Kwinning_bids[m[K[task_id] = 0.0;
+[1.663s]       |                 [01;31m[K^~~~~~~~~~~~[m[K
+[1.663s]       |                 [32m[Kwinning_bids_matrix[m[K
+[1.667s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testBundleRemove()[m[K’:
+[1.667s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:318:17:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::unordered_map<int, int>&, std::unordered_map<int, double>&, bool)[m[K’
+[1.667s]   318 |     [01;31m[KbundleRemove(bundle,path,winners,winning_bids, true)[m[K; // Call for test 3
+[1.667s]       |     [01;31m[K~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.667s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’
+[1.667s]   200 | void [01;36m[KCBGA[m[K::bundleRemove(std::vector<int>& bundle,
+[1.667s]       |      [01;36m[K^~~~[m[K
+[1.667s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[K  candidate expects 4 arguments, 5 provided
+[1.697s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleAdd(std::vector<int>&, std::vector<int>&, std::map<int, double>&, std::vector<std::vector<double, std::allocator<double> > >&)[m[K’:
+[1.697s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:891:60:[m[K [01;31m[Kerror: [m[K‘[01m[KisGroupEffectivelyFull[m[K’ was not declared in this scope
+[1.697s]   891 |                         bool full_wrt_current_robot_type = [01;31m[KisGroupEffectivelyFull[m[K(task_group_fullness);
+[1.697s]       |                                                            [01;31m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.705s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:893:84:[m[K [01;31m[Kerror: [m[K‘[01m[KgetRelevantGroupFullnessInfo[m[K’ was not declared in this scope
+[1.705s]   893 |                      std::pair<bool, std::vector<int>> relevant_fullness_info = [01;31m[KgetRelevantGroupFullnessInfo[m[K(task_id);
+[1.705s]       |                                                                                 [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.705s] 
+[1.705s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:897:30:[m[K [01;31m[Kerror: [m[Kredeclaration of ‘[01m[Kbool full_wrt_current_robot_type[m[K’
+[1.705s]   897 |                         bool [01;31m[Kfull_wrt_current_robot_type[m[K = relevant_fullness_info.first;
+[1.705s]       |                              [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.705s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:891:30:[m[K [01;36m[Knote: [m[K‘[01m[Kbool full_wrt_current_robot_type[m[K’ previously declared here
+[1.706s]   891 |                         bool [01;36m[Kfull_wrt_current_robot_type[m[K = isGroupEffectivelyFull(task_group_fullness);
+[1.706s]       |                              [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.711s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:904:117:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_fill_num_current_type[m[K’ was not declared in this scope
+[1.711s]   904 | ing bop3 = "Group not full for current robot type sub-group (" + std::to_string([01;31m[Kcurrent_fill_num_current_type[m[K) + ") OR/AND any-type sub-group (" + std::to_string(current_fill_num_any_type) + ")";
+[1.711s]       |                                                                                 [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.712s] 
+[1.718s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:904:199:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_fill_num_any_type[m[K’ was not declared in this scope
+[1.718s]   904 | rrent_fill_num_current_type) + ") OR/AND any-type sub-group (" + std::to_string([01;31m[Kcurrent_fill_num_any_type[m[K) + ")";
+[1.718s]       |                                                                                 [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.718s] 
+[1.721s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:911:29:[m[K [01;31m[Kerror: [m[K‘[01m[Kneed[m[K’ was not declared in this scope
+[1.721s]   911 |                             [01;31m[Kneed[m[K to figure out how to differentiate between agents assigned as part of their type sub-group and part of the any-type
+[1.721s]       |                             [01;31m[K^~~~[m[K
+[1.721s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:926:27:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K}[m[K’ before ‘[01m[Kelse[m[K’
+[1.721s]   926 |                         } [01;31m[Kelse[m[K { // no win for group with room for robot of current type or group that's full wrt bids
+[1.721s]       |                           [01;31m[K^~~~[m[K
+[1.721s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:882:28:[m[K [01;36m[Knote: [m[Kto match this ‘[01m[K{[m[K’
+[1.722s]   882 |                     } else [01;36m[K{[m[K // group_size > 1, task is co-op, so do CBGA
+[1.722s]       |                            [01;36m[K^[m[K
+[1.722s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:926:27:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K}[m[K’ before ‘[01m[Kelse[m[K’
+[1.722s]   926 |                         } [01;31m[Kelse[m[K { // no win for group with room for robot of current type or group that's full wrt bids
+[1.722s]       |                           [01;31m[K^~~~[m[K
+[1.722s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:844:89:[m[K [01;36m[Knote: [m[Kto match this ‘[01m[K{[m[K’
+[1.722s]   844 |         if ( std::find(bundle.begin(), bundle.end(), task_id) == bundle.end() ) [01;36m[K{[m[K // for each doable task not in bundle already
+[1.722s]       |                                                                                 [01;36m[K^[m[K
+[1.722s] 
+[1.726s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:927:174:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids[m[K’ was not declared in this scope; did you mean ‘[01m[Kwinning_bids_matrix[m[K’?
+[1.727s]   927 | id (" + std::to_string(bids[task_id]) + ") NOT > winning bid(" + std::to_string([01;31m[Kwinning_bids[m[K[task_id]) + ") for relevant sub-groups";
+[1.727s]       |                                                                                 [01;31m[K^~~~~~~~~~~~[m[K
+[1.727s]       |                                                                                 [32m[Kwinning_bids_matrix[m[K
+[1.727s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:17:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[Kcatch[m[K’ before ‘[01m[KJ[m[K’
+[1.727s]   935 |             int [01;31m[KJ[m[K = getBestTaskID(bids, local_win_indicator_h, bundle);
+[1.727s]       |                 [01;31m[K^[m[K
+[1.727s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:17:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K([m[K’ before ‘[01m[KJ[m[K’
+[1.727s]   935 |             int [01;31m[KJ[m[K = getBestTaskID(bids, local_win_indicator_h, bundle);
+[1.727s]       |                 [01;31m[K^[m[K
+[1.727s]       |                 [32m[K([m[K
+[1.728s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:17:[m[K [01;31m[Kerror: [m[K‘[01m[KJ[m[K’ does not name a type
+[1.728s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:18:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K)[m[K’ before ‘[01m[K=[m[K’ token
+[1.728s]   935 |             int [34m[KJ[m[K[01;31m[K [m[K[32m[K=[m[K getBestTaskID(bids, local_win_indicator_h, bundle);
+[1.728s]       |                 [34m[K~[m[K[01;31m[K^[m[K[32m[K~[m[K
+[1.728s]       |                  [32m[K)[m[K
+[1.728s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:19:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K{[m[K’ before ‘[01m[K=[m[K’ token
+[1.728s]   935 |             int J [01;31m[K=[m[K getBestTaskID(bids, local_win_indicator_h, bundle);
+[1.728s]       |                   [01;31m[K^[m[K
+[1.728s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:19:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[K=[m[K’ token
+[1.734s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:935:41:[m[K [01;31m[Kerror: [m[K‘[01m[Klocal_win_indicator_h[m[K’ was not declared in this scope
+[1.734s]   935 |             int J = getBestTaskID(bids, [01;31m[Klocal_win_indicator_h[m[K, bundle);
+[1.734s]       |                                         [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[1.737s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:936:68:[m[K [01;31m[Kerror: [m[K‘[01m[KJ[m[K’ was not declared in this scope
+[1.737s]   936 |             std::string blob = "Best task ID is " + std::to_string([01;31m[KJ[m[K);
+[1.737s]       |                                                                    [01;31m[K^[m[K
+[1.743s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:938:21:[m[K [01;31m[Kerror: [m[K‘[01m[Kbest_position_n_tracker[m[K’ was not declared in this scope
+[1.743s]   938 |             int n = [01;31m[Kbest_position_n_tracker[m[K[J];
+[1.743s]       |                     [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.748s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:949:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids[m[K’ was not declared in this scope; did you mean ‘[01m[Kwinning_bids_matrix[m[K’?
+[1.748s]   949 |             [01;31m[Kwinning_bids[m[K[J] = bids[J]; // Add bid associated with J to winning bid list
+[1.748s]       |             [01;31m[K^~~~~~~~~~~~[m[K
+[1.748s]       |             [32m[Kwinning_bids_matrix[m[K
+[1.751s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:950:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinners[m[K’ was not declared in this scope
+[1.751s]   950 |             [01;31m[Kwinners[m[K[J] = robot.getID(); // Add current agent ID since it just won
+[1.752s]       |             [01;31m[K^~~~~~~[m[K
+[1.752s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:955:17:[m[K [01;31m[Kerror: [m[Kbreak statement not within loop or switch
+[1.752s]   955 |                 [01;31m[Kbreak[m[K;
+[1.752s]       |                 [01;31m[K^~~~~[m[K
+[1.753s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K At global scope:
+[1.753s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:964:9:[m[K [01;31m[Kerror: [m[K‘[01m[Krobot[m[K’ does not name a type; did you mean ‘[01m[KRobot[m[K’?
+[1.753s]   964 |         [01;31m[Krobot[m[K.log_info("==========in bundleAdd END==========");
+[1.753s]       |         [01;31m[K^~~~~[m[K
+[1.753s]       |         [32m[KRobot[m[K
+[1.753s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:965:9:[m[K [01;31m[Kerror: [m[K‘[01m[Krobot[m[K’ does not name a type; did you mean ‘[01m[KRobot[m[K’?
+[1.753s]   965 |         [01;31m[Krobot[m[K.log_info("Bundle:");
+[1.753s]       |         [01;31m[K^~~~~[m[K
+[1.753s]       |         [32m[KRobot[m[K
+[1.754s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:966:27:[m[K [01;31m[Kerror: [m[Kexpected constructor, destructor, or type conversion before ‘[01m[K([m[K’ token
+[1.754s]   966 |         utils::log1DVector[01;31m[K([m[Kbundle, robot);
+[1.754s]       |                           [01;31m[K^[m[K
+[1.754s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:967:9:[m[K [01;31m[Kerror: [m[K‘[01m[Krobot[m[K’ does not name a type; did you mean ‘[01m[KRobot[m[K’?
+[1.754s]   967 |         [01;31m[Krobot[m[K.log_info("Path:");
+[1.754s]       |         [01;31m[K^~~~~[m[K
+[1.754s]       |         [32m[KRobot[m[K
+[1.754s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:968:27:[m[K [01;31m[Kerror: [m[Kexpected constructor, destructor, or type conversion before ‘[01m[K([m[K’ token
+[1.754s]   968 |         utils::log1DVector[01;31m[K([m[Kpath, robot);
+[1.754s]       |                           [01;31m[K^[m[K
+[1.755s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:969:9:[m[K [01;31m[Kerror: [m[K‘[01m[Krobot[m[K’ does not name a type; did you mean ‘[01m[KRobot[m[K’?
+[1.755s]   969 |         [01;31m[Krobot[m[K.log_info("winning_bids_matrix:");
+[1.755s]       |         [01;31m[K^~~~~[m[K
+[1.755s]       |         [32m[KRobot[m[K
+[1.755s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:970:27:[m[K [01;31m[Kerror: [m[Kexpected constructor, destructor, or type conversion before ‘[01m[K([m[K’ token
+[1.755s]   970 |         utils::log2DVector[01;31m[K([m[Kwinning_bids_matrix, robot);
+[1.755s]       |                           [01;31m[K^[m[K
+[1.755s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:971:9:[m[K [01;31m[Kerror: [m[K‘[01m[Krobot[m[K’ does not name a type; did you mean ‘[01m[KRobot[m[K’?
+[1.755s]   971 |         [01;31m[Krobot[m[K.log_info("====================================");
+[1.755s]       |         [01;31m[K^~~~~[m[K
+[1.756s]       |         [32m[KRobot[m[K
+[1.756s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:973:5:[m[K [01;31m[Kerror: [m[Kexpected declaration before ‘[01m[K}[m[K’ token
+[1.756s]   973 |     [01;31m[K}[m[K catch (const std::exception& e) {
+[1.756s]       |     [01;31m[K^[m[K
+[1.756s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:973:7:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[Kcatch[m[K’
+[1.756s]   973 |     } [01;31m[Kcatch[m[K (const std::exception& e) {
+[1.756s]       |       [01;31m[K^~~~~[m[K
+[1.756s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:976:1:[m[K [01;31m[Kerror: [m[Kexpected declaration before ‘[01m[K}[m[K’ token
+[1.756s]   976 | [01;31m[K}[m[K
+[1.756s]       | [01;31m[K^[m[K
+[2.530s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kdouble CBGA::getSoloWinningBid(std::vector<std::vector<double, std::allocator<double> > >&, int)[m[K’:
+[2.531s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:805:1:[m[K [01;35m[Kwarning: [m[Kcontrol reaches end of non-void function [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wreturn-type-Wreturn-type]8;;[m[K]
+[2.531s]   805 | [01;35m[K}[m[K
+[2.531s]       | [01;35m[K^[m[K
+[2.555s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+[2.555s] gmake[2]: *** Waiting for unfinished jobs....
+[3.247s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::vector<int> Robot::getAssignedAgents(int)[m[K’:
+[3.248s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:913:23:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Klog2DVector(std::vector<std::vector<double, std::allocator<double> > >&, Robot*)[m[K’
+[3.248s]   913 |     [01;31m[Kutils::log2DVector(winning_bids_matrix, this)[m[K;
+[3.248s]       |     [01;31m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[3.248s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:9[m[K:
+[3.248s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:134:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class T> void utils::log2DVector(const std::vector<std::vector<_Tp> >&, Robot&)[m[K’
+[3.248s]   134 | void [01;36m[Klog2DVector[m[K(const std::vector<std::vector<T>>& vec, Robot& robot) {
+[3.248s]       |      [01;36m[K^~~~~~~~~~~[m[K
+[3.248s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:134:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[3.248s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:913:45:[m[K [01;36m[Knote: [m[K  cannot convert ‘[01m[K(Robot*)this[m[K’ (type ‘[01m[KRobot*[m[K’) to type ‘[01m[KRobot&[m[K’
+[3.248s]   913 |     utils::log2DVector(winning_bids_matrix, [01;36m[Kthis[m[K);
+[3.248s]       |                                             [01;36m[K^~~~[m[K
+[4.339s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[4.340s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[4.340s] gmake: *** [Makefile:146: all] Error 2
+[4.342s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': AMENT_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron LD_LIBRARY_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:${LD_LIBRARY_PATH} PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:${PATH} /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

@@ -1,0 +1,59 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.038s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.063s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.063s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[1.857s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kvoid run_robot(int, std::string, Pose2D, cv::Scalar, int, World&)[m[K’:
+[1.857s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:533:42:[m[K [01;31m[Kerror: [m[K‘[01m[KTestShortPath[m[K’ was not declared in this scope
+[1.857s]   533 |                 factory.registerNodeType<[01;31m[KTestShortPath[m[K>("TestShortPath", std::ref(robot), std::ref(world));
+[1.857s]       |                                          [01;31m[K^~~~~~~~~~~~~[m[K
+[1.857s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:533:56:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KBT::BehaviorTreeFactory::registerNodeType<<expression error> >(const char [14], std::reference_wrapper<Robot>, std::reference_wrapper<World>)[m[K’
+[1.857s]   533 |                 [01;31m[Kfactory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world))[m[K;
+[1.857s]       |                 [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.857s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:6[m[K,
+[1.857s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:11[m[K:
+[1.857s] [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/bt_factory.h:322:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class T, class ... ExtraArgs> void BT::BehaviorTreeFactory::registerNodeType(const string&, const PortsList&, ExtraArgs ...)[m[K’
+[1.857s]   322 |   void [01;36m[KregisterNodeType[m[K(const std::string& ID, const PortsList& ports, ExtraArgs... args)
+[1.858s]       |        [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[1.858s] [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/bt_factory.h:322:8:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[1.858s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:533:56:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[1.858s]   533 |                 [01;31m[Kfactory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world))[m[K;
+[1.858s]       |                 [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.858s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:6[m[K,
+[1.858s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:11[m[K:
+[1.858s] [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/bt_factory.h:358:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class T, class ... ExtraArgs> void BT::BehaviorTreeFactory::registerNodeType(const string&, ExtraArgs ...)[m[K’
+[1.858s]   358 |   void [01;36m[KregisterNodeType[m[K(const std::string& ID, ExtraArgs... args)
+[1.858s]       |        [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[1.858s] [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/bt_factory.h:358:8:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[1.858s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:533:56:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[1.858s]   533 |                 [01;31m[Kfactory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world))[m[K;
+[1.858s]       |                 [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.894s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1727:1:[m[K [01;31m[Kerror: [m[K‘[01m[KTestShortPath[m[K’ does not name a type
+[1.894s]  1727 | [01;31m[KTestShortPath[m[K::TestShortPath(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+[1.894s]       | [01;31m[K^~~~~~~~~~~~~[m[K
+[1.894s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1731:12:[m[K [01;31m[Kerror: [m[K‘[01m[KTestShortPath[m[K’ has not been declared
+[1.894s]  1731 | NodeStatus [01;31m[KTestShortPath[m[K::tick()
+[1.894s]       |            [01;31m[K^~~~~~~~~~~~~[m[K
+[1.896s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In function ‘[01m[KBT::NodeStatus tick()[m[K’:
+[1.896s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1735:9:[m[K [01;31m[Kerror: [m[K‘[01m[K_robot[m[K’ was not declared in this scope; did you mean ‘[01m[KRobot[m[K’?
+[1.896s]  1735 |         [01;31m[K_robot[m[K.log_info("in TestShortPath before check");
+[1.896s]       |         [01;31m[K^~~~~~[m[K
+[1.896s]       |         [32m[KRobot[m[K
+[1.898s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1738:9:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K,[m[K’ or ‘[01m[K;[m[K’ before ‘[01m[Kstd[m[K’
+[1.898s]  1738 |         [01;31m[Kstd[m[K::string bla = "task_loc in TestShortPath tick (x, y): " + std::to_string(start_loc.first) + ", " + std::to_string(start_loc.second);
+[1.898s]       |         [01;31m[K^~~[m[K
+[1.900s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1739:25:[m[K [01;31m[Kerror: [m[K‘[01m[Kbla[m[K’ was not declared in this scope
+[1.900s]  1739 |         _robot.log_info([01;31m[Kbla[m[K);
+[1.900s]       |                         [01;31m[K^~~[m[K
+[1.902s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1740:9:[m[K [01;31m[Kerror: [m[K‘[01m[KsetOutput[m[K’ was not declared in this scope
+[1.902s]  1740 |         [01;31m[KsetOutput[m[K("task_loc", task_loc);
+[1.902s]       |         [01;31m[K^~~~~~~~~[m[K
+[1.903s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K At global scope:
+[1.903s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1750:11:[m[K [01;31m[Kerror: [m[K‘[01m[KTestShortPath[m[K’ has not been declared
+[1.903s]  1750 | PortsList [01;31m[KTestShortPath[m[K::providedPorts()
+[1.903s]       |           [01;31m[K^~~~~~~~~~~~~[m[K
+[3.211s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[3.211s] gmake[2]: *** Waiting for unfinished jobs....
+[3.490s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+[3.490s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[3.491s] gmake: *** [Makefile:146: all] Error 2
+[3.492s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

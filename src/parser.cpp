@@ -269,38 +269,15 @@ int JSONParser::getCompatibility(std::string agent_type, std::string task_type) 
     return 0; // Did not find given task type in list of capabilities (task types it can do) for given agent type
 } 
 
-/*int JSONParser::getCompatibility(std::string agent_type, std::string task_type) {
-
-    // This is deprecated, no longer dealing with solo vs co-op with 2, just doing can do (1) or not (0)
-
-    // 0 - not able; 1 - able; 
-    // Dealing with these later: 2 - able with assistance (co-op); 3 - co-op after fault
-
-    if (j.contains("agent_capabilities") && j["agent_capabilities"].is_array()) {
-        //std::cout << agent_type << std::endl;
-        //std::cout << task_type << std::endl;
-        //std::cin.get();
-
-        // Now check each individual agents doable task types, and add if not covered in the "all" case already
-        for (const auto& t : j["agent_capabilities"][1][agent_type]) {
-            //std::cout << t << " " << task_type << std::endl;
-            //std::cin.get();
-            if (t=="co-op") {
-                return 2;
-            } else if (t == task_type) {
-                //std::cout << "agent type for found match: " << agent_type << " 1" << std::endl;
-                return 1;
-            }
+bool JSONParser::getDoCBGA() {
+    bool do_cbga = true;  // Default to true
+    
+    if (j.contains("cbba") && j["cbba"].is_object()) {
+        if (j["cbba"].contains("do_cbga") && j["cbba"]["do_cbga"].is_boolean()) {
+            do_cbga = j["cbba"]["do_cbga"];
+            std::cout << "do_cbga: " << (do_cbga ? "true" : "false") << std::endl;
         }
     }
-    else {
-        std::cerr << "Error: agent_capabilities not found or invalid in JSON." << std::endl;  
-    }
-
-    //std::cout << "agent type for found match: " << agent_type << " 0" << std::endl;
-    return 0; // Did not find given task type in list of capabilities (task types it can do) for given agent type
-}*/
-
-/*json JSONParser::getAgentsList() {
-
-}*/
+    
+    return do_cbga;
+}

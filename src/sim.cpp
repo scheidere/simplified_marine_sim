@@ -277,8 +277,8 @@
 </root>
 )";*/
 
-// Main testing tree
-static const char* xml_text = R"(
+// Main testing tree (with manual do_cbga flag)
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="3">
@@ -304,10 +304,39 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
+)";*/
 // Removed <Subtask_1/>
 // <TestShortPath task_loc = "{stl}" />
 // <FollowShortestPath goal_loc = "{stl}" />
+
+// Main testing tree (with automatic do_cbga)
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="3">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="{do_cbga_flag}" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="{do_cbga_flag}" />
+                    <Communicate do_cbga="{do_cbga_flag}"/>
+                    <ResolveConflicts do_cbga="{do_cbga_flag}" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="{do_cbga_flag}" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <TaskNeededNow/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <Subtask_1/>
+                </CounterSequence>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
 
 
 // For testing obstacle avoidance
@@ -475,6 +504,9 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
             std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
             JSONParser parser(path);
 
+            bool do_cbga = parser.getDoCBGA();
+            std::cout << "Robot " << robot_id << " using do_cbga: " << (do_cbga ? "true" : "false") << std::endl;
+
             auto robot_attributes = parser.j["robot_attributes"];
             const int obs_radius = robot_attributes["observation_radius"];
 
@@ -557,6 +589,10 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 std::cout << "Creating behavior tree for robot " << robot_id << "..." << std::endl;
                 BT::Blackboard::Ptr blackboard = BT::Blackboard::create(); // Testing
                 std::cout << "====++++!!!!Created blackboard for robot " << robot_id << ": " << blackboard.get() << std::endl; 
+
+                // SET BLACKBOARD VARIABLE
+                blackboard->set("do_cbga_flag", do_cbga);
+
                 auto tree = factory.createTreeFromText(xml_text, blackboard); // Testing this too
                 //auto tree = factory.createTreeFromText(xml_text); // Old way, results in some shared blackboard between robot threads
                 std::cout << "Behavior tree created successfully for robot " << robot_id << "." << std::endl;
@@ -623,11 +659,16 @@ int main(int argc, char** argv) {
         file << "time,reward\n";  // write header
         file.close();
 
-        // Init file to save reward/time
-        std::string filename2 = "distance_data.csv";
+        std::string filename2 = "discounted_reward_data.csv";
         std::ofstream file2(filename2);  // overwrites existing file
-        file2 << "time,distance\n";  // write header
+        file2 << "time,discounted_reward\n";  // write header
         file2.close();
+
+        // Init file to save reward/time
+        std::string filename3 = "distance_data.csv";
+        std::ofstream file3(filename3);  // overwrites existing file
+        file3 << "time,distance\n";  // write header
+        file3.close();
 
         // Testing parsing
         //std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
@@ -671,10 +712,12 @@ int main(int argc, char** argv) {
         World world(X, Y, &distance, &sensor_model, &parser, comms_range);
         g_world = &world;  // Set global pointer
         
-        // Register signal handler
-        signal(SIGINT, signalHandler);  // Ctrl+C
-        
-        world.startRecording("simulation.avi", 3.33);
+        if (world.getDoRecordingFlag()) {
+            // Register signal handler
+            signal(SIGINT, signalHandler);  // Ctrl+C
+            
+            world.startRecording("simulation.avi", 3.33);
+        }
 
         std::this_thread::sleep_for(std::chrono::seconds(2));
         std::cout << "in main 1" << std::endl;
@@ -722,9 +765,6 @@ int main(int argc, char** argv) {
         }
 
         std::cout << "Both threads finished" << std::endl;
-
-        // STOP VIDEO RECORDING
-        //world.stopRecording();
 
         double end_time = getCurrentTime();
         double total_time = end_time - start_time;

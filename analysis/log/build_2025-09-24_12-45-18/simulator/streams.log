@@ -1,0 +1,13 @@
+[0.008s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.045s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.067s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus CheckConvergence::tick()[m[K’:
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:454:75:[m[K [01;31m[Kerror: [m[Kinvalid operands of types ‘[01m[Kconst char*[m[K’ and ‘[01m[Kconst char [9][m[K’ to binary ‘[01m[Koperator+[m[K’
+[1.724s]   454 |             std::string time = [32m[K"Time to convergence: " + duration.count()[m[K [01;31m[K+[m[K [34m[K" seconds"[m[K;
+[1.724s]       |                                [32m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K [01;31m[K^[m[K [34m[K~~~~~~~~~~[m[K
+[1.724s]       |                                                        [32m[K|[m[K                    [34m[K|[m[K
+[1.724s]       |                                                        [32m[Kconst char*[m[K          [34m[Kconst char [9][m[K
+[2.912s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[2.912s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.912s] gmake: *** [Makefile:146: all] Error 2
+[2.914s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

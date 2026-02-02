@@ -1,0 +1,17 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus Subtask_1::onStart()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1546:9:[m[K [01;31m[Kerror: [m[K‘[01m[K_waypoints[m[K’ was not declared in this scope
+ 1546 |         [01;31m[K_waypoints[m[K = _shortest_path_planner.plan(current_pose, goal_pose,
+      |         [01;31m[K^~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1546:22:[m[K [01;31m[Kerror: [m[K‘[01m[K_shortest_path_planner[m[K’ was not declared in this scope
+ 1546 |         _waypoints = [01;31m[K_shortest_path_planner[m[K.plan(current_pose, goal_pose,
+      |                      [01;31m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1546:50:[m[K [01;31m[Kerror: [m[K‘[01m[Kcurrent_pose[m[K’ was not declared in this scope; did you mean ‘[01m[Kcurrent_task[m[K’?
+ 1546 |         _waypoints = _shortest_path_planner.plan([01;31m[Kcurrent_pose[m[K, goal_pose,
+      |                                                  [01;31m[K^~~~~~~~~~~~[m[K
+      |                                                  [32m[Kcurrent_task[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1554:9:[m[K [01;31m[Kerror: [m[K‘[01m[K_current_waypoint_index[m[K’ was not declared in this scope
+ 1554 |         [01;31m[K_current_waypoint_index[m[K = 0;
+      |         [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,26 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.049s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[1.723s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus HandleFailures::onRunning()[m[K’:
+[1.723s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1379:35:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KlogUnorderedMap(std::unordered_map<int, bool>&, HandleFailures&)[m[K’
+[1.723s]  1379 |             [01;31m[Kutils::logUnorderedMap(current_subtask_failures, *this)[m[K;
+[1.723s]       |             [01;31m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.723s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:13[m[K:
+[1.723s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:100:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class K, class V> void utils::logUnorderedMap(const std::unordered_map<K, V>&, Robot&)[m[K’
+[1.723s]   100 | void [01;36m[KlogUnorderedMap[m[K(const std::unordered_map<K, V>& my_map, Robot& robot) {
+[1.723s]       |      [01;36m[K^~~~~~~~~~~~~~~[m[K
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:100:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1379:62:[m[K [01;36m[Knote: [m[K  cannot convert ‘[01m[K*(HandleFailures*)this[m[K’ (type ‘[01m[KHandleFailures[m[K’) to type ‘[01m[KRobot&[m[K’
+[1.724s]  1379 |             utils::logUnorderedMap(current_subtask_failures, [01;36m[K*this[m[K);
+[1.724s]       |                                                              [01;36m[K^~~~~[m[K
+[1.724s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:13[m[K:
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:131:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class K1, class K2, class V2> void utils::logUnorderedMap(const std::unordered_map<K1, std::unordered_map<K2, V2> >&, Robot&)[m[K’
+[1.724s]   131 | void [01;36m[KlogUnorderedMap[m[K(const std::unordered_map<K1, std::unordered_map<K2, V2>>& my_map, Robot& robot) {
+[1.724s]       |      [01;36m[K^~~~~~~~~~~~~~~[m[K
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:131:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[1.724s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1379:35:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kstd::unordered_map<K2, V2>[m[K’ and ‘[01m[Kbool[m[K’
+[1.724s]  1379 |             [01;36m[Kutils::logUnorderedMap(current_subtask_failures, *this)[m[K;
+[1.724s]       |             [01;36m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.951s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[2.952s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.952s] gmake: *** [Makefile:146: all] Error 2
+[2.954s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

@@ -1,0 +1,70 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:183:71:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > JSONParser::getAgentCapabilities(std::vector<std::__cxx11::basic_string<char> >, std::vector<std::__cxx11::basic_string<char> >)[m[K’
+  183 | std::unordered_map<std::string, std::unordered_map<std::string,bool>> [01;31m[KJSONParser[m[K::getAgentCapabilities(std::vector<std::string> agent_types, std::vector<std::string> task_types) {
+      |                                                                       [01;31m[K^~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/parser.cpp:1[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/parser.hpp:35:59:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> > JSONParser::getAgentCapabilities(std::vector<std::__cxx11::basic_string<char> >, std::vector<std::__cxx11::basic_string<char> >)[m[K’
+   35 |         std::unordered_map<std::string, std::vector<int>> [01;36m[KgetAgentCapabilities[m[K(std::vector<std::string> agent_types, std::vector<std::string> task_types);
+      |                                                           [01;36m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/parser.hpp:8:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass JSONParser[m[K’ defined here
+    8 | class [01;36m[KJSONParser[m[K {
+      |       [01;36m[K^~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In constructor ‘[01m[KWorld::World(int, int, Distance*, SensorModel*, JSONParser*, double)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:63:86:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator=[m[K’ (operand types are ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >[m[K’ and ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >[m[K’)
+   63 |         all_agent_capabilities = parser->getAgentCapabilities(agent_types, task_types[01;31m[K)[m[K;
+      |                                                                                      [01;31m[K^[m[K
+In file included from [01m[K/usr/include/c++/11/unordered_map:47[m[K,
+                 from [01m[K/usr/include/c++/11/functional:61[m[K,
+                 from [01m[K/usr/include/c++/11/pstl/glue_algorithm_defs.h:13[m[K,
+                 from [01m[K/usr/include/c++/11/algorithm:74[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/core/base.hpp:55[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/core.hpp:53[m[K,
+                 from [01m[K/usr/include/opencv4/opencv2/opencv.hpp:52[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/distance.hpp:4[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:2[m[K:
+[01m[K/usr/include/c++/11/bits/unordered_map.h:272:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::operator=(const std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>&) [with _Key = std::__cxx11::basic_string<char>; _Tp = std::unordered_map<std::__cxx11::basic_string<char>, bool>; _Hash = std::hash<std::__cxx11::basic_string<char> >; _Pred = std::equal_to<std::__cxx11::basic_string<char> >; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > >][m[K’
+  272 |       [01;36m[Koperator[m[K=(const unordered_map&) = default;
+      |       [01;36m[K^~~~~~~~[m[K
+[01m[K/usr/include/c++/11/bits/unordered_map.h:272:17:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >[m[K’ to ‘[01m[Kconst std::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >&[m[K’
+  272 |       operator=([01;36m[Kconst unordered_map&[m[K) = default;
+      |                 [01;36m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/usr/include/c++/11/bits/unordered_map.h:276:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::operator=(std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>&&) [with _Key = std::__cxx11::basic_string<char>; _Tp = std::unordered_map<std::__cxx11::basic_string<char>, bool>; _Hash = std::hash<std::__cxx11::basic_string<char> >; _Pred = std::equal_to<std::__cxx11::basic_string<char> >; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > >][m[K’
+  276 |       [01;36m[Koperator[m[K=(unordered_map&&) = default;
+      |       [01;36m[K^~~~~~~~[m[K
+[01m[K/usr/include/c++/11/bits/unordered_map.h:276:17:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >[m[K’ to ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >&&[m[K’
+  276 |       operator=([01;36m[Kunordered_map&&[m[K) = default;
+      |                 [01;36m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/usr/include/c++/11/bits/unordered_map.h:290:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::operator=(std::initializer_list<typename std::_Hashtable<_Key, std::pair<const _Key, _Tp>, _Alloc, std::__detail::_Select1st, _Pred, _Hash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<std::__not_<std::__and_<std::__is_fast_hash<_Hash>, std::__is_nothrow_invocable<const _Hash&, const _Key&> > >::value, false, true> >::value_type>) [with _Key = std::__cxx11::basic_string<char>; _Tp = std::unordered_map<std::__cxx11::basic_string<char>, bool>; _Hash = std::hash<std::__cxx11::basic_string<char> >; _Pred = std::equal_to<std::__cxx11::basic_string<char> >; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > >; typename std::_Hashtable<_Key, std::pair<const _Key, _Tp>, _Alloc, std::__detail::_Select1st, _Pred, _Hash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<std::__not_<std::__and_<std::__is_fast_hash<_Hash>, std::__is_nothrow_invocable<const _Hash&, const _Key&> > >::value, false, true> >::value_type = std::pair<const std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >][m[K’
+  290 |       [01;36m[Koperator[m[K=(initializer_list<value_type> __l)
+      |       [01;36m[K^~~~~~~~[m[K
+[01m[K/usr/include/c++/11/bits/unordered_map.h:290:46:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >[m[K’ to ‘[01m[Kstd::initializer_list<std::pair<const std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> > >[m[K’
+  290 |       operator=([01;36m[Kinitializer_list<value_type> __l[m[K)
+      |                 [01;36m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::vector<int> World::getRobotSubtaskCapabilities(Robot*)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:559:84:[m[K [01;31m[Kerror: [m[Kconversion from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >::mapped_type[m[K’ {aka ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’} to non-scalar type ‘[01m[Kstd::vector<int>[m[K’ requested
+  559 |     std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type[01;31m[K][m[K;
+      |                                                                                    [01;31m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kstd::vector<int> World::getRobotCapabilities(Robot*)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:612:27:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KlogMapOfVectors(std::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >&, Robot&)[m[K’
+  612 |     [01;31m[Kutils::logMapOfVectors(all_agent_capabilities, *robot)[m[K;
+      |     [01;31m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:47:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Ktemplate<class T> void utils::logMapOfVectors(const std::unordered_map<std::__cxx11::basic_string<char>, std::vector<_Tp> >&, Robot&)[m[K’
+   47 | void [01;36m[KlogMapOfVectors[m[K(const std::unordered_map<std::string, std::vector<T>>& map_data, Robot& robot) {
+      |      [01;36m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/utils.hpp:47:6:[m[K [01;36m[Knote: [m[K  template argument deduction/substitution failed:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:612:27:[m[K [01;36m[Knote: [m[K  mismatched types ‘[01m[Kstd::vector<_Tp>[m[K’ and ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’
+  612 |     [01;36m[Kutils::logMapOfVectors(all_agent_capabilities, *robot)[m[K;
+      |     [01;36m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:613:84:[m[K [01;31m[Kerror: [m[Kconversion from ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, std::unordered_map<std::__cxx11::basic_string<char>, bool> >::mapped_type[m[K’ {aka ‘[01m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K’} to non-scalar type ‘[01m[Kstd::vector<int>[m[K’ requested
+  613 |     std::vector<int> robot_capabilities_by_type = all_agent_capabilities[agent_type[01;31m[K][m[K;
+      |                                                                                    [01;31m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:657:89:[m[K [01;31m[Kerror: [m[Kconversion from ‘[01m[Kunordered_map<[...],[01;32m[Kstd::unordered_map<std::__cxx11::basic_string<char>, bool>[m[K>[m[K’ to non-scalar type ‘[01m[Kunordered_map<[...],[01;32m[Kstd::vector<int>[m[K>[m[K’ requested
+  657 |         std::unordered_map<std::string,std::vector<int>> test = [01;31m[Kworld.getAllCapabilities()[m[K;
+      |                                                                 [01;31m[K~~~~~~~~~~~~~~~~~~~~~~~~^~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:216: CMakeFiles/sim.dir/src/parser.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

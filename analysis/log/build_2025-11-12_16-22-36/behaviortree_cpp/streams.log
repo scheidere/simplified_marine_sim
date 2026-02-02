@@ -1,0 +1,76 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp': CMAKE_PREFIX_PATH=/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12
+[0.042s] [  1%] Built target lexy_file
+[0.042s] [  6%] Built target gtest
+[0.042s] [  6%] Built target gtest_main
+[0.042s] [  6%] Built target minitrace
+[0.058s] [35m[1mConsolidate compiler generated dependencies of target behaviortree_cpp[0m
+[0.097s] [  7%] [32mBuilding CXX object CMakeFiles/behaviortree_cpp.dir/src/controls/counter_sequence.cpp.o[0m
+[2.749s] [  8%] [32m[1mLinking CXX shared library libbehaviortree_cpp.so[0m
+[2.864s] [ 37%] Built target behaviortree_cpp
+[2.879s] [ 37%] [32m[1mLinking CXX shared library bin/libmovebase_node_dyn.so[0m
+[2.880s] [ 38%] [32m[1mLinking CXX shared library bin/libcrossdoor_nodes_dyn.so[0m
+[2.880s] [ 40%] Built target bt_sample_nodes
+[2.880s] [ 42%] [32m[1mLinking CXX shared library bin/libdummy_nodes_dyn.so[0m
+[2.880s] [ 42%] [32m[1mLinking CXX executable test_plugin_executor[0m
+[2.884s] [ 43%] [32m[1mLinking CXX shared library test_plugin_action.so[0m
+[2.884s] [ 44%] [32m[1mLinking CXX executable t01_first_tree_dynamic[0m
+[2.884s] [ 45%] [32m[1mLinking CXX executable bt4_plugin_manifest[0m
+[2.902s] [ 46%] [32m[1mLinking CXX executable t03_generic_ports[0m
+[2.903s] [ 47%] [32m[1mLinking CXX executable t02_basic_ports[0m
+[2.910s] [ 47%] [32m[1mLinking CXX executable t04_reactive_sequence[0m
+[2.912s] [ 48%] [32m[1mLinking CXX executable t01_first_tree_static[0m
+[2.936s] [ 49%] [32m[1mLinking CXX executable behaviortree_cpp_test[0m
+[3.049s] [ 50%] Built target movebase_node_dyn
+[3.055s] [ 51%] Built target crossdoor_nodes_dyn
+[3.063s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.063s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.063s] [ 51%] Built target test_plugin_action
+[3.065s] collect2: error: ld returned 1 exit status
+[3.066s] collect2: error: ld returned 1 exit status
+[3.067s] gmake[2]: *** [examples/CMakeFiles/test_plugin_executor.dir/build.make:101: examples/test_plugin_executor] Error 1
+[3.067s] gmake[1]: *** [CMakeFiles/Makefile2:1223: examples/CMakeFiles/test_plugin_executor.dir/all] Error 2
+[3.068s] gmake[1]: *** Waiting for unfinished jobs....
+[3.070s] gmake[2]: *** [tools/CMakeFiles/bt4_plugin_manifest.dir/build.make:101: tools/bt4_plugin_manifest] Error 1
+[3.071s] gmake[1]: *** [CMakeFiles/Makefile2:578: tools/CMakeFiles/bt4_plugin_manifest.dir/all] Error 2
+[3.079s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.079s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.079s] [ 52%] Built target dummy_nodes_dyn
+[3.080s] [ 53%] [32m[1mLinking CXX executable t05_crossdoor[0m
+[3.084s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `collect2: error: ld returned 1 exit status
+[3.085s] vtable for BT::CounterSequence'
+[3.085s] collect2: error: ld returned 1 exit status
+[3.085s] gmake[2]: *** [examples/CMakeFiles/t03_generic_ports.dir/build.make:102: examples/t03_generic_ports] Error 1
+[3.085s] gmake[1]: *** [CMakeFiles/Makefile2:685: examples/CMakeFiles/t03_generic_ports.dir/all] Error 2
+[3.086s] gmake[2]: *** [examples/CMakeFiles/t02_basic_ports.dir/build.make:102: examples/t02_basic_ports] Error 1
+[3.086s] gmake[1]: *** [CMakeFiles/Makefile2:658: examples/CMakeFiles/t02_basic_ports.dir/all] Error 2
+[3.087s] collect2: error: ld returned 1 exit status
+[3.088s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.088s] [ 53%] [32m[1mLinking CXX executable t06_subtree_port_remapping[0m
+[3.089s] gmake[2]: *** [examples/CMakeFiles/t01_first_tree_dynamic.dir/build.make:101: examples/t01_first_tree_dynamic] Error 1
+[3.089s] gmake[1]: *** [CMakeFiles/Makefile2:631: examples/CMakeFiles/t01_first_tree_dynamic.dir/all] Error 2
+[3.090s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.090s] [ 54%] [32m[1mLinking CXX executable t07_load_multiple_xml[0m
+[3.091s] collect2: error: ld returned 1 exit status
+[3.092s] gmake[2]: *** [examples/CMakeFiles/t01_first_tree_static.dir/build.make:102: examples/t01_first_tree_static] Error 1
+[3.092s] gmake[1]: *** [CMakeFiles/Makefile2:605: examples/CMakeFiles/t01_first_tree_static.dir/all] Error 2
+[3.094s] collect2: error: ld returned 1 exit status
+[3.095s] gmake[2]: *** [examples/CMakeFiles/t04_reactive_sequence.dir/build.make:102: examples/t04_reactive_sequence] Error 1
+[3.096s] gmake[1]: *** [CMakeFiles/Makefile2:712: examples/CMakeFiles/t04_reactive_sequence.dir/all] Error 2
+[3.167s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.169s] collect2: error: ld returned 1 exit status
+[3.171s] gmake[2]: *** [examples/CMakeFiles/t05_crossdoor.dir/build.make:102: examples/t05_crossdoor] Error 1
+[3.171s] gmake[1]: *** [CMakeFiles/Makefile2:739: examples/CMakeFiles/t05_crossdoor.dir/all] Error 2
+[3.176s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.176s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.179s] collect2: error: ld returned 1 exit status
+[3.179s] collect2: error: ld returned 1 exit status
+[3.180s] gmake[2]: *** [examples/CMakeFiles/t06_subtree_port_remapping.dir/build.make:102: examples/t06_subtree_port_remapping] Error 1
+[3.180s] gmake[2]: *** [examples/CMakeFiles/t07_load_multiple_xml.dir/build.make:102: examples/t07_load_multiple_xml] Error 1
+[3.180s] gmake[1]: *** [CMakeFiles/Makefile2:766: examples/CMakeFiles/t06_subtree_port_remapping.dir/all] Error 2
+[3.180s] gmake[1]: *** [CMakeFiles/Makefile2:793: examples/CMakeFiles/t07_load_multiple_xml.dir/all] Error 2
+[3.246s] /usr/bin/ld: ../libbehaviortree_cpp.so: undefined reference to `vtable for BT::CounterSequence'
+[3.253s] collect2: error: ld returned 1 exit status
+[3.255s] gmake[2]: *** [tests/CMakeFiles/behaviortree_cpp_test.dir/build.make:505: tests/behaviortree_cpp_test] Error 1
+[3.255s] gmake[1]: *** [CMakeFiles/Makefile2:500: tests/CMakeFiles/behaviortree_cpp_test.dir/all] Error 2
+[3.255s] gmake: *** [Makefile:146: all] Error 2
+[3.256s] Invoked command in '/home/emily/sa-mrbt_ws/build/behaviortree_cpp' returned '2': CMAKE_PREFIX_PATH=/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/behaviortree_cpp -- -j12 -l12

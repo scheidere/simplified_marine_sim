@@ -1,0 +1,68 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:220:34:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinners[m[K’ was not declared in this scope
+  220 |         bool new_winner_found = ([01;31m[Kwinners[m[K[task_id] != robot.getID());
+      |                                  [01;31m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:235:17:[m[K [01;31m[Kerror: [m[K‘[01m[Kwinning_bids[m[K’ was not declared in this scope; did you mean ‘[01m[Kwinning_bids_matrix[m[K’?
+  235 |                 [01;31m[Kwinning_bids[m[K[task_id] = 0.0;
+      |                 [01;31m[K^~~~~~~~~~~~[m[K
+      |                 [32m[Kwinning_bids_matrix[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::testBundleRemove()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:318:17:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::unordered_map<int, int>&, std::unordered_map<int, double>&, bool)[m[K’
+  318 |     [01;31m[KbundleRemove(bundle,path,winners,winning_bids, true)[m[K; // Call for test 3
+      |     [01;31m[K~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid CBGA::bundleRemove(std::vector<int>&, std::vector<int>&, std::vector<std::vector<double, std::allocator<double> > >&, bool)[m[K’
+  200 | void [01;36m[KCBGA[m[K::bundleRemove(std::vector<int>& bundle,
+      |      [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:200:6:[m[K [01;36m[Knote: [m[K  candidate expects 4 arguments, 5 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K At global scope:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:831:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kbool CBGA::isGroupEffectivelyFull(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >, std::unordered_map<std::__cxx11::basic_string<char>, int>&, std::string)[m[K’
+  831 | bool [01;31m[KCBGA[m[K::isGroupEffectivelyFull(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments, std::unordered_map<std::string, int>& task_group_max_size, std::string current_robot_type) {
+      |      [01;31m[K^~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:94:10:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kbool CBGA::isGroupEffectivelyFull(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >)[m[K’
+   94 |     bool [01;36m[KisGroupEffectivelyFull[m[K(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments);
+      |          [01;36m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:21:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass CBGA[m[K’ defined here
+   21 | class [01;36m[KCBGA[m[K {
+      |       [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:849:18:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::vector<int> CBGA::getRelevantAssignedIDs(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >, std::string)[m[K’
+  849 | std::vector<int> [01;31m[KCBGA[m[K::getRelevantAssignedIDs(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments, std::string current_robot_type) {
+      |                  [01;31m[K^~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:96:22:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kstd::vector<int> CBGA::getRelevantAssignedIDs(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >)[m[K’
+   96 |     std::vector<int> [01;36m[KgetRelevantAssignedIDs[m[K(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments);
+      |                      [01;36m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:21:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass CBGA[m[K’ defined here
+   21 | class [01;36m[KCBGA[m[K {
+      |       [01;36m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:[m[K In member function ‘[01m[Kvoid CBGA::bundleAdd(std::vector<int>&, std::vector<int>&, std::map<int, double>&, std::vector<std::vector<double, std::allocator<double> > >&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:914:74:[m[K [01;31m[Kerror: [m[Kbase operand of ‘[01m[K->[m[K’ has non-pointer type ‘[01m[KWorld[m[K’
+  914 |         std::unordered_map<std::string, int>& task_group_max_size = world[01;31m[K->[m[KgetTaskGroupInfo(task_id);
+      |                                                                          [01;31m[K^~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:914:93:[m[K [01;31m[Kerror: [m[K‘[01m[Ktask_id[m[K’ was not declared in this scope
+  914 | d::unordered_map<std::string, int>& task_group_max_size = world->getTaskGroupInfo([01;31m[Ktask_id[m[K);
+      |                                                                                   [01;31m[K^~~~~~~[m[K
+
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:983:82:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCBGA::isGroupEffectivelyFull(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >&, std::unordered_map<std::__cxx11::basic_string<char>, int>&, std::string&)[m[K’
+  983 |                        bool full_wrt_current_robot_type = [01;31m[KisGroupEffectivelyFull(task_sub_group_assignments, task_group_max_size, current_robot_type)[m[K;
+      |                                                           [01;31m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:94:10:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kbool CBGA::isGroupEffectivelyFull(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >)[m[K’
+   94 |     bool [01;36m[KisGroupEffectivelyFull[m[K(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments);
+      |          [01;36m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:94:10:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 3 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:1019:92:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCBGA::getRelevantAssignedIDs(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >&, std::string&)[m[K’
+ 1019 |                  std::vector<int> relevant_assigned_ids = [01;31m[KgetRelevantAssignedIDs(task_sub_group_assignments, current_robot_type)[m[K;
+      |                                                           [01;31m[K~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/CBGA.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:96:22:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::vector<int> CBGA::getRelevantAssignedIDs(std::unordered_map<std::__cxx11::basic_string<char>, std::vector<int> >)[m[K’
+   96 |     std::vector<int> [01;36m[KgetRelevantAssignedIDs[m[K(std::unordered_map<std::string, std::vector<int>> task_sub_group_assignments);
+      |                      [01;36m[K^~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/CBGA.hpp:96:22:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 2 provided
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:104: CMakeFiles/sim.dir/src/CBGA.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

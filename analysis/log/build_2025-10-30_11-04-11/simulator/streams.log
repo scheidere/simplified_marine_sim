@@ -1,0 +1,74 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': AMENT_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron LD_LIBRARY_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:${LD_LIBRARY_PATH} PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:${PATH} /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.036s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.060s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.062s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.062s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.062s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.062s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.062s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.066s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.066s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.066s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[0.067s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[5.557s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kvoid updateDoableTasks()[m[K’:
+[5.557s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:348:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kprev_subtask_failures[m[K’ was not declared in this scope
+[5.557s]   348 |     if ([01;31m[Kprev_subtask_failures[m[K != subtask_failures for all agents except self (given by id)) {
+[5.557s]       |         [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[5.563s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:348:34:[m[K [01;31m[Kerror: [m[K‘[01m[Ksubtask_failures[m[K’ was not declared in this scope
+[5.563s]   348 |     if (prev_subtask_failures != [01;31m[Ksubtask_failures[m[K for all agents except self (given by id)) {
+[5.563s]       |                                  [01;31m[K^~~~~~~~~~~~~~~~[m[K
+[5.563s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:348:50:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K)[m[K’ before ‘[01m[Kfor[m[K’
+[5.563s]   348 |     if [34m[K([m[Kprev_subtask_failures != subtask_failures[01;31m[K [m[K[32m[Kfor[m[K all agents except self (given by id)) {
+[5.563s]       |        [34m[K~[m[K                                         [01;31m[K^[m[K[32m[K~~~[m[K
+[5.563s]       |                                                  [32m[K)[m[K
+[5.564s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:349:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kget[m[K’ was not declared in this scope; did you mean ‘[01m[Kstd::get[m[K’?
+[5.564s]   349 |         [01;31m[Kget[m[K vector of subtasks that have changes (failures) by robots other than self (should just be 1 each since each subtask is for single task instance)
+[5.564s]       |         [01;31m[K^~~[m[K
+[5.564s]       |         [32m[Kstd::get[m[K
+[5.564s] In file included from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/basic_types.h:10[m[K,
+[5.564s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/tree_node.h:21[m[K,
+[5.564s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/leaf_node.h:17[m[K,
+[5.564s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/action_node.h:22[m[K,
+[5.564s]                  from [01m[K/home/emily/sa-mrbt_ws/install/behaviortree_cpp/include/behaviortree_cpp/actions/pop_from_queue.hpp:17[m[K,
+[5.564s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:8[m[K,
+[5.565s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:3[m[K:
+[5.565s] [01m[K/usr/include/c++/11/variant:1145:27:[m[K [01;36m[Knote: [m[K‘[01m[Kstd::get[m[K’ declared here
+[5.565s]  1145 |     constexpr const _Tp&& [01;36m[Kget[m[K(const variant<_Types...>&& __v)
+[5.565s]       |                           [01;36m[K^~~[m[K
+[5.565s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:352:9:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K([m[K’ before ‘[01m[Keach[m[K’
+[5.565s]   352 |     for [01;31m[Ke[m[K[32m[Kach[m[K subtask that another neighboring robot has failed
+[5.565s]       |         [01;31m[K^[m[K[32m[K~~~[m[K
+[5.565s]       |         [32m[K([m[K
+[5.567s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:352:9:[m[K [01;31m[Kerror: [m[K‘[01m[Keach[m[K’ was not declared in this scope
+[5.568s]   352 |     for [01;31m[Keach[m[K subtask that another neighboring robot has failed
+[5.568s]       |         [01;31m[K^~~~[m[K
+[5.568s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:359:1:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[K}[m[K’ token
+[5.568s]   359 | [01;31m[K}[m[K
+[5.568s]       | [01;31m[K^[m[K
+[5.568s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:354:132:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K;[m[K’ before ‘[01m[K}[m[K’ token
+[5.568s]   354 |         (for now can leave doable_subtask_ids unchanged - other option is to fully move from doable_subtask_ids to doable_task_ids)
+[5.568s]       |                                                                                                                                    [01;31m[K^[m[K
+[5.568s]       |                                                                                                                                    [32m[K;[m[K
+[5.568s] ......
+[5.568s]   359 | [32m[K}[m[K
+[5.568s]       | [32m[K~[m[K                                                                                                                                   
+[5.569s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:359:1:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[K}[m[K’ token
+[5.569s]   359 | [01;31m[K}[m[K
+[5.569s]       | [01;31m[K^[m[K
+[5.569s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:354:132:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K)[m[K’ before ‘[01m[K}[m[K’ token
+[5.569s]   354 |         (for now can leave doable_subtask_ids unchanged - other option is to fully move from doable_subtask_ids to doable_task_ids)
+[5.569s]       |                                                                                                                                    [01;31m[K^[m[K
+[5.569s]       |                                                                                                                                    [32m[K)[m[K
+[5.569s] ......
+[5.569s]   359 | [32m[K}[m[K
+[5.569s]       | [32m[K~[m[K                                                                                                                                   
+[5.569s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:352:9:[m[K [01;36m[Knote: [m[Kto match this ‘[01m[K([m[K’
+[5.569s]   352 |     for [01;36m[Keach[m[K subtask that another neighboring robot has failed
+[5.570s]       |         [01;36m[K^~~~[m[K
+[5.570s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:359:1:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[K}[m[K’ token
+[5.570s]   359 | [01;31m[K}[m[K
+[5.570s]       | [01;31m[K^[m[K
+[6.808s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[6.808s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.808s] gmake: *** [Makefile:146: all] Error 2
+[6.810s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': AMENT_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron LD_LIBRARY_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:${LD_LIBRARY_PATH} PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:${PATH} /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

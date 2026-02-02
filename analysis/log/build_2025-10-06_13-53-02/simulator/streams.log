@@ -1,0 +1,39 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.062s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.062s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.062s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.062s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.063s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.064s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.065s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.067s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.068s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.068s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[2.390s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[2.391s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:483:21:[m[K [01;31m[Kerror: [m[Kredeclaration of ‘[01m[Kstd::string filename[m[K’
+[2.391s]   483 |         std::string [01;31m[Kfilename[m[K = "distance_data.csv";
+[2.391s]       |                     [01;31m[K^~~~~~~~[m[K
+[2.391s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:477:21:[m[K [01;36m[Knote: [m[K‘[01m[Kstd::string filename[m[K’ previously declared here
+[2.391s]   477 |         std::string [01;36m[Kfilename[m[K = "reward_data.csv";
+[2.391s]       |                     [01;36m[K^~~~~~~~[m[K
+[2.391s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:484:23:[m[K [01;31m[Kerror: [m[Kredeclaration of ‘[01m[Kstd::ofstream file[m[K’
+[2.391s]   484 |         std::ofstream [01;31m[Kfile[m[K(filename);  // overwrites existing file
+[2.391s]       |                       [01;31m[K^~~~[m[K
+[2.391s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:478:23:[m[K [01;36m[Knote: [m[K‘[01m[Kstd::ofstream file[m[K’ previously declared here
+[2.392s]   478 |         std::ofstream [01;36m[Kfile[m[K(filename);  // overwrites existing file
+[2.392s]       |                       [01;36m[K^~~~[m[K
+[3.266s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kvoid World::updateCumulativeDistance()[m[K’:
+[3.266s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:752:42:[m[K [01;31m[Kerror: [m[Krequest for member ‘[01m[KgetCumulativeDistance[m[K’ in ‘[01m[Krobot[m[K’, which is of pointer type ‘[01m[KRobot*[m[K’ (maybe you meant to use ‘[01m[K->[m[K’ ?)
+[3.266s]   752 |         new_cumulative_distance += robot.[01;31m[KgetCumulativeDistance[m[K();
+[3.266s]       |                                          [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[3.275s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:756:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kcumulative_distance[m[K’ was not declared in this scope; did you mean ‘[01m[Knew_cumulative_distance[m[K’?
+[3.275s]   756 |     [01;31m[Kcumulative_distance[m[K = new_cumulative_distance;
+[3.275s]       |     [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+[3.275s]       |     [32m[Knew_cumulative_distance[m[K
+[4.147s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+[4.147s] gmake[2]: *** Waiting for unfinished jobs....
+[4.661s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+[7.117s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[7.117s] gmake: *** [Makefile:146: all] Error 2
+[7.119s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

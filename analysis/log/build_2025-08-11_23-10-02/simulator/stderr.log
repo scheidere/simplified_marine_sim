@@ -1,0 +1,31 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus FollowShortestPath::onStart()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:651:32:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass Robot[m[K’ has no member named ‘[01m[KgetGoalPose[m[K’; did you mean ‘[01m[KgetPose[m[K’?
+  651 |             goal_pose = _robot.[01;31m[KgetGoalPose[m[K();
+      |                                [01;31m[K^~~~~~~~~~~[m[K
+      |                                [32m[KgetPose[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kint main(int, char**)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:358:80:[m[K [01;31m[Kerror: [m[K‘[01m[Kconst struct AgentInfo[m[K’ has no member named ‘[01m[Kgoal_pose[m[K’
+  358 |                     run_robot, agent.id, agent.type, agent.initial_pose, agent.[01;31m[Kgoal_pose[m[K, agent.color,
+      |                                                                                [01;31m[K^~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In constructor ‘[01m[KRobot::Robot(Planner*, ShortestPath*, CoveragePath*, World*, JSONParser*, const Pose2D&, const Pose2D&, int, std::string, cv::Scalar)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:25:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kgoal[m[K’ was not declared in this scope
+   25 |     [01;31m[Kgoal[m[K = goal_pose; // Like return to home or drop off item loc, specific to each robot
+      |     [01;31m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kstd::unordered_map<int, Pose2D> initLocations()[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:206:57:[m[K [01;31m[Kerror: [m[K‘[01m[Kworld[m[K’ was not declared in this scope; did you mean ‘[01m[KWorld[m[K’?
+  206 |     std::unordered_map<int,AgentInfo> all_agents_info = [01;31m[Kworld[m[K->getAllAgentsInfo();
+      |                                                         [01;31m[K^~~~~[m[K
+      |                                                         [32m[KWorld[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:214:21:[m[K [01;31m[Kerror: [m[K‘[01m[Kid[m[K’ was not declared in this scope; did you mean ‘[01m[Kid_k[m[K’?
+  214 |         if (id_k == [01;31m[Kid[m[K) {
+      |                     [01;31m[K^~[m[K
+      |                     [32m[Kid_k[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:216:31:[m[K [01;31m[Kerror: [m[K‘[01m[Kpose[m[K’ was not declared in this scope
+  216 |             locations[id_k] = [01;31m[Kpose[m[K;
+      |                               [01;31m[K^~~~[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

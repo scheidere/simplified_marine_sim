@@ -24,11 +24,18 @@ void saveReward(double time, double reward, const std::string& filename = "rewar
     file.close();
 }
 
-void saveDistance(double time, double distance, const std::string& filename = "distance_data.csv") {
+void saveDiscountedReward(double time, double reward, const std::string& filename = "discounted_reward_data.csv") {
+    std::ofstream file(filename, std::ios::app);  // Allow appending
+    file << time << "," << reward << "\n";
+    file.close();
+}
+
+// moved to robot.cpp
+/*void saveDistance(double time, double distance, const std::string& filename = "distance_data.csv") {
     std::ofstream file(filename, std::ios::app);  // Allow appending
     file << time << "," << distance << "\n";
     file.close();
-}
+}*/
 
 void taskSuccessProcessing(World& _world, Robot& _robot, int current_task_id, int local_current_task_id) {
 
@@ -55,20 +62,24 @@ void taskSuccessProcessing(World& _world, Robot& _robot, int current_task_id, in
     if (_robot.inHelperMode() || _world.isLastSubtask(current_task_id, local_current_task_id)) {
 
         TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
-        double reward = current_task.reward;
+        double raw_reward = current_task.reward;
+        double current_time = _robot.getCurrentTime();
+        double discount_factor = 0.999;  // Match your CBGA discount
+        double discounted_reward = raw_reward * pow(discount_factor, current_time);
 
-        std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
+        std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives raw reward: " + std::to_string(raw_reward) + 
+                         ", discounted reward: " + std::to_string(discounted_reward) + " at time " + std::to_string(current_time);
         _robot.log_info(rew);
 
         // Add new reward to cumulative reward for whole team
-        _world.updateCumulativeReward(reward);
-        //cumulative_reward += reward; potentially unsafe update
-
+        _world.updateCumulativeReward(raw_reward);  // Keep raw
+        _world.updateCumulativeDiscountedReward(discounted_reward);  // Add this
+        
         double& cumulative_reward = _world.getCumulativeReward();
-
-        // Save reward at current time
-        double current_time = _robot.getCurrentTime();
+        double& cumulative_discounted = _world.getCumulativeDiscountedReward();
+        
         saveReward(current_time, cumulative_reward);
+        saveDiscountedReward(current_time, cumulative_discounted);  // New file
 
         _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
 
@@ -271,8 +282,11 @@ NodeStatus Communicate::onRunning()
             utils::logUnorderedMap(msg.timestamps,_robot);
             _robot.log_info("Task progress: ");
             utils::logUnorderedMap(msg.task_progress, _robot);
-            _robot.log_info("Subtask_failures: ");
+            _robot.log_info("Subtask failures: ");
             utils::logUnorderedMap(msg.subtask_failures, _robot);
+            _robot.log_info("Discovered obstacles: ");
+            // utils::logMapOfVectors(msg.discovered_obstacles, _robot);
+            utils::logMapOf2DVectorOfPoints(msg.discovered_obstacles, _robot);
         }
             
 
@@ -285,6 +299,14 @@ NodeStatus Communicate::onRunning()
         _robot.updateTaskProgress(); // CBGA and CBBA
         _robot.log_info("task progress after update in comms node");
         utils::logUnorderedMap(_robot.getTaskProgress(), _robot);
+
+        _robot.log_info("discovered_obstacles b4 update in comms node");
+        // utils::logMapOfVectors(_robot.getDiscoveredObstacles(), _robot);
+        utils::logMapOf2DVectorOfPoints(_robot.getDiscoveredObstacles(), _robot);
+        _robot.updateDiscoveredObstaclesPerNeighbors();
+        _robot.log_info("discovered_obstacles after update in comms node");
+        // utils::logMapOfVectors(_robot.getDiscoveredObstacles(), _robot);
+        utils::logMapOf2DVectorOfPoints(_robot.getDiscoveredObstacles(), _robot);
 
         if (do_cbga) {
             // Merge subtask failures tracker (taking in info about how other robots have failed and need help)
@@ -718,19 +740,19 @@ NodeStatus FollowShortestPath::onRunning()
         
         _robot.move(waypoint);
 
-        // do we still want this below?
-        if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
+        // do we still want this below? no, it is now is robot.move
+        // if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
 
-            //_world.log_info("in robot 1 logging area - shortest path");
+        //     //_world.log_info("in robot 1 logging area - shortest path");
 
-            // Update cumulative team distance for plotting
-            _world.updateCumulativeDistance();
-            double cumulative_team_distance = _world.getCumulativeDistance();
+        //     // Update cumulative team distance for plotting
+        //     _world.updateCumulativeDistance();
+        //     double cumulative_team_distance = _world.getCumulativeDistance();
 
-            // Save distance at current time
-            double current_time = _robot.getCurrentTime();
-            saveDistance(current_time, cumulative_team_distance);
-        }
+        //     // Save distance at current time
+        //     double current_time = _robot.getCurrentTime();
+        //     saveDistance(current_time, cumulative_team_distance);
+        // }
         
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;
@@ -1048,18 +1070,19 @@ NodeStatus FollowCoveragePath::onRunning()
         _robot.log_info(g);
 
 
+        // THIS IS REDUNDANT NOW, save distance moved to robot.move
         // Only log team info once (so only one robot should do it even though it pertains to whole team)
-        if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
-            //_world.log_info("in robot 1 logging area - coverage path");
+        // if (_robot.getID() == 2) { // 1 CHANGED TO 2 for now because CBBA has bug with not assigning anything to robot 1....
+        //     //_world.log_info("in robot 1 logging area - coverage path");
 
-            // Save cumulative team distance for plotting
-            _world.updateCumulativeDistance();
-            double cumulative_team_distance = _world.getCumulativeDistance();
+        //     // Save cumulative team distance for plotting
+        //     _world.updateCumulativeDistance();
+        //     double cumulative_team_distance = _world.getCumulativeDistance();
 
-            // Save distance at current time
-            double current_time = _robot.getCurrentTime();
-            saveDistance(current_time, cumulative_team_distance);
-        }
+        //     // Save distance at current time
+        //     double current_time = _robot.getCurrentTime();
+        //     saveDistance(current_time, cumulative_team_distance);
+        // }
 
         _current_waypoint_index ++;
         return NodeStatus::RUNNING;
@@ -1644,6 +1667,10 @@ NodeStatus Subtask_1::onRunning()
 
             taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
 
+            // for obstacle detection testing ONLY
+            _robot.log_info("testing log of discovered_obstacles");
+            utils::logMapOfVectors(_robot.getDiscoveredObstacles(), _robot);
+
             std::string herp = "processing done, subtask 1 returning success";
             _robot.log_info(herp);
             std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for subtask 1";
@@ -1688,7 +1715,7 @@ NodeStatus Subtask_1::onRunning()
                 std::cout << "No path found" << std::endl;
                 return NodeStatus::FAILURE;
             }
-            
+
             _current_waypoint_index = 0;
 
             return NodeStatus::RUNNING;

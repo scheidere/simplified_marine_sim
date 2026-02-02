@@ -1,0 +1,15 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In member function ‘[01m[Kbool World::inComms(int, int)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:735:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kneeds[m[K’ was not declared in this scope
+  735 |     [01;31m[Kneeds[m[K testing of signal_strength stuff now
+      |     [01;31m[K^~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:750:61:[m[K [01;31m[Kerror: [m[K‘[01m[Kdist[m[K’ was not declared in this scope
+  750 |         double signal_strength = pow(comms_range / std::max([01;31m[Kdist[m[K, 1.0), signal_path_loss_factor);
+      |                                                             [01;31m[K^~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:763:57:[m[K [01;31m[Kerror: [m[K‘[01m[Krandom_num[m[K’ was not declared in this scope; did you mean ‘[01m[Krandom_r[m[K’?
+  763 |         std::string s2 = "random_num:" + std::to_string([01;31m[Krandom_num[m[K);
+      |                                                         [01;31m[K^~~~~~~~~~[m[K
+      |                                                         [32m[Krandom_r[m[K
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

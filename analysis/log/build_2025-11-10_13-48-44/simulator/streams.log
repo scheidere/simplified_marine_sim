@@ -1,0 +1,56 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': AMENT_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron LD_LIBRARY_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:${LD_LIBRARY_PATH} PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:${PATH} /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.036s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.061s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.061s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.061s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.062s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.062s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.064s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.064s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.066s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.067s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.067s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[2.838s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:[m[K In member function ‘[01m[Kvirtual BT::NodeStatus HandleFailures::onRunning()[m[K’:
+[2.838s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1370:117:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[Kunordered_map<[01;32m[Kint[m[K,[...]>[m[K’ to ‘[01m[Kunordered_map<[01;32m[Kstd::pair<int, bool>[m[K,[...]>[m[K’
+[2.839s]  1370 |         std::pair<std::pair<int,bool>,std::unordered_map<int,int>> scope_and_threshold_info = _robot.HandleFailures([01;31m[Kcurrent_subtask_failures[m[K);
+[2.839s]       |                                                                                                                     [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.839s]       |                                                                                                                     [01;31m[K|[m[K
+[2.839s]       |                                                                                                                     [01;31m[Kunordered_map<int,[...]>[m[K
+[2.839s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[2.839s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/behavior_tree.hpp:7[m[K,
+[2.839s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/behavior_tree.cpp:1[m[K:
+[2.839s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:196:109:[m[K [01;36m[Knote: [m[K  initializing argument 1 of ‘[01m[Kstd::pair<bool, std::unordered_map<int, int> > Robot::HandleFailures(std::unordered_map<std::pair<int, bool>, bool>)[m[K’
+[2.839s]   196 |     std::pair<bool,std::unordered_map<int,int>> HandleFailures([01;36m[Kstd::unordered_map<std::pair<int,bool>,bool> new_self_subtask_failures[m[K);
+[2.839s]       |                                                                [01;36m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[5.002s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:202: CMakeFiles/sim.dir/src/behavior_tree.cpp.o] Error 1
+[5.002s] gmake[2]: *** Waiting for unfinished jobs....
+[5.260s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:485:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int, int>)[m[K’
+[5.260s]   485 | void [01;31m[KRobot[m[K::updateSubtaskFailuresPerSelf(std::unordered_map<int,int> new_self_subtask_failures) {
+[5.260s]       |      [01;31m[K^~~~~[m[K
+[5.260s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[5.260s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[5.260s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:99:10:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kvoid Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int, bool>)[m[K’
+[5.261s]    99 |     void [01;36m[KupdateSubtaskFailuresPerSelf[m[K(std::unordered_map<int,bool> new_self_subtask_failures);
+[5.261s]       |          [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[5.261s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[5.261s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[5.261s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+[5.261s]    19 | class [01;36m[KRobot[m[K {
+[5.261s]       |       [01;36m[K^~~~~[m[K
+[5.298s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1681:60:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::pair<std::pair<int, bool>, std::unordered_map<int, int> > Robot::HandleFailures()[m[K’
+[5.298s]  1681 | std::pair<std::pair<int,bool>,std::unordered_map<int,int>> [01;31m[KRobot[m[K::HandleFailures() {
+[5.298s]       |                                                            [01;31m[K^~~~~[m[K
+[5.298s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[5.298s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[5.299s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:196:49:[m[K [01;36m[Knote: [m[Kcandidate is: ‘[01m[Kstd::pair<bool, std::unordered_map<int, int> > Robot::HandleFailures(std::unordered_map<std::pair<int, bool>, bool>)[m[K’
+[5.299s]   196 |     std::pair<bool,std::unordered_map<int,int>> [01;36m[KHandleFailures[m[K(std::unordered_map<std::pair<int,bool>,bool> new_self_subtask_failures);
+[5.299s]       |                                                 [01;36m[K^~~~~~~~~~~~~~[m[K
+[5.299s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+[5.299s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:5[m[K:
+[5.299s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:19:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass Robot[m[K’ defined here
+[5.299s]    19 | class [01;36m[KRobot[m[K {
+[5.299s]       |       [01;36m[K^~~~~[m[K
+[6.662s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[6.663s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.663s] gmake: *** [Makefile:146: all] Error 2
+[6.665s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': AMENT_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/opt/ros/iron LD_LIBRARY_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/lib:${LD_LIBRARY_PATH} PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp/bin:${PATH} /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

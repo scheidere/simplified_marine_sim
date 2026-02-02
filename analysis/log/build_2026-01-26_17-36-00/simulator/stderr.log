@@ -1,0 +1,58 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:[m[K In constructor ‘[01m[KPlanner::Planner(int, World*, Robot*)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:9:159:[m[K [01;31m[Kerror: [m[K‘[01m[Kr[m[K’ was not declared in this scope
+    9 | Planner::Planner(int step_size, World* w, Robot* robot) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>()), world(w), robot([01;31m[Kr[m[K)
+      |                                                                                                                                                               [01;31m[K^[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:[m[K In function ‘[01m[Kvoid run_robot(int, std::string, Pose2D, cv::Scalar, int, World&)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:485:46:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KPlanner::Planner(int&, World*)[m[K’
+  485 |             Planner planner(step_size, &world[01;31m[K)[m[K;
+      |                                              [01;31m[K^[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:31:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(int, World*, Robot*)[m[K’
+   31 |     [01;36m[KPlanner[m[K(int step_size, World* w, Robot* robot);
+      |     [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:31:5:[m[K [01;36m[Knote: [m[K  candidate expects 3 arguments, 2 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(const Planner&)[m[K’
+   23 | class [01;36m[KPlanner[m[K {
+      |       [01;36m[K^~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 2 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KPlanner::Planner(Planner&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:23:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 2 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:486:57:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KShortestPath::ShortestPath(int&, World*)[m[K’
+  486 |             ShortestPath shortest_path(step_size, &world[01;31m[K)[m[K;
+      |                                                         [01;31m[K^[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:61:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KShortestPath::ShortestPath(int, World*, Robot*)[m[K’
+   61 |     [01;36m[KShortestPath[m[K(int step_size, World* w, Robot* r);
+      |     [01;36m[K^~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:61:5:[m[K [01;36m[Knote: [m[K  candidate expects 3 arguments, 2 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:59:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KShortestPath::ShortestPath(const ShortestPath&)[m[K’
+   59 | class [01;36m[KShortestPath[m[K : public Planner {
+      |       [01;36m[K^~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:59:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 2 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:59:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KShortestPath::ShortestPath(ShortestPath&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:59:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 2 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:487:69:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[KCoveragePath::CoveragePath(int&, const int&, World*)[m[K’
+  487 |             CoveragePath coverage_path(step_size, obs_radius, &world[01;31m[K)[m[K;
+      |                                                                     [01;31m[K^[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/robot.hpp:7[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:8[m[K,
+                 from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/sim.cpp:8[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:78:5:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KCoveragePath::CoveragePath(int, int, World*, Robot*)[m[K’
+   78 |     [01;36m[KCoveragePath[m[K(int step_size, int obs_radius, World* w, Robot* r);
+      |     [01;36m[K^~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:78:5:[m[K [01;36m[Knote: [m[K  candidate expects 4 arguments, 3 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:73:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KCoveragePath::CoveragePath(const CoveragePath&)[m[K’
+   73 | class [01;36m[KCoveragePath[m[K : public ShortestPath {
+      |       [01;36m[K^~~~~~~~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:73:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 3 provided
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:73:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[KCoveragePath::CoveragePath(CoveragePath&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:73:7:[m[K [01;36m[Knote: [m[K  candidate expects 1 argument, 3 provided
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:174: CMakeFiles/sim.dir/src/planners.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:76: CMakeFiles/sim.dir/src/sim.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,14 @@
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::pair<int, Pose2D> Robot::getMostUpToDateNeighborInfo(int)[m[K’:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:539:36:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator=[m[K’ (operand types are ‘[01m[KPose2D[m[K’ and ‘[01m[Kstd::unordered_map<int, Pose2D>[m[K’)
+  539 |             best_info.second = msg.[01;31m[Klocations[m[K; // locations_m
+      |                                    [01;31m[K^~~~~~~~~[m[K
+In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:3[m[K:
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kconstexpr Pose2D& Pose2D::operator=(const Pose2D&)[m[K’
+   17 | struct [01;36m[KPose2D[m[K
+      |        [01;36m[K^~~~~~[m[K
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<int, Pose2D>[m[K’ to ‘[01m[Kconst Pose2D&[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kconstexpr Pose2D& Pose2D::operator=(Pose2D&&)[m[K’
+[01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:17:8:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::unordered_map<int, Pose2D>[m[K’ to ‘[01m[KPose2D&&[m[K’
+gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

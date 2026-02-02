@@ -1,0 +1,38 @@
+[0.007s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.049s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.050s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.050s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.050s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.050s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.052s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.054s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.055s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.055s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.055s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[3.185s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K In constructor ‘[01m[KWorld::World(int, int, Distance*, SensorModel*, JSONParser*, double)[m[K’:
+[3.185s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:53:35:[m[K [01;31m[Kerror: [m[K‘[01m[KinitFaultInjectionTracker[m[K’ was not declared in this scope; did you mean ‘[01m[KupdateFaultInjectionTracker[m[K’?
+[3.185s]    53 |         fault_injection_tracker = [01;31m[KinitFaultInjectionTracker[m[K(); // Init'd randomly by input fault percentage
+[3.186s]       |                                   [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[3.186s]       |                                   [32m[KupdateFaultInjectionTracker[m[K
+[3.463s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:[m[K At global scope:
+[3.464s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1113:31:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kstd::unordered_map<int, bool> World::initFaultInjectionTracker()[m[K’
+[3.464s]  1113 | std::unordered_map<int, bool> [01;31m[KWorld[m[K::initFaultInjectionTracker() {
+[3.464s]       |                               [01;31m[K^~~~~[m[K
+[3.464s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1113:31:[m[K [01;36m[Knote: [m[Kno functions named ‘[01m[Kstd::unordered_map<int, bool> World::initFaultInjectionTracker()[m[K’
+[3.464s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:4[m[K:
+[3.464s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:20:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass World[m[K’ defined here
+[3.464s]    20 | class [01;36m[KWorld[m[K {
+[3.464s]       |       [01;36m[K^~~~~[m[K
+[3.481s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1291:6:[m[K [01;31m[Kerror: [m[Kno declaration matches ‘[01m[Kvoid World::injectRandomFaults()[m[K’
+[3.481s]  1291 | void [01;31m[KWorld[m[K::injectRandomFaults() {
+[3.481s]       |      [01;31m[K^~~~~[m[K
+[3.481s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:1291:6:[m[K [01;36m[Knote: [m[Kno functions named ‘[01m[Kvoid World::injectRandomFaults()[m[K’
+[3.481s] In file included from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/world.cpp:4[m[K:
+[3.482s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/world.hpp:20:7:[m[K [01;36m[Knote: [m[K‘[01m[Kclass World[m[K’ defined here
+[3.482s]    20 | class [01;36m[KWorld[m[K {
+[3.482s]       |       [01;36m[K^~~~~[m[K
+[5.265s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:160: CMakeFiles/sim.dir/src/world.cpp.o] Error 1
+[5.265s] gmake[2]: *** Waiting for unfinished jobs....
+[8.193s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[8.193s] gmake: *** [Makefile:146: all] Error 2
+[8.194s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

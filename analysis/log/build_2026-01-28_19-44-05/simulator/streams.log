@@ -1,0 +1,16 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.041s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.064s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.065s] [ 15%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[3.351s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In function ‘[01m[Kbool isFoundObstacle(int, int)[m[K’:
+[3.351s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:715:32:[m[K [01;31m[Kerror: [m[K‘[01m[Kdiscovered_obstacles[m[K’ was not declared in this scope
+[3.351s]   715 |     for (const auto& polygon : [01;31m[Kdiscovered_obstacles[m[K[type]) {
+[3.351s]       |                                [01;31m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[3.353s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:715:53:[m[K [01;31m[Kerror: [m[K‘[01m[Ktype[m[K’ was not declared in this scope; did you mean ‘[01m[Kwctype[m[K’?
+[3.353s]   715 |     for (const auto& polygon : discovered_obstacles[[01;31m[Ktype[m[K]) {
+[3.354s]       |                                                     [01;31m[K^~~~[m[K
+[3.354s]       |                                                     [32m[Kwctype[m[K
+[5.125s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[5.125s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[5.125s] gmake: *** [Makefile:146: all] Error 2
+[5.127s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

@@ -1,0 +1,42 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.051s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBBA.cpp.o[0m
+[0.051s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/message.cpp.o[0m
+[0.051s] [ 23%] [32mBuilding CXX object CMakeFiles/sim.dir/src/sim.cpp.o[0m
+[0.051s] [ 30%] [32mBuilding CXX object CMakeFiles/sim.dir/src/world.cpp.o[0m
+[0.053s] [ 38%] [32mBuilding CXX object CMakeFiles/sim.dir/src/CBGA.cpp.o[0m
+[0.053s] [ 46%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[0.055s] [ 53%] [32mBuilding CXX object CMakeFiles/sim.dir/src/robot.cpp.o[0m
+[0.055s] [ 61%] [32mBuilding CXX object CMakeFiles/sim.dir/src/behavior_tree.cpp.o[0m
+[0.056s] [ 69%] [32mBuilding CXX object CMakeFiles/sim.dir/src/parser.cpp.o[0m
+[0.056s] [ 76%] [32mBuilding CXX object CMakeFiles/sim.dir/src/greedy.cpp.o[0m
+[5.597s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:[m[K In member function ‘[01m[Kstd::pair<std::pair<int, bool>, std::unordered_map<int, int> > Robot::HandleFailures(std::unordered_map<int, bool>)[m[K’:
+[5.597s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:1752:43:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator=[m[K’ (operand types are ‘[01m[Kstd::unordered_map<int, int>[m[K’ and ‘[01m[Kstd::map<int, int>[m[K’)
+[5.597s]  1752 |         scope_and_threshold_info.second = [01;31m[Ksubtask_failure_thresholds[m[K;
+[5.597s]       |                                           [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[5.597s] In file included from [01m[K/usr/include/c++/11/unordered_map:47[m[K,
+[5.597s]                  from [01m[K/usr/include/c++/11/functional:61[m[K,
+[5.597s]                  from [01m[K/usr/include/c++/11/pstl/glue_algorithm_defs.h:13[m[K,
+[5.597s]                  from [01m[K/usr/include/c++/11/algorithm:74[m[K,
+[5.597s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/robot.cpp:3[m[K:
+[5.597s] [01m[K/usr/include/c++/11/bits/unordered_map.h:272:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::operator=(const std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>&) [with _Key = int; _Tp = int; _Hash = std::hash<int>; _Pred = std::equal_to<int>; _Alloc = std::allocator<std::pair<const int, int> >][m[K’
+[5.597s]   272 |       [01;36m[Koperator[m[K=(const unordered_map&) = default;
+[5.598s]       |       [01;36m[K^~~~~~~~[m[K
+[5.598s] [01m[K/usr/include/c++/11/bits/unordered_map.h:272:17:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::map<int, int>[m[K’ to ‘[01m[Kconst std::unordered_map<int, int>&[m[K’
+[5.598s]   272 |       operator=([01;36m[Kconst unordered_map&[m[K) = default;
+[5.598s]       |                 [01;36m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[5.598s] [01m[K/usr/include/c++/11/bits/unordered_map.h:276:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::operator=(std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>&&) [with _Key = int; _Tp = int; _Hash = std::hash<int>; _Pred = std::equal_to<int>; _Alloc = std::allocator<std::pair<const int, int> >][m[K’
+[5.598s]   276 |       [01;36m[Koperator[m[K=(unordered_map&&) = default;
+[5.598s]       |       [01;36m[K^~~~~~~~[m[K
+[5.598s] [01m[K/usr/include/c++/11/bits/unordered_map.h:276:17:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::map<int, int>[m[K’ to ‘[01m[Kstd::unordered_map<int, int>&&[m[K’
+[5.598s]   276 |       operator=([01;36m[Kunordered_map&&[m[K) = default;
+[5.598s]       |                 [01;36m[K^~~~~~~~~~~~~~~[m[K
+[5.598s] [01m[K/usr/include/c++/11/bits/unordered_map.h:290:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::operator=(std::initializer_list<typename std::_Hashtable<_Key, std::pair<const _Key, _Tp>, _Alloc, std::__detail::_Select1st, _Pred, _Hash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<std::__not_<std::__and_<std::__is_fast_hash<_Hash>, std::__is_nothrow_invocable<const _Hash&, const _Key&> > >::value, false, true> >::value_type>) [with _Key = int; _Tp = int; _Hash = std::hash<int>; _Pred = std::equal_to<int>; _Alloc = std::allocator<std::pair<const int, int> >; typename std::_Hashtable<_Key, std::pair<const _Key, _Tp>, _Alloc, std::__detail::_Select1st, _Pred, _Hash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<std::__not_<std::__and_<std::__is_fast_hash<_Hash>, std::__is_nothrow_invocable<const _Hash&, const _Key&> > >::value, false, true> >::value_type = std::pair<const int, int>][m[K’
+[5.598s]   290 |       [01;36m[Koperator[m[K=(initializer_list<value_type> __l)
+[5.598s]       |       [01;36m[K^~~~~~~~[m[K
+[5.599s] [01m[K/usr/include/c++/11/bits/unordered_map.h:290:46:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::map<int, int>[m[K’ to ‘[01m[Kstd::initializer_list<std::pair<const int, int> >[m[K’
+[5.599s]   290 |       operator=([01;36m[Kinitializer_list<value_type> __l[m[K)
+[5.599s]       |                 [01;36m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[6.963s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:188: CMakeFiles/sim.dir/src/robot.cpp.o] Error 1
+[6.963s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[6.963s] gmake: *** [Makefile:146: all] Error 2
+[6.965s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12

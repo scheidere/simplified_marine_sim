@@ -1,0 +1,53 @@
+[0.006s] Invoking command in '/home/emily/sa-mrbt_ws/build/simulator': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
+[0.037s] [35m[1mConsolidate compiler generated dependencies of target sim[0m
+[0.060s] [  7%] [32mBuilding CXX object CMakeFiles/sim.dir/src/planners.cpp.o[0m
+[1.580s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:[m[K In member function ‘[01m[Kstd::vector<Pose2D> ShortestPath::plan(Pose2D, Pose2D, int, int)[m[K’:
+[1.580s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:166:67:[m[K [01;31m[Kerror: [m[K‘[01m[Kstart_idx[m[K’ was not declared in this scope
+[1.580s]   166 |     std::vector<double> distance_tracker = initializeDistances(V, [01;31m[Kstart_idx[m[K, Y);
+[1.580s]       |                                                                   [01;31m[K^~~~~~~~~[m[K
+[1.582s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:170:24:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Kstd::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int> >, std::greater<std::pair<double, int> > >::push(<brace-enclosed initializer list>)[m[K’
+[1.582s]   170 |     [01;31m[Kpriority_queue.push({0, start_idx})[m[K;
+[1.582s]       |     [01;31m[K~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~[m[K
+[1.582s] In file included from [01m[K/usr/include/c++/11/queue:64[m[K,
+[1.582s]                  from [01m[K/usr/include/opencv4/opencv2/stitching/detail/util_inl.hpp:46[m[K,
+[1.582s]                  from [01m[K/usr/include/opencv4/opencv2/stitching/detail/util.hpp:119[m[K,
+[1.582s]                  from [01m[K/usr/include/opencv4/opencv2/stitching/detail/motion_estimators.hpp:48[m[K,
+[1.582s]                  from [01m[K/usr/include/opencv4/opencv2/stitching.hpp:50[m[K,
+[1.582s]                  from [01m[K/usr/include/opencv4/opencv2/opencv.hpp:86[m[K,
+[1.582s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/include/planners.hpp:4[m[K,
+[1.582s]                  from [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:3[m[K:
+[1.582s] [01m[K/usr/include/c++/11/bits/stl_queue.h:640:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid std::priority_queue<_Tp, _Sequence, _Compare>::push(const value_type&) [with _Tp = std::pair<double, int>; _Sequence = std::vector<std::pair<double, int> >; _Compare = std::greater<std::pair<double, int> >; std::priority_queue<_Tp, _Sequence, _Compare>::value_type = std::pair<double, int>][m[K’
+[1.582s]   640 |       [01;36m[Kpush[m[K(const value_type& __x)
+[1.582s]       |       [01;36m[K^~~~[m[K
+[1.583s] [01m[K/usr/include/c++/11/bits/stl_queue.h:640:30:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[K<brace-enclosed initializer list>[m[K’ to ‘[01m[Kconst value_type&[m[K’ {aka ‘[01m[Kconst std::pair<double, int>&[m[K’}
+[1.583s]   640 |       push([01;36m[Kconst value_type& __x[m[K)
+[1.583s]       |            [01;36m[K~~~~~~~~~~~~~~~~~~^~~[m[K
+[1.583s] [01m[K/usr/include/c++/11/bits/stl_queue.h:648:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kvoid std::priority_queue<_Tp, _Sequence, _Compare>::push(std::priority_queue<_Tp, _Sequence, _Compare>::value_type&&) [with _Tp = std::pair<double, int>; _Sequence = std::vector<std::pair<double, int> >; _Compare = std::greater<std::pair<double, int> >; std::priority_queue<_Tp, _Sequence, _Compare>::value_type = std::pair<double, int>][m[K’
+[1.583s]   648 |       [01;36m[Kpush[m[K(value_type&& __x)
+[1.583s]       |       [01;36m[K^~~~[m[K
+[1.583s] [01m[K/usr/include/c++/11/bits/stl_queue.h:648:25:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[K<brace-enclosed initializer list>[m[K’ to ‘[01m[Kstd::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int> >, std::greater<std::pair<double, int> > >::value_type&&[m[K’ {aka ‘[01m[Kstd::pair<double, int>&&[m[K’}
+[1.583s]   648 |       push([01;36m[Kvalue_type&& __x[m[K)
+[1.583s]       |            [01;36m[K~~~~~~~~~~~~~^~~[m[K
+[1.586s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:185:24:[m[K [01;31m[Kerror: [m[K‘[01m[Kgoal_idx[m[K’ was not declared in this scope
+[1.586s]   185 |         if (min_idx == [01;31m[Kgoal_idx[m[K) {
+[1.586s]       |                        [01;31m[K^~~~~~~~[m[K
+[1.593s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:216:19:[m[K [01;31m[Kerror: [m[K‘[01m[Kgoal_idx[m[K’ was not declared in this scope
+[1.593s]   216 |     for (int at = [01;31m[Kgoal_idx[m[K; at != -1; at = predecessor[at]) {
+[1.593s]       |                   [01;31m[K^~~~~~~~[m[K
+[1.593s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:225:9:[m[K [01;31m[Kerror: [m[Kinvalid use of member function ‘[01m[Kstd::vector<Pose2D> ShortestPath::plan(Pose2D, Pose2D, int, int)[m[K’ (did you forget the ‘[01m[K()[m[K’ ?)
+[1.593s]   225 |         [01;31m[Kplan[m[K.push_back(next_waypoint);  // Direct push_back
+[1.593s]       |         [01;31m[K^~~~[m[K
+[1.597s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:230:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kin_plan[m[K’ was not declared in this scope; did you mean ‘[01m[Kplan[m[K’?
+[1.597s]   230 |     [01;31m[Kin_plan[m[K = false;
+[1.597s]       |     [01;31m[K^~~~~~~[m[K
+[1.597s]       |     [32m[Kplan[m[K
+[1.600s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:231:39:[m[K [01;31m[Kerror: [m[K‘[01m[Kmy_call[m[K’ was not declared in this scope
+[1.600s]   231 |     std::cout << "=== PLAN CALL #" << [01;31m[Kmy_call[m[K << " END ===" << std::endl;
+[1.600s]       |                                       [01;31m[K^~~~~~~[m[K
+[1.602s] [01m[K/home/emily/sa-mrbt_ws/src/simplified_marine_sim/src/planners.cpp:239:12:[m[K [01;31m[Kerror: [m[Kcannot convert ‘[01m[KShortestPath::plan[m[K’ from type ‘[01m[Kstd::vector<Pose2D> (ShortestPath::)(Pose2D, Pose2D, int, int)[m[K’ to type ‘[01m[Kstd::vector<Pose2D>[m[K’
+[1.602s]   239 |     return [01;31m[Kplan[m[K;
+[1.602s]       |            [01;31m[K^~~~[m[K
+[2.344s] gmake[2]: *** [CMakeFiles/sim.dir/build.make:174: CMakeFiles/sim.dir/src/planners.cpp.o] Error 1
+[2.345s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/sim.dir/all] Error 2
+[2.345s] gmake: *** [Makefile:146: all] Error 2
+[2.347s] Invoked command in '/home/emily/sa-mrbt_ws/build/simulator' returned '2': CMAKE_PREFIX_PATH=/home/emily/sa-mrbt_ws/install/behaviortree_cpp:/home/emily/sa-mrbt_ws/install/simulator:/opt/ros/iron /usr/bin/cmake --build /home/emily/sa-mrbt_ws/build/simulator -- -j12 -l12
