@@ -63,23 +63,23 @@ void taskSuccessProcessing(World& _world, Robot& _robot, int current_task_id, in
 
         TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
         double raw_reward = current_task.reward;
-        double current_time = _robot.getCurrentTime();
-        double discount_factor = 0.999;  // Match your CBGA discount
-        double discounted_reward = raw_reward * pow(discount_factor, current_time);
+        // double current_time = _robot.getCurrentTime();
+        // double discount_factor = 0.999;  // Match your CBGA discount
+        // double discounted_reward = raw_reward * pow(discount_factor, current_time);
 
-        std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives raw reward: " + std::to_string(raw_reward) + 
-                         ", discounted reward: " + std::to_string(discounted_reward) + " at time " + std::to_string(current_time);
+        std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives raw reward: " + std::to_string(raw_reward); //+ 
+                         // ", discounted reward: " + std::to_string(discounted_reward) + " at time " + std::to_string(current_time);
         _robot.log_info(rew);
 
         // Add new reward to cumulative reward for whole team
         _world.updateCumulativeReward(raw_reward);  // Keep raw
-        _world.updateCumulativeDiscountedReward(discounted_reward);  // Add this
+        // _world.updateCumulativeDiscountedReward(discounted_reward);  // Add this
         
         double& cumulative_reward = _world.getCumulativeReward();
-        double& cumulative_discounted = _world.getCumulativeDiscountedReward();
+        // double& cumulative_discounted = _world.getCumulativeDiscountedReward();
         
         saveReward(current_time, cumulative_reward);
-        saveDiscountedReward(current_time, cumulative_discounted);  // New file
+        // saveDiscountedReward(current_time, cumulative_discounted);  // New file
 
         _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
 

@@ -1426,36 +1426,10 @@ void World::injectRandomFaults() {
     std::uniform_real_distribution<> dis(0.0, 1.0);
     
     // This method initializes each action with a given % chance of failure
-    /*for (auto& [subtask_id, fault_flag] : fault_injection_tracker) {
+    for (auto& [subtask_id, fault_flag] : fault_injection_tracker) {
         // Roll dice: if under percentage, inject fault (true), otherwise no fault (false)
         fault_flag = (dis(gen) < fault_percentage);
-    }*/
-
-    // This method initializes given % of actions to fail
-
-    // Approximate number of faults from given % to fail
-    int total_actions = fault_injection_tracker.size();
-    // int num_faults1 = static_cast<int>(std::round(total_actions * fault_percentage)); // less predictable
-    int num_faults = std::lround(total_actions * fault_percentage);
-
-    // std::string d = "Given num actions, num_faults1: " + std::to_string(num_faults1);
-    // log_info(d);
-    std::string c = "Given num actions, num_faults: " + std::to_string(num_faults);
-    log_info(c);
-
-    // Shuffle action IDs
-    std::vector<int> action_ids;
-    for (const auto& [id, _] : fault_injection_tracker) {
-        action_ids.push_back(id);
     }
-    std::shuffle(action_ids.begin(), action_ids.end(), gen);
-
-    // Given random order of actions, set num_faults of them to false
-    for (size_t i = 0; i < action_ids.size(); i++) {
-        fault_injection_tracker[action_ids[i]] = (i < num_faults);
-    }
-    
-    
 }
 
 double World::initFaultInjectionPercentage() {
