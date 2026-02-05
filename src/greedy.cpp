@@ -58,6 +58,9 @@ void Greedy::run() {
         if (best_task_id != -1) {
             assigned_task_order.push_back(best_task_id); // Assign
 
+            // Save the score for this task
+            robot.saveTaskScore(best_task_id, max_score);
+
             available_tasks.erase( // Make unavailable
                 std::remove(available_tasks.begin(), available_tasks.end(), best_task_id),
                 available_tasks.end()
@@ -120,50 +123,3 @@ double Greedy::getTaskScore(int task_id, int prev_x, int prev_y) {
     
     return score;
 }
-
-/*double Greedy::getTaskScore(int task_id, int prev_x, int prev_y) {
-    auto total_start = std::chrono::high_resolution_clock::now();
-        
-    auto world_start = std::chrono::high_resolution_clock::now();
-    int reward = world.getTaskReward(task_id);
-    std::pair<int, int> task_position = world.getTaskLocation(task_id);
-    auto world_end = std::chrono::high_resolution_clock::now();
-    
-    auto calc_start = std::chrono::high_resolution_clock::now();
-    double discount_factor = 0.999;
-    int current_x = task_position.first;
-    int current_y = task_position.second;
-    double distance_to_task = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
-    double score = reward * pow(discount_factor, distance_to_task);
-    auto calc_end = std::chrono::high_resolution_clock::now();
-    
-    double world_time = std::chrono::duration<double>(world_end - world_start).count();
-    double calc_time = std::chrono::duration<double>(calc_end - calc_start).count();
-    
-    robot.log_info("Task " + std::to_string(task_id) + " world: " + std::to_string(world_time) + 
-                   ", calc: " + std::to_string(calc_time));
-    
-    return score;
-}*/
-
-/*double Greedy::getTaskScore(int task_id, int prev_x, int prev_y) {
-    // This should be the SAME score/reward logic as CBBA for fair comparison (see CBBA::getPathScore())
-
-    std::lock_guard<std::mutex> lock(world.getWorldMutex());
-
-    double discount_factor = 0.999;
-    
-    // Reward for completing task
-    int reward = world.getTaskRewardUnsafe(task_id);
-    
-    // Calculate distance from current position to task
-    std::pair<int, int> task_position = world.getTaskLocationUnsafe(task_id);
-    int current_x = task_position.first;
-    int current_y = task_position.second;
-    double distance_to_task = Distance::getEuclideanDistance(prev_x,prev_y,current_x,current_y);
-    
-    // Apply SAME discount formula as CBBA
-    double score = reward * pow(discount_factor, distance_to_task);
-    
-    return score;
-}*/

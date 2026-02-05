@@ -310,7 +310,7 @@
 // <FollowShortestPath goal_loc = "{stl}" />
 
 // Main testing tree (with automatic do_cbga)
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="3">
@@ -331,6 +331,35 @@ static const char* xml_text = R"(
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
                     <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
                     <Subtask_1/>
+                </CounterSequence>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Main marine domain tree - in progress
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="3">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="{do_cbga_flag}" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="{do_cbga_flag}" />
+                    <Communicate do_cbga="{do_cbga_flag}"/>
+                    <ResolveConflicts do_cbga="{do_cbga_flag}" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="{do_cbga_flag}" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ImageArea/>
                 </CounterSequence>
             </RepeatSequence>
         </ParallelAll>
@@ -571,6 +600,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<Subtask_2>("Subtask_2", std::ref(robot), std::ref(world));
                 factory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoImageArea>("DoImageArea", std::ref(robot), std::ref(world));
+                factory.registerNodeType<ImageArea>("ImageArea", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {
@@ -659,16 +690,21 @@ int main(int argc, char** argv) {
         file << "time,reward\n";  // write header
         file.close();
 
-        std::string filename2 = "discounted_reward_data.csv";
+        std::string filename4 = "score_data.csv";
+        std::ofstream file4(filename4);
+        file4 << "time,score\n";
+        file4.close();
+
+        /*std::string filename2 = "discounted_reward_data.csv";
         std::ofstream file2(filename2);  // overwrites existing file
         file2 << "time,discounted_reward\n";  // write header
-        file2.close();
+        file2.close();*/
 
         // Init file to save reward/time
-        std::string filename3 = "distance_data.csv";
-        std::ofstream file3(filename3);  // overwrites existing file
-        file3 << "time,distance\n";  // write header
-        file3.close();
+        // std::string filename3 = "distance_data.csv";
+        // std::ofstream file3(filename3);  // overwrites existing file
+        // file3 << "time,distance\n";  // write header
+        // file3.close();
 
         // Testing parsing
         //std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");

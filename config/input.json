@@ -1,383 +1,5 @@
 {
-	"world_attributes": 
-		{
-			"notes": [ "marine, easy domain: in progress",
-						"Fault injection object must only include action (subtask) IDs...",
-						"fault_injection does not have to be manually defined, so only do if testing.",
-						"Will have to add initManualFaultInjectionTracker call to world constructor for the above.",
-						"Define fault_percentage instead by default. fault_percentage should be an int between 0 and 100",
-						"Lower decay_rate relates to comms and corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)",
-						"random_seed of 0 results in different seed every run"],
-			"size_x": 200,
-			"size_y": 200,
-			"step_size": 5,
-			"decay_rate": 1.5,
-			"fault_percentage": 0,
-			"random_seed": 0,
-			"obstacles": [
-                {
-                    "points": [
-                        {
-                            "x": 18,
-                            "y": 181
-                        },
-                        {
-                            "x": 8,
-                            "y": 182
-                        },
-                        {
-                            "x": 12,
-                            "y": 164
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 172,
-                            "y": 101
-                        },
-                        {
-                            "x": 169,
-                            "y": 114
-                        },
-                        {
-                            "x": 156,
-                            "y": 111
-                        },
-                        {
-                            "x": 159,
-                            "y": 98
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 100,
-                            "y": 158
-                        },
-                        {
-                            "x": 101,
-                            "y": 143
-                        },
-                        {
-                            "x": 113,
-                            "y": 153
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 141,
-                            "y": 13
-                        },
-                        {
-                            "x": 126,
-                            "y": 19
-                        },
-                        {
-                            "x": 122,
-                            "y": 9
-                        },
-                        {
-                            "x": 137,
-                            "y": 3
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 83,
-                            "y": 67
-                        },
-                        {
-                            "x": 72,
-                            "y": 79
-                        },
-                        {
-                            "x": 63,
-                            "y": 70
-                        },
-                        {
-                            "x": 74,
-                            "y": 58
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 24,
-                            "y": 134
-                        },
-                        {
-                            "x": 23,
-                            "y": 118
-                        },
-                        {
-                            "x": 34,
-                            "y": 117
-                        },
-                        {
-                            "x": 35,
-                            "y": 133
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 172,
-                            "y": 76
-                        },
-                        {
-                            "x": 155,
-                            "y": 79
-                        },
-                        {
-                            "x": 152,
-                            "y": 60
-                        },
-                        {
-                            "x": 169,
-                            "y": 57
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 31,
-                            "y": 13
-                        },
-                        {
-                            "x": 36,
-                            "y": 25
-                        },
-                        {
-                            "x": 24,
-                            "y": 25
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 189,
-                            "y": 114
-                        },
-                        {
-                            "x": 197,
-                            "y": 120
-                        },
-                        {
-                            "x": 186,
-                            "y": 128
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 108,
-                            "y": 175
-                        },
-                        {
-                            "x": 124,
-                            "y": 180
-                        },
-                        {
-                            "x": 113,
-                            "y": 187
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 65,
-                            "y": 185
-                        },
-                        {
-                            "x": 62,
-                            "y": 169
-                        },
-                        {
-                            "x": 80,
-                            "y": 165
-                        },
-                        {
-                            "x": 83,
-                            "y": 181
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 111,
-                            "y": 47
-                        },
-                        {
-                            "x": 97,
-                            "y": 48
-                        },
-                        {
-                            "x": 95,
-                            "y": 30
-                        },
-                        {
-                            "x": 109,
-                            "y": 29
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 41,
-                            "y": 88
-                        },
-                        {
-                            "x": 26,
-                            "y": 97
-                        },
-                        {
-                            "x": 17,
-                            "y": 83
-                        },
-                        {
-                            "x": 32,
-                            "y": 74
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 74,
-                            "y": 35
-                        },
-                        {
-                            "x": 85,
-                            "y": 48
-                        },
-                        {
-                            "x": 74,
-                            "y": 52
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 181,
-                            "y": 61
-                        },
-                        {
-                            "x": 181,
-                            "y": 47
-                        },
-                        {
-                            "x": 197,
-                            "y": 47
-                        },
-                        {
-                            "x": 197,
-                            "y": 61
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 142,
-                            "y": 54
-                        },
-                        {
-                            "x": 125,
-                            "y": 46
-                        },
-                        {
-                            "x": 136,
-                            "y": 40
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 39,
-                            "y": 54
-                        },
-                        {
-                            "x": 27,
-                            "y": 58
-                        },
-                        {
-                            "x": 22,
-                            "y": 44
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 89,
-                            "y": 116
-                        },
-                        {
-                            "x": 75,
-                            "y": 113
-                        },
-                        {
-                            "x": 83,
-                            "y": 104
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 125,
-                            "y": 155
-                        },
-                        {
-                            "x": 140,
-                            "y": 144
-                        },
-                        {
-                            "x": 141,
-                            "y": 163
-                        }
-                    ]
-                },
-                {
-                    "points": [
-                        {
-                            "x": 6,
-                            "y": 118
-                        },
-                        {
-                            "x": 15,
-                            "y": 127
-                        },
-                        {
-                            "x": 1,
-                            "y": 129
-                        }
-                    ]
-                }
-            ],
-			"unknown_obstacles": [
-				
-			]
-
-	},
-
+	
 	"robot_attributes":
 		{
 			"comms_range": 50.0,
@@ -388,21 +10,181 @@
 	"tasks": [
 		{
 			"id": 1,
-			"name":  "Test_Task",
-			"type": "test",
-			"actions": [2],
-			"group_info": {"mapper": 0, "analysis": 0, "any_agent_type": 1},
-			"location": {"x": 150, "y": 150},
+			"name":  "Image_task_1",
+			"type": "image",
+			"actions": [11],
+			"group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 0, "xmax": 100, "ymin": 0, "ymax": 100},
 			"reward": 5
-		}
+		},
+        {
+            "id": 2,
+            "name":  "Image_task_2",
+            "type": "image",
+            "actions": [12],
+            "group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 100, "xmax": 200, "ymin": 0, "ymax": 100},
+            "reward": 5
+        },
+        {
+            "id": 3,
+            "name":  "Image_task_3",
+            "type": "image",
+            "actions": [13],
+            "group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 0, "xmax": 100, "ymin": 100, "ymax": 200},
+            "reward": 5
+        },
+        {
+            "id": 4,
+            "name":  "Image_task_4",
+            "type": "image",
+            "actions": [14],
+            "group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 100, "xmax": 200, "ymin": 100, "ymax": 200},
+            "reward": 5
+        },
+        {
+            "id": 5,
+            "name":  "Sample_task_1",
+            "type": "sample",
+            "actions": [15,16],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 50, "y": 50},
+            "reward": 5
+        },
+        {
+            "id": 6,
+            "name":  "Sample_task_2",
+            "type": "sample",
+            "actions": [17,18],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 150, "y": 50},
+            "reward": 5  
+        },
+        {
+            "id": 7,
+            "name":  "Sample_task_3",
+            "type": "sample",
+            "actions": [19,20],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 50, "y": 150},
+            "reward": 5  
+        },
+        {
+            "id": 8,
+            "name":  "Sample_task_4",
+            "type": "sample",
+            "actions": [21,22],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 150, "y": 150},
+            "reward": 5  
+        },
+        {
+            "id": 9,
+            "name":  "Clear_path_task_1",
+            "type": "clear",
+            "actions": [23],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 175, "y": 150},
+            "reward": 5  
+        },
+        {
+            "id": 10,
+            "name":  "Clear_path_task_2",
+            "type": "clear",
+            "actions": [24],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 135, "y": 50},
+            "reward": 5  
+        }
 	],
 	"actions": [
 		{
-			"id": 2,
-			"name":  "Test_Subtask_1",
+			"id": 11,
+			"name":  "Image_action_1",
 			"main_id": 1,
 			"prerequisite_failures": 2
-		}
+		},
+        {
+            "id": 12,
+            "name":  "Image_action_2",
+            "main_id": 2,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 13,
+            "name":  "Image_action_3",
+            "main_id": 3,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 14,
+            "name":  "Image_action_4",
+            "main_id": 4,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 15,
+            "name":  "Extract_action_1",
+            "main_id": 5,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 16,
+            "name":  "Load_action_2",
+            "main_id": 5,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 17,
+            "name":  "Extract_action_3",
+            "main_id": 6,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 18,
+            "name":  "Load_action_4",
+            "main_id": 6,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 19,
+            "name":  "Extract_action_5",
+            "main_id": 7,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 20,
+            "name":  "Load_action_6",
+            "main_id": 7,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 21,
+            "name":  "Extract_action_7",
+            "main_id": 8,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 22,
+            "name":  "Load_action_8",
+            "main_id": 8,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 23,
+            "name":  "Clear_path_action_1",
+            "main_id": 9,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 24,
+            "name":  "Clear_path_action_2",
+            "main_id": 10,
+            "prerequisite_failures": 2
+        }
+
 	],
 	"agent_capabilities": [
 		{
@@ -414,8 +196,8 @@
 			]
 		},
 		{
-			"mapper": ["test"],
-			"analysis": ["test"]
+			"mapper": ["image"],
+			"sampler": ["sample","clear"]
 		}
 	],
 
@@ -423,25 +205,65 @@
 		{
 			"id": 1,
 			"type": "mapper",
-			"start_x": 10,
-	        "start_y": 10,
+			"start_x": 0,
+	        "start_y": 5,
 	        "color": [0, 0, 255],
 	        "_comments": ["Comments here"]
 		},
 		{
 			"id": 2,
-			"type": "analysis",
-			"start_x": 11,
-	        "start_y": 10,
+			"type": "mapper",
+			"start_x": 5,
+	        "start_y": 0,
 	        "color": [255, 0, 0],
 	        "_comments": ["Comments here"]
-		}
+		},
+        {
+            "id": 3,
+            "type": "sampler",
+            "start_x": 0,
+            "start_y": 10,
+            "color": [0, 255, 0],
+            "_comments": ["Comments here"]
+        },
+        {
+            "id": 4,
+            "type": "sampler",
+            "start_x": 10,
+            "start_y": 0,
+            "color": [255, 255, 0],
+            "_comments": ["Comments here"]
+        }
 	],
 
 	"cbba": {
 		"max_depth": 3,
 		"convergence_threshold": 5,
 		"do_cbga": true
-	}
+	},
+
+    "world_attributes": 
+        {
+            "notes": [ "marine, easy domain: in progress",
+                        "Fault injection object must only include action (subtask) IDs...",
+                        "fault_injection does not have to be manually defined, so only do if testing.",
+                        "Will have to add initManualFaultInjectionTracker call to world constructor for the above.",
+                        "Define fault_percentage instead by default. fault_percentage should be an int between 0 and 100",
+                        "Lower decay_rate relates to comms and corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)",
+                        "random_seed of 0 results in different seed every run"],
+            "size_x": 200,
+            "size_y": 200,
+            "step_size": 5,
+            "decay_rate": 1.5,
+            "fault_percentage": 0,
+            "random_seed": 0,
+            "obstacles": [
+               
+            ],
+            "unknown_obstacles": [
+                
+            ]
+
+    }
 
 }

@@ -90,7 +90,8 @@ protected:
     bool recording = false;
     bool do_recording = false;
 
-    double cumulative_discounted_reward = 0.0;
+    // double cumulative_discounted_reward = 0.0;
+    double cumulative_score = 0.0; // achieved by the team
 
 
 public:
@@ -284,8 +285,11 @@ public:
     void startRecording(const std::string& filename, double fps = 10.0);
     void stopRecording();
 
-    void updateCumulativeDiscountedReward(double reward);
-    double& getCumulativeDiscountedReward() {return cumulative_discounted_reward;}
+    // void updateCumulativeDiscountedReward(double reward);
+    // double& getCumulativeDiscountedReward() {return cumulative_discounted_reward;}
+
+    void updateCumulativeScore(double score);
+    double& getCumulativeScore() { return cumulative_score; }
 };
 
 #endif

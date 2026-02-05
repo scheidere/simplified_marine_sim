@@ -1118,6 +1118,9 @@ void CBGA::bundleAdd(std::vector<int>& bundle,
             // std::cout << "Past bundle and path updates..." << std::endl;
             // robot.log_info("Past bundle and path updates...");
 
+            // Save marginal score improvement for winning task J, for plotting when task completed
+            robot.saveTaskScore(J, bids[J]);
+
             robot.log_info("right before matrix update loop in bundleAdd");
             // std::string heyo = "task_is_solo: " + std::to_string(task_is_solo);
             // robot.log_info(heyo);

@@ -1456,7 +1456,12 @@ double World::initRandomSeed() {
     return random_seed;
 }
 
-void World::updateCumulativeDiscountedReward(double reward) {
+/*void World::updateCumulativeDiscountedReward(double reward) {
     std::lock_guard<std::mutex> lock(world_mutex);
     cumulative_discounted_reward += reward;
+}*/
+
+void World::updateCumulativeScore(double score) {
+    std::lock_guard<std::mutex> lock(world_mutex);
+    cumulative_score += score;
 }

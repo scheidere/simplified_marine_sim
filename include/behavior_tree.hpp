@@ -384,4 +384,34 @@ public:
     static PortsList providedPorts();
 };
 
+class DoImageArea : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoImageArea(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ImageArea : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    CoveragePath& _coverage_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    ImageArea(const std::string& name, const NodeConfig& config, Robot& r, World& w, CoveragePath& cp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 #endif

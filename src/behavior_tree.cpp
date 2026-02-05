@@ -24,11 +24,17 @@ void saveReward(double time, double reward, const std::string& filename = "rewar
     file.close();
 }
 
-void saveDiscountedReward(double time, double reward, const std::string& filename = "discounted_reward_data.csv") {
+void saveScore(double time, double score, const std::string& filename = "score_data.csv") {
+    std::ofstream file(filename, std::ios::app);
+    file << time << "," << score << "\n";
+    file.close();
+}
+
+/*void saveDiscountedReward(double time, double reward, const std::string& filename = "discounted_reward_data.csv") {
     std::ofstream file(filename, std::ios::app);  // Allow appending
     file << time << "," << reward << "\n";
     file.close();
-}
+}*/
 
 // moved to robot.cpp
 /*void saveDistance(double time, double distance, const std::string& filename = "distance_data.csv") {
@@ -63,23 +69,31 @@ void taskSuccessProcessing(World& _world, Robot& _robot, int current_task_id, in
 
         TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
         double raw_reward = current_task.reward;
-        // double current_time = _robot.getCurrentTime();
+        double current_time = _robot.getCurrentTime();
         // double discount_factor = 0.999;  // Match your CBGA discount
         // double discounted_reward = raw_reward * pow(discount_factor, current_time);
 
-        std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives raw reward: " + std::to_string(raw_reward); //+ 
-                         // ", discounted reward: " + std::to_string(discounted_reward) + " at time " + std::to_string(current_time);
+        // Get task allocation score
+        double task_score = _robot.getTaskScore(current_task_id);
+
+        std::string rew = "Robot " + std::to_string(_robot.getID()) + 
+                  " receives raw reward: " + std::to_string(raw_reward) + 
+                  ", task allocation score: " + std::to_string(task_score) + 
+                  " at time " + std::to_string(current_time);
         _robot.log_info(rew);
 
         // Add new reward to cumulative reward for whole team
         _world.updateCumulativeReward(raw_reward);  // Keep raw
-        // _world.updateCumulativeDiscountedReward(discounted_reward);  // Add this
+        // _world.updateCumulativeDiscountedReward(discounted_reward);
+        _world.updateCumulativeScore(task_score); 
         
         double& cumulative_reward = _world.getCumulativeReward();
         // double& cumulative_discounted = _world.getCumulativeDiscountedReward();
+        double& cumulative_score = _world.getCumulativeScore(); 
         
         saveReward(current_time, cumulative_reward);
-        // saveDiscountedReward(current_time, cumulative_discounted);  // New file
+        // saveDiscountedReward(current_time, cumulative_discounted);
+        saveScore(current_time, cumulative_score);
 
         _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
 
@@ -1878,44 +1892,235 @@ PortsList TestShortPath::providedPorts()
     // return {};
 }
 
+DoImageArea::DoImageArea(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoImageArea::tick()
+{
+    try {   
+        _robot.log_info("in DoImageArea");
+
+        if (_robot.DoImageArea()) { 
+            _robot.log_info("About to return success - ImageArea task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoImageArea::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoImageArea::providedPorts()
+{
+    return { };
+}
+
+ImageArea::ImageArea(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w, CoveragePath& cp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp) {
+    }
+
+NodeStatus ImageArea::onStart()
+{
+    try {
+        std::cout << "Robot " << _robot.getID() << " doing ImageArea..." << std::endl;
+        std::string strt = "Starting ImageArea for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+        _robot.log_info("Starting ImageArea...");
+
+        _world.log_info("Task progress after single update in action start function:");
+        _world.logCurrentTeamTaskProgress();
+
+        std::vector<int> task_path = _robot.getPath(); 
+        int current_task_id = task_path[0];
+        TaskInfo& current_task = _world.getTaskInfo(current_task_id);
+        std::unordered_map<std::string,int> area = current_task.area;
+
+        std::string bla = "Area for ImageArea task - xmin: " + std::to_string(area["xmin"]) + 
+                          ", xmax: " + std::to_string(area["xmax"]) + 
+                          ", ymin: " + std::to_string(area["ymin"]) + 
+                          ", ymax: " + std::to_string(area["ymax"]);
+        _robot.log_info(bla);
+        _world.log_info(bla);
+
+        Pose2D current_pose = _robot.getPose();
+
+        // Init vector of waypoints, the plan
+        _waypoints = _coverage_path_planner.plan(current_pose, area,
+                                                _world.getX(), _world.getY());
+        
+        if (_waypoints.empty()) {
+            std::cout << "No coverage path found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::string borp = "Planned coverage path with " + std::to_string(_waypoints.size()) + " waypoints";
+        _robot.log_info(borp);
+
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus ImageArea::onRunning()
+{
+    try {
+
+        std::string e = "Robot " + std::to_string(_robot.getID()) + " in onRunning for ImageArea";
+        _world.log_info(e);
+        _robot.log_info("in onRunning for ImageArea...");
+
+         // Current_task_id will either be the maintask this subtask is part of (main mode), or the id of this subtask itself (helper mode)
+        std::vector<int> path = _robot.getPath();
+        int current_task_id = path[0];
+        if (_world.isSubtaskID(current_task_id)) {
+            std::string plz = "Current_task_id: " + std::to_string(current_task_id);
+            _robot.log_info(plz);
+            _robot.log_info("in is subtask if statement in ImageArea onRunning");
+            _robot.setHelperMode(true);
+        } // otherwise remains default false, which allows potential fault injections
+
+        bool group_present = _world.fullGroupPresent(current_task_id);
+        std::string gp = "fullGroupPresent: " + std::to_string(group_present);
+        _robot.log_info(gp);
+
+        // Traverse to task location and wait for group, if applicable
+        if (_world.fullGroupPresent(current_task_id)) {
+
+            // just for testing
+            TaskInfo& task = _world.getTaskInfo(current_task_id);
+            std::string msg1 = "GROUP PRESENT! group_size needed: " + std::to_string(task.group_size);
+            _robot.log_info(msg1);
+            std::string msg2 = "Robot at: " + std::to_string(_robot.getPose().x) + ", " + std::to_string(_robot.getPose().y);
+            _robot.log_info(msg2);
+            std::string msg3 = "Task location: " + std::to_string(task.location.first) + ", " + std::to_string(task.location.second);
+            _robot.log_info(msg3);
+            // just for testing
+
+            // Now that we have checked main vs sub logic, need to update current task to this subtask id for fault injection/recovery logic
+            // std::string name = "Image_area_1"; //need to figure this out, because there are multiple image_area_1, image_area_2 actions (i.e., subtasks), trying to avoid having same ImageArea StatefulActionNode function copied for every subtask instance
+            // int local_current_task_id = _world.getSubtaskID(name);
+            int local_current_task_id;
+            if (_robot.inHelperMode()) {
+                local_current_task_id = current_task_id;  // Use the helper flag you already set!
+            } else {
+                TaskInfo& task = _world.getTaskInfo(current_task_id);
+                local_current_task_id = task.subtasks[0];
+            }
+
+            std::string strt = "Running ImageArea for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+
+            std::string hi = "Current_task_id: " + std::to_string(local_current_task_id);
+            _world.log_info(hi);
+
+            // Allow world to inject fault, or not
+            bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+
+            std::string hii = "fault_flag: " + std::to_string(fault_flag);
+            _world.log_info(hii);
+
+            std::string d = "Robot " + std::to_string(_robot.getID()) + " right before return block for ImageArea";
+            _world.log_info(d);
+
+            if (fault_flag && !_robot.inHelperMode()) {
+                _robot.log_info("in failure return for ImageArea");
+                std::string a = "Robot " + std::to_string(_robot.getID()) + " in failure return for ImageArea";
+                _world.log_info(a);
+                return NodeStatus::FAILURE;
+            } else if (_robot.inHelperMode()) { // For now, we always allow helper robot to successfully help
+                _robot.log_info("helper helping with ImageArea now!");
+                // World must detect that helper has helped, and reflect change by reseting fault injection flag from 1 (cause fault) to 0
+                _world.updateFaultInjectionTracker(local_current_task_id,0); // Helper resolves fault
+                _robot.setHelperMode(false); // No longer a helper for this subtask, because fault resolved now
+                std::string hep = "fault recovered with ImageArea, helper succeeds";
+                _robot.log_info(hep);
+                std::string b = "Robot " + std::to_string(_robot.getID()) + " in helper mode for ImageArea";
+                _world.log_info(b);
+            }
+
+            taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+
+            // for obstacle detection testing ONLY
+            _robot.log_info("testing log of discovered_obstacles");
+            utils::logMapOfVectors(_robot.getDiscoveredObstacles(), _robot);
+
+            std::string herp = "processing done, ImageArea returning success";
+            _robot.log_info(herp);
+            std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for ImageArea";
+            _world.log_info(c);
+            // If in helper mode or not, permitted to return success here, i.e., no fault
+            return NodeStatus::SUCCESS;
+        
+
+        }
+
+        std::string strt = "Running ImageArea for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "All waypoints completed!" << std::endl;
+            std::string strt = "Completed coverage path to ImageArea for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+            // return NodeStatus::RUNNING;
+            return NodeStatus::SUCCESS; // for testing without group part above
+        }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        std::string wp = "Waypoint coords: (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ")";
+        _robot.log_info(wp);
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
+                  << ": " << waypoint.x << "/" << waypoint.y << std::endl;
 
 
-/// Below is logic that should be included in any new action success block, perhaps slightly adapted per main vs sub
-// TaskInfo& current_task = _world.getTaskInfo(current_task_id); // Get task struct from world 
-// double reward = current_task.reward;
+        // Check if next waypoint is traversable for current robot type
+        if(_robot.foundObstacle(waypoint)) {
+            _robot.log_info("in found obstacle in ImageArea");
 
-// std::string rew = "Robot " + std::to_string(_robot.getID()) + " receives reward of " + std::to_string(reward) + " for completing " + current_task.name; 
-// _robot.log_info(rew);
+            // Clear plan, replan, continue on new plan
+            _waypoints.clear(); 
+            TaskInfo& task = _world.getTaskInfo(current_task_id);
+            std::unordered_map<std::string,int> new_area = _robot.calculateRemainingAreaToCover(task.area);
+            _waypoints = _coverage_path_planner.plan(_robot.getPose(), new_area,
+                                                _world.getX(), _world.getY());
 
-// // Add new reward to cumulative reward for whole team
-// _world.updateCumulativeReward(reward);
-// //cumulative_reward += reward; potentially unsafe update
+            if (_waypoints.empty()) {
+                std::cout << "No path found" << std::endl;
+                return NodeStatus::FAILURE;
+            }
 
-// double& cumulative_reward = _world.getCumulativeReward();
+            _current_waypoint_index = 0;
 
-// // Save reward at current time
-// double current_time = _robot.getCurrentTime();
-// saveReward(current_time, cumulative_reward);
+            return NodeStatus::RUNNING;
+        }
+        
+        _robot.move(waypoint);
 
-// _world.updateTaskCompletionLog(_robot.getID(), current_task_id);
+        _current_waypoint_index++;
+        return NodeStatus::RUNNING;
 
-// // Movement is done!
-// // Remove current first task from path since it has been completed
-// _robot.removeCompletedTaskFromPath(); // Removes first task
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
 
-// auto end_time = std::chrono::high_resolution_clock::now();
-// double total_start_time = std::chrono::duration<double>(end_time - _start_time).count();
-// std::string p = "FollowCoveragePath onStart() total time: " + std::to_string(total_start_time) + "s";
-// _robot.log_info(p);
+void ImageArea::onHalted()
+{
+    std::cout << "Test ImageArea halted." << std::endl;
+}
 
-// _world.log_info("Paths at task completion:");
-// _world.logCurrentTeamAssignment(); // Save current paths of all robots on team
-
-// _world.log_info("Task progress at task completion:");
-// _world.logCurrentTeamTaskProgress();
-
-// _world.log_info("Current tasks completed by each robot: ");
-// _world.logTaskCompletion();
-
-// std::string strt = "Completed coverage path for robot " + std::to_string(_robot.getID()) + "...";
-// _world.log_info(strt);
+PortsList ImageArea::providedPorts()
+{
+    return {};
+}

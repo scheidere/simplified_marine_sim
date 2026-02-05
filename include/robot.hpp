@@ -81,6 +81,8 @@ private:
     // Obstacles list, discovered online, sorted by robot type (type: obstacles found that block that type)
     std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> discovered_obstacles;
 
+    std::unordered_map<int, double> task_scores;
+
 public:
     Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
@@ -225,6 +227,13 @@ public:
     bool polygonsAreEqual(const std::vector<cv::Point>& poly1, const std::vector<cv::Point>& poly2);
 
     void updateDiscoveredObstaclesPerNeighbors();
+
+    void saveTaskScore(int task_id, double score); // for plotting results
+    double getTaskScore(int task_id); // for plotting results
+
+    bool DoImageArea();
+
+    std::unordered_map<std::string,int> calculateRemainingAreaToCover(std::unordered_map<std::string,int>& original_area);
 
     // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
     // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }

@@ -785,10 +785,10 @@ void Robot::move(Pose2D waypoint) {
         log_info(d);
 
         // Save team distance (file I/O already async in this thread)
-        if (id == 2) {
-            world->updateCumulativeDistance();
-            saveDistance(getCurrentTime(), world->getCumulativeDistance());
-        }
+        // if (id == 2) {
+        //     world->updateCumulativeDistance();
+        //     saveDistance(getCurrentTime(), world->getCumulativeDistance());
+        // }
     }).detach();
     
     std::thread([this]() { world->plot(); }).detach();
@@ -2065,6 +2065,21 @@ bool Robot::TaskNeededNow() {
 
 }
 
+bool Robot::DoImageArea() {
+    if (!at_consensus || path.empty() || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+    
+    if (next_task.type == "image") {
+        log_info("Next task is image type!");
+        return true;
+    }
+    
+    return false;
+}
+
 void Robot::updateDiscoveredObstacles(std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> neighbor_discovered_obstacles) {
     
      // Given message from a neighbor, update your own knowledge of obstacles discovered online (sorted by blocked robot type) using the neighbor's discoveries
@@ -2124,4 +2139,37 @@ void Robot::updateDiscoveredObstaclesPerNeighbors() {
         neighbor_discovered_obstacles = msg.discovered_obstacles;
         updateDiscoveredObstacles(neighbor_discovered_obstacles);
     }
+}
+
+void Robot::saveTaskScore(int task_id, double score) {
+    task_scores[task_id] = score;
+}
+
+double Robot::getTaskScore(int task_id) {
+    if (task_scores.find(task_id) != task_scores.end()) {
+        return task_scores[task_id];
+    }
+    return 0.0;  // Default if not found
+}
+
+std::unordered_map<std::string,int> Robot::calculateRemainingAreaToCover(std::unordered_map<std::string,int>& original_area) {
+    std::unordered_map<std::string,int> new_area;
+    
+    int center_x = (original_area.at("xmin") + original_area.at("xmax")) / 2;
+    
+    // If robot is in left half, cover right half
+    if (pose.x < center_x) {
+        new_area["xmin"] = pose.x;
+        new_area["xmax"] = original_area.at("xmax");
+        new_area["ymin"] = original_area.at("ymin");
+        new_area["ymax"] = original_area.at("ymax");
+    } else {
+        // In right side, adjust y-bounds
+        new_area["xmin"] = original_area.at("xmin");
+        new_area["xmax"] = original_area.at("xmax");
+        new_area["ymin"] = pose.y;
+        new_area["ymax"] = original_area.at("ymax");
+    }
+    
+    return new_area;
 }

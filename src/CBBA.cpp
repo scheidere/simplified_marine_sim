@@ -768,6 +768,10 @@ void CBBA::bundleAdd(std::vector<int>& bundle,
             //utils::log1DVector(bundle, robot);
             //robot.log_info("=====");
             updatePath(path,n,J);
+
+            // Save marginal score improvement for winning task J, for plotting when task completed
+            robot.saveTaskScore(J, bids[J]);
+            
             //path[n] = J; // Insert J at n in path
             winning_bids[J] = bids[J]; // Add bid associated with J to winning bid list
             winners[J] = robot.getID(); // Add current agent ID since it just won
