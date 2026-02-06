@@ -2184,7 +2184,11 @@ std::unordered_map<std::string,int> Robot::calculateRemainingAreaToCover(std::un
 }
 
 bool Robot::IsIdle() {
-    if (path.empty()) {
+
+    log_info("path:");
+    utils::log1DVector(path, *this);
+
+    if (path.empty() || path[0] == -1) {
         log_info("Robot is idle!");
         return true;
     }
