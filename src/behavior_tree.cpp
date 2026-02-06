@@ -1702,8 +1702,8 @@ NodeStatus Subtask_1::onRunning()
             std::cout << "All waypoints completed!" << std::endl;
             std::string strt = "Completed shortest path to subask 1 for robot " + std::to_string(_robot.getID()) + "...";
             _world.log_info(strt);
-            // return NodeStatus::RUNNING;
-            return NodeStatus::SUCCESS; // for testing without group part above
+            return NodeStatus::RUNNING;
+            // return NodeStatus::SUCCESS; // for testing without group part above
         }
         
         Pose2D waypoint = _waypoints[_current_waypoint_index];
@@ -1920,7 +1920,9 @@ PortsList DoImageArea::providedPorts()
 
 ImageArea::ImageArea(const std::string& name, const NodeConfig& config,
                                        Robot& r, World& w, CoveragePath& cp)
-    : StatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp) {
+    // : StatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp) {
+    : RepeatableStatefulActionNode(name, config), _robot(r), _world(w), _coverage_path_planner(cp) {
+
     }
 
 NodeStatus ImageArea::onStart()
@@ -1972,6 +1974,173 @@ NodeStatus ImageArea::onStart()
 NodeStatus ImageArea::onRunning()
 {
     try {
+        _robot.log_info("in onRunning for ImageArea...");
+
+        std::vector<int> path = _robot.getPath();
+        int current_task_id = path[0];
+        
+        // Check if this is a helper responding to a failure
+        if (_world.isSubtaskID(current_task_id)) {
+            _robot.log_info("Helper mode - current_task_id is subtask: " + std::to_string(current_task_id));
+            _robot.setHelperMode(true);
+        }
+        
+        // Get action ID for fault injection
+        TaskInfo& task = _world.getTaskInfo(current_task_id);
+        int local_current_task_id;
+        if (_robot.inHelperMode()) {
+            local_current_task_id = current_task_id;
+        } else {
+            local_current_task_id = task.subtasks[0];
+        }
+        
+        std::string lctid = "local_current_task_id for fault injection: " + std::to_string(local_current_task_id);
+        _robot.log_info(lctid);
+
+        bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+        _robot.log_info("fault_flag: " + std::to_string(fault_flag));
+        
+        if (fault_flag && !_robot.inHelperMode()) {
+            // Main robot encounters fault - wait for helper
+            _robot.log_info("Fault encountered - waiting for helper");
+            return NodeStatus::RUNNING;
+        }
+        
+        if (_robot.inHelperMode()) {
+            // Helper clears the fault so original can proceed
+            _robot.log_info("Helper clearing fault for original robot");
+            _world.updateFaultInjectionTracker(local_current_task_id, 0);
+            _robot.setHelperMode(false);
+            // Helper ALSO does the coverage task (both robots work together)
+        }
+        
+        // Both robots do coverage (original + helper working together)
+        if (_current_waypoint_index < _waypoints.size()) {
+            Pose2D waypoint = _waypoints[_current_waypoint_index];
+            
+            if(_robot.foundObstacle(waypoint)) {
+                _waypoints.clear(); 
+                std::unordered_map<std::string,int> new_area = _robot.calculateRemainingAreaToCover(task.area);
+                _waypoints = _coverage_path_planner.plan(_robot.getPose(), new_area, _world.getX(), _world.getY());
+                if (_waypoints.empty()) {
+                    return NodeStatus::FAILURE;
+                }
+                _current_waypoint_index = 0;
+                return NodeStatus::RUNNING;
+            }
+            
+            _robot.move(waypoint);
+            _current_waypoint_index++;
+            return NodeStatus::RUNNING;
+        }
+
+        // Coverage complete
+        taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+        _robot.log_info("Returning success for completion of ImageArea");
+        return NodeStatus::SUCCESS;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+/*NodeStatus ImageArea::onRunning()
+{
+    try {
+        // this one is where helper does the coverage task itself, given we have failure happen at start before original robot traverses
+        // but if end of coverage is out of comms, how would original robot actually *know* it has been helped and can return true for the coverage task
+        // this is sketch so I think we should have helper go to robot itself to help, and then original does the task after that (this way not task quitting either, no waiting around)
+        _robot.log_info("in onRunning for ImageArea...");
+
+        std::vector<int> path = _robot.getPath();
+        int current_task_id = path[0];
+        
+        // Check if this is a helper responding to a failure
+        if (_world.isSubtaskID(current_task_id)) {
+            _robot.log_info("Helper mode - current_task_id is subtask: " + std::to_string(current_task_id));
+            _robot.setHelperMode(true);
+        }
+        
+        // Get action ID for fault injection
+        TaskInfo& task = _world.getTaskInfo(current_task_id);
+        int local_current_task_id;
+        if (_robot.inHelperMode()) {
+            local_current_task_id = current_task_id;  // Already the action ID
+        } else {
+            local_current_task_id = task.actions[0];  // Get action from main task
+        }
+        
+        _robot.log_info("local_current_task_id for fault injection: " + std::to_string(local_current_task_id));
+        
+        // Check for fault at start of execution
+        bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+        _robot.log_info("fault_flag: " + std::to_string(fault_flag));
+        
+        if (fault_flag && !_robot.inHelperMode()) {
+            // Main robot encounters fault - FAIL and request help
+            _robot.log_info("Fault injected - ImageArea fails, requesting help");
+            return NodeStatus::FAILURE;
+        } else if (_robot.inHelperMode()) {
+            // Helper robot clears the fault and will complete the task
+            _robot.log_info("Helper successfully helping with ImageArea - clearing fault");
+            _world.updateFaultInjectionTracker(local_current_task_id, 0);  // Clear fault
+            _robot.setHelperMode(false);  // Reset helper mode
+            // Helper continues to do the coverage task below
+        } else if (!fault_flag && _world.wasTaskHelpRequested(local_current_task_id)) {
+            // Original robot checking back after helper cleared fault - skip execution to not repeat coverage of area
+            _robot.log_info("Helper completed task - original robot skipping execution");
+            taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+            return NodeStatus::SUCCESS;
+        }
+        // If no fault and no help requested, continue normally
+
+        // Coverage tasks: traverse waypoints
+        if (_current_waypoint_index < _waypoints.size()) {
+            Pose2D waypoint = _waypoints[_current_waypoint_index];
+            std::string wp = "Waypoint coords: (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ")";
+            _robot.log_info(wp);
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            // Check for obstacles and replan if needed
+            if(_robot.foundObstacle(waypoint)) {
+                _robot.log_info("Found obstacle - replanning coverage path");
+                _waypoints.clear(); 
+                std::unordered_map<std::string,int> new_area = _robot.calculateRemainingAreaToCover(task.area);
+                _waypoints = _coverage_path_planner.plan(_robot.getPose(), new_area, _world.getX(), _world.getY());
+
+                if (_waypoints.empty()) {
+                    _robot.log_info("No replan path found");
+                    return NodeStatus::FAILURE;
+                }
+                _current_waypoint_index = 0;
+                return NodeStatus::RUNNING;
+            }
+            
+            _robot.move(waypoint);
+            _current_waypoint_index++;
+            return NodeStatus::RUNNING;
+        }
+
+        // All waypoints completed - do success processing
+        _robot.log_info("All waypoints completed - processing task success");
+        
+        taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+        
+        _robot.log_info("ImageArea returning SUCCESS");
+        return NodeStatus::SUCCESS;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+*/
+/*NodeStatus ImageArea::onRunning()
+{
+    try {
+        // grouping doesnt make sense for coverage tasks
 
         std::string e = "Robot " + std::to_string(_robot.getID()) + " in onRunning for ImageArea";
         _world.log_info(e);
@@ -2069,8 +2238,8 @@ NodeStatus ImageArea::onRunning()
             std::cout << "All waypoints completed!" << std::endl;
             std::string strt = "Completed coverage path to ImageArea for robot " + std::to_string(_robot.getID()) + "...";
             _world.log_info(strt);
-            // return NodeStatus::RUNNING;
-            return NodeStatus::SUCCESS; // for testing without group part above
+            return NodeStatus::RUNNING;
+            //return NodeStatus::SUCCESS; // for testing without group part above
         }
         
         Pose2D waypoint = _waypoints[_current_waypoint_index];
@@ -2113,7 +2282,7 @@ NodeStatus ImageArea::onRunning()
         std::cerr << "Exception: " << e.what() << std::endl;
         return NodeStatus::FAILURE;
     }
-}
+}*/
 
 void ImageArea::onHalted()
 {
@@ -2121,6 +2290,120 @@ void ImageArea::onHalted()
 }
 
 PortsList ImageArea::providedPorts()
+{
+    return {};
+}
+
+IsIdle::IsIdle(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
+
+NodeStatus IsIdle::tick()
+{
+    try {
+
+        std::string borp = "In tick for IsIdle";
+        _robot.log_info(borp);
+
+        if (_robot.IsIdle()) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in IsIdle::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList IsIdle::providedPorts()
+{
+    return {};
+}
+
+GoHome::GoHome(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w, ShortestPath& sp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _shortest_path_planner(sp) {
+    }
+
+NodeStatus GoHome::onStart()
+{
+    try {
+
+        std::string yeup = "In onStart for GoHome";
+        _robot.log_info(yeup);
+
+        // Above lines now in this function
+        Pose2D goal_pose = _robot.getCurrentGoalPose();
+        Pose2D current_pose = _robot.getPose();
+
+        // Init vector of waypoints, the plan
+        _waypoints = _shortest_path_planner.plan(current_pose, goal_pose,
+                                                _world.getX(), _world.getY());
+        
+        if (_waypoints.empty()) {
+            std::cout << "No path home found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::string borp = "Planned path home with " + std::to_string(_waypoints.size()) + " waypoints";
+        _robot.log_info(borp);
+
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus GoHome::onRunning()
+{
+    try {
+        // Traverse waypoints to home position
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "Robot " << _robot.getID() << " reached home position" << std::endl;
+            return NodeStatus::SUCCESS;
+        }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+       
+        // Check if next waypoint is traversable
+        if(_robot.foundObstacle(waypoint)) {
+            // Replan around obstacle
+            _waypoints.clear(); 
+            Pose2D current_pose = _robot.getPose();
+            Pose2D goal_pose = _robot.getCurrentGoalPose();
+            _waypoints = _shortest_path_planner.plan(current_pose, goal_pose, _world.getX(), _world.getY());
+
+            if (_waypoints.empty()) {
+                std::cout << "No path to home found" << std::endl;
+                return NodeStatus::FAILURE;
+            }
+
+            _current_waypoint_index = 0;
+            return NodeStatus::RUNNING;
+        }
+        
+        _robot.move(waypoint);
+        _current_waypoint_index++;
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception in GoToHome: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void GoHome::onHalted()
+{
+    std::cout << "Test GoHome halted." << std::endl;
+}
+
+PortsList GoHome::providedPorts()
 {
     return {};
 }

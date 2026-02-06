@@ -49,8 +49,8 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
         fault_percentage = initFaultInjectionPercentage();
         random_seed = initRandomSeed();
 
-        //fault_injection_tracker = initManualFaultInjectionTracker(); // only if fault_injection given manually in input world attributes
-        fault_injection_tracker = initFaultInjectionTracker(); // Init'd randomly by input fault percentage
+        fault_injection_tracker = initManualFaultInjectionTracker(); // only if fault_injection given manually in input world attributes
+        //fault_injection_tracker = initFaultInjectionTracker(); // Init'd randomly by input fault percentage
 
         log_info("all_tasks_info: ");
         logListofTaskIDs(all_tasks_info);

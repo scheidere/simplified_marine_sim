@@ -362,6 +362,10 @@ static const char* xml_text = R"(
                     <ImageArea/>
                 </CounterSequence>
             </RepeatSequence>
+            <RepeatSequence>
+                <IsIdle/>
+                <GoHome/>
+            </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
@@ -602,6 +606,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world));
                 factory.registerNodeType<DoImageArea>("DoImageArea", std::ref(robot), std::ref(world));
                 factory.registerNodeType<ImageArea>("ImageArea", std::ref(robot), std::ref(world), std::ref(coverage_path));
+                factory.registerNodeType<IsIdle>("IsIdle", std::ref(world), std::ref(robot));
+                factory.registerNodeType<GoHome>("GoHome", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

@@ -1563,15 +1563,21 @@ void Robot::removeCompletedTaskFromPath() {
 }
 
 void Robot::removeCompletedTaskFromPathAndBundle() {
-    int completed_task = path[0];
-    path[0] = -1;  // Mark as removed
+    if (path.empty() || path[0] == -1) {
+        return;  // Nothing to remove
+    }
     
-    // Find and mark in bundle
-    for (auto& task : bundle) {
-        if (task == completed_task) {
-            task = -1;
-            break;
-        }
+    int completed_task = path[0];
+    
+    // Remove from path (shift left)
+    path.erase(path.begin());
+    path.push_back(-1);  // Add -1 at end to maintain size
+    
+    // Remove from bundle (shift left)
+    auto it = std::find(bundle.begin(), bundle.end(), completed_task);
+    if (it != bundle.end()) {
+        bundle.erase(it);
+        bundle.push_back(-1);  // Add -1 at end to maintain size
     }
 }
 
@@ -2071,6 +2077,9 @@ bool Robot::DoImageArea() {
     }
     
     TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    log_info(plz);
     
     if (next_task.type == "image") {
         log_info("Next task is image type!");
@@ -2172,4 +2181,13 @@ std::unordered_map<std::string,int> Robot::calculateRemainingAreaToCover(std::un
     }
     
     return new_area;
+}
+
+bool Robot::IsIdle() {
+    if (path.empty()) {
+        log_info("Robot is idle!");
+        return true;
+    }
+    
+    return false;
 }

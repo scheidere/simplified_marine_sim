@@ -395,7 +395,8 @@ public:
     static PortsList providedPorts();
 };
 
-class ImageArea : public StatefulActionNode {
+//class ImageArea : public StatefulActionNode {
+class ImageArea : public RepeatableStatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
@@ -413,5 +414,37 @@ public:
 
     static PortsList providedPorts();
 };
+
+class IsIdle : public ConditionNode {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    IsIdle(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class GoHome : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    GoHome(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 
 #endif
