@@ -231,11 +231,16 @@ public:
     void saveTaskScore(int task_id, double score); // for plotting results
     double getTaskScore(int task_id); // for plotting results
 
-    bool DoImageArea();
+    // bool DoImageArea(); requires fancier action function to work in one subtree alone
 
     std::unordered_map<std::string,int> calculateRemainingAreaToCover(std::unordered_map<std::string,int>& original_area);
 
     bool IsIdle();
+
+    bool DoImageArea1();
+    bool DoImageArea2();
+    bool DoImageArea3();
+    bool DoImageArea4();
 
     // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
     // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }

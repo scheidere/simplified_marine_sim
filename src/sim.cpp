@@ -338,8 +338,8 @@
 </root>
 )";*/
 
-// Main marine domain tree - in progress
-static const char* xml_text = R"(
+// Main marine domain tree - in progress (this has general task condition and action - has issues)
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="3">
@@ -357,6 +357,60 @@ static const char* xml_text = R"(
             </RepeatSequence>
             <RepeatSequence>
                 <DoImageArea/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ImageArea/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <IsIdle/>
+                <GoHome/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";*/
+
+// Main marine domain tree - this is the tedious version with unique condition/action(s) node(s) for each/all tasks
+static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="4">
+            <Repeat num_cycles="-1">
+            <Ping/>
+            </Repeat>
+            <RepeatSequence name="unlimited_repeat">
+                <NewInfoAvailable do_cbga="{do_cbga_flag}" />
+                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
+                    <BuildBundle do_cbga="{do_cbga_flag}" />
+                    <Communicate do_cbga="{do_cbga_flag}"/>
+                    <ResolveConflicts do_cbga="{do_cbga_flag}" />
+                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="{do_cbga_flag}" />
+                </RepeatSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea1/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ImageArea/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea2/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ImageArea/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea3/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ImageArea/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea4/>
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
                     <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
                     <ImageArea/>
@@ -604,10 +658,16 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<Subtask_1>("Subtask_1", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<Subtask_2>("Subtask_2", std::ref(robot), std::ref(world));
                 factory.registerNodeType<TestShortPath>("TestShortPath", std::ref(robot), std::ref(world));
-                factory.registerNodeType<DoImageArea>("DoImageArea", std::ref(robot), std::ref(world));
-                factory.registerNodeType<ImageArea>("ImageArea", std::ref(robot), std::ref(world), std::ref(coverage_path));
+                // factory.registerNodeType<DoImageArea>("DoImageArea", std::ref(robot), std::ref(world));
+                // factory.registerNodeType<ImageArea3>("ImageArea3", std::ref(robot), std::ref(world), std::ref(coverage_path));
+                // factory.registerNodeType<ImageArea4>("ImageArea4", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 factory.registerNodeType<IsIdle>("IsIdle", std::ref(world), std::ref(robot));
                 factory.registerNodeType<GoHome>("GoHome", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                factory.registerNodeType<ImageArea>("ImageArea", std::ref(robot), std::ref(world), std::ref(coverage_path));
+                factory.registerNodeType<DoImageArea1>("DoImageArea1", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoImageArea2>("DoImageArea2", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoImageArea3>("DoImageArea3", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoImageArea4>("DoImageArea4", std::ref(robot), std::ref(world));
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

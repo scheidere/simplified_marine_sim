@@ -384,7 +384,8 @@ public:
     static PortsList providedPorts();
 };
 
-class DoImageArea : public ConditionNode {
+// requires fancier action node function to work in single
+/*class DoImageArea : public ConditionNode {
 private:
     Robot& _robot;
 
@@ -393,10 +394,54 @@ public:
     NodeStatus tick() override;
 
     static PortsList providedPorts();
+};*/
+
+class DoImageArea1 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoImageArea1(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
 };
 
-//class ImageArea : public StatefulActionNode {
-class ImageArea : public RepeatableStatefulActionNode {
+class DoImageArea2 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoImageArea2(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoImageArea3 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoImageArea3(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoImageArea4 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoImageArea4(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class ImageArea : public StatefulActionNode {
+// class ImageArea : public RepeatableStatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
@@ -414,6 +459,45 @@ public:
 
     static PortsList providedPorts();
 };
+
+class ImageArea3 : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    CoveragePath& _coverage_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    ImageArea3(const std::string& name, const NodeConfig& config, Robot& r, World& w, CoveragePath& cp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
+class ImageArea4 : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    CoveragePath& _coverage_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    ImageArea4(const std::string& name, const NodeConfig& config, Robot& r, World& w, CoveragePath& cp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
 
 class IsIdle : public ConditionNode {
 private:

@@ -92,11 +92,24 @@ World::World(int X, int Y, Distance* d, SensorModel* s, JSONParser* p, double co
             getTaskLocation(task_id);
         }*/
 
+        home_pose = initHomePose();
+
 
     } catch (const std::exception& e) {
         std::cerr << "Exception caught in World constructor: " << e.what() << std::endl;
         throw; // Re-throw to propagate the exception
     }
+}
+
+Pose2D World::initHomePose() {
+    auto world_attrs = parser->j["world_attributes"];
+    if (world_attrs.contains("home_loc")) {
+        auto home_loc = world_attrs["home_loc"];
+        return {home_loc["x"].get<int>(), 
+                home_loc["y"].get<int>(), 
+                0};
+    }
+    return {0, 0, 0};
 }
 
 std::vector<int> World::getAgentIDs() {
@@ -430,8 +443,12 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
 // }
 
 TaskInfo& World::getTaskInfo(int task_id) {
+
+    std::string plz = "Task id in getTaskInfo is: " + std::to_string(task_id);
+    log_info(plz);
+
     std::lock_guard<std::mutex> lock(world_mutex);
-    
+
     // Check main tasks first
     if (all_tasks_info.count(task_id)) {
         return all_tasks_info.at(task_id);

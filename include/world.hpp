@@ -93,6 +93,8 @@ protected:
     // double cumulative_discounted_reward = 0.0;
     double cumulative_score = 0.0; // achieved by the team
 
+    Pose2D home_pose = {0,0,0}; // home location as a Pose2D
+
 
 public:
     World(int X, int Y, Distance* distance, SensorModel* sensor_model, JSONParser* parser, double comms_range);
@@ -290,6 +292,10 @@ public:
 
     void updateCumulativeScore(double score);
     double& getCumulativeScore() { return cumulative_score; }
+
+    Pose2D initHomePose();
+
+    Pose2D& getHomePose() { return home_pose; }
 };
 
 #endif

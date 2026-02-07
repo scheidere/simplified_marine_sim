@@ -801,6 +801,8 @@ Pose2D Robot::getCurrentGoalPose() {
 
     std::vector<int> task_path = getPath(); 
     int current_task_id = task_path[0];
+    std::string plz = "In robot::getCurrentGoalPose before getTaskInfo with task id: " + std::to_string(current_task_id);
+    world->log_info(plz);
     TaskInfo& current_task = world->getTaskInfo(current_task_id);
     std::pair<int,int> goal_loc = current_task.location;
     Pose2D goal_pose = {goal_loc.first, goal_loc.second,0};
@@ -1912,6 +1914,8 @@ std::map<int,int> Robot::initFailureThresholdsDict(TaskInfo& current_task_info, 
         log_info("current task is subtask");
         // Find main task by type match to get subtasks list since current task is subtask
         int main_id = current_task_info.main_id; // Subtasks have the id of the main task they correspond to
+        std::string plz1 = "In robot::initFailureThresholdsDict before getTaskInfo with task id: " + std::to_string(main_id);
+        world->log_info(plz1);
         TaskInfo& main_task_info = world->getTaskInfo(main_id);
         subtasks = main_task_info.subtasks;
     }
@@ -2000,6 +2004,8 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
         log_info("we are in not empty path part");
 
         // Get current task info object
+        std::string plz = "In robot::HandleFailures before getTaskInfo with task id: " + std::to_string(path[0]);
+        world->log_info(plz);
         TaskInfo& current_task = world->getTaskInfo(path[0]);
 
         bool current_task_is_main = getCurrentTaskScope(current_task);
@@ -2071,7 +2077,9 @@ bool Robot::TaskNeededNow() {
 
 }
 
-bool Robot::DoImageArea() {
+// This one requires fancier action function to work recursively for different tasks/actions in just one subtree
+/*bool Robot::DoImageArea() {
+    // This is the general condition that let's all tasks/actions of the same type through -> true
     if (!at_consensus || path.empty() || !world->hasTaskInfo(path[0])) {
         return false;
     }
@@ -2086,6 +2094,175 @@ bool Robot::DoImageArea() {
         return true;
     }
     
+    return false;
+}*/
+
+bool Robot::DoImageArea1() {
+    // This is the specific version that checks task name via task or action info (action if self is helper and therefore has subtask assigned)
+    // Only returns true for task with certain name and actions whose main task has that name
+    // This would need to be copied, with a diff name for all tasks, so tedious
+    // Note next task id is path[0]
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    log_info("About to call getTaskInfo");
+    std::string plz1 = "In robot::DoImageArea1 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Image_task_1") { //////////////////// Change name here when copying
+        log_info("Next task is Image_task_1!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        log_info(b);
+        std::string plz2 = "In robot::DoImageArea1 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        std::string c = "parent task name: " + parent_task.name;
+        log_info(c);
+        if (parent_task.name == "Image_task_1") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoImageArea1");
+    return false;
+}
+
+
+bool Robot::DoImageArea2() {
+    // This is the specific version that checks task name via task or action info (action if self is helper and therefore has subtask assigned)
+    // Only returns true for task with certain name and actions whose main task has that name
+    // This would need to be copied, with a diff name for all tasks, so tedious
+    // Note next task id is path[0]
+
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    log_info("About to call getTaskInfo");
+    std::string plz1 = "In robot::DoImageArea2 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Image_task_2") { //////////////////// Change name here when copying
+        log_info("Next task is Image_task_2!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        log_info(b);
+        std::string plz2 = "In robot::DoImageArea2 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        std::string c = "parent task name: " + parent_task.name;
+        log_info(c);
+        if (parent_task.name == "Image_task_2") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoImageArea2");
+    return false;
+}
+
+bool Robot::DoImageArea3() {
+    // This is the specific version that checks task name via task or action info (action if self is helper and therefore has subtask assigned)
+    // Only returns true for task with certain name and actions whose main task has that name
+    // This would need to be copied, with a diff name for all tasks, so tedious
+    // Note next task id is path[0]
+
+    /*if (!at_consensus || path.empty() || !world->hasTaskInfo(path[0])) {
+        return false;
+    }*/
+
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    log_info("About to call getTaskInfo");
+    std::string plz1 = "In robot::DoImageArea3 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    log_info(plz);
+
+    // if (!world->isSubtaskID(path[0]) && next_task.name == "Image_task_3") {
+    //     log_info("Next task is Image_task_3!");
+    //     return true;
+    // } 
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Image_task_3") {
+        log_info("Next task is Image_task_3!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        log_info(b);
+        std::string plz2 = "In robot::DoImageArea3 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        std::string c = "parent task name: " + parent_task.name;
+        log_info(c);
+        if (parent_task.name == "Image_task_3") {
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoImageArea3");
+    return false;
+}
+
+bool Robot::DoImageArea4() {
+    // This is the specific version that checks task name via task or action info (action if self is helper and therefore has subtask assigned)
+    // Only returns true for task with certain name and actions whose main task has that name
+    // This would need to be copied, with a diff name for all tasks, so tedious
+    // Note next task id is path[0]
+
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    log_info("About to call getTaskInfo");
+    std::string plz1 = "In robot::DoImageArea4 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Image_task_4") {
+        log_info("Next task is Image_task_4!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        log_info(b);
+        std::string plz2 = "In robot::DoImageArea4 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        std::string c = "parent task name: " + parent_task.name;
+        log_info(c);
+        if (parent_task.name == "Image_task_4") {
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoImageArea4");
     return false;
 }
 
