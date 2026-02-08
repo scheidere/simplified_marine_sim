@@ -277,6 +277,35 @@
 </root>
 )";*/
 
+
+/*
+Leaving planned combo task subtree example here for clarity as I implement
+Collect is a condition
+HandleFailures action is followed by subtask actions
+    - Sends counter sequence the failure threshold for each of the subtasks in order 
+    - Order determined by main task subtasks list order and should match order of nodes in subtree
+    - Receives failure tracker from counter sequence (which is reponsible for updating it continuously)
+    - For each subtask that has officially failed (1 in tracker):
+        - Update robot's own doable task ids object, removing any more instances of main task type (that now has a component failure)
+        - Update robot's own winning bids matrix, moving assignment from main task to subtask row (subtask row denotes task being co-op due to fault)
+        - Update robot's subtask failure tracker (dict), so it can be sent in message next time robot newly in comms
+CounterSequence:
+    - Counts return status failures and checks against respective failure count thresholds, maintains vector or dict of counts
+    - Also maintains vector/dict of flags to denote when full failure reached for each subtask
+    - Sends this full (meaning met threshold) failure tracker to HandleFailures node each iteration
+<RepeatSequence>
+    <Collect/>
+    <CounterSequence failure_thresholds = "{thresholds}" failure_tracker = "{tracker}" >
+        <HandleFailures failure_tracker = "{tracker}" failure_thresholds = "{thresholds}" />
+        <ExtractSample/>
+        <LoadSample/>
+    </CounterSequence>
+</RepeatSequence>
+Do we want basic RepeatSequence or unlimited repeat version, is there a difference?
+Note here...
+*/
+
+
 // Main testing tree (with manual do_cbga flag)
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
@@ -338,6 +367,8 @@
 </root>
 )";*/
 
+
+
 // Main marine domain tree - in progress (this has general task condition and action - has issues)
 /*static const char* xml_text = R"(
 <root BTCPP_format="4">
@@ -375,7 +406,7 @@
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="4">
+        <ParallelAll max_failures="7">
             <Repeat num_cycles="-1">
             <Ping/>
             </Repeat>
@@ -425,145 +456,46 @@ static const char* xml_text = R"(
 </root>
 )";
 
-
-// For testing obstacle avoidance
-// next add task node to travel to
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="1">
-            <Repeat num_cycles="-1">
-            <Ping/>
-            </Repeat>
-            <TestShortPath task_loc = "{stl}" />
-            <FollowShortestPath goal_loc = "{stl}" />
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";*/
-
-
-/*<RepeatSequence>
-    <CollectSample/>
-    <HandleFailures/>
-</RepeatSequence>*/
-
 /*
-Leaving planned combo task subtree example here for clarity as I implement
-Collect is a condition
-HandleFailures action is followed by subtask actions
-    - Sends counter sequence the failure threshold for each of the subtasks in order 
-    - Order determined by main task subtasks list order and should match order of nodes in subtree
-    - Receives failure tracker from counter sequence (which is reponsible for updating it continuously)
-    - For each subtask that has officially failed (1 in tracker):
-        - Update robot's own doable task ids object, removing any more instances of main task type (that now has a component failure)
-        - Update robot's own winning bids matrix, moving assignment from main task to subtask row (subtask row denotes task being co-op due to fault)
-        - Update robot's subtask failure tracker (dict), so it can be sent in message next time robot newly in comms
-CounterSequence:
-    - Counts return status failures and checks against respective failure count thresholds, maintains vector or dict of counts
-    - Also maintains vector/dict of flags to denote when full failure reached for each subtask
-    - Sends this full (meaning met threshold) failure tracker to HandleFailures node each iteration
-<RepeatSequence>
-    <Collect/>
-    <CounterSequence failure_thresholds = "{thresholds}" failure_tracker = "{tracker}" >
-        <HandleFailures failure_tracker = "{tracker}" failure_thresholds = "{thresholds}" />
-        <ExtractSample/>
-        <LoadSample/>
-    </CounterSequence>
-</RepeatSequence>
-Do we want basic RepeatSequence or unlimited repeat version, is there a difference?
-Note here...
+            <RepeatSequence>
+                <DoSampleCollection1/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection2/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection3/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection4/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoClearPath1/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ClearPath/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoClearPath2/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ClearPath/>
+                </CounterSequence>
+            </RepeatSequence>
 */
-
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="6">
-            <Repeat num_cycles="-1">
-            <Ping/>
-            </Repeat>
-            <RepeatSequence name="unlimited_repeat">
-                <NewInfoAvailable do_cbga="true" />
-                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
-                    <BuildBundle do_cbga="true" />
-                    <Communicate/>
-                    <ResolveConflicts do_cbga="true" />
-                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="true" />
-                </RepeatSequence>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreA/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreB/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreC/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreD/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";*/
-
-//NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
-// CBBA CBBA CBBA CBBA (do_cbga = "false" in all locations below)
-/*static const char* xml_text = R"(
-<root BTCPP_format="4">
-    <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="6">
-            <Repeat num_cycles="-1">
-            <Ping/>
-            </Repeat>
-            <RepeatSequence name="unlimited_repeat">
-                <NewInfoAvailable do_cbga="false" />
-                <RepeatSequence name="threshold_repeat" convergence_threshold="5" cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}">
-                    <BuildBundle do_cbga="false" />
-                    <Communicate/>
-                    <ResolveConflicts do_cbga="false" />
-                    <CheckConvergence cumulative_convergence_count_in="{ccc}" cumulative_convergence_count_out="{ccc}" do_cbga="false" />
-                </RepeatSequence>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreA/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreB/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreC/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-            <RepeatSequence>
-                <ExploreD/>
-                <FollowCoveragePath/>
-            </RepeatSequence>
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";*/
-
-// Debugging CBGA resolveConflicts - done testing!
-// static const char* xml_text = R"(
-// <root BTCPP_format="4">
-//     <BehaviorTree ID="MainTree">
-//         <Sequence>
-//             <Communicate/>
-//             <ResolveConflicts do_cbga="true" />
-//         </Sequence>
-//      </BehaviorTree>
-// </root>
-// )";
-
-
 
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
 //NOTE: IF YOU CHANGE CONVERGENCE THRESHOLD, IT MUST MATCH input.json
@@ -650,8 +582,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<ExploreD>("ExploreD", std::ref(robot), std::ref(world));
                 factory.registerNodeType<FollowCoveragePath>("FollowCoveragePath", std::ref(robot), std::ref(world), std::ref(coverage_path));
                 factory.registerNodeType<PathClearingNeeded>("PathClearingNeeded", std::ref(robot), std::ref(world));
-                factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world));
-                factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world));
+                // factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world));
+                // factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world));
                 factory.registerNodeType<HandleFailures>("HandleFailures", std::ref(world), std::ref(robot));
                 factory.registerNodeType<CounterSequence>("CounterSequence");
                 factory.registerNodeType<TaskNeededNow>("TaskNeededNow", std::ref(robot), std::ref(world));
@@ -668,6 +600,14 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<DoImageArea2>("DoImageArea2", std::ref(robot), std::ref(world));
                 factory.registerNodeType<DoImageArea3>("DoImageArea3", std::ref(robot), std::ref(world));
                 factory.registerNodeType<DoImageArea4>("DoImageArea4", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoSampleCollection1>("DoSampleCollection1", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoSampleCollection2>("DoSampleCollection2", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoSampleCollection3>("DoSampleCollection3", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoSampleCollection4>("DoSampleCollection4", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoClearPath1>("DoClearPath1", std::ref(robot), std::ref(world));
+                factory.registerNodeType<DoClearPath2>("DoClearPath2", std::ref(robot), std::ref(world));
+                factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                //factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));                
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
                 /*factory.registerNodeType<BuildBundle>("BuildBundle", [&](const std::string& name, const BT::NodeConfig& config) {

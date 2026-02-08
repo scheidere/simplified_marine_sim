@@ -258,6 +258,7 @@ std::unordered_map<std::string, std::unordered_map<std::string,bool>> World::get
 }
 
 //std::vector<AgentInfo> World::getAgents() {
+// random colors
 std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     std::unordered_map<int,AgentInfo> all_agents_info;
 
@@ -276,6 +277,35 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     }
     return all_agents_info;
 }
+
+/*std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
+    std::unordered_map<int,AgentInfo> all_agents_info;
+    auto parsed_agents = parser->j["agents"]; // Assume parser extracts JSON info
+    for (const auto& agent : parsed_agents) {
+        int id = agent["id"].get<int>();
+        
+        // Get color from JSON if it exists, otherwise use default cyclic color
+        cv::Scalar agent_color;
+        if (agent.contains("color") && agent["color"].is_array() && agent["color"].size() == 3) {
+            agent_color = cv::Scalar(
+                agent["color"][0].get<int>(),
+                agent["color"][1].get<int>(),
+                agent["color"][2].get<int>()
+            );
+        } else {
+            agent_color = colors[id % colors.size()];  // Fallback to cyclic assignment
+        }
+        
+        AgentInfo agent_struct = {
+            id,
+            agent["type"],
+            Pose2D{agent["start_x"].get<int>(), agent["start_y"].get<int>(), 0}, // Note we ignore the orientation theta for now
+            agent_color
+        };
+        all_agents_info[id] = agent_struct;
+    }
+    return all_agents_info;
+}*/
 
 int World::getGroupSize(std::unordered_map<std::string, int> group_info) {
 

@@ -968,8 +968,13 @@ bool Robot::checkIfNewInfoAvailable() {
     std::unordered_map<int, std::vector<std::tuple<int,double,bool>>>& world_ping_tracker = world->getPingTracker();
     int receiverID = getID();
 
+    std::string oop = "new_self_subtask_failure: " + std::to_string(new_self_subtask_failure);
+    log_info(oop);
+    log_info("own subtask failures: ");
+    utils::log2DUnorderedMap(subtask_failures, *this);
     // Check 4: if a robot itself is failing, so should be triggered to broadcast info to get help from another
     if (new_self_subtask_failure) {
+        log_info("NEW INFO FOUND (sort of) DUE TO OWN FAILURE (need to communicate it in CBGA)");
         return true; // Don't need to check pings for newness in this case
     }
 
@@ -1017,6 +1022,9 @@ bool Robot::checkIfNewInfoAvailable() {
                 if (!other_robot_old_subtask_failure_flag && other_robot_new_subtask_failure_flag) {
                     info_available = true;
                     log_info("NEW INFO FOUND DUE TO NEIGHBOR ROBOT NEWLY FAILING A SUBTASK");
+                    log_info("own subtask failures: ");
+                    utils::log2DUnorderedMap(subtask_failures, *this);
+
                 }
             }
 
@@ -1765,6 +1773,8 @@ bool Robot::PathClearingNeeded() {
 
 }
 
+
+// old
 bool Robot::SampleCollectionNeeded() {
     // Condition that should reutnr true when first task in path has type "collect" (so CollectSample or ExtractSample or LoadSample)
 
@@ -2097,6 +2107,7 @@ bool Robot::TaskNeededNow() {
     return false;
 }*/
 
+
 bool Robot::DoImageArea1() {
     // This is the specific version that checks task name via task or action info (action if self is helper and therefore has subtask assigned)
     // Only returns true for task with certain name and actions whose main task has that name
@@ -2266,6 +2277,222 @@ bool Robot::DoImageArea4() {
     return false;
 }
 
+bool Robot::DoSampleCollection1() {
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    // log_info("About to call getTaskInfo");
+    // std::string plz1 = "In robot::DoSampleCollection1 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    // world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    // std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    // log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Sample_task_1") { //////////////////// Change name here when copying
+        log_info("Next task is Sample_task_1!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        // std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        // log_info(b);
+        // std::string plz2 = "In robot::DoSampleCollection1 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        // world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        // std::string c = "parent task name: " + parent_task.name;
+        // log_info(c);
+        if (parent_task.name == "Sample_task_1") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoSampleCollection1");
+    return false;
+}
+
+bool Robot::DoSampleCollection2() {
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    // log_info("About to call getTaskInfo");
+    // std::string plz1 = "In robot::DoSampleCollection2 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    // world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    // std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    // log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Sample_task_2") { //////////////////// Change name here when copying
+        log_info("Next task is Sample_task_2!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        // std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        // log_info(b);
+        // std::string plz2 = "In robot::DoSampleCollection2 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        // world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        // std::string c = "parent task name: " + parent_task.name;
+        // log_info(c);
+        if (parent_task.name == "Sample_task_2") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoSampleCollection2");
+    return false;
+}
+
+bool Robot::DoSampleCollection3() {
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    // log_info("About to call getTaskInfo");
+    // std::string plz1 = "In robot::DoSampleCollection3 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    // world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    // std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    // log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Sample_task_3") { //////////////////// Change name here when copying
+        log_info("Next task is Sample_task_3!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        // std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        // log_info(b);
+        // std::string plz2 = "In robot::DoSampleCollection3 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        // world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        // std::string c = "parent task name: " + parent_task.name;
+        // log_info(c);
+        if (parent_task.name == "Sample_task_3") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoSampleCollection3");
+    return false;
+}
+
+bool Robot::DoSampleCollection4() {
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    // log_info("About to call getTaskInfo");
+    // std::string plz1 = "In robot::DoSampleCollection4 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    // world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    // std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    // log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Sample_task_4") { //////////////////// Change name here when copying
+        log_info("Next task is Sample_task_4!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        // std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        // log_info(b);
+        // std::string plz2 = "In robot::DoSampleCollection4 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        // world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        // std::string c = "parent task name: " + parent_task.name;
+        // log_info(c);
+        if (parent_task.name == "Sample_task_4") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoSampleCollection4");
+    return false;
+}
+
+bool Robot::DoClearPath1() {
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    // log_info("About to call getTaskInfo");
+    // std::string plz1 = "In robot::DoClearPath1 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    // world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    // std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    // log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Clear_path_task_1") { //////////////////// Change name here when copying
+        log_info("Next task is Clear_path_task_1!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        // std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        // log_info(b);
+        // std::string plz2 = "In robot::DoClearPath1 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        // world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        // std::string c = "parent task name: " + parent_task.name;
+        // log_info(c);
+        if (parent_task.name == "Clear_path_task_1") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoClearPath1");
+    return false;
+}
+
+bool Robot::DoClearPath2() {
+    
+    if (!at_consensus || path.empty() || path[0] == -1 || !world->hasTaskInfo(path[0])) {
+        return false;
+    }
+    
+    // log_info("About to call getTaskInfo");
+    // std::string plz1 = "In robot::DoClearPath2 before getTaskInfo 1 with task id: " + std::to_string(path[0]);
+    // world->log_info(plz1);
+    TaskInfo& next_task = world->getTaskInfo(path[0]);
+
+    // std::string plz = "Current task in path is: " + next_task.name + ", id: " + std::to_string(next_task.id);
+    // log_info(plz);
+
+    if (!world->isSubtaskID(path[0]) && next_task.name == "Clear_path_task_2") { //////////////////// Change name here when copying
+        log_info("Next task is Clear_path_task_2!");
+        return true;
+    } else if (world->isSubtaskID(path[0])) {
+        // If here, next task is subtask, get name of parent, i.e. main task
+        int parent_task_id = next_task.main_id;
+        // std::string b = "parent_task_id: " + std::to_string(parent_task_id);
+        // log_info(b);
+        // std::string plz2 = "In robot::DoClearPath2 before getTaskInfo 2 with task id: " + std::to_string(parent_task_id);
+        // world->log_info(plz2);
+        TaskInfo& parent_task = world->getTaskInfo(parent_task_id);
+        // std::string c = "parent task name: " + parent_task.name;
+        // log_info(c);
+        if (parent_task.name == "Clear_path_task_2") { //////////////////// Change name here when copying
+            return true;
+        }
+    }
+    
+    log_info("Returning false in DoClearPath2");
+    return false;
+}
+
 void Robot::updateDiscoveredObstacles(std::unordered_map<std::string,std::vector<std::vector<cv::Point>>> neighbor_discovered_obstacles) {
     
      // Given message from a neighbor, update your own knowledge of obstacles discovered online (sorted by blocked robot type) using the neighbor's discoveries
@@ -2362,6 +2589,12 @@ std::unordered_map<std::string,int> Robot::calculateRemainingAreaToCover(std::un
 
 bool Robot::IsIdle() {
 
+    // Probably should move consensus to condition AtConsensus to prevent any subtrees from being active and competing with subsequent task allocation
+    // Also need to not try to go home if already in helper mode???
+    if (!at_consensus || inHelperMode()) {
+        return false;
+    }
+
     log_info("path:");
     utils::log1DVector(path, *this);
 
@@ -2371,4 +2604,11 @@ bool Robot::IsIdle() {
     }
     
     return false;
+}
+
+void Robot::setNewSelfSubtaskFailure(bool value) {
+    std::lock_guard<std::mutex> lock(failure_flag_mutex);
+    new_self_subtask_failure = value;
+    std::string msg = "Setting new_self_subtask_failure to: " + std::to_string(value);
+    log_info(msg);
 }

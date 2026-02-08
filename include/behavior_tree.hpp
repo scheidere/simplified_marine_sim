@@ -287,7 +287,8 @@ public:
     static PortsList providedPorts();
 };
 
-class ClearPath : public StatefulActionNode {
+// old
+/*class ClearPath : public StatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
@@ -300,9 +301,10 @@ public:
     void onHalted() override;
 
     static PortsList providedPorts();
-};
+};*/
 
-class CollectSample : public ConditionNode {
+// old
+/*class CollectSample : public ConditionNode {
 private:
     Robot& _robot;
 
@@ -311,7 +313,7 @@ public:
     NodeStatus tick() override;
 
     static PortsList providedPorts();
-};
+};*/
 
 class HandleFailures : public StatefulActionNode {
 private:
@@ -460,7 +462,111 @@ public:
     static PortsList providedPorts();
 };
 
-class ImageArea3 : public StatefulActionNode {
+class DoSampleCollection1 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoSampleCollection1(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoSampleCollection2 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoSampleCollection2(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoSampleCollection3 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoSampleCollection3(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoSampleCollection4 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoSampleCollection4(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoClearPath1 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoClearPath1(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class DoClearPath2 : public ConditionNode {
+private:
+    Robot& _robot;
+
+public:
+    DoClearPath2(const std::string& name, const NodeConfig& config, Robot& robot, World& world);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+class CollectSample : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    CollectSample(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
+/*class ClearPath : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    ClearPath(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};*/
+
+/*class ImageArea3 : public StatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
@@ -496,7 +602,7 @@ public:
     void onHalted() override;
 
     static PortsList providedPorts();
-};
+};*/
 
 
 class IsIdle : public ConditionNode {

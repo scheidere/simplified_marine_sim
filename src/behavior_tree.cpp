@@ -228,6 +228,9 @@ NodeStatus Communicate::onRunning()
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
         _robot.log_info(log_msg);
 
+        std::string hep = "subtask_failures passed in broadcast by robot " + std::to_string(_robot.getID()) + ":";
+        utils::log2DUnorderedMap(_robot.getSubtaskFailures(), _robot); // getSubtaskFailures() is how msg calls it so testing for 1
+
         _robot.log_info("Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:");
         utils::logUnorderedMap(_robot.getTimestamps(),_robot);
 
@@ -239,6 +242,10 @@ NodeStatus Communicate::onRunning()
 
         // std::string blork2 = "Robot " + std::to_string(_robot.getID()) + " FINISHED broadcast";  
         // _world.log_info(blork2);
+
+        // TESTING THIS, not sure if it does anything tangibly helpful or bad yet
+        _robot.log_info("Broadcasting complete, clearing new_self_subtask_failure flag");
+        _robot.setNewSelfSubtaskFailure(false);
 
         std::string b = "Robot " + std::to_string(_robot.getID()) + " finished broadcasting.";
         _robot.log_info(b);
@@ -1152,7 +1159,8 @@ PortsList PathClearingNeeded::providedPorts()
 }
 
 
-ClearPath::ClearPath(const std::string& name, const NodeConfig& config,
+// Old version
+/*ClearPath::ClearPath(const std::string& name, const NodeConfig& config,
                                        Robot& r, World& w)
     : StatefulActionNode(name, config), _robot(r), _world(w) {
     }
@@ -1248,9 +1256,10 @@ void ClearPath::onHalted()
 PortsList ClearPath::providedPorts()
 {
     return {};
-}
+}*/
 
-CollectSample::CollectSample(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+// Old
+/*CollectSample::CollectSample(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
     : ConditionNode(name, config), _robot(robot) {}       
 
 NodeStatus CollectSample::tick()
@@ -1278,7 +1287,7 @@ NodeStatus CollectSample::tick()
 PortsList CollectSample::providedPorts()
 {
     return { OutputPort<std::pair<int,int>>("start_loc") };
-}
+}*/
 
 // ExtractSample::ExtractSample(const std::string& name, const NodeConfig& config,
 //                                        Robot& r, World& w)
@@ -2010,7 +2019,7 @@ NodeStatus ImageArea::onRunning()
         if (fault_flag && !_robot.inHelperMode()) {
             // Main robot encounters fault - wait for helper
             _robot.log_info("Fault encountered - waiting for helper");
-            return NodeStatus::RUNNING;
+            return NodeStatus::FAILURE; // Must return failure here for counter sequence to count failures, stateful action node will keep reattempting
         }
         
         if (_robot.inHelperMode()) {
@@ -2165,6 +2174,361 @@ PortsList DoImageArea4::providedPorts()
 {
     return { };
 }
+
+DoSampleCollection1::DoSampleCollection1(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoSampleCollection1::tick()
+{
+    try {   
+        _robot.log_info("in DoSampleCollection1");
+
+        if (_robot.DoSampleCollection1()) { 
+            _robot.log_info("About to return success - DoSampleCollection1 task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoSampleCollection1::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoSampleCollection1::providedPorts()
+{
+    return { };
+}
+
+DoSampleCollection2::DoSampleCollection2(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoSampleCollection2::tick()
+{
+    try {   
+        _robot.log_info("in DoSampleCollection2");
+
+        if (_robot.DoSampleCollection2()) { 
+            _robot.log_info("About to return success - DoSampleCollection2 task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoSampleCollection2::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoSampleCollection2::providedPorts()
+{
+    return { };
+}
+
+DoSampleCollection3::DoSampleCollection3(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoSampleCollection3::tick()
+{
+    try {   
+        _robot.log_info("in DoSampleCollection3");
+
+        if (_robot.DoSampleCollection3()) { 
+            _robot.log_info("About to return success - DoSampleCollection3 task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoSampleCollection3::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoSampleCollection3::providedPorts()
+{
+    return { };
+}
+
+DoSampleCollection4::DoSampleCollection4(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoSampleCollection4::tick()
+{
+    try {   
+        _robot.log_info("in DoSampleCollection4");
+
+        if (_robot.DoSampleCollection4()) { 
+            _robot.log_info("About to return success - DoSampleCollection4 task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoSampleCollection4::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoSampleCollection4::providedPorts()
+{
+    return { };
+}
+
+DoClearPath1::DoClearPath1(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoClearPath1::tick()
+{
+    try {   
+        _robot.log_info("in DoClearPath1");
+
+        if (_robot.DoClearPath1()) { 
+            _robot.log_info("About to return success - DoClearPath1 task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoClearPath1::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoClearPath1::providedPorts()
+{
+    return { };
+}
+
+DoClearPath2::DoClearPath2(const std::string& name, const NodeConfig& config, Robot& robot, World& world)
+    : ConditionNode(name, config), _robot(robot) {}       
+
+NodeStatus DoClearPath2::tick()
+{
+    try {   
+        _robot.log_info("in DoClearPath2");
+
+        if (_robot.DoClearPath2()) { 
+            _robot.log_info("About to return success - DoClearPath2 task or action needed now!");
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in DoClearPath2::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList DoClearPath2::providedPorts()
+{
+    return { };
+}
+
+
+CollectSample::CollectSample(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w, ShortestPath& sp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _shortest_path_planner(sp) {
+    }
+
+NodeStatus CollectSample::onStart()
+{
+    try {
+        std::cout << "Robot " << _robot.getID() << " doing CollectSample..." << std::endl;
+        std::string strt = "Starting CollectSample for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+
+        _world.log_info("Task progress after single update in action start function:");
+        _world.logCurrentTeamTaskProgress();
+
+        // Above lines now in this function
+        Pose2D goal_pose = _robot.getCurrentGoalPose();
+
+        std::string bla = "Goal loc for CollectSample is: " + std::to_string(goal_pose.x) + ", " + std::to_string(goal_pose.y);
+        _robot.log_info(bla);
+        _world.log_info(bla);
+
+        Pose2D current_pose = _robot.getPose();
+
+        // Init vector of waypoints, the plan
+        _waypoints = _shortest_path_planner.plan(current_pose, goal_pose,
+                                                _world.getX(), _world.getY());
+        
+        if (_waypoints.empty()) {
+            std::cout << "No path found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::string borp = "Planned path with " + std::to_string(_waypoints.size()) + " waypoints";
+        _robot.log_info(borp);
+
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus CollectSample::onRunning()
+{
+    try {
+
+        // If here, CollectSample is current task because condition node returned true to get here in BT
+        // Just a dummy task for testing counter sequence
+
+        //_world.log_info("in CollectSample onRunning");
+
+        std::string e = "Robot " + std::to_string(_robot.getID()) + " in onRunning for CollectSample";
+        _world.log_info(e);
+
+         // Current_task_id will either be the maintask this subtask is part of (main mode), or the id of this subtask itself (helper mode)
+        std::vector<int> path = _robot.getPath();
+        int current_task_id = path[0];
+        if (_world.isSubtaskID(current_task_id)) {
+            std::string plz = "Current_task_id: " + std::to_string(current_task_id);
+            _robot.log_info(plz);
+            _robot.log_info("in is subtask if statement in CollectSample onRunning");
+            _robot.setHelperMode(true);
+        } // otherwise remains default false, which allows potential fault injections
+
+        bool group_present = _world.fullGroupPresent(current_task_id);
+        std::string gp = "fullGroupPresent: " + std::to_string(group_present);
+        _robot.log_info(gp);
+
+        // Traverse to task location and wait for group, if applicable
+        if (_world.fullGroupPresent(current_task_id)) {
+
+            // just for testing
+            TaskInfo& task = _world.getTaskInfo(current_task_id);
+            std::string msg1 = "GROUP PRESENT! group_size needed: " + std::to_string(task.group_size);
+            _robot.log_info(msg1);
+            std::string msg2 = "Robot at: " + std::to_string(_robot.getPose().x) + ", " + std::to_string(_robot.getPose().y);
+            _robot.log_info(msg2);
+            std::string msg3 = "Task location: " + std::to_string(task.location.first) + ", " + std::to_string(task.location.second);
+            _robot.log_info(msg3);
+            // just for testing
+
+            // Now that we have checked main vs sub logic, need to update current task to this subtask id for fault injection/recovery logic
+            std::string name = "Test_Subtask_1";
+            int local_current_task_id = _world.getSubtaskID(name);
+
+            std::string strt = "Running CollectSample for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+
+            std::string hi = "Current_task_id: " + std::to_string(local_current_task_id);
+            _world.log_info(hi);
+
+            // Allow world to inject fault, or not
+            bool fault_flag = _world.getFaultInjectionFlag(local_current_task_id);
+
+            std::string hii = "fault_flag: " + std::to_string(fault_flag);
+            _world.log_info(hii);
+
+            std::string d = "Robot " + std::to_string(_robot.getID()) + " right before return block for CollectSample";
+            _world.log_info(d);
+
+            if (fault_flag && !_robot.inHelperMode()) {
+                _robot.log_info("in failure return for CollectSample");
+                std::string a = "Robot " + std::to_string(_robot.getID()) + " in failure return for CollectSample";
+                _world.log_info(a);
+                return NodeStatus::FAILURE;
+            } else if (_robot.inHelperMode()) { // For now, we always allow helper robot to successfully help
+                _robot.log_info("helper helping with CollectSample now!");
+                // World must detect that helper has helped, and reflect change by reseting fault injection flag from 1 (cause fault) to 0
+                _world.updateFaultInjectionTracker(local_current_task_id,0); // Helper resolves fault
+                _robot.setHelperMode(false); // No longer a helper for this subtask, because fault resolved now
+                std::string hep = "fault recovered with CollectSample, helper succeeds";
+                _robot.log_info(hep);
+                std::string b = "Robot " + std::to_string(_robot.getID()) + " in helper mode for CollectSample";
+                _world.log_info(b);
+            }
+
+            taskSuccessProcessing(_world, _robot, current_task_id, local_current_task_id);
+
+            // for obstacle detection testing ONLY
+            _robot.log_info("testing log of discovered_obstacles");
+            utils::logMapOfVectors(_robot.getDiscoveredObstacles(), _robot);
+
+            std::string herp = "processing done, subtask 1 returning success";
+            _robot.log_info(herp);
+            std::string c = "Robot " + std::to_string(_robot.getID()) + " at success return for subtask 1";
+            _world.log_info(c);
+            // If in helper mode or not, permitted to return success here, i.e., no fault
+            return NodeStatus::SUCCESS;
+        
+
+        }
+
+        std::string strt = "Running subtask 1 for robot " + std::to_string(_robot.getID()) + "...";
+        _world.log_info(strt);
+
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "All waypoints completed!" << std::endl;
+            std::string strt = "Completed shortest path to subask 1 for robot " + std::to_string(_robot.getID()) + "...";
+            _world.log_info(strt);
+            return NodeStatus::RUNNING;
+            // return NodeStatus::SUCCESS; // for testing without group part above
+        }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        std::string wp = "Waypoint coords: (" + std::to_string(waypoint.x) + ", " + std::to_string(waypoint.y) + ")";
+        _robot.log_info(wp);
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "Using waypoint " << (_current_waypoint_index + 1) << "/" << _waypoints.size()
+                  << ": " << waypoint.x << "/" << waypoint.y << std::endl;
+
+
+        // Check if next waypoint is traversable for current robot type
+        if(_robot.foundObstacle(waypoint)) {
+            _robot.log_info("in found obstacle in subtask 1");
+
+            // Clear plan, replan, continue on new plan
+            _waypoints.clear(); 
+            Pose2D current_pose = _robot.getPose();
+            Pose2D goal_pose = _robot.getCurrentGoalPose();
+            _waypoints = _shortest_path_planner.plan(current_pose, goal_pose, _world.getX(), _world.getY());
+
+            if (_waypoints.empty()) {
+                std::cout << "No path found" << std::endl;
+                return NodeStatus::FAILURE;
+            }
+
+            _current_waypoint_index = 0;
+
+            return NodeStatus::RUNNING;
+        }
+        
+        _robot.move(waypoint);
+
+        _current_waypoint_index++;
+        return NodeStatus::RUNNING;
+
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void CollectSample::onHalted()
+{
+    std::cout << "Test CollectSample halted." << std::endl;
+}
+
+PortsList CollectSample::providedPorts()
+{
+    return {};
+}
+
 
 // Can just use ImageArea action node for each subtree
 /*ImageArea3::ImageArea3(const std::string& name, const NodeConfig& config,

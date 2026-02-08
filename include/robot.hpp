@@ -83,6 +83,8 @@ private:
 
     std::unordered_map<int, double> task_scores;
 
+    std::mutex failure_flag_mutex;
+
 public:
     Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
 
@@ -241,6 +243,16 @@ public:
     bool DoImageArea2();
     bool DoImageArea3();
     bool DoImageArea4();
+
+    bool DoSampleCollection1();
+    bool DoSampleCollection2();
+    bool DoSampleCollection3();
+    bool DoSampleCollection4();
+
+    bool DoClearPath1();
+    bool DoClearPath2();
+
+    void setNewSelfSubtaskFailure(bool failure_new);
 
     // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
     // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }
