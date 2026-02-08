@@ -2812,6 +2812,33 @@ PortsList ImageArea4::providedPorts()
     return {};
 }*/
 
+AwayFromHome::AwayFromHome(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
+
+NodeStatus AwayFromHome::tick()
+{
+    try {
+
+        std::string borp = "In tick for AwayFromHome";
+        _robot.log_info(borp);
+
+        if (_robot.AwayFromHome()) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in AwayFromHome::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList AwayFromHome::providedPorts()
+{
+    return {};
+}
+
 IsIdle::IsIdle(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
     : ConditionNode(name, config), _world(world), _robot(robot) {}       
 

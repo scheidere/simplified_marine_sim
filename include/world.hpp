@@ -296,6 +296,8 @@ public:
     Pose2D initHomePose();
 
     Pose2D& getHomePose() { return home_pose; }
+
+    bool isAtHome(const Pose2D& current_pose);
 };
 
 #endif

@@ -448,6 +448,7 @@ static const char* xml_text = R"(
                 </CounterSequence>
             </RepeatSequence>
             <RepeatSequence>
+                <AwayFromHome/>
                 <IsIdle/>
                 <GoHome/>
             </RepeatSequence>
@@ -607,6 +608,7 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<DoClearPath1>("DoClearPath1", std::ref(robot), std::ref(world));
                 factory.registerNodeType<DoClearPath2>("DoClearPath2", std::ref(robot), std::ref(world));
                 factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                factory.registerNodeType<AwayFromHome>("AwayFromHome", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));                
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));

@@ -112,6 +112,13 @@ Pose2D World::initHomePose() {
     return {0, 0, 0};
 }
 
+bool World::isAtHome(const Pose2D& current_pose) {
+    double distance = std::sqrt(std::pow(current_pose.x - home_pose.x, 2) + 
+                                std::pow(current_pose.y - home_pose.y, 2));
+    
+    return distance < 1.0;  // Within 1 unit of home
+}
+
 std::vector<int> World::getAgentIDs() {
 
     std::vector<int> agent_ids;

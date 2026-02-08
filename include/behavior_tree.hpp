@@ -605,6 +605,19 @@ public:
 };*/
 
 
+class AwayFromHome : public ConditionNode {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    AwayFromHome(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
+
 class IsIdle : public ConditionNode {
 private:
     World& _world;

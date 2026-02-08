@@ -2613,6 +2613,25 @@ std::unordered_map<std::string,int> Robot::calculateRemainingAreaToCover(std::un
     return new_area;
 }
 
+bool Robot::AwayFromHome() {
+
+    // Probably should move consensus to condition AtConsensus to prevent any subtrees from being active and competing with subsequent task allocation
+    // Also need to not try to go home if already in helper mode???
+    if (!at_consensus || inHelperMode()) {
+        return false;
+    }
+
+    log_info("path:");
+    utils::log1DVector(path, *this);
+
+    if (!world->isAtHome(pose)) {
+        log_info("Robot is away from home!");
+        return true;
+    }
+    
+    return false;
+}
+
 bool Robot::IsIdle() {
 
     // Probably should move consensus to condition AtConsensus to prevent any subtrees from being active and competing with subsequent task allocation

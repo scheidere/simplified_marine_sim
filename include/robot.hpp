@@ -242,6 +242,7 @@ public:
     std::unordered_map<std::string,int> calculateRemainingAreaToCover(std::unordered_map<std::string,int>& original_area);
 
     bool IsIdle();
+    bool AwayFromHome();
 
     bool DoImageArea1();
     bool DoImageArea2();
