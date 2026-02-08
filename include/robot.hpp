@@ -102,7 +102,7 @@ public:
     std::vector<int>& getPath() { return path; }
     std::vector<int>& getPreviousPath() { return prev_path; } 
     //std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Used for messaging, moved to .cpp for mutex addition
-    std::unordered_map<int, std::unordered_map<int, bool>> getSubtaskFailures(); // copy instead of reference for use with mutex
+    std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures(); // copy instead of reference for use with mutex
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     void updateSubtaskFailuresPerNeighbors(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self

@@ -566,7 +566,7 @@ void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_s
     utils::log2DUnorderedMap(subtask_failures, *this);
 }
 
-std::unordered_map<int, std::unordered_map<int, bool>> Robot::getSubtaskFailures() { // copy instead of reference now
+std::unordered_map<int, std::unordered_map<int, bool>>& Robot::getSubtaskFailures() { // copy instead of reference now
     std::lock_guard<std::mutex> lock(subtask_failures_mutex); // testing bc of message info loss sometimes
 
     return subtask_failures; 
@@ -1034,6 +1034,13 @@ bool Robot::checkIfNewInfoAvailable() {
                     log_info("own subtask failures: ");
                     utils::log2DUnorderedMap(subtask_failures, *this);
 
+                }
+
+                // Check 5: Has subtask_failures been updated since last check?
+                if (subtask_failures != prev_subtask_failures) {
+                    log_info("NEW INFO FOUND: subtask_failures updated");
+                    prev_subtask_failures = subtask_failures;
+                    return true;
                 }
             }
 
@@ -2564,11 +2571,13 @@ void Robot::updateDiscoveredObstaclesPerNeighbors() {
 }
 
 void Robot::saveTaskScore(int task_id, double score) {
+
     task_scores[task_id] = score;
 }
 
 double Robot::getTaskScore(int task_id) {
-    if (task_scores.find(task_id) != task_scores.end()) {
+    // Added check that it is a main task, otherwise we want to return 0 (to mean that robots don't get bonus for completing a helper action, just when they complete main tasks)
+    if (!world->isSubtaskID(task_id) && task_scores.find(task_id) != task_scores.end()) {
         return task_scores[task_id];
     }
     return 0.0;  // Default if not found

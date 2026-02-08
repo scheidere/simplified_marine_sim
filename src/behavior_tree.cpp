@@ -244,8 +244,8 @@ NodeStatus Communicate::onRunning()
         // _world.log_info(blork2);
 
         // TESTING THIS, not sure if it does anything tangibly helpful or bad yet
-        _robot.log_info("Broadcasting complete, clearing new_self_subtask_failure flag");
-        _robot.setNewSelfSubtaskFailure(false);
+        // _robot.log_info("Broadcasting complete, clearing new_self_subtask_failure flag");
+        // _robot.setNewSelfSubtaskFailure(false);
 
         std::string b = "Robot " + std::to_string(_robot.getID()) + " finished broadcasting.";
         _robot.log_info(b);
