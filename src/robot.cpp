@@ -442,7 +442,7 @@ std::pair<bool,std::vector<int>> Robot::newNeighborSubtaskFailures() {
     return neighbor_fail_info;
 }
 
-std::pair<bool,std::vector<int>> Robot::newSelfSubtaskFailures() {
+/*std::pair<bool,std::vector<int>> Robot::newSelfSubtaskFailures() {
     // was going to call this in updateSubtaskFailuresPerSelf() but might not need it
 
     // Check if current robot, i.e., self, has newly failed a subtask
@@ -475,9 +475,9 @@ std::pair<bool,std::vector<int>> Robot::newSelfSubtaskFailures() {
     self_fail_info.first = found_self_failure;
     self_fail_info.second = new_failed_subtask_ids;
     return self_fail_info;
-}
+}*/
 
-void Robot::testNewSelfSubtaskFailures() {
+/*void Robot::testNewSelfSubtaskFailures() {
 
     log_info("in testNewSelfSubtaskFailures");
 
@@ -513,7 +513,7 @@ void Robot::testNewSelfSubtaskFailures() {
     log_info("failed_ids:");
     utils::log1DVector(failed_ids, *this);
 
-}
+}*/
 
 /*void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
 
@@ -572,32 +572,32 @@ std::unordered_map<int, std::unordered_map<int, bool>>& Robot::getSubtaskFailure
     return subtask_failures; 
 }
 
-void Robot::updateWinningBidsMatrixPostFailure() {
+// void Robot::updateWinningBidsMatrixPostFailure() {
 
-    // not yet tested, do we need this? Not currently called I think
+//     // not yet tested, do we need this? Not currently called I think, not called ignore
 
-    // When current robot fails, add assignment to failing subtask to denote wait for help
-    // Assignment (aka winning bid value) stays on the main task, and infinite value added to subtask for self (so will always remain)
+//     // When current robot fails, add assignment to failing subtask to denote wait for help
+//     // Assignment (aka winning bid value) stays on the main task, and infinite value added to subtask for self (so will always remain)
 
-    // This is the only change of winning bids matrix done outside of CBBA/CBGA
+//     // This is the only change of winning bids matrix done outside of CBBA/CBGA
 
-    /*i think we do need to call the new check func here
-    newSelfSubtaskFailures
-    it will compare prev to current subtask_failures so we do need the prev one update above in updateSubtaskFailuresPerSelf*/
+//     /*i think we do need to call the new check func here
+//     newSelfSubtaskFailures
+//     it will compare prev to current subtask_failures so we do need the prev one update above in updateSubtaskFailuresPerSelf*/
 
-    std::pair<bool,std::vector<int>> self_fail_info = newSelfSubtaskFailures();
+//     std::pair<bool,std::vector<int>> self_fail_info = newSelfSubtaskFailures();
 
-    if (self_fail_info.first) { // Found that self freshly failed a subtask
-        // To denote wait for help, add assignment to failing subtask element in winning bids matrix
-        for (int failed_subtask_id : self_fail_info.second) { // technically should only be 1, but just in case (for scalability), we loop
-            int failed_subtask_idx = failed_subtask_id - 1; // must convert from id to idx for winning_bids_matrix (since ids start at 1, indexing starts at 0)
-            winning_bids_matrix[failed_subtask_id][id] = std::numeric_limits<double>::infinity(); // So cannot be replaced, must remain 
+//     if (self_fail_info.first) { // Found that self freshly failed a subtask
+//         // To denote wait for help, add assignment to failing subtask element in winning bids matrix
+//         for (int failed_subtask_id : self_fail_info.second) { // technically should only be 1, but just in case (for scalability), we loop
+//             int failed_subtask_idx = failed_subtask_id - 1; // must convert from id to idx for winning_bids_matrix (since ids start at 1, indexing starts at 0)
+//             winning_bids_matrix[failed_subtask_id][id] = std::numeric_limits<double>::infinity(); // So cannot be replaced, must remain 
 
-            // Note we do nothing to the winning bid for the main task (that is subtask is a part of)
-        }
+//             // Note we do nothing to the winning bid for the main task (that is subtask is a part of)
+//         }
         
-    }    
-}
+//     }    
+// }
 
 void Robot::updateWinningBidsMatrixPostResolution() {
 
@@ -1820,6 +1820,7 @@ bool Robot::SampleCollectionNeeded() {
 }
 
 void Robot::updateSingleTaskProgress(int task_id, int started) {
+    std::lock_guard<std::mutex> lock(task_progress_mutex);
 
     log_info("in updateSingleTaskProgress");
 
@@ -1831,6 +1832,7 @@ void Robot::updateSingleTaskProgress(int task_id, int started) {
 }
 
 void Robot::updateTaskProgressFromAssignment() {
+    std::lock_guard<std::mutex> lock(task_progress_mutex);
 
     // This is basically a mini communication function
     // this will be called at convergence in CBBA/CBGA
@@ -1860,7 +1862,13 @@ void Robot::updateTaskProgressFromAssignment() {
     }
 }
 
+std::unordered_map<int, int>& Robot::getTaskProgress() {
+    std::lock_guard<std::mutex> lock(task_progress_mutex);
+    return task_progress;  // Return copy, not reference
+}
+
 void Robot::updateTaskProgress() {
+    std::lock_guard<std::mutex> lock(task_progress_mutex);
 
     log_info("in updateTaskProgress");
     log_info("Message queue size: " + std::to_string(message_queue.size()));

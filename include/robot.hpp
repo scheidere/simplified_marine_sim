@@ -85,6 +85,7 @@ private:
 
     std::mutex failure_flag_mutex;
     mutable std::mutex subtask_failures_mutex;
+    mutable std::mutex task_progress_mutex;
 
 public:
     Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
@@ -107,11 +108,11 @@ public:
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     void updateSubtaskFailuresPerNeighbors(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self
     void updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures);
-    void updateWinningBidsMatrixPostFailure();
+    // void updateWinningBidsMatrixPostFailure();
     void updateWinningBidsMatrixPostResolution();
     void testNewNeighborSubtaskFailures();
-    std::pair<bool,std::vector<int>> newSelfSubtaskFailures();
-    void testNewSelfSubtaskFailures();
+    // std::pair<bool,std::vector<int>> newSelfSubtaskFailures();
+    // void testNewSelfSubtaskFailures();
     std::pair<bool,std::vector<int>> newNeighborSubtaskFailures();
     void updateDoableTasks();
     void testSubtaskFailuresUpdater();
@@ -130,7 +131,8 @@ public:
     std::unordered_map<int, double>& getWinningBids() { return winning_bids; }
     std::vector<std::vector<double>>& getWinningBidsMatrix() { return winning_bids_matrix; }
     std::unordered_map<int, double>& getTimestamps() { return timestamps; }
-    std::unordered_map<int, int>& getTaskProgress() { return task_progress; }
+    // std::unordered_map<int, int>& getTaskProgress() { return task_progress; }
+    std::unordered_map<int, int>& getTaskProgress();
     std::unordered_map<int, Pose2D>& getLocations() { return locations; }
     std::unordered_map<int, int>& getPreviousWinners() { return prev_winners; }
     std::unordered_map<int, double>& getPreviouswWinningBids() { return prev_winning_bids; }
