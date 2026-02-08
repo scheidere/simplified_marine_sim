@@ -7,6 +7,7 @@ Message::Message(Robot& sender)
     : sender(sender),
       msg(sender.getID(), sender.getWinners(), sender.getWinningBids(), sender.getWinningBidsMatrix(), sender.getTimestamps(), sender.getLocations(), sender.getTaskProgress(), sender.getSubtaskFailures(), sender.getDiscoveredObstacles()) // Timestamp updated upon receipt by another robot
 {
+    sender.log_info("CREATING Message object, reading subtask_failures now");
 }
 
 void Message::updateWorldMessageTracker(World& world, int receiverID) {

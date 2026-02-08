@@ -259,7 +259,7 @@ std::unordered_map<std::string, std::unordered_map<std::string,bool>> World::get
 
 //std::vector<AgentInfo> World::getAgents() {
 // random colors
-std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
+/*std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     std::unordered_map<int,AgentInfo> all_agents_info;
 
     auto parsed_agents = parser->j["agents"]; // Assume parser extracts JSON info
@@ -276,9 +276,9 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
 
     }
     return all_agents_info;
-}
+}*/
 
-/*std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
+std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
     std::unordered_map<int,AgentInfo> all_agents_info;
     auto parsed_agents = parser->j["agents"]; // Assume parser extracts JSON info
     for (const auto& agent : parsed_agents) {
@@ -305,7 +305,7 @@ std::unordered_map<int,AgentInfo> World::initAllAgentsInfo() {
         all_agents_info[id] = agent_struct;
     }
     return all_agents_info;
-}*/
+}
 
 int World::getGroupSize(std::unordered_map<std::string, int> group_info) {
 

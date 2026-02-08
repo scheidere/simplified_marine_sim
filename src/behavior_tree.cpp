@@ -228,8 +228,8 @@ NodeStatus Communicate::onRunning()
         std::string log_msg = "Robot " + std::to_string(_robot.getID()) + " broadcasting message...";
         _robot.log_info(log_msg);
 
-        std::string hep = "subtask_failures passed in broadcast by robot " + std::to_string(_robot.getID()) + ":";
-        utils::log2DUnorderedMap(_robot.getSubtaskFailures(), _robot); // getSubtaskFailures() is how msg calls it so testing for 1
+        // std::string hep = "subtask_failures passed in broadcast by robot " + std::to_string(_robot.getID()) + ":";
+        // utils::log2DUnorderedMap(_robot.getSubtaskFailures(), _robot); // getSubtaskFailures() is how msg calls it so testing for 1
 
         _robot.log_info("Timestamps BEFORE change in Communicate::tick in behavior_tree.cpp:");
         utils::logUnorderedMap(_robot.getTimestamps(),_robot);
@@ -2022,7 +2022,7 @@ NodeStatus ImageArea::onRunning()
             return NodeStatus::FAILURE; // Must return failure here for counter sequence to count failures, stateful action node will keep reattempting
         }
         
-        if (_robot.inHelperMode()) {
+        if (_robot.inHelperMode()) { // TODO might want to add location or check so that help isn't official until robots are close
             // Helper clears the fault so original can proceed
             _robot.log_info("Helper clearing fault for original robot");
             _world.updateFaultInjectionTracker(local_current_task_id, 0);

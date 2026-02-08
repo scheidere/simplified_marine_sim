@@ -84,6 +84,7 @@ private:
     std::unordered_map<int, double> task_scores;
 
     std::mutex failure_flag_mutex;
+    mutable std::mutex subtask_failures_mutex;
 
 public:
     Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
@@ -100,7 +101,8 @@ public:
     std::vector<int>& getPreviousBundle() { return prev_bundle; }
     std::vector<int>& getPath() { return path; }
     std::vector<int>& getPreviousPath() { return prev_path; } 
-    std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Used for messaging
+    //std::unordered_map<int, std::unordered_map<int, bool>>& getSubtaskFailures() { return subtask_failures; } // Used for messaging, moved to .cpp for mutex addition
+    std::unordered_map<int, std::unordered_map<int, bool>> getSubtaskFailures(); // copy instead of reference for use with mutex
     bool getSubtaskFailure(int subtask_id, int agent_id);
     void setSubtaskFailure(int subtask_id, int agent_id, bool failed);
     void updateSubtaskFailuresPerNeighbors(); // Traverse received messages and update subtask failures tracker, deferring to 1's (maining fails), except for self

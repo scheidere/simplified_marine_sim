@@ -307,14 +307,17 @@ std::unordered_map<int, std::unordered_map<int, bool>> Robot::initSubtaskFailure
 }
 
 bool Robot::getSubtaskFailure(int subtask_id, int agent_id) {
+    std::lock_guard<std::mutex> lock(subtask_failures_mutex); // testing bc of message info loss sometimes
     return subtask_failures.at(subtask_id).at(agent_id);
 }
 
 void Robot::setSubtaskFailure(int subtask_id, int agent_id, bool failed) {
+    std::lock_guard<std::mutex> lock(subtask_failures_mutex); // testing bc of message info loss sometimes
     subtask_failures[subtask_id][agent_id] = failed;
 }
 
 void Robot::updateSubtaskFailuresPerNeighbors() {
+    std::lock_guard<std::mutex> lock(subtask_failures_mutex); // testing bc of message info loss sometimes
 
     // Given the subtask failures from another robot in comms, update local subtask tracker
     // Greedily defer to 1s (meaning tracked fails)
@@ -440,7 +443,6 @@ std::pair<bool,std::vector<int>> Robot::newNeighborSubtaskFailures() {
 }
 
 std::pair<bool,std::vector<int>> Robot::newSelfSubtaskFailures() {
-
     // was going to call this in updateSubtaskFailuresPerSelf() but might not need it
 
     // Check if current robot, i.e., self, has newly failed a subtask
@@ -544,6 +546,7 @@ void Robot::testNewSelfSubtaskFailures() {
 }*/
 
 void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_subtask_failures) {
+    std::lock_guard<std::mutex> lock(subtask_failures_mutex); // testing bc of message info loss sometimes
     prev_subtask_failures = subtask_failures;
     
     bool any_failures = false;  // Track if ANY subtask is currently failing
@@ -561,6 +564,12 @@ void Robot::updateSubtaskFailuresPerSelf(std::unordered_map<int,bool> new_self_s
     
     log_info("in updateSubtaskFailuresPerSelf:");
     utils::log2DUnorderedMap(subtask_failures, *this);
+}
+
+std::unordered_map<int, std::unordered_map<int, bool>> Robot::getSubtaskFailures() { // copy instead of reference now
+    std::lock_guard<std::mutex> lock(subtask_failures_mutex); // testing bc of message info loss sometimes
+
+    return subtask_failures; 
 }
 
 void Robot::updateWinningBidsMatrixPostFailure() {
