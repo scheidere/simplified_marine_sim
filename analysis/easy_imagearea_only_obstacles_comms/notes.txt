@@ -17,3 +17,16 @@ input_15p_10obs_noblocks
 
 but we change CBGA,CBBA or number of faults
 Not testing random faults with averaging results yet
+
+
+1fault_firstinpath results is for action 11 failing
+so it stops robot with path 1 2 from getting either reward unless its CBGA
+Greedy can't do anything because it has 1 2 3 4
+
+1fault_2ndinpath results:
+action 12 injected failure
+cbga recovers from it, gets four scores all tasks done
+cbba does 3 (1 robot does its full bundle of two tasks 3 4, other does task 1 and fails on task 2 in bundle)
+greedy does 1 (each robot has 1 2 3 4 bundle, is able to do 1 redundantly (each agent) but all get stuck at 2)
+- only receives reward for first to do task in team
+- these results are with greedy scoring updated to consider path distance in same way cbba/cbga do so its fair

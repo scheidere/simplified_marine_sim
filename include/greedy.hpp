@@ -31,7 +31,9 @@ public:
     Greedy(Robot& robot, World& world);
 
     void run();
-    double getTaskScore(int task_id, int prev_x, int prev_y);
+    // double getTaskScore(int task_id, int prev_x, int prev_y);
+    double getTaskScore(int task_id, double total_distance);
+
 
 };
 

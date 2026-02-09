@@ -2019,6 +2019,8 @@ NodeStatus ImageArea::onRunning()
         if (fault_flag && !_robot.inHelperMode()) {
             // Main robot encounters fault - wait for helper
             _robot.log_info("Fault encountered - waiting for helper");
+             std::cout << "!!!!!!!!!!Robot " << _robot.getID() << " failing ImageArea for action id " << local_current_task_id << "!!!!!!!!!!!" << std::endl;
+            _robot.log_info("FAULT INJECTED - Robot failing action " + std::to_string(local_current_task_id));
             return NodeStatus::FAILURE; // Must return failure here for counter sequence to count failures, stateful action node will keep reattempting
         }
         

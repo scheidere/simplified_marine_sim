@@ -1231,6 +1231,7 @@ bool World::getFaultInjectionFlag(int task_id) {
 }*/
 
 void World::updateFaultInjectionTracker(int task_id, bool fail_flag) {
+    // std::lock_guard<std::mutex> lock(world_mutex); // adding this breaks fault handling helper mode stuff, not sure why, maybe nested somehow with mutex elsewhere
     log_info("in updateFaultInjectionTracker, about to update");
     utils::logUnorderedMapWorld(fault_injection_tracker, *this);
     {

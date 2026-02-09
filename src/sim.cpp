@@ -554,7 +554,9 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
             // Might be redundant to create another parser instance here, but doing so just in case threading causes issues
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
-            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBBA_no_faults.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
+            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
 
             JSONParser parser(path);
 
@@ -768,7 +770,9 @@ int main(int argc, char** argv) {
 
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
-        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBBA_no_faults.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
+        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
 
         JSONParser parser(path);
 
