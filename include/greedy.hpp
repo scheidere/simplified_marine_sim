@@ -6,6 +6,7 @@
 #include <sstream>
 #include <cmath>
 #include <limits>
+#include <set>
 #include "message.hpp"
 #include "planners.hpp"
 #include "distance.hpp"
@@ -23,6 +24,8 @@ private:
 
     Robot& robot; // Reference to specific robot on team
     World& world;
+
+    std::set<int> team_completed_tasks;  // Track tasks completed by entire team
 
 public:
     Greedy(Robot& robot, World& world);

@@ -402,8 +402,36 @@ Note here...
 </root>
 )";*/
 
-// Main marine domain tree - this is the tedious version with unique condition/action(s) node(s) for each/all tasks
+// Full greedy version, with executable task subtrees (just for 2 robots (same type) four coverage tasks)
+// No reason to include go to home logic because no comms
 static const char* xml_text = R"(
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <ParallelAll max_failures="5">
+            <GreedyTaskAllocator/>
+            <RepeatSequence>
+                <DoImageArea1/>
+                <ImageArea/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea2/>
+                <ImageArea/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea3/>
+                <ImageArea/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoImageArea4/>
+                <ImageArea/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
+
+// Main marine domain tree - this is the tedious version with unique condition/action(s) node(s) for each/all tasks
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="7">
@@ -459,7 +487,7 @@ static const char* xml_text = R"(
      </BehaviorTree>
 </root>
 )";
-
+*/
 /*
             <RepeatSequence>
                 <DoSampleCollection1/>
@@ -524,7 +552,10 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
         try {
 
             // Might be redundant to create another parser instance here, but doing so just in case threading causes issues
-            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
+            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBBA_no_faults.json");
+
             JSONParser parser(path);
 
             bool do_cbga = parser.getDoCBGA();
@@ -735,7 +766,10 @@ int main(int argc, char** argv) {
         const double comms_range = 50.0; //310.0
         const int obs_radius = 4;*/
 
-        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
+        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBBA_no_faults.json");
+
         JSONParser parser(path);
 
         // Get world attributes

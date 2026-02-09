@@ -1,0 +1,475 @@
+{
+	
+	"robot_attributes":
+		{
+			"comms_range": 50.0,
+			"observation_radius": 10
+
+		},
+
+	"tasks": [
+		{
+			"id": 1,
+			"name":  "Image_task_1",
+			"type": "image",
+			"actions": [11],
+			"group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 0, "xmax": 100, "ymin": 0, "ymax": 100},
+			"reward": 5
+		},
+        {
+            "id": 2,
+            "name":  "Image_task_2",
+            "type": "image",
+            "actions": [12],
+            "group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 100, "xmax": 200, "ymin": 0, "ymax": 100},
+            "reward": 5
+        },
+        {
+            "id": 3,
+            "name":  "Image_task_3",
+            "type": "image",
+            "actions": [13],
+            "group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 0, "xmax": 100, "ymin": 100, "ymax": 200},
+            "reward": 5
+        },
+        {
+            "id": 4,
+            "name":  "Image_task_4",
+            "type": "image",
+            "actions": [14],
+            "group_info": {"mapper": 1, "sampler": 0, "any_agent_type": 0},
+            "area": {"xmin": 100, "xmax": 200, "ymin": 100, "ymax": 200},
+            "reward": 5
+        },
+        {
+            "id": 5,
+            "name":  "Sample_task_1",
+            "type": "sample",
+            "actions": [15,16],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 50, "y": 50},
+            "reward": 5
+        },
+        {
+            "id": 6,
+            "name":  "Sample_task_2",
+            "type": "sample",
+            "actions": [17,18],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 150, "y": 50},
+            "reward": 5  
+        },
+        {
+            "id": 7,
+            "name":  "Sample_task_3",
+            "type": "sample",
+            "actions": [19,20],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 50, "y": 150},
+            "reward": 5  
+        },
+        {
+            "id": 8,
+            "name":  "Sample_task_4",
+            "type": "sample",
+            "actions": [21,22],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 150, "y": 150},
+            "reward": 5  
+        },
+        {
+            "id": 9,
+            "name":  "Clear_path_task_1",
+            "type": "clear",
+            "actions": [23],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 175, "y": 150},
+            "reward": 5  
+        },
+        {
+            "id": 10,
+            "name":  "Clear_path_task_2",
+            "type": "clear",
+            "actions": [24],
+            "group_info": {"mapper": 0, "sampler": 1, "any_agent_type": 0},
+            "location": {"x": 135, "y": 50},
+            "reward": 5  
+        }
+	],
+	"actions": [
+		{
+			"id": 11,
+			"name":  "Image_action_1",
+			"main_id": 1,
+			"prerequisite_failures": 2
+		},
+        {
+            "id": 12,
+            "name":  "Image_action_2",
+            "main_id": 2,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 13,
+            "name":  "Image_action_3",
+            "main_id": 3,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 14,
+            "name":  "Image_action_4",
+            "main_id": 4,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 15,
+            "name":  "Extract_action_1",
+            "main_id": 5,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 16,
+            "name":  "Load_action_2",
+            "main_id": 5,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 17,
+            "name":  "Extract_action_3",
+            "main_id": 6,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 18,
+            "name":  "Load_action_4",
+            "main_id": 6,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 19,
+            "name":  "Extract_action_5",
+            "main_id": 7,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 20,
+            "name":  "Load_action_6",
+            "main_id": 7,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 21,
+            "name":  "Extract_action_7",
+            "main_id": 8,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 22,
+            "name":  "Load_action_8",
+            "main_id": 8,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 23,
+            "name":  "Clear_path_action_1",
+            "main_id": 9,
+            "prerequisite_failures": 2
+        },
+        {
+            "id": 24,
+            "name":  "Clear_path_action_2",
+            "main_id": 10,
+            "prerequisite_failures": 2
+        }
+
+	],
+	"agent_capabilities": [
+		{
+			"_comments": [
+    			"Capabilities (task types they can do) of the agents by agent type",
+    			"Will add more task types later",
+    			"There must be at least one agent of each type below",
+    			"For each task, there must be at least one agent at the start capable of doing it"
+			]
+		},
+		{
+			"mapper": ["image"],
+			"sampler": ["sample","clear"]
+		}
+	],
+
+	"agents": [
+		{
+			"id": 1,
+			"type": "mapper",
+			"start_x": 0,
+	        "start_y": 5,
+	        "color": [0, 0, 255],
+	        "_comments": ["Comments here"]
+		},
+		{
+			"id": 2,
+			"type": "mapper",
+			"start_x": 5,
+	        "start_y": 0,
+	        "color": [255, 0, 0],
+	        "_comments": ["Comments here"]
+		},
+        {
+            "id": 3,
+            "type": "sampler",
+            "start_x": 0,
+            "start_y": 10,
+            "color": [0, 255, 0],
+            "_comments": ["Comments here"]
+        },
+        {
+            "id": 4,
+            "type": "sampler",
+            "start_x": 10,
+            "start_y": 0,
+            "color": [255, 255, 0],
+            "_comments": ["Comments here"]
+        }
+	],
+
+	"cbba": {
+		"max_depth": 3,
+		"convergence_threshold": 5,
+		"do_cbga": true
+	},
+
+    "world_attributes": 
+        {
+            "notes": [ "marine, easy domain: in progress",
+                        "HAS UNREACHABLE TASKS",
+                        "Fault injection object must only include action (subtask) IDs...",
+                        "fault_injection does not have to be manually defined, so only do if testing.",
+                        "Will have to add initManualFaultInjectionTracker call to world constructor for the above.",
+                        "Define fault_percentage instead by default. fault_percentage should be an int between 0 and 100",
+                        "Lower decay_rate relates to comms and corresponds to domains with less obstruction (e.g. 1.5 more clear, 3.0 more cluttered)",
+                        "random_seed of 0 results in different seed every run"],
+            "size_x": 200,
+            "size_y": 200,
+            "step_size": 5,
+            "fault_injection": {"11": 1, "13": 1 },
+            "decay_rate": 1.5,
+            "fault_percentage": 0,
+            "random_seed": 0,
+            "home_loc": {"x": 5, "y": 5},
+            "obstacles": [
+               {
+        "points": [
+          {
+            "x": 143,
+            "y": 120
+          },
+          {
+            "x": 122,
+            "y": 142
+          },
+          {
+            "x": 103,
+            "y": 161
+          },
+          {
+            "x": 71,
+            "y": 147
+          },
+          {
+            "x": 51,
+            "y": 133
+          },
+          {
+            "x": 52,
+            "y": 104
+          },
+          {
+            "x": 60,
+            "y": 82
+          },
+          {
+            "x": 87,
+            "y": 72
+          },
+          {
+            "x": 113,
+            "y": 68
+          },
+          {
+            "x": 129,
+            "y": 96
+          }
+        ]
+      },
+      {
+        "points": [
+          {
+            "x": 61,
+            "y": 34
+          },
+          {
+            "x": 12,
+            "y": 58
+          },
+          {
+            "x": 12,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "points": [
+          {
+            "x": 36,
+            "y": 85
+          },
+          {
+            "x": 29,
+            "y": 102
+          },
+          {
+            "x": 13,
+            "y": 103
+          },
+          {
+            "x": 3,
+            "y": 86
+          },
+          {
+            "x": 25,
+            "y": 73
+          }
+        ]
+      },
+      {
+        "points": [
+          {
+            "x": 84,
+            "y": 186
+          },
+          {
+            "x": 69,
+            "y": 198
+          },
+          {
+            "x": 65,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "points": [
+          {
+            "x": 120,
+            "y": 187
+          },
+          {
+            "x": 117,
+            "y": 194
+          },
+          {
+            "x": 110,
+            "y": 195
+          },
+          {
+            "x": 107,
+            "y": 192
+          },
+          {
+            "x": 106,
+            "y": 184
+          },
+          {
+            "x": 111,
+            "y": 181
+          },
+          {
+            "x": 117,
+            "y": 181
+          }
+        ]
+      },
+      {
+        "points": [
+          {
+            "x": 130,
+            "y": 14
+          },
+          {
+            "x": 118,
+            "y": 16
+          },
+          {
+            "x": 115,
+            "y": 15
+          },
+          {
+            "x": 112,
+            "y": 16
+          },
+          {
+            "x": 112,
+            "y": 13
+          },
+          {
+            "x": 112,
+            "y": 9
+          },
+          {
+            "x": 115,
+            "y": 9
+          },
+          {
+            "x": 123,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "points": [
+          {
+            "x": 191,
+            "y": 90
+          },
+          {
+            "x": 186,
+            "y": 91
+          },
+          {
+            "x": 184,
+            "y": 90
+          },
+          {
+            "x": 179,
+            "y": 96
+          },
+          {
+            "x": 176,
+            "y": 90
+          },
+          {
+            "x": 183,
+            "y": 88
+          },
+          {
+            "x": 183,
+            "y": 82
+          },
+          {
+            "x": 189,
+            "y": 84
+          }
+        ]
+      }
+            ],
+            "unknown_obstacles": [
+                
+            ]
+
+    }
+
+}
