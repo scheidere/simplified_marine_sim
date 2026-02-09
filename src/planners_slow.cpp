@@ -6,7 +6,6 @@
 #include "distance.hpp"
 #include "behaviortree_cpp/actions/pop_from_queue.hpp"
 
-
 Planner::Planner(int step_size, World* w, Robot* r) : step_size(step_size), current_plan(std::make_shared<BT::ProtectedQueue<Pose2D>>()), world(w), robot(r)
 {
 }
@@ -18,7 +17,6 @@ void Planner::test() {
 adjacency_vector Planner::convertImageToAdjacencyVector(int X, int Y) {
 
     adjacency_vector adj_vec;
-    adj_vec.reserve(X * Y);
 
     // Loop through every pixel i,j on world of dims X,Y
     for (int x=0; x<X; x++) {
@@ -156,57 +154,45 @@ ShortestPath::ShortestPath(int step_size, World* w, Robot* r) : Planner(step_siz
 }
 
 
+//testing, just added prints of timing to try to diagnose interobot delay at start
 std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X, int Y) {
-
-    // --- Index computation ---
+    auto graph_start = std::chrono::high_resolution_clock::now();
+    adjacency_vector graph = convertImageToAdjacencyVector(X, Y);
+    auto graph_end = std::chrono::high_resolution_clock::now();
+    
+    // Get indices
     int start_idx = getIndex(start_pose.x, start_pose.y, Y);
     int goal_idx = getIndex(waypoint.x, waypoint.y, Y);
     std::vector<Pose2D> plan;
-
-    // --- Dijkstra init ---
+    
+    auto dijkstra_start = std::chrono::high_resolution_clock::now();
     int V = X*Y;
     std::vector<double> distance_tracker = initializeDistances(V, start_idx, Y);
     std::vector<bool> visit_tracker = initializeVisits(V);
-
+    
     std::priority_queue<P, std::vector<P>, std::greater<P>> priority_queue;
     priority_queue.push({0, start_idx});
     std::vector<int> predecessor(V, -1);
-
-    // --- Dijkstra search (inline neighbor computation, no adjacency list) ---
-
+    
     while (!priority_queue.empty()) {
         int min_idx = priority_queue.top().second;
         priority_queue.pop();
-
+        
         if (visit_tracker[min_idx]) continue;
         visit_tracker[min_idx] = true;
         if (min_idx == goal_idx) break;
-
-        // Compute neighbors inline instead of looking up from a pre-built adjacency list
-        int cx = min_idx / Y;
-        int cy = min_idx % Y;
-
-        for (int i = -step_size; i <= step_size; i++) {
-            for (int j = -step_size; j <= step_size; j++) {
-                if (i == 0 && j == 0) continue;
-
-                int nx = cx + i;
-                int ny = cy + j;
-
-                if (nx < 0 || nx >= X || ny < 0 || ny >= Y) continue;
-                if (world->isObstacle(nx, ny)) continue;
-                if (robot->isFoundObstacle(nx, ny)) continue;
-
-                int n_idx = nx * Y + ny;
-
-                if (!visit_tracker[n_idx]) {
-                    double nc_dist = std::sqrt(i*i + j*j);
-                    double new_dist = nc_dist + distance_tracker[min_idx];
-                    if (new_dist < distance_tracker[n_idx]) {
-                        distance_tracker[n_idx] = new_dist;
-                        predecessor[n_idx] = min_idx;
-                        priority_queue.push({new_dist, n_idx});
-                    }
+        
+        std::vector<P> neighbors = graph[min_idx];
+        for (const P &np : neighbors) {
+            double nc_dist = np.first;
+            int n_idx = np.second;
+            
+            if (!visit_tracker[n_idx]) {
+                double new_dist = nc_dist + distance_tracker[min_idx];
+                if (new_dist < distance_tracker[n_idx]) {
+                    distance_tracker[n_idx] = new_dist;
+                    predecessor[n_idx] = min_idx;
+                    priority_queue.push({new_dist, n_idx});
                 }
             }
         }
@@ -215,22 +201,30 @@ std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X
     // Adding for case where goal is impossible due to obstacles
     if (predecessor[goal_idx] == -1 && start_idx != goal_idx) {
         // Goal was never reached - no path exists
+        std::cout << "No path to goal - unreachable!" << std::endl;
         world->log_info("No path to goal - unreachable!");
         return std::vector<Pose2D>();  // Return empty
     }
-
-    // --- Path reconstruction ---
+    
+    auto dijkstra_end = std::chrono::high_resolution_clock::now();
+    
+    // Reconstruct path
     std::vector<int> path;
     for (int at = goal_idx; at != -1; at = predecessor[at]) {
         path.push_back(at);
     }
     std::reverse(path.begin(), path.end());
-
+    
     for (int idx : path) {
         std::pair<int, int> c = getCoords(idx, Y);
         plan.push_back({c.first, c.second, 0});
     }
-
+    
+    // Only keep timing output - much cleaner
+    double graph_time = std::chrono::duration<double>(graph_end - graph_start).count();
+    double dijkstra_time = std::chrono::duration<double>(dijkstra_end - dijkstra_start).count();
+    std::cout << "ShortestPath timing - Graph: " << graph_time << "s, Dijkstra: " << dijkstra_time << "s" << std::endl;
+    
     return plan;
 }
 
@@ -396,15 +390,15 @@ std::vector<Pose2D> CoveragePath::plan(Pose2D start_pose, std::unordered_map<std
     Pose2D current_pose = start_pose;
 
     for (const auto& waypoint : goal_waypoints) {
-        // No graph build needed — neighbors are computed inline during Dijkstra
+        // Use your existing shortest path to get from current position to next waypoint
         auto segment = ShortestPath::plan(current_pose, waypoint, X, Y);
-
+        
         // Add segment to full path (skip first point to avoid duplicates)
         if (!full_plan.empty() && !segment.empty()) {
             segment.erase(segment.begin());
         }
         full_plan.insert(full_plan.end(), segment.begin(), segment.end());
-
+        
         current_pose = waypoint;
     }
 

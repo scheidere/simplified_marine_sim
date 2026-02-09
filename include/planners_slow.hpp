@@ -59,8 +59,8 @@ public:
     ShortestPath(int step_size, World* w, Robot* r);
 
     // This function generates shortest path to waypoint (does not change sim state)
-    // Neighbors are computed inline during Dijkstra - no adjacency list needed
-    std::vector<Pose2D> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y);
+    //std::shared_ptr<BT::ProtectedQueue<Pose2D>> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // This was original way
+    std::vector<Pose2D> plan(Pose2D current_pose, Pose2D waypoint, int X, int Y); // new way, for single FollowShortestPath call in BT
 
 
 };
