@@ -129,6 +129,8 @@ Robot::Robot( World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_i
     helper_mode = false; // Initially not in helper mode
     //reattempt_failing_action = false; // Initially no failures [not needed if counter sequence inherently reattempts until success on failing tasks]
 
+    consecutive_failure_count = 0; // for isFailingAlone(), counted in HandleFailures
+
 }
 
 std::string Robot::generateLogFilename() {
@@ -2028,6 +2030,14 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
     log_info("current_subtask_failures post self update:");
     utils::logUnorderedMap(current_subtask_failures, *this);
 
+    // Track consecutive failures (will be used in isFailingAlone condition)
+    if (new_self_subtask_failure) {
+        consecutive_failure_count++;
+        log_info("Consecutive failure count: " + std::to_string(consecutive_failure_count));
+    } else {
+        consecutive_failure_count = 0;
+    }
+
     std::pair<std::pair<int,bool>,std::map<int,int>> scope_and_threshold_info;
 
     log_info("path:");
@@ -2626,6 +2636,24 @@ bool Robot::AwayFromHome() {
 
     if (!world->isAtHome(pose)) {
         log_info("Robot is away from home!");
+        return true;
+    }
+    
+    return false;
+}
+
+bool Robot::IsFailingAlone() {
+
+    // Only gets called if robot not at home
+
+    if (!at_consensus || inHelperMode()) {
+        return false;
+    }
+    
+    int FAILURE_THRESHOLD = 100;  // HandleFailures runs less frequently
+    
+    if (consecutive_failure_count > FAILURE_THRESHOLD) {
+        log_info("Robot has failed " + std::to_string(consecutive_failure_count) + " times!");
         return true;
     }
     

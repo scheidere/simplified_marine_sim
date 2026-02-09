@@ -617,6 +617,18 @@ public:
     static PortsList providedPorts();
 };
 
+class IsFailingAlone : public ConditionNode {
+private:
+    World& _world;
+    Robot& _robot;
+
+public:
+    IsFailingAlone(const std::string& name, const NodeConfig& config, World& world, Robot& robot);
+    NodeStatus tick() override;
+
+    static PortsList providedPorts();
+};
+
 
 class IsIdle : public ConditionNode {
 private:

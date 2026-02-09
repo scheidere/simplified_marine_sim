@@ -2839,6 +2839,33 @@ PortsList AwayFromHome::providedPorts()
     return {};
 }
 
+IsFailingAlone::IsFailingAlone(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
+
+NodeStatus IsFailingAlone::tick()
+{
+    try {
+
+        std::string borp = "In tick for IsFailingAlone";
+        _robot.log_info(borp);
+
+        if (_robot.IsFailingAlone()) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in IsFailingAlone::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList IsFailingAlone::providedPorts()
+{
+    return {};
+}
+
 IsIdle::IsIdle(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
     : ConditionNode(name, config), _world(world), _robot(robot) {}       
 
