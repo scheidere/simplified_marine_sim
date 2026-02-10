@@ -404,7 +404,7 @@ Note here...
 
 // Full greedy version, with executable task subtrees (just for 2 robots (same type) four coverage tasks)
 // No reason to include go to home logic because no comms
-static const char* xml_text = R"(
+/*static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="5">
@@ -428,10 +428,10 @@ static const char* xml_text = R"(
         </ParallelAll>
      </BehaviorTree>
 </root>
-)";
+)";*/
 
 // Main marine domain tree - this is the tedious version with unique condition/action(s) node(s) for each/all tasks
-/*static const char* xml_text = R"(
+static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
         <ParallelAll max_failures="7">
@@ -487,7 +487,7 @@ static const char* xml_text = R"(
      </BehaviorTree>
 </root>
 )";
-*/
+
 /*
             <RepeatSequence>
                 <DoSampleCollection1/>
@@ -554,9 +554,10 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
             // Might be redundant to create another parser instance here, but doing so just in case threading causes issues
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
-            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_no_faults.json");
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
-            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
 
             JSONParser parser(path);
 
@@ -770,9 +771,10 @@ int main(int argc, char** argv) {
 
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
-        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_no_faults.json");
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
-        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
 
         JSONParser parser(path);
 

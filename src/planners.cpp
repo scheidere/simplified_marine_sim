@@ -231,6 +231,17 @@ std::vector<Pose2D> ShortestPath::plan(Pose2D start_pose, Pose2D waypoint, int X
         plan.push_back({c.first, c.second, 0});
     }
 
+    std::cout << "ShortestPath waypoints between (" << start_pose.x << "," << start_pose.y 
+          << ") and (" << waypoint.x << "," << waypoint.y << "):" << std::endl;
+    std::string p = "ShortestPath waypoints between (" + std::to_string(start_pose.x) + "," + std::to_string(start_pose.y) 
+          + ") and (" + std::to_string(waypoint.x) + "," + std::to_string(waypoint.y) + "):";
+    robot->log_info(p);
+    for (const auto& wp : plan) {
+        std::cout << "(" << wp.x << "," << wp.y << ") ";
+        robot->log_info("(" + std::to_string(wp.x) + "," + std::to_string(wp.y) + ") ");
+    }
+    std::cout << std::endl;
+
     return plan;
 }
 

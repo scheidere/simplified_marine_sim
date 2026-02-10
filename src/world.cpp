@@ -813,7 +813,7 @@ void World::plot() {
     }
     
     cv::imshow("World Image", image);
-    cv::waitKey(300);  // No longer blocking other robots!
+    cv::waitKey(10);  // No longer blocking other robots!
 }
 
 void World::trackRobot(Robot* robot) {
