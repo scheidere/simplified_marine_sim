@@ -88,6 +88,7 @@ private:
     mutable std::mutex task_progress_mutex;
 
     int consecutive_failure_count;
+    int consecutive_waiting_count;
 
 public:
     Robot(World* world, JSONParser* parser, const Pose2D& initial_pose, int robot_id, std::string robot_type, cv::Scalar color); // Is this right with planners?
@@ -246,6 +247,9 @@ public:
     bool IsIdle();
     bool AwayFromHome();
     bool IsFailingAlone();
+    bool IsStuckWaiting(); // for co-op tasks
+    void incrementWaitingCount();
+    void resetWaitingCount();
 
     bool DoImageArea1();
     bool DoImageArea2();

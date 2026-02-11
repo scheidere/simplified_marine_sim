@@ -130,6 +130,7 @@ Robot::Robot( World* w, JSONParser* psr, const Pose2D& initial_pose, int robot_i
     //reattempt_failing_action = false; // Initially no failures [not needed if counter sequence inherently reattempts until success on failing tasks]
 
     consecutive_failure_count = 0; // for isFailingAlone(), counted in HandleFailures
+    consecutive_waiting_count = 0;
 
 }
 
@@ -1024,8 +1025,16 @@ bool Robot::checkIfNewInfoAvailable() {
                 // other robot id not found in last_pings, meaning the robot has newly been heard via ping!
                 info_available = true;
                 log_info("NEW INFO FOUND DUE TO NEW ROBOT IN COMMS");
+                log_info("current path:");
+                utils::log1DVector(path, *this);
 
             } else { // Other robot id was found, meaning it was already in comms at last check
+
+                log_info("checkIfNewInfoAvailable: Other robot id was found, meaning it was already in comms at last check");
+                std::string b = "other_robot_id:" + std::to_string(other_robot_id);
+                log_info(b);
+                log_info("Own path is now: ");
+                utils::log1DVector(path, *this);
 
                 auto [sender_id, other_robot_old_timestamp, other_robot_old_subtask_failure_flag] = *it;
         
@@ -2657,6 +2666,37 @@ bool Robot::IsFailingAlone() {
     
     if (consecutive_failure_count > FAILURE_THRESHOLD) {
         log_info("Robot has failed " + std::to_string(consecutive_failure_count) + " times!");
+        return true;
+    }
+    
+    return false;
+}
+
+void Robot::incrementWaitingCount() {
+    consecutive_waiting_count++;
+}
+
+void Robot::resetWaitingCount() {
+    consecutive_waiting_count = 0;
+}
+
+bool Robot::IsStuckWaiting() { // for co-op task
+    if (!at_consensus || inHelperMode()) {
+        return false;
+    }
+    
+    if (path.empty() || path[0] == -1) {
+        return false;
+    }
+    
+    int WAITING_THRESHOLD = 200;
+    
+    if (consecutive_waiting_count > WAITING_THRESHOLD) {
+        int current_task = path[0];
+        int group_size = world->getTaskGroupSize(current_task);
+        log_info("Robot stuck waiting for cooperative task " + std::to_string(current_task) + 
+                 " (group size " + std::to_string(group_size) + ") for " + 
+                 std::to_string(consecutive_waiting_count) + " iterations, giving up!");
         return true;
     }
     

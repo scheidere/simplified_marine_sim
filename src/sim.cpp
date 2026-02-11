@@ -445,6 +445,14 @@ Note here...
                 <ExtractSample/>
                 <LoadSample/>
             </RepeatSequence>
+            <RepeatSequence>
+                <DoClearPath1/>
+                <ClearPath/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoClearPath2/>
+                <ClearPath/>
+            </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
@@ -528,9 +536,24 @@ static const char* xml_text = R"(
                 </CounterSequence>
             </RepeatSequence>
             <RepeatSequence>
+                <DoClearPath1/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ClearPath/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoClearPath2/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ClearPath/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
                 <AwayFromHome/>
                 <Fallback>
                     <IsFailingAlone/>
+                    <IsStuckWaiting/>
                     <IsIdle/>
                 </Fallback>
                 <GoHome/>
@@ -701,6 +724,8 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<LoadSample>("LoadSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<AwayFromHome>("AwayFromHome", std::ref(world), std::ref(robot));
                 factory.registerNodeType<IsFailingAlone>("IsFailingAlone", std::ref(world), std::ref(robot));
+                factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                factory.registerNodeType<IsStuckWaiting>("IsStuckWaiting", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));                
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));
