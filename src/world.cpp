@@ -1269,7 +1269,7 @@ bool World::isSubtaskID(int task_id) {
     return std::find(subtask_ids.begin(), subtask_ids.end(), task_id) != subtask_ids.end();
 }
 
-bool World::isLastSubtask(int current_task_id, int local_current_task_id) {
+/*bool World::isLastSubtask(int current_task_id, int local_current_task_id) {
 
     // testing
 
@@ -1290,6 +1290,37 @@ bool World::isLastSubtask(int current_task_id, int local_current_task_id) {
     // Otherwise, is main task but just completed an intermediate subtask so cannot mark main task as complete yet
     return false;
 
+}*/
+
+bool World::isLastSubtask(int current_task_id, int local_current_task_id) {
+    log_info("isLastSubtask called: current_task_id=" + std::to_string(current_task_id) + 
+             ", local_current_task_id=" + std::to_string(local_current_task_id));
+    
+    if (isSubtaskID(current_task_id)) {
+        log_info("  Returning true (is subtask)");
+        return true;
+    } else {
+        TaskInfo& main_task_info = getTaskInfo(current_task_id);
+        std::vector<int> subtasks = main_task_info.subtasks;
+        
+        std::string subtasks_str = "  Subtasks list: ";
+        for (int s : subtasks) subtasks_str += std::to_string(s) + " ";
+        log_info(subtasks_str);
+        
+        int last_subtask_id = subtasks.back();
+        log_info("  last_subtask_id=" + std::to_string(last_subtask_id));
+        log_info("  Comparison: " + std::to_string(local_current_task_id) + " == " + 
+                 std::to_string(last_subtask_id) + " ? " + 
+                 std::to_string(local_current_task_id == last_subtask_id));
+        
+        if (local_current_task_id == last_subtask_id) {
+            log_info("  Returning true (last subtask match)");
+            return true;
+        }
+    }
+    
+    log_info("  Returning false");
+    return false;
 }
 
 void World::initializeBackground() {

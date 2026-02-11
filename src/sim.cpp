@@ -425,6 +425,26 @@ Note here...
                 <DoImageArea4/>
                 <ImageArea/>
             </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection1/>
+                <ExtractSample/>
+                <LoadSample/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection2/>
+                <ExtractSample/>
+                <LoadSample/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection3/>
+                <ExtractSample/>
+                <LoadSample/>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection4/>
+                <ExtractSample/>
+                <LoadSample/>
+            </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
 </root>
@@ -434,7 +454,7 @@ Note here...
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="7">
+        <ParallelAll max_failures="11">
             <Repeat num_cycles="-1">
             <Ping/>
             </Repeat>
@@ -473,6 +493,38 @@ static const char* xml_text = R"(
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
                     <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
                     <ImageArea/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection1/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ExtractSample/>
+                    <LoadSample/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection2/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ExtractSample/>
+                    <LoadSample/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection3/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ExtractSample/>
+                    <LoadSample/>
+                </CounterSequence>
+            </RepeatSequence>
+            <RepeatSequence>
+                <DoSampleCollection4/>
+                <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
+                    <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
+                    <ExtractSample/>
+                    <LoadSample/>
                 </CounterSequence>
             </RepeatSequence>
             <RepeatSequence>
@@ -644,7 +696,9 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<DoSampleCollection4>("DoSampleCollection4", std::ref(robot), std::ref(world));
                 factory.registerNodeType<DoClearPath1>("DoClearPath1", std::ref(robot), std::ref(world));
                 factory.registerNodeType<DoClearPath2>("DoClearPath2", std::ref(robot), std::ref(world));
-                factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                // factory.registerNodeType<CollectSample>("CollectSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                factory.registerNodeType<ExtractSample>("ExtractSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
+                factory.registerNodeType<LoadSample>("LoadSample", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<AwayFromHome>("AwayFromHome", std::ref(world), std::ref(robot));
                 factory.registerNodeType<IsFailingAlone>("IsFailingAlone", std::ref(world), std::ref(robot));
                 //factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));                

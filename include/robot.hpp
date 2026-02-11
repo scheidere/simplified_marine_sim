@@ -262,6 +262,8 @@ public:
 
     void setNewSelfSubtaskFailure(bool failure_new);
 
+    int getTaskSubtaskProgress(int task_id);
+
     // Below was for communicating help was given/received for fault recovery (but counter sequence reattempting inherently is cleaner)
     // bool getReattemptFailingActionFlag() { return reattempt_failing_action; }
     // void setReattemptFailingActionFlag(bool new_reattempt_flag);

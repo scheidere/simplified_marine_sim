@@ -1600,6 +1600,9 @@ void Robot::removeCompletedTaskFromPathAndBundle() {
     // Remove from path (shift left)
     path.erase(path.begin());
     path.push_back(-1);  // Add -1 at end to maintain size
+
+    log_info("Path after task removed due:");
+    utils::log1DVector(path,*this);
     
     // Remove from bundle (shift left)
     auto it = std::find(bundle.begin(), bundle.end(), completed_task);

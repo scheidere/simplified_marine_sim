@@ -528,7 +528,7 @@ public:
     static PortsList providedPorts();
 };
 
-class CollectSample : public StatefulActionNode {
+/*class CollectSample : public StatefulActionNode {
 private:
     Robot& _robot;
     World& _world;
@@ -539,6 +539,44 @@ private:
 
 public:
     CollectSample(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};*/
+
+class ExtractSample : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    ExtractSample(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
+
+    NodeStatus onStart() override;
+    NodeStatus onRunning() override;
+    void onHalted() override;
+
+    static PortsList providedPorts();
+};
+
+class LoadSample : public StatefulActionNode {
+private:
+    Robot& _robot;
+    World& _world;
+    ShortestPath& _shortest_path_planner;
+
+    std::vector<Pose2D> _waypoints;
+    int _current_waypoint_index;
+
+public:
+    LoadSample(const std::string& name, const NodeConfig& config, Robot& r, World& w, ShortestPath& sp);
 
     NodeStatus onStart() override;
     NodeStatus onRunning() override;
