@@ -985,6 +985,10 @@ bool Robot::checkIfNewInfoAvailable() {
     log_info("own subtask failures: ");
     utils::log2DUnorderedMap(subtask_failures, *this);
     // Check 4: if a robot itself is failing, so should be triggered to broadcast info to get help from another
+
+    std::string hi = "new_self_subtask_failure flag: " + std::to_string(new_self_subtask_failure);
+    log_info(hi);
+
     if (new_self_subtask_failure) {
         log_info("NEW INFO FOUND (sort of) DUE TO OWN FAILURE (need to communicate it in CBGA)");
         return true; // Don't need to check pings for newness in this case
@@ -2043,7 +2047,7 @@ std::pair<std::pair<int,bool>,std::map<int,int>> Robot::HandleFailures(std::unor
     utils::logUnorderedMap(current_subtask_failures, *this);
 
     // Track consecutive failures (will be used in isFailingAlone condition)
-    if (new_self_subtask_failure) {
+    if (new_self_subtask_failure) { //&& !isBeingHelped()) { // only count toward threshold if not assigned a helper yet via CBGA
         consecutive_failure_count++;
         log_info("Consecutive failure count: " + std::to_string(consecutive_failure_count));
     } else {
@@ -2654,18 +2658,45 @@ bool Robot::AwayFromHome() {
     return false;
 }
 
+bool Robot::isBeingHelped() {
+    if (path.empty() || path[0] == -1) return false;
+    
+    int current_task_id = path[0];
+    
+    // Get actions list from task info
+    TaskInfo& task = world->getTaskInfo(current_task_id);
+    if (task.subtasks.empty()) return false;
+        
+    // Check if any other robot has been assigned any action of this task
+    for (int action_id : task.subtasks) {
+        int action_idx = action_id - 1;  // or however you index winning_bids_matrix
+        
+        for (int agent_idx = 0; agent_idx < (int)winning_bids_matrix[action_idx].size(); agent_idx++) {
+            int agent_id = agent_idx + 1;
+            if (agent_id != id && winning_bids_matrix[action_idx][agent_id - 1] > 0) {
+                log_info("Robot " + std::to_string(agent_id) + 
+                         " assigned to help with action " + std::to_string(action_id) + 
+                         ", not going home!");
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
 bool Robot::IsFailingAlone() {
 
     // Only gets called if robot not at home
 
-    if (!at_consensus || inHelperMode()) {
+    if (!at_consensus || inHelperMode() || isBeingHelped()) {
         return false;
     }
     
     int FAILURE_THRESHOLD = 100;  // HandleFailures runs less frequently
     
     if (consecutive_failure_count > FAILURE_THRESHOLD) {
-        log_info("Robot has failed " + std::to_string(consecutive_failure_count) + " times!");
+        log_info("Robot has failed " + std::to_string(consecutive_failure_count) + " times (IsFailingAlone true)!");
         return true;
     }
     

@@ -462,7 +462,7 @@ Note here...
 static const char* xml_text = R"(
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
-        <ParallelAll max_failures="11">
+        <ParallelAll max_failures="6">
             <Repeat num_cycles="-1">
             <Ping/>
             </Repeat>
@@ -504,6 +504,24 @@ static const char* xml_text = R"(
                 </CounterSequence>
             </RepeatSequence>
             <RepeatSequence>
+                <AwayFromHome/>
+                <Fallback>
+                    <IsFailingAlone/>
+                    <IsIdle/>
+                </Fallback>
+                <GoHome/>
+            </RepeatSequence>
+        </ParallelAll>
+     </BehaviorTree>
+</root>
+)";
+
+/*
+<IsStuckWaiting/>
+*/
+
+/*
+<RepeatSequence>
                 <DoSampleCollection1/>
                 <CounterSequence task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}" self_subtask_failures="{ssf}">
                     <HandleFailures self_subtask_failures="{ssf}" task_is_main="{tim}" current_task_id ="{ctid}" subtask_failure_thresholds="{sft}"/>
@@ -558,10 +576,7 @@ static const char* xml_text = R"(
                 </Fallback>
                 <GoHome/>
             </RepeatSequence>
-        </ParallelAll>
-     </BehaviorTree>
-</root>
-)";
+*/
 
 /*
             <RepeatSequence>
@@ -629,9 +644,9 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
             // Might be redundant to create another parser instance here, but doing so just in case threading causes issues
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
-            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_no_faults.json");
-            // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
+            std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
             // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
 
             JSONParser parser(path);
@@ -850,9 +865,9 @@ int main(int argc, char** argv) {
 
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input.json");
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks.json");
-        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
+        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_no_faults.json");
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_no_faults.json");
-        // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
+        std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_CBGA_1_fault.json");
         // std::string path = std::filesystem::current_path().append("src/simplified_marine_sim/config/input_15p_10obs_noblocks_noCBGA_1_fault.json");
 
         JSONParser parser(path);

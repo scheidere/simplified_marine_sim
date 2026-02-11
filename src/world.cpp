@@ -481,8 +481,8 @@ std::unordered_map<int, TaskInfo> World::initAllSubtasksInfo() {
 
 TaskInfo& World::getTaskInfo(int task_id) {
 
-    std::string plz = "Task id in getTaskInfo is: " + std::to_string(task_id);
-    log_info(plz);
+    // std::string plz = "Task id in getTaskInfo is: " + std::to_string(task_id);
+    // log_info(plz);
 
     std::lock_guard<std::mutex> lock(world_mutex);
 

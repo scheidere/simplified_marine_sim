@@ -247,6 +247,7 @@ public:
     bool IsIdle();
     bool AwayFromHome();
     bool IsFailingAlone();
+    bool isBeingHelped();
     bool IsStuckWaiting(); // for co-op tasks
     void incrementWaitingCount();
     void resetWaitingCount();

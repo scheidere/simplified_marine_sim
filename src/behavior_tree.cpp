@@ -3606,6 +3606,7 @@ NodeStatus GoHome::onRunning()
         // Traverse waypoints to home position
         if (_current_waypoint_index >= _waypoints.size()) {
             std::cout << "Robot " << _robot.getID() << " reached home position" << std::endl;
+            _robot.log_info("Reached home position, arrived at home");
             return NodeStatus::SUCCESS;
         }
         
