@@ -230,6 +230,8 @@ public:
 
     bool fullGroupPresent(int current_task_id);
 
+    bool robotsAtLocationHaveComms(int current_task_id);
+
     std::unordered_map<int,std::vector<int>>& getTaskCompletionLog() { return task_completion_log; }
 
     void updateTaskCompletionLog(int robot_id, int completed_task_id);

@@ -1083,7 +1083,7 @@ bool World::fullGroupPresent(int current_task_id) {
     // Since the type requirements for robots in the group is handled in resolveConflicts, robot.trackAssignedRobotsbySubGroup(...) and CBGA.isGroupEffectivelyFull(...)
     // Here we only check that total number in group required is present (we assume they are the correct types since determined prior to task allocation)
 
-    int count_robots_at_location = 0; // Consider robots doing clear path task that are at location of clearing
+    int count_robots_at_location = 0; // Consider robots doing co-op task that are at location
     for (auto& pair : robot_tracker) {
         int robot_id = pair.first;
         Robot* robot = pair.second;
@@ -1098,11 +1098,42 @@ bool World::fullGroupPresent(int current_task_id) {
 
     if (count_robots_at_location == current_task.group_size) {
         // Full group present to start task
-        return true;
+
+        if (current_task.group_size == 1) {
+            return true;
+        } else if (robotsAtLocationHaveComms(current_task_id)) {
+            // Only return true for co-op tasks size > 1 if they can ping each other, otherwise they cannot coordinate
+            // Greedy has no comms, so should fail co-op tasks
+            return true;
+        }
+
     }
 
     // Full group not yet present
     return false;
+}
+
+bool World::robotsAtLocationHaveComms(int current_task_id) {
+    TaskInfo& current_task = getTaskInfo(current_task_id);
+    std::pair<int,int> task_location = current_task.location;
+
+    // std::lock_guard<std::mutex> lock(world_mutex); causes deadlock
+
+    for (auto& pair : robot_tracker) {
+        int robot_id = pair.first;
+        Robot* robot = pair.second;
+        Pose2D current_pose = robot->getPose();
+        std::pair<int,int> current_loc = {current_pose.x, current_pose.y};
+        if (current_loc == task_location) {
+            if (ping_tracker.find(robot_id) == ping_tracker.end() || 
+                ping_tracker.at(robot_id).empty()) {
+                log_info("robotsAtLocationHaveComms: robot " + std::to_string(robot_id) +
+                         " has no ping tracker entry — cannot participate in co-op task");
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void World::updateTaskCompletionLog(int robot_id, int completed_task_id) {
