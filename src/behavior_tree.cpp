@@ -98,7 +98,7 @@ void taskSuccessProcessing(World& _world, Robot& _robot, int current_task_id, in
         // Add new reward to cumulative reward for whole team
         _world.updateCumulativeReward(raw_reward);  // Keep raw
         // _world.updateCumulativeDiscountedReward(discounted_reward);
-        _world.updateCumulativeScore(task_score); 
+        _world.updateCumulativeScore(task_score);
         
         double& cumulative_reward = _world.getCumulativeReward();
         // double& cumulative_discounted = _world.getCumulativeDiscountedReward();

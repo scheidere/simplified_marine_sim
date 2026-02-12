@@ -1426,8 +1426,10 @@ void CBGA::resolveGroupConflicts(int task_idx, int agent_idx_m,
             std::string wbk = "wbk: " + std::to_string(winning_bids_matrix_k[task_idx][agent_idx_m]);
             robot.log_info(wbk);
 
-            // if Y_kjm > minY_ijn for all n (m is included but won't be assesed further since here Yijm = 0 from the if above)
-            if (winning_bids_matrix_k[task_idx][agent_idx_m] > min_existing_winning_bid_ijn) { // if Y_kjm > minY_ijn
+            // Old: if Y_kjm > minY_ijn for all n (m is included but won't be assesed further since here Yijm = 0 from the if above)
+            // BUG FOUND RELATING TO THIS, NEEDED >= not >, the equals makes method defer to one that won first
+            // New: if Y_kjm >= minY_ijn: use >= not > so that equal bids defer to the robot that won the slot first (k), breaking ties correctly
+            if (winning_bids_matrix_k[task_idx][agent_idx_m] >= min_existing_winning_bid_ijn) { // if Y_kjm > minY_ijn
                 // Defer to k, replace agent n with m in task group j for i, fullness same or larger since replacing member of group
                 robot.log_info("Defer to k, replace agent n with m in task group j for i, fullness same since replacing member of group");
 

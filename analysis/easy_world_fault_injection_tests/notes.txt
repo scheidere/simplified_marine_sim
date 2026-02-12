@@ -14,3 +14,8 @@ Currently, greedy is allowed to succeed accidentally on co-op tasks. Preventing 
 Greedy may have higher reward than CBBA, but CBBA will finish faster.
 CBGA should always get at least as well as greedy, almost always more, and should be faster.
 CBGA will likely be slower than CBBA, but higher reward always.
+
+
+
+Note that we have a run with 2 mappers and 3 samplers since the group size for coop tasks is 2, fair to have 1 over that to allow potential to recover.
+No faults were injected in current run we have, but we will include results when we fix fault recovery for coop tasks.
