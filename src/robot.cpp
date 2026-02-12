@@ -630,6 +630,12 @@ void Robot::updateDoableTasks() {
 
         // Add each failed subtask id to doable_task_ids so current robot can consider helping failing neighbor(s)
         for (int subtask_id : newly_failed_subtasks) {
+            // Don't add subtask if this robot is itself failing at it — can't help yourself
+            if (subtask_failures.count(subtask_id) && subtask_failures[subtask_id].count(id) && subtask_failures[subtask_id][id] == true) {
+                log_info("Skipping subtask " + std::to_string(subtask_id) + " — robot is itself failing at it, cannot be helper");
+                continue;
+            }
+            
             // We add subtasks at the front, so they are considered for assignment before remaining assignable main tasks
             doable_task_ids.insert(doable_task_ids.begin(), subtask_id);
             doable_subtask_ids.erase(

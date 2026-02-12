@@ -1,0 +1,16 @@
+results in this directory are from the small/easy world domain
+but not the final final one, just the input_15p_10obs_noblocks
+Some have bundle size 3, but better with 4 for safety (esp around isstuckwaiting logic)
+
+Note, actions 23 and 24 are clearpath, co-op, group size of 2
+
+Given the team in this domain is 2 mapper (cant do that task) and 2 samplers (which can)
+Team CANNOT recover from fault 23 or 24. So reward will be lower, the earlier in the path task 9 or 10 appears.
+Task 9 is action 23, and task 10 is 24.
+I think this is ok. It won't happen every run and CBGA should still do better than all other methods.
+
+Currently, greedy is allowed to succeed accidentally on co-op tasks. Preventing it broke stuff for CBBA/CBGA.
+
+Greedy may have higher reward than CBBA, but CBBA will finish faster.
+CBGA should always get at least as well as greedy, almost always more, and should be faster.
+CBGA will likely be slower than CBBA, but higher reward always.
