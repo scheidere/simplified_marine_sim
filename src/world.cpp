@@ -1099,13 +1099,15 @@ bool World::fullGroupPresent(int current_task_id) {
     if (count_robots_at_location == current_task.group_size) {
         // Full group present to start task
 
-        if (current_task.group_size == 1) {
+        return true;
+
+        /*if (current_task.group_size == 1) {
             return true;
         } else if (robotsAtLocationHaveComms(current_task_id)) {
             // Only return true for co-op tasks size > 1 if they can ping each other, otherwise they cannot coordinate
             // Greedy has no comms, so should fail co-op tasks
             return true;
-        }
+        }*/
 
     }
 

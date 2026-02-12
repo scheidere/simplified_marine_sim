@@ -3603,6 +3603,13 @@ NodeStatus GoHome::onStart()
 NodeStatus GoHome::onRunning()
 {
     try {
+
+
+        // this did not fix the glitching during coverage task failure recovery (in fact saw the helper glitch more too)
+        // if (_robot.isBeingHelped()) { // Fail safe to halt going home if was failing without help and now have help from since-run CBGA
+        //     return NodeStatus::FAILURE; // stop going home
+        // }
+
         // Traverse waypoints to home position
         if (_current_waypoint_index >= _waypoints.size()) {
             std::cout << "Robot " << _robot.getID() << " reached home position" << std::endl;
