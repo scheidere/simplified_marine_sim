@@ -1101,13 +1101,14 @@ bool World::fullGroupPresent(int current_task_id) {
 
         return true;
 
-        /*if (current_task.group_size == 1) {
-            return true;
-        } else if (robotsAtLocationHaveComms(current_task_id)) {
-            // Only return true for co-op tasks size > 1 if they can ping each other, otherwise they cannot coordinate
-            // Greedy has no comms, so should fail co-op tasks
-            return true;
-        }*/
+        // TESTING IF THIS STILL BREAKS THINGS, yup still does, unsure why (runs but behavior wonky)
+        // if (current_task.group_size == 1) {
+        //     return true;
+        // } else if (robotsAtLocationHaveComms(current_task_id)) {
+        //     // Only return true for co-op tasks size > 1 if they can ping each other, otherwise they cannot coordinate
+        //     // Greedy has no comms, so should fail co-op tasks
+        //     return true;
+        // }
 
     }
 
@@ -1135,6 +1136,18 @@ bool World::robotsAtLocationHaveComms(int current_task_id) {
             }
         }
     }
+    return true;
+}
+
+/*bool World::hasRecentPing(int robot_id) {
+    return ping_tracker.find(robot_id) != ping_tracker.end() && 
+           !ping_tracker.at(robot_id).empty();
+}*/
+
+bool World::hasRecentPing(int robot_id) {
+    auto it = ping_tracker.find(robot_id);
+    if (it == ping_tracker.end()) return false;
+    if (it->second.empty()) return false;
     return true;
 }
 

@@ -3110,9 +3110,21 @@ NodeStatus ClearPath::onRunning()
             std::string strt = "Completed shortest path to ClearPath for robot " + std::to_string(_robot.getID()) + "...";
             _world.log_info(strt);
 
-            if (!_world.fullGroupPresent(current_task_id)) {
+            // THIS HASN'T BEEN TESTED, I felt it would be better to have a GoBack node in GoHome subtree to keep actions about traversing to action once simply
+           /* if (_robot.isBeingHelped()) {
+                // Replan back to task location from current position (e.g. robot went home and now needs to return to be helped to complete task with group+helper)
+                _robot.log_info("isBeingHelped true — replanning back to task location");
+                Pose2D current_pose = _robot.getPose();
+                Pose2D goal_pose = _robot.getCurrentGoalPose();
+                _waypoints = _shortest_path_planner.plan(current_pose, goal_pose, _world.getX(), _world.getY());
+                _current_waypoint_index = 0;
+            } else if (!_world.fullGroupPresent(current_task_id)) {
                 _robot.incrementWaitingCount();
-            }
+            }*/
+
+            // if (!_world.fullGroupPresent(current_task_id)) {
+            //     _robot.incrementWaitingCount();
+            // }
 
             return NodeStatus::RUNNING;
             // return NodeStatus::SUCCESS; // for testing without group part above
@@ -3563,6 +3575,88 @@ PortsList IsIdle::providedPorts()
     return {};
 }
 
+IsBeingHelped::IsBeingHelped(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
+
+NodeStatus IsBeingHelped::tick()
+{
+    try {
+
+        std::string borp = "In tick for IsBeingHelped";
+        _robot.log_info(borp);
+
+        if (_robot.isBeingHelped()) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in IsBeingHelped::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList IsBeingHelped::providedPorts()
+{
+    return {};
+}
+
+IsHelper::IsHelper(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
+
+NodeStatus IsHelper::tick()
+{
+    try {
+
+        std::string borp = "In tick for IsHelper";
+        _robot.log_info(borp);
+
+        if (_robot.IsHelper()) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in IsHelper::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList IsHelper::providedPorts()
+{
+    return {};
+}
+
+Regrouped::Regrouped(const std::string& name, const NodeConfig& config, World& world, Robot& robot)
+    : ConditionNode(name, config), _world(world), _robot(robot) {}       
+
+NodeStatus Regrouped::tick()
+{
+    try {
+
+        std::string borp = "In tick for Regrouped";
+        _robot.log_info(borp);
+
+        if (_robot.Regrouped()) {
+            return NodeStatus::SUCCESS;
+        } else {
+            return NodeStatus::FAILURE;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught in Regrouped::tick: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+PortsList Regrouped::providedPorts()
+{
+    return {};
+}
+
+
 GoHome::GoHome(const std::string& name, const NodeConfig& config,
                                        Robot& r, World& w, ShortestPath& sp)
     : StatefulActionNode(name, config), _robot(r), _world(w), _shortest_path_planner(sp) {
@@ -3654,6 +3748,101 @@ void GoHome::onHalted()
 }
 
 PortsList GoHome::providedPorts()
+{
+    return {};
+}
+
+GoBack::GoBack(const std::string& name, const NodeConfig& config,
+                                       Robot& r, World& w, ShortestPath& sp)
+    : StatefulActionNode(name, config), _robot(r), _world(w), _shortest_path_planner(sp) {
+    }
+
+NodeStatus GoBack::onStart()
+{
+    try {
+
+        std::string yeup = "In onStart for GoBack";
+        _robot.log_info(yeup);
+
+        // Above lines now in this function
+        Pose2D current_pose = _robot.getPose();
+        Pose2D goal_pose = _robot.getCurrentGoalPose();
+
+        // Init vector of waypoints, the plan
+        _waypoints = _shortest_path_planner.plan(current_pose, goal_pose,
+                                                _world.getX(), _world.getY());
+        
+        if (_waypoints.empty()) {
+            std::cout << "No path home found" << std::endl;
+            return NodeStatus::FAILURE;
+        }
+        
+        _current_waypoint_index = 0;
+        std::string borp = "Planned path home with " + std::to_string(_waypoints.size()) + " waypoints";
+        _robot.log_info(borp);
+
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+NodeStatus GoBack::onRunning()
+{
+    try {
+
+
+        // this did not fix the glitching during coverage task failure recovery (in fact saw the helper glitch more too)
+        // if (_robot.isBeingHelped()) { // Fail safe to halt going home if was failing without help and now have help from since-run CBGA
+        //     return NodeStatus::FAILURE; // stop going home
+        // }
+
+        // Traverse waypoints to home position
+        if (_current_waypoint_index >= _waypoints.size()) {
+            std::cout << "Robot " << _robot.getID() << " reached task position" << std::endl;
+            _robot.log_info("Reached task position, arrived back at task");
+            return NodeStatus::SUCCESS;
+        }
+        
+        Pose2D waypoint = _waypoints[_current_waypoint_index];
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+       
+        // Check if next waypoint is traversable
+        if(_robot.foundObstacle(waypoint)) {
+            // Replan around obstacle
+            _waypoints.clear(); 
+            Pose2D current_pose = _robot.getPose();
+            Pose2D goal_pose = _robot.getCurrentGoalPose();
+            _waypoints = _shortest_path_planner.plan(current_pose, goal_pose, _world.getX(), _world.getY());
+
+            if (_waypoints.empty()) {
+                std::cout << "No path back to task found" << std::endl;
+                return NodeStatus::FAILURE;
+            }
+
+            _current_waypoint_index = 0;
+            return NodeStatus::RUNNING;
+        }
+        
+        _robot.move(waypoint);
+        _current_waypoint_index++;
+        return NodeStatus::RUNNING;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Exception in GoToHome: " << e.what() << std::endl;
+        return NodeStatus::FAILURE;
+    }
+}
+
+void GoBack::onHalted()
+{
+    std::cout << "Test GoBack halted." << std::endl;
+}
+
+PortsList GoBack::providedPorts()
 {
     return {};
 }

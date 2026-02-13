@@ -300,6 +300,8 @@ public:
     Pose2D& getHomePose() { return home_pose; }
 
     bool isAtHome(const Pose2D& current_pose);
+
+    bool hasRecentPing(int robot_id);
 };
 
 #endif

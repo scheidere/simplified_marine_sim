@@ -550,13 +550,24 @@ static const char* xml_text = R"(
                 </CounterSequence>
             </RepeatSequence>
             <RepeatSequence>
-                <AwayFromHome/>
                 <Fallback>
-                    <IsFailingAlone/>
-                    <IsStuckWaiting/>
-                    <IsIdle/>
+                    <Sequence>
+                        <AwayFromHome/>
+                        <Fallback>
+                            <IsFailingAlone/>
+                            <IsStuckWaiting/>
+                            <IsIdle/>
+                        </Fallback>
+                        <GoHome/>
+                    </Sequence>
+                    <Sequence>
+                        <Fallback>
+                            <IsBeingHelped/>
+                            <Regrouped/>
+                        </Fallback>
+                        <GoBack/>
+                    </Sequence>
                 </Fallback>
-                <GoHome/>
             </RepeatSequence>
         </ParallelAll>
      </BehaviorTree>
@@ -564,7 +575,38 @@ static const char* xml_text = R"(
 )";
 
 /*
-<IsStuckWaiting/>
+
+<RepeatSequence>
+                <Fallback>
+                    <Sequence>
+                        <AwayFromHome/>
+                        <Fallback>
+                            <IsFailingAlone/>
+                            <IsStuckWaiting/> ... update to include helper waiting
+                            <IsIdle/>
+                        </Fallback>
+                        <GoHome/>
+                    </Sequence>
+                    <Sequence>
+                        <Fallback>
+                            <IsBeingHelped/>
+                            <IsHelper/> ... and at consensus (should we change BT for at consensus check? eh.)
+                            <Regrouped/> needs to cover helper and regrouped co-op
+                        </Fallback>
+                        <GoBack/>
+                    </Sequence>
+                </Fallback>
+            </RepeatSequence>
+
+<RepeatSequence>
+    <AwayFromHome/>
+    <Fallback>
+        <IsFailingAlone/>
+        <IsStuckWaiting/>
+        <IsIdle/>
+    </Fallback>
+    <GoHome/>
+</RepeatSequence>
 */
 
 /*
@@ -789,6 +831,10 @@ void run_robot(int robot_id, std::string robot_type, Pose2D initial_pose, cv::Sc
                 factory.registerNodeType<IsFailingAlone>("IsFailingAlone", std::ref(world), std::ref(robot));
                 factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 factory.registerNodeType<IsStuckWaiting>("IsStuckWaiting", std::ref(world), std::ref(robot));
+                factory.registerNodeType<IsBeingHelped>("IsBeingHelped", std::ref(world), std::ref(robot));
+                factory.registerNodeType<IsHelper>("IsHelper", std::ref(world), std::ref(robot));
+                factory.registerNodeType<Regrouped>("Regrouped", std::ref(world), std::ref(robot));
+                factory.registerNodeType<GoBack>("GoBack", std::ref(robot), std::ref(world), std::ref(shortest_path));
                 //factory.registerNodeType<ClearPath>("ClearPath", std::ref(robot), std::ref(world), std::ref(shortest_path));                
                 //factory.registerNodeType<Test>("Test", std::ref(robot));
                 //factory.registerNodeType<RunTest>("BuildBundle", std::ref(world), std::ref(robot), std::ref(cbba));

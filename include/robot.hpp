@@ -249,8 +249,10 @@ public:
     bool IsFailingAlone();
     bool isBeingHelped();
     bool IsStuckWaiting(); // for co-op tasks
+    bool IsHelper();
     void incrementWaitingCount();
     void resetWaitingCount();
+    bool Regrouped();
 
     bool DoImageArea1();
     bool DoImageArea2();

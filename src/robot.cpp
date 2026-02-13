@@ -635,7 +635,7 @@ void Robot::updateDoableTasks() {
                 log_info("Skipping subtask " + std::to_string(subtask_id) + " — robot is itself failing at it, cannot be helper");
                 continue;
             }
-            
+
             // We add subtasks at the front, so they are considered for assignment before remaining assignable main tasks
             doable_task_ids.insert(doable_task_ids.begin(), subtask_id);
             doable_subtask_ids.erase(
@@ -2683,12 +2683,76 @@ bool Robot::isBeingHelped() {
                 log_info("Robot " + std::to_string(agent_id) + 
                          " assigned to help with action " + std::to_string(action_id) + 
                          ", not going home!");
+                log_info("isBeingHelped is true");
                 return true;
             }
         }
     }
     
     return false;
+}
+
+bool Robot::IsHelper() {
+
+    // This is not enough because need to confirm you have communicated with helpees at home, aka regroup, going to use regrouped condition instead
+
+    if (path.empty() || path[0] == -1) return false;
+
+    int current_task_id = path[0]; // if id is action id (subtask) then robot is helper
+
+   return world->isSubtaskID(current_task_id);
+}
+
+bool Robot::Regrouped() {
+
+    // Not fully tested
+    log_info("in Regrouped check");
+
+    // For helpers failing to help due to partially or fully absent group, and nonfailing robots unable to complete coop task due to partially or fully absent group
+    // They all go home after a timeout, and this needs to check that they are in comms and at consensus
+
+    if (!at_consensus || path.empty() || path[0] == -1) return false; // excludes robots that went home due to being idle
+
+    int current_task_id = path[0]; // if id is action id (subtask) then robot is helper
+    int group_size = world->getTaskGroupSize(current_task_id);
+
+    // Check that helper arriving home due to helpees not being present for fault recovery at task location has now comm'd with helpee
+    if (world->isSubtaskID(current_task_id)) {
+        
+        // Check that robots failing at this subtask have been communicated with recently, I think this is overkill
+        for (auto& [robot_id, failed] : subtask_failures[current_task_id]) { // checks all failing robots for this subtask
+            if (failed && !world->hasRecentPing(robot_id)) { // if neighbor robot failed subtask for this helper and haven't heard from it
+                log_info("Regroup returning false for helper");
+                return false; // haven't heard from this failing robot recently, so consensus not with all helpees
+            }
+        }
+
+        log_info("Regroup returning true for helper");
+        return true; // have heard from all helpees and at consensus so safe to go back to do task, they should know they are being helped and return to task location too
+    } else if (group_size > 1 && new_self_subtask_failure) { // main task id, so not helper mode here, and group > 1 so coop, AND not failing (helpees handled in IsBeingHelped condition)
+        int task_idx = current_task_id - 1;
+        int assigned_count = 0;
+
+        // Count the number of robots known to be assigned to this main task to confirm this robot can go back and will complete task with all group members
+        for (int agent_idx = 0; agent_idx < world->getNumAgents(); agent_idx++) {
+            if (winning_bids_matrix[task_idx][agent_idx] > 0) assigned_count++;
+        }
+
+        bool group_found = assigned_count >= group_size; // == should be fine, but just to be safe
+
+        if (group_found) {
+            log_info("Regroup returning true for robot on coop task");
+        } else {
+            log_info("Regroup returning false for robot on coop task");
+        }
+
+        return group_found; // True if group fully assigned and known
+    }
+
+
+    log_info("Regroup returning false as backup");
+    return false; // backup
+
 }
 
 bool Robot::IsFailingAlone() {
@@ -2717,8 +2781,13 @@ void Robot::resetWaitingCount() {
     consecutive_waiting_count = 0;
 }
 
-bool Robot::IsStuckWaiting() { // for co-op task
-    if (!at_consensus || inHelperMode()) {
+bool Robot::IsStuckWaiting() { // for co-op task (and helpers now)
+
+    // Make robots waiting for teammates (but not failing) go home (which will be triggered when this node returns true)
+    // Previously was just robots not in helper or helpee mode, but now includes helpers in case helpees are unaware they are being helped due to comms fading
+    // Need helper to go home and make them aware so they can all go back to the task (all must be present to "fix" the failure)
+
+    if (!at_consensus) { //|| inHelperMode()) {
         return false;
     }
     
